@@ -1,16 +1,15 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "RedstoneQoL",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "RedstoneQoL",
+  "description": "A Redstone Quality of Life mod.",
   "authors": [
-    "Me!"
+    ""
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://www.youtube.com/channel/UCz28y3fThmxHaIh7Zl-i6KA",
   },
 
   "license": "CC0-1.0",
