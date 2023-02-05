@@ -1,4 +1,4 @@
-# Redstone Qol Mod
+# Redstone Tools
 
 > A Redstone Quality of Life mod. To improve efficiency and productivity.
 
