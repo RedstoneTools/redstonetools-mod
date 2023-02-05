@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "rstools",
   "version": "${version}",
 
-  "name": "Example Mod",
+  "name": "RsTools",
   "description": "This is an example description! Tell everyone what your mod is about!",
   "authors": [
     "Me!"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod",
+    "homepage": "https://github.com/RedstoneQoL/mod",
+    "sources": "https://github.com/RedstoneQoL/mod",
     "issues": "https://github.com/RedstoneQoL/mod/issues"
   },
 
@@ -24,7 +24,7 @@
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "rstools.mixins.json"
   ],
 
   "depends": {
