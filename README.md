@@ -1,4 +1,6 @@
-# Fabric Example Mod
+# Redstone Qol Mod
+
+> A Redstone Quality of Life mod. To improve efficiency and productivity.
 
 ## Setup
 
