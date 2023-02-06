@@ -1,6 +1,6 @@
-package net.redstonetools.example.mixin;
+package com.domain.redstonetools.example.mixin;
 
-import net.redstonetools.example.ExampleMod;
+import com.domain.redstonetools.example.ExampleMod;
 import net.minecraft.client.gui.screen.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
