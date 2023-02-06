@@ -1,8 +1,7 @@
 # Redstone Tools
+[![](https://badgen.net/badge/discord/invite/blue?icon=discord)](https://discord.gg/wAu9k2fGyK)
 
 > A Redstone Quality of Life mod. To improve efficiency and productivity.
-
-> Discord Server: https://discord.gg/wAu9k2fGyK
 
 ## License
 
