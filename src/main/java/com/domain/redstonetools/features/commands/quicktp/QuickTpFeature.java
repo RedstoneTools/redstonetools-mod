@@ -1,6 +1,8 @@
 package com.domain.redstonetools.features.commands.quicktp;
 
-import com.domain.redstonetools.features.commands.CommandFeature;
+import com.domain.redstonetools.features.Feature;
+import com.domain.redstonetools.features.commands.CommandFeatureComponent;
+import com.domain.redstonetools.features.commands.TestFeatureComponent;
 import com.domain.redstonetools.utils.PositionUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
@@ -12,7 +14,12 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
-public class QuickTpFeature implements CommandFeature {
+public class QuickTpFeature extends Feature
+        implements CommandFeatureComponent, TestFeatureComponent {
+    public QuickTpFeature() {
+        super("quicktp", "Quick TP");
+    }
+
     public String getCommandName() {
         return "quicktp";
     }
@@ -43,4 +50,5 @@ public class QuickTpFeature implements CommandFeature {
 
         return PositionUtils.getFloorOfBlock(RaycastUtils.getBlockHitNeighbor(blockHit).getBlockPos());
     }
+
 }
