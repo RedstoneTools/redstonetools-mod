@@ -19,7 +19,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.domain.redstonetools.example.ExampleMod"
+      "com.domain.redstonetools.ExampleMod"
     ]
   },
   "mixins": [

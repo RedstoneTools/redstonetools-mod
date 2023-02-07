@@ -1,4 +1,4 @@
-package com.domain.redstonetools.example;
+package com.domain.redstonetools;
 
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
