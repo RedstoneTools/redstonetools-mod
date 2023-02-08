@@ -18,7 +18,7 @@ public class QuickTpFeature implements CommandFeature {
     }
 
     // TODO: Test this
-    public int executeCommand(CommandContext<Object> context) throws CommandSyntaxException {
+    public int executeCommand(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var player = ((ServerCommandSource) context.getSource()).getPlayer();
 
         var targetPosition = getTargetPosition(player);
