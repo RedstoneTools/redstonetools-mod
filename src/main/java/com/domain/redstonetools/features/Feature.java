@@ -1,8 +1,5 @@
 package com.domain.redstonetools.features;
 
-import com.domain.redstonetools.features.commands.CommandFeatureComponent;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
@@ -31,7 +28,10 @@ public abstract class Feature {
                 continue;
 
             try {
-                lookup.findSpecial(itf, "register", MethodType.methodType(void.class), getClass())
+                lookup.findSpecial(
+                        itf, "register",
+                        MethodType.methodType(void.class), getClass()
+                )
                         .invoke(this);
             } catch (Throwable t) {
                 throw new RuntimeException("Failed to initialize component " + itf.getSimpleName(), t);
