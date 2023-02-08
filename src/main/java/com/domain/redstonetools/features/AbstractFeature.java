@@ -2,17 +2,21 @@ package com.domain.redstonetools.features;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a feature of the mod.
  */
-public abstract class Feature {
+public abstract class AbstractFeature implements FeatureAccess {
 
     final String name;
     final String displayName;
 
-    public Feature(String name,
-                   String displayName) {
+    final Map<Class<?>, Object> services = new HashMap<>();
+
+    public AbstractFeature(String name,
+                           String displayName) {
         this.name = name;
         this.displayName = displayName;
     }
@@ -39,9 +43,20 @@ public abstract class Feature {
         }
     }
 
+    public void withService(Class<?> klass, Object o) {
+        services.put(klass, o);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getService(Class<T> tClass) {
+        return (T) services.get(tClass);
+    }
+
     /**
      * Get the name of this feature.
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -50,6 +65,7 @@ public abstract class Feature {
      * Get the display (proper) name of
      * this feature.
      */
+    @Override
     public String getDisplayName() {
         return displayName;
     }

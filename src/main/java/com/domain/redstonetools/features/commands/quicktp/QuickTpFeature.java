@@ -1,10 +1,11 @@
 package com.domain.redstonetools.features.commands.quicktp;
 
-import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.features.commands.CommandFeatureComponent;
+import com.domain.redstonetools.features.AbstractFeature;
+import com.domain.redstonetools.features.commands.PrimaryCommand;
 import com.domain.redstonetools.features.commands.TestFeatureComponent;
 import com.domain.redstonetools.utils.PositionUtils;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.domain.redstonetools.utils.RaycastUtils;
@@ -14,25 +15,24 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
-public class QuickTpFeature extends Feature
-        implements CommandFeatureComponent, TestFeatureComponent {
+public class QuickTpFeature extends AbstractFeature
+        implements PrimaryCommand, TestFeatureComponent {
+
     public QuickTpFeature() {
         super("quicktp", "Quick TP");
     }
 
-    public String getCommandName() {
-        return "quicktp";
-    }
+    @Override
+    public void configurePrimaryCommand(LiteralArgumentBuilder<ServerCommandSource> builder) {
+        builder.executes(context -> {
+            var player = ((ServerCommandSource) context.getSource()).getPlayer();
 
-    // TODO: Test this
-    public int executeCommand(CommandContext<Object> context) throws CommandSyntaxException {
-        var player = ((ServerCommandSource) context.getSource()).getPlayer();
+            var targetPosition = getTargetPosition(player);
 
-        var targetPosition = getTargetPosition(player);
+            player.teleport(targetPosition.x, targetPosition.y, targetPosition.z);
 
-        player.teleport(targetPosition.x, targetPosition.y, targetPosition.z);
-
-        return Command.SINGLE_SUCCESS;
+            return Command.SINGLE_SUCCESS;
+        });
     }
 
     // TODO: Test this
@@ -49,6 +49,11 @@ public class QuickTpFeature extends Feature
         }
 
         return PositionUtils.getFloorOfBlock(RaycastUtils.getBlockHitNeighbor(blockHit).getBlockPos());
+    }
+
+    @Override
+    public String getPrimaryCommandName() {
+        return "quicktp";
     }
 
 }

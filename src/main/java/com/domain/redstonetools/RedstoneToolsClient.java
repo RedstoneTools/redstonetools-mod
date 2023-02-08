@@ -1,7 +1,8 @@
 package com.domain.redstonetools;
 
-import com.domain.redstonetools.features.Feature;
+import com.domain.redstonetools.features.AbstractFeature;
 import com.domain.redstonetools.features.commands.quicktp.QuickTpFeature;
+import com.domain.redstonetools.service.CommandProvider;
 import net.fabricmc.api.ClientModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public final class RedstoneToolsClient implements ClientModInitializer {
      * any other services provided by the mod are
      * initialized.
      */
-    private static final List<Class<? extends Feature>> FEATURES = List.of(
+    private static final List<Class<? extends AbstractFeature>> FEATURES = List.of(
             QuickTpFeature.class
     );
 
@@ -42,13 +43,13 @@ public final class RedstoneToolsClient implements ClientModInitializer {
         Feature Registry
      */
 
-    private final Map<String, Feature> featureMap = new HashMap<>();
+    private final Map<String, AbstractFeature> featureMap = new HashMap<>();
 
-    public Feature getFeature(String str) {
+    public AbstractFeature getFeature(String str) {
         return featureMap.get(str);
     }
 
-    public boolean registerFeature(Feature feature) {
+    public boolean registerFeature(AbstractFeature feature) {
         try {
             feature.register();
             featureMap.put(feature.getName(), feature);
@@ -61,10 +62,12 @@ public final class RedstoneToolsClient implements ClientModInitializer {
         }
     }
 
-    public Feature createAndRegisterFeature(Class<? extends Feature> klass) {
+    public AbstractFeature createAndRegisterFeature(Class<? extends AbstractFeature> klass) {
         try {
             Constructor<?> constructor = klass.getDeclaredConstructor();
-            Feature instance = (Feature) constructor.newInstance();
+            AbstractFeature instance = (AbstractFeature) constructor.newInstance();
+
+            initServices(instance);
 
             if (!registerFeature(instance)) {
                 return null;
@@ -77,6 +80,11 @@ public final class RedstoneToolsClient implements ClientModInitializer {
 
             return null;
         }
+    }
+
+    // initialize the default services
+    private void initServices(AbstractFeature feature) {
+        feature.withService(CommandProvider.class, new CommandProvider());
     }
 
     // registers all initial features
