@@ -1,4 +1,4 @@
-![logo](https://raw.githubusercontent.com/ItsEntDev/RSTools/dev/rst_logo.png)
+![logo](rst_logo.png)
 
 # Redstone Tools
 
