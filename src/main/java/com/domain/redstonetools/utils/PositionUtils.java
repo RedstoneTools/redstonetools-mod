@@ -7,8 +7,7 @@ public class PositionUtils {
     private PositionUtils() {
     }
 
-    // TODO: Test this
-    public static Vec3d getFloorOfBlock(BlockPos position) {
+    public static Vec3d getBottomPositionOfBlock(BlockPos position) {
         return Vec3d.ofCenter(position).subtract(0, 0.5, 0);
     }
 }

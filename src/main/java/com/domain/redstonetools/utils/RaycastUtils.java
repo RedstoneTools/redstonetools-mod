@@ -6,7 +6,6 @@ public class RaycastUtils {
     private RaycastUtils() {
     }
 
-    // TODO: Test this
     public static BlockHitResult getBlockHitNeighbor(BlockHitResult hit) {
         var sideOffset = hit.getSide().getUnitVector();
 
