@@ -30,17 +30,15 @@ public class QuickTpFeature implements CommandFeature {
 
     // TODO: Test this
     private Vec3d getTargetPosition(PlayerEntity player) {
-        var hit = player.raycast(64, 0, false);
-
-        return clampHitPosition(hit);
+        return clampHitPosition(player.raycast(64, 0, false));
     }
+
 
     // TODO: Test this
     private Vec3d clampHitPosition(HitResult hit) {
-        if (!(hit instanceof BlockHitResult blockHit)) {
-            return hit.getPos();
-        }
-
-        return PositionUtils.getFloorOfBlock(RaycastUtils.getBlockHitNeighbor(blockHit).getBlockPos());
+        return hit instanceof BlockHitResult blockHit ?
+                PositionUtils.getFloorOfBlock(RaycastUtils.getBlockHitNeighbor(blockHit).getBlockPos()) :
+                hit.getPos();
     }
+
 }
