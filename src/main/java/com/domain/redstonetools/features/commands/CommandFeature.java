@@ -1,17 +1,50 @@
 package com.domain.redstonetools.features.commands;
 
+import com.domain.redstonetools.features.AbstractFeature;
+import com.domain.redstonetools.features.options.Argument;
+import com.domain.redstonetools.features.options.Options;
+import com.domain.redstonetools.utils.CommandUtils;
+import com.domain.redstonetools.utils.ReflectionUtils;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.LiteralMessage;
+import com.mojang.brigadier.Message;
+import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.server.command.ServerCommandSource;
 
-import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import java.util.ArrayList;
+import java.util.List;
 
-public interface CommandFeature {
-    default void registerCommand(CommandDispatcher dispatcher, boolean dedicated) {
-        dispatcher.register(literal(getCommandName()).executes(this::executeCommand));
+public abstract class CommandFeature<O extends Options> extends AbstractFeature<O> {
+    @Override
+    public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+        var info = ReflectionUtils.getFeatureInfo(this);
+
+        CommandUtils.register(
+                info.name(),
+                getArguments(),
+                context -> {
+                    var argumentObj = ReflectionUtils.getArgumentInstance(this);
+
+                    try {
+                        for (var argument : ReflectionUtils.getArguments(argumentObj)) {
+                            argument.setValue(context);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        // This should be unreachable, if it isn't, there is something wrong with registering commands
+                        throw new RuntimeException(e);
+                    }
+
+                    return execute(context.getSource(), argumentObj);
+                },
+                dispatcher,
+                dedicated
+        );
     }
 
-    String getCommandName();
+    private List<Argument<?>> getArguments() {
+        return List.of(ReflectionUtils.getArguments(ReflectionUtils.getArgumentInstance(this)));
+    }
 
-    int executeCommand(CommandContext<Object> context) throws CommandSyntaxException;
+    protected abstract int execute(ServerCommandSource source, O options) throws CommandSyntaxException;
 }
