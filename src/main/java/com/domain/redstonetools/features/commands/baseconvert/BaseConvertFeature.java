@@ -15,7 +15,7 @@ public class BaseConvertFeature extends CommandFeature<BaseConvertOptions> {
     protected int execute(ServerCommandSource source, BaseConvertOptions options) throws CommandSyntaxException {
 
         String result = Integer.toString(
-                Integer.parseInt(options.number.getValue().toString(), options.fromBase.getValue()),
+                Integer.parseInt(options.number.getValue(), options.fromBase.getValue()),
                 options.toBase.getValue());
 
         source.sendFeedback(Text.of(result), false);
