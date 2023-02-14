@@ -17,11 +17,14 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    // TODO: Maybe use https://github.com/ronmamo/reflections to get all classes with the
-    // Feature annotation, it might also be useful for other reflection related tasks
+    // TODO: Maybe use https://github.com/ronmamo/reflections to get all classes
+    // with the
+    // Feature annotation, it might also be useful for other reflection related
+    // tasks
     public static final List<Class<? extends AbstractFeature<?>>> FEATURE_CLASSES = List.of(
         QuickTpFeature.class, GlassFeature.class
     );
+
 
     @Override
     public void onInitializeClient() {
