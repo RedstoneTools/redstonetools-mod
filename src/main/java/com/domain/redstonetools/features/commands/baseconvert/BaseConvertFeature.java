@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
-@Feature(name = "convert")
+@Feature(name = "base")
 public class BaseConvertFeature extends CommandFeature<BaseConvertOptions> {
 
     @Override
