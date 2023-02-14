@@ -26,7 +26,6 @@ public class RedstoneToolsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing Redstone Tools");
-        ItemUtils.register();
 
         CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) -> {
             for (var featureClass : FEATURE_CLASSES) {
