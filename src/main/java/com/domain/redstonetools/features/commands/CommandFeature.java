@@ -27,15 +27,15 @@ public abstract class CommandFeature<O extends Options> extends AbstractFeature<
                             argument.updateValue(context);
                         }
                     } catch (IllegalArgumentException e) {
-                        // This should be unreachable, if it isn't, there is something wrong with registering commands
+                        // This should be unreachable, if it isn't, there is something wrong with
+                        // registering commands
                         throw new RuntimeException(e);
                     }
 
                     return execute(context.getSource(), argumentObj);
                 },
                 dispatcher,
-                dedicated
-        );
+                dedicated);
     }
 
     private List<Argument<?>> getArguments() {

@@ -26,7 +26,7 @@ public class QuickTpFeature extends CommandFeature<QuickTpOptions> {
     }
 
     private Vec3d getTargetPosition(PlayerEntity player, QuickTpOptions options) {
-        var hit = player.raycast(10f/*options.distance.getValue()*/, 0, /*options.includeLiquids.getValue()*/false);
+        var hit = player.raycast(options.distance.getValue(), 0, options.includeLiquids.getValue());
 
         return clampHitPosition(hit);
     }
