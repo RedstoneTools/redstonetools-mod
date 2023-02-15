@@ -5,6 +5,7 @@ import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.commands.quicktp.QuickTpFeature;
 import com.domain.redstonetools.features.options.Options;
 import com.domain.redstonetools.utils.ReflectionUtils;
+import com.mojang.brigadier.arguments.ArgumentType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import org.slf4j.Logger;

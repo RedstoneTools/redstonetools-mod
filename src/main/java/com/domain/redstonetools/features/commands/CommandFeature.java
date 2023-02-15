@@ -6,13 +6,9 @@ import com.domain.redstonetools.features.options.Options;
 import com.domain.redstonetools.utils.CommandUtils;
 import com.domain.redstonetools.utils.ReflectionUtils;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.LiteralMessage;
-import com.mojang.brigadier.Message;
-import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CommandFeature<O extends Options> extends AbstractFeature<O> {
@@ -28,7 +24,7 @@ public abstract class CommandFeature<O extends Options> extends AbstractFeature<
 
                     try {
                         for (var argument : ReflectionUtils.getArguments(argumentObj)) {
-                            argument.setValue(context);
+                            argument.updateValue(context);
                         }
                     } catch (IllegalArgumentException e) {
                         // This should be unreachable, if it isn't, there is something wrong with registering commands

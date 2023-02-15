@@ -5,6 +5,7 @@ import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.options.Argument;
 import com.domain.redstonetools.features.options.Options;
 import com.mojang.brigadier.arguments.ArgumentType;
+import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 
 // TODO: Someone with a better understanding of Java reflection should probably rewrite this, or maybe we should just use dependency injection
 public class ReflectionUtils {
+
     private ReflectionUtils() {
     }
 
