@@ -51,26 +51,23 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
     private BaseBlock checkAndUpdateBlock(World world,
                                           BlockVector3 pos,
                                           String color,
-                                          boolean onlyWhite,
-                                          Runnable changedCallback) {
+                                          boolean onlyWhite) {
         BlockState state = world.getBlock(pos);
         if (state == null)
             return null;
-
 
         // check if it is a target
         String blockId = state.getBlockType().getId();
         int colorlessBlockIdIndex;
         if ((colorlessBlockIdIndex = MATCH_TARGET_PATH.findEndMatch(blockId)) == -1)
-            return state.toBaseBlock();
+            return null;
         String colorlessBlockId = blockId.substring(colorlessBlockIdIndex);
         if (onlyWhite && !blockId.substring(0, colorlessBlockIdIndex).equals("white"))
-            return state.toBaseBlock();
+            return null;
 
         String coloredId = "minecraft:" + color + colorlessBlockId;
         BlockType blockType = BlockType.REGISTRY.get(coloredId);
 
-        changedCallback.run();
         return blockType.getDefaultState().toBaseBlock();
     }
 
@@ -106,13 +103,12 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
         final World world = FabricAdapter.adapt(player.getWorld());
         try (EditSession session = worldEdit.newEditSession(FabricAdapter.adapt(player.getWorld()))) {
             AtomicInteger counter = new AtomicInteger();
-            session.setBlocks(selection, new Pattern() {
+            counter.set(session.setBlocks(selection, new Pattern() {
                 @Override
                 public BaseBlock applyBlock(BlockVector3 position) {
-                    return checkAndUpdateBlock(world, position, color, onlyWhite,
-                            counter::getAndIncrement);
+                    return checkAndUpdateBlock(world, position, color, onlyWhite);
                 }
-            });
+            }));
 
             Operations.complete(session.commit());
 
