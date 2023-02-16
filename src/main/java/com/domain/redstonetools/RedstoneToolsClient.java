@@ -3,6 +3,7 @@ package com.domain.redstonetools;
 import com.domain.redstonetools.features.AbstractFeature;
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.commands.baseconvert.BaseConvertFeature;
+import com.domain.redstonetools.features.commands.binaryread.BinaryBlockReadFeature;
 import com.domain.redstonetools.features.commands.glass.GlassFeature;
 import com.domain.redstonetools.features.commands.quicktp.QuickTpFeature;
 import com.domain.redstonetools.utils.ItemUtils;
@@ -26,9 +27,8 @@ public class RedstoneToolsClient implements ClientModInitializer {
     public static final List<Class<? extends AbstractFeature<?>>> FEATURE_CLASSES = List.of(
             QuickTpFeature.class,
             BaseConvertFeature.class,
-            GlassFeature.class
-    );
-
+            GlassFeature.class,
+            BinaryBlockReadFeature.class);
 
     @Override
     public void onInitializeClient() {
