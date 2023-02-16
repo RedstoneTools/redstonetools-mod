@@ -24,22 +24,23 @@ repositories {
 
 dependencies {
 	// jUnit 5
-    implementation libs.junit.jupyter
+	implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 
 	// Spring DI
-	implementation libs.spring.di
+	implementation 'org.springframework:spring-context:5.3.13'
 
 	// To change the versions see the gradle.properties file
-	minecraft libs.minecraft
-	mappings variantOf(libs.fabric.yarn) { classifier("v2") }
-	modImplementation libs.fabric.loader
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation libs.fabric.api
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Worldedit API
-	modImplementation libs.worldedit
+	modImplementation "com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10"
 }
+
 
 processResources {
 	inputs.property "version", project.version
@@ -54,16 +55,9 @@ tasks.withType(JavaCompile).configureEach {
 	it.options.release = 17
 }
 
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
-}
-
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archives_base_name}"}
+		rename { "${it}_${project.archivesBaseName}"}
 	}
 }
 
