@@ -30,7 +30,7 @@ public class BlockColorArgumentType implements ArgumentType<String> {
             "lime",
             "pink",
             "gray",
-            "silver",
+            "light_gray",
             "cyan",
             "purple",
             "blue",
