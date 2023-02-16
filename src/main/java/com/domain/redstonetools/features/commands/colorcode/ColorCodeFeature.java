@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Feature(name = "colorcode")
+@Feature(name = "/colorcode")
 public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
 
     static final CharTreeNode MATCH_TARGET_PATH = new CharTreeNode();

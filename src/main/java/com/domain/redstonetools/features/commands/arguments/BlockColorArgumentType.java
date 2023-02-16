@@ -1,4 +1,4 @@
-package com.domain.redstonetools.commands.arguments;
+package com.domain.redstonetools.features.commands.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
