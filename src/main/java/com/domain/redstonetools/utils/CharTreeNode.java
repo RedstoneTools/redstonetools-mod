@@ -21,6 +21,10 @@ public class CharTreeNode {
     // if this is the tail of an inserted string
     boolean isTail = false;
 
+    // the length of the shortest inserted
+    // string
+    int shortestStringLen = Integer.MAX_VALUE;
+
     public CharTreeNode() {
         this.matches = '\0';
     }
@@ -54,6 +58,9 @@ public class CharTreeNode {
         }
 
         curr.isTail = true;
+
+        if (str.length() < shortestStringLen)
+            shortestStringLen = str.length();
     }
 
     /**
@@ -124,8 +131,12 @@ public class CharTreeNode {
         CharTreeNode curr = this;
         final int l = target.length();
 
+        if (shortestStringLen > l) {
+            return -1;
+        }
+
         outer:
-        for (int i = l - 1; i >= 0; i--) {
+        for (int i = l - 1 - shortestStringLen; i >= 0; i--) {
             int j = i;
             for (; j < l; j++) {
                 char c2 = target.charAt(j);
