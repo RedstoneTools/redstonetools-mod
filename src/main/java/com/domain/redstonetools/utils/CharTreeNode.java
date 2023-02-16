@@ -11,13 +11,15 @@ package com.domain.redstonetools.utils;
  * The insertion of strings is relatively slow
  * but the aim is to optimize matching as much
  * as possible.
+ *
+ * @author orbyfied
  */
 public class CharTreeNode {
 
     // the character this node matches
     final char matches;
     // the child nodes
-    CharTreeNode[] children = new CharTreeNode[0];
+    CharTreeNode[] children = new CharTreeNode[256];
     // if this is the tail of an inserted string
     boolean isTail = false;
 
@@ -39,10 +41,7 @@ public class CharTreeNode {
      * @param node The child node.
      */
     public void addChild(CharTreeNode node) {
-        CharTreeNode[] old = children;
-        children = new CharTreeNode[old.length + 1];
-        System.arraycopy(old, 0, children, 0, old.length);
-        children[children.length - 1] = node;
+        children[node.matches] = node;
     }
 
     /**
@@ -70,11 +69,7 @@ public class CharTreeNode {
      * @return The child or null if absent.
      */
     public CharTreeNode findChild(char c) {
-        CharTreeNode child;
-        for (int i = 0; i < children.length; i++)
-            if ((child = children[i]).matches == c)
-                return child;
-        return null;
+        return children[c];
     }
 
     /**
@@ -84,14 +79,9 @@ public class CharTreeNode {
      * @return The child node created or retrieved.
      */
     public CharTreeNode findOrCreateChild(char c) {
-        CharTreeNode child;
-        for (int i = 0; i < children.length; i++) {
-            if ((child = children[i]).matches == c) {
-                return child;
-            }
-        }
-
-        addChild(child = new CharTreeNode(c));
+        CharTreeNode child = children[c];
+        if (child == null)
+            addChild(child = new CharTreeNode(c));
         return child;
     }
 

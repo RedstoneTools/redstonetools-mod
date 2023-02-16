@@ -27,19 +27,24 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
 
 @Feature(name = "/colorcode")
 public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
 
-    static final CharTreeNode MATCH_TARGET_PATH = new CharTreeNode();
+//    static final CharTreeNode MATCH_TARGET_PATH = new CharTreeNode();
+//
+//    static {
+//        MATCH_TARGET_PATH.insert("_wool");
+//        MATCH_TARGET_PATH.insert("_stained_glass");
+//        MATCH_TARGET_PATH.insert("_concrete");
+//        MATCH_TARGET_PATH.insert("_terracotta");
+//        MATCH_TARGET_PATH.insert("_concrete_powder");
+//    }
 
-    static {
-        MATCH_TARGET_PATH.insert("_wool");
-        MATCH_TARGET_PATH.insert("_stained_glass");
-        MATCH_TARGET_PATH.insert("_concrete");
-        MATCH_TARGET_PATH.insert("_terracotta");
-        MATCH_TARGET_PATH.insert("_concrete_powder");
-    }
+    static final java.util.regex.Pattern MATCH_TARGET_PATH_PATTERN = java.util.regex.Pattern.compile(
+            "(_wool\\s)|(_concrete\\s)|(_stained_glass\\s)|(_terracotta\\s)|(_concrete_powder\\s)"
+    );
 
     // checks if the block at the position
     // is a target for the transformation
@@ -52,10 +57,10 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
 
         // check if it is a target
         String blockId = state.getBlockType().getId();
-        int colorlessBlockIdIndex;
-        if ((colorlessBlockIdIndex = MATCH_TARGET_PATH.findEndMatch(blockId)) == -1)
+        Matcher matcher = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
+        int colorlessBlockIdIndex = matcher.regionStart();
+        if (!matcher.matches())
             return false;
-        String colorlessBlockId = blockId.substring(colorlessBlockIdIndex);
         if (onlyWhite && !blockId.substring(0, colorlessBlockIdIndex).equals("white"))
             return false;
 
@@ -74,8 +79,9 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
         String blockId = oldType.getId();
 
         // get colorless id
-        int colorlessBlockIdIndex = MATCH_TARGET_PATH.findEndMatch(blockId);
-        if (colorlessBlockIdIndex == -1)
+        Matcher matcher = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
+        int colorlessBlockIdIndex = matcher.regionStart();
+        if (!matcher.matches())
             return state.toBaseBlock();
         String colorlessBlockId = blockId.substring(colorlessBlockIdIndex);
 

@@ -21,7 +21,6 @@ public class StringEndsWithBenchmark {
         CHAR_TREE_NODE.insert("_concrete_powder");
     }
 
-
     @Test
     void test() {
         Benchmarks.performBenchmark("CharTreeNode", i -> {
@@ -32,5 +31,12 @@ public class StringEndsWithBenchmark {
             int idx = PATTERN.matcher("white_concrete").regionStart();
         }, 1_000_000 /* max passes */, 1_000_000_000 /* max time */).print();
     }
+
+    /*
+        Results:
+
+        +- CharTreeNode: 1000000 Passes (MAX)  | Total Time: 54430500ns (54ms) | Avg. time/pass: 54.4305ns (5.44305E-5ms)
+        +- CompiledRegex: 1000000 Passes (MAX)  | Total Time: 76954500ns (76ms) | Avg. time/pass: 76.9545ns (7.695449999999999E-5ms)
+     */
 
 }
