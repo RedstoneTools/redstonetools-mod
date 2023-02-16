@@ -20,6 +20,7 @@ public class RedstonerFeature extends CommandFeature<EmptyOptions> {
                 "gamerule doWeatherCycle false",
                 "gamerule doDaylightCycle false",
                 "gamerule doMobSpawning false",
+                "gamerule doContainerDrops false",
                 "time set noon"
                 ).forEach(cmd -> CommandSourceUtils.executeCommand(source, cmd));
 
