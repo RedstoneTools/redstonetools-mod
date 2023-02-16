@@ -15,7 +15,7 @@ import net.minecraft.util.registry.Registry;
 
 @Feature(name = "ss")
 public class SsBarrelFeature extends CommandFeature<SsBarrelFeatureOptions> {
-    private final int BARREL_CONTAINER_SLOTS = 27;
+    private static final int BARREL_CONTAINER_SLOTS = 27;
 
     @Override
     protected int execute(ServerCommandSource source, SsBarrelFeatureOptions options) throws CommandSyntaxException {
