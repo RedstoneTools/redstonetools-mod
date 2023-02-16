@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static com.domain.redstonetools.RedstoneToolsGameRules.DO_CONTAINER_DROPS;
+
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_ID = "redstonetools";
 
@@ -34,6 +36,8 @@ public class RedstoneToolsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing Redstone Tools");
+
+        RedstoneToolsGameRules.register();
 
         CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) -> {
             for (var featureClass : FEATURE_CLASSES) {
