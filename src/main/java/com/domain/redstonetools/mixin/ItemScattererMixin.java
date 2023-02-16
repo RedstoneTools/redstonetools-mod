@@ -1,27 +1,21 @@
 package com.domain.redstonetools.mixin;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Random;
 
-import static com.domain.redstonetools.RedstoneToolsClient.DO_CONTAINER_DROPS;
+import static com.domain.redstonetools.RedstoneToolsGameRules.DO_CONTAINER_DROPS;
 
 @org.spongepowered.asm.mixin.Mixin(ItemScatterer.class)
-public class ItemScatterMixin {
+public class ItemScattererMixin {
 
     @Shadow @Final private static Random RANDOM;
 
