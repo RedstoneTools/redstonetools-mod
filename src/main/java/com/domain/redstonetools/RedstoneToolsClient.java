@@ -14,8 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static com.domain.redstonetools.RedstoneToolsGameRules.DO_CONTAINER_DROPS;
-
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_ID = "redstonetools";
 
