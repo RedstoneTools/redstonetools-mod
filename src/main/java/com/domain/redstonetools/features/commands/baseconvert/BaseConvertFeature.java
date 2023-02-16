@@ -24,7 +24,6 @@ public class BaseConvertFeature extends CommandFeature<BaseConvertOptions> {
             source.sendFeedback(Text.of(result), false);
             return Command.SINGLE_SUCCESS;
         } catch (NumberFormatException e) {
-            // TODO: handle exception
             LiteralMessage message = new LiteralMessage("The input number does not match the input base");
             throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
         }
