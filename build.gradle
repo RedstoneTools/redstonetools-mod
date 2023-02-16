@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
 	// jUnit 5
-    implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+	implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 
 	// Spring DI
 	implementation 'org.springframework:spring-context:5.3.13'
@@ -41,6 +41,7 @@ dependencies {
 	modImplementation "com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10"
 }
 
+
 processResources {
 	inputs.property "version", project.version
 
@@ -52,13 +53,6 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
 	it.options.release = 17
-}
-
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
 }
 
 jar {
