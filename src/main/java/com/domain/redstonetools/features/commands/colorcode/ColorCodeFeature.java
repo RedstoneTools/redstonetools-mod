@@ -2,7 +2,6 @@ package com.domain.redstonetools.features.commands.colorcode;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.commands.CommandFeature;
-import com.domain.redstonetools.utils.CharTreeNode;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalSession;
@@ -27,23 +26,14 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 
 @Feature(name = "/colorcode")
 public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
 
-//    static final CharTreeNode MATCH_TARGET_PATH = new CharTreeNode();
-//
-//    static {
-//        MATCH_TARGET_PATH.insert("_wool");
-//        MATCH_TARGET_PATH.insert("_stained_glass");
-//        MATCH_TARGET_PATH.insert("_concrete");
-//        MATCH_TARGET_PATH.insert("_terracotta");
-//        MATCH_TARGET_PATH.insert("_concrete_powder");
-//    }
-
     static final java.util.regex.Pattern MATCH_TARGET_PATH_PATTERN = java.util.regex.Pattern.compile(
-            "(_wool\\s)|(_concrete\\s)|(_stained_glass\\s)|(_terracotta\\s)|(_concrete_powder\\s)"
+            "(_wool$)|(_concrete$)|(_stained_glass$)|(_terracotta$)|(_concrete_powder$)|(_glazed_terracotta$)"
     );
 
     // checks if the block at the position
@@ -58,9 +48,10 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
         // check if it is a target
         String blockId = state.getBlockType().getId();
         Matcher matcher = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
-        int colorlessBlockIdIndex = matcher.regionStart();
-        if (!matcher.matches())
+        boolean found = matcher.find();
+        if (!found)
             return false;
+        int colorlessBlockIdIndex = matcher.start();
         if (onlyWhite && !blockId.substring(0, colorlessBlockIdIndex).equals("white"))
             return false;
 
@@ -79,15 +70,17 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
         String blockId = oldType.getId();
 
         // get colorless id
+        System.out.println("block-id: " + blockId);
         Matcher matcher = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
-        int colorlessBlockIdIndex = matcher.regionStart();
-        if (!matcher.matches())
+        if (!matcher.find())
             return state.toBaseBlock();
+        int colorlessBlockIdIndex = matcher.start();
         String colorlessBlockId = blockId.substring(colorlessBlockIdIndex);
 
         // get colored block
         String coloredId = "minecraft:" + color + colorlessBlockId;
         BlockType blockType = BlockType.REGISTRY.get(coloredId);
+        System.out.println("colored: " + coloredId);
         if (blockType == null)
             return state.toBaseBlock();
 
@@ -127,25 +120,25 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
         try (EditSession session = worldEdit.newEditSession(FabricAdapter.adapt(player.getWorld()))) {
             AtomicInteger counter = new AtomicInteger();
 
-            // create mask
-            session.setMask(new Mask() {
-                @Override
-                public boolean test(BlockVector3 vector) {
-                    return checkBlock(world, vector, onlyWhite);
-                }
+            // create mask and pattern and execute block set
+            counter.set(session.replaceBlocks(selection,
+                    new Mask() {
+                        @Override
+                        public boolean test(BlockVector3 vector) {
+                            return checkBlock(world, vector, onlyWhite);
+                        }
 
-                @Nullable
-                @Override
-                public Mask2D toMask2D() { return null; }
-            });
-
-            // create pattern and execute block set
-            counter.set(session.setBlocks(selection, new Pattern() {
-                @Override
-                public BaseBlock applyBlock(BlockVector3 position) {
-                    return changeBlock(world, position, color);
-                }
-            }));
+                        @Nullable
+                        @Override
+                        public Mask2D toMask2D() { return null; }
+                    },
+                    (new Pattern() {
+                        @Override
+                        public BaseBlock applyBlock(BlockVector3 position) {
+                            return changeBlock(world, position, color);
+                        }
+                    })
+            ));
 
             Operations.complete(session.commit());
 
@@ -157,6 +150,7 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
                     true);
         } catch (Exception e) {
             source.sendFeedback(Text.of("An error occurred").getWithStyle(Style.EMPTY.withColor(Formatting.RED)).get(0), false);
+            e.printStackTrace();
         }
 
 //        source.sendFeedback(Text.of("Successfully replaced " + counter.get() + " blocks with " +
