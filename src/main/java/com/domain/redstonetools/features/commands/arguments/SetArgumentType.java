@@ -12,33 +12,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-public class SetArgumentType<E> implements ArgumentType<E> {
+public abstract class SetArgumentType<E> implements ArgumentType<E>, TypeProvider {
 
-    // the set of arguments
-    final List<E> set;
-    // if it should match exact only
-    final boolean onlyExact;
+    protected abstract List<E> getSet();
+    protected abstract boolean isOnlyExact();
 
-    public SetArgumentType(List<E> set, boolean onlyExact) {
-        this.set = set;
-        this.onlyExact = onlyExact;
-    }
+    protected SetArgumentType() {
 
-    /** Get the entire set. */
-    public List<E> getSet() {
-        return set;
-    }
-
-    public boolean isOnlyExact() {
-        return onlyExact;
     }
 
     /** Find an element for string. */
     public E find(String str) throws CommandSyntaxException {
         E r = null;
-        for (E elem : set) {
+        for (E elem : getSet()) {
             String elemStr = Objects.toString(elem);
-            if ((!onlyExact && elemStr.startsWith(str)) ||
+            if ((!isOnlyExact() && elemStr.startsWith(str)) ||
                     elemStr.equals(str)) {
                 if (r == null)
                     r = elem;
@@ -61,7 +49,7 @@ public class SetArgumentType<E> implements ArgumentType<E> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        for (E option : set) {
+        for (E option : getSet()) {
             builder.suggest(Objects.toString(option));
         }
 

@@ -1,21 +1,10 @@
 package com.domain.redstonetools.features.commands.arguments;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.text.Text;
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 public class BlockColorArgumentType extends SetArgumentType<String> {
 
-    static final String[] COLORS = new String[]{
+    static final List<String> COLORS = List.of(
             "white",
             "orange",
             "magenta",
@@ -32,7 +21,7 @@ public class BlockColorArgumentType extends SetArgumentType<String> {
             "green",
             "red",
             "black"
-    };
+    );
 
     static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
 
@@ -40,10 +29,14 @@ public class BlockColorArgumentType extends SetArgumentType<String> {
         return INSTANCE;
     }
 
-    /////////////////////
+    @Override
+    protected List<String> getSet() {
+        return COLORS;
+    }
 
-    public BlockColorArgumentType() {
-        super(Arrays.asList(COLORS), false);
+    @Override
+    protected boolean isOnlyExact() {
+        return false;
     }
 
 }
