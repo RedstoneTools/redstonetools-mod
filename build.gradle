@@ -16,22 +16,29 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+	maven {
+        name = "WorldEdit Maven"
+        url = "https://maven.enginehub.org/repo/"
+    }
 }
 
 dependencies {
 	// jUnit 5
-    implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    implementation libs.junit.jupyter
 
 	// Spring DI
-	implementation 'org.springframework:spring-context:5.3.13'
+	implementation libs.spring.di
 
 	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	minecraft libs.minecraft
+	mappings variantOf(libs.fabric.yarn) { classifier("v2") }
+	modImplementation libs.fabric.loader
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modImplementation libs.fabric.api
+
+	// Worldedit API
+	modImplementation libs.worldedit
 }
 
 processResources {
@@ -56,7 +63,7 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+		rename { "${it}_${project.archives_base_name}"}
 	}
 }
 
