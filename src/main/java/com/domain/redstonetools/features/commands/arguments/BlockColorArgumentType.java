@@ -43,7 +43,17 @@ public class BlockColorArgumentType implements ArgumentType<String> {
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
         String str = reader.readString();
-        if (!COLORS.contains(str)) {
+        String color = null;
+        for (String col : COLORS) {
+            if (col.startsWith(str)) {
+                if (color == null) {
+                    color = col;
+                } else
+                    throw new CommandSyntaxException(null, Text.of("Ambiguous color string '" + str + "'"));
+            }
+        }
+
+        if (color == null) {
             throw new CommandSyntaxException(null, Text.of("No such color '" + str + "'"));
         }
 
