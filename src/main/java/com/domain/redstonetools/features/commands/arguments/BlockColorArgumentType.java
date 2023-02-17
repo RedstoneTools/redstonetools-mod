@@ -15,18 +15,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class BlockColorArgumentType extends SetArgumentType<String> {
 
-    static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
-
-    public static BlockColorArgumentType blockColor() {
-        return INSTANCE;
-    }
-
-    /////////////////////
-
-    public BlockColorArgumentType() {
-        super(Arrays.asList(COLORS), false);
-    }
-
     static final String[] COLORS = new String[]{
             "white",
             "orange",
@@ -45,5 +33,17 @@ public class BlockColorArgumentType extends SetArgumentType<String> {
             "red",
             "black"
     };
+
+    static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
+
+    public static BlockColorArgumentType blockColor() {
+        return INSTANCE;
+    }
+
+    /////////////////////
+
+    public BlockColorArgumentType() {
+        super(Arrays.asList(COLORS), false);
+    }
 
 }
