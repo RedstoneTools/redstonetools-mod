@@ -2,6 +2,7 @@ package com.domain.redstonetools.utils;
 
 import com.domain.redstonetools.features.AbstractFeature;
 import com.domain.redstonetools.features.Feature;
+import com.domain.redstonetools.features.commands.arguments.TypeProvider;
 import com.domain.redstonetools.features.options.Argument;
 import com.domain.redstonetools.features.options.Options;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -9,6 +10,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 
 // TODO: Someone with a better understanding of Java reflection should probably rewrite this, or maybe we should just use dependency injection
@@ -72,8 +74,37 @@ public class ReflectionUtils {
         }
     }
 
-    public static <T> Class<T> getArgumentType(ArgumentType<T> type) {
-        // https://stackoverflow.com/questions/1901164/get-type-of-a-generic-parameter-in-java-with-reflection
-        return (Class<T>)((ParameterizedType)type.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
+    private static Class<?> getArgumentType(Type t) {
+        if (t instanceof ParameterizedType pt) {
+            Type rt = pt.getRawType();
+            if (rt == ArgumentType.class || (rt instanceof Class<?> cl &&
+                    TypeProvider.class.isAssignableFrom(cl))) {
+                return (Class<?>) pt.getActualTypeArguments()[0];
+            }
+        }
+
+        if (t instanceof ParameterizedType pt)
+            t = pt.getRawType();
+        Class<?> klass = (Class<?>) t;
+        if (klass == null)
+            return null;
+
+        Class<?> r;
+        for (Type t1 : klass.getGenericInterfaces()) {
+            if ((r = getArgumentType(t1)) != null)
+                return r;
+        }
+
+        Type sc = klass.getGenericSuperclass();
+        if ((r = getArgumentType(sc)) != null)
+            return r;
+
+        return null;
     }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> getArgumentType(ArgumentType<T> type) {
+        return (Class<T>) getArgumentType(type.getClass());
+    }
+
 }

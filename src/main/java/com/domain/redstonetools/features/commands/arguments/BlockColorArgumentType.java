@@ -1,27 +1,10 @@
 package com.domain.redstonetools.features.commands.arguments;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.text.Text;
+import java.util.List;
 
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+public class BlockColorArgumentType extends SetArgumentType<String> {
 
-public class BlockColorArgumentType implements ArgumentType<String> {
-
-    static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
-
-    public static BlockColorArgumentType blockColor() {
-        return INSTANCE;
-    }
-
-    /////////////////////
-
-    static final Set<String> COLORS = Set.of(
+    static final List<String> COLORS = List.of(
             "white",
             "orange",
             "magenta",
@@ -40,23 +23,20 @@ public class BlockColorArgumentType implements ArgumentType<String> {
             "black"
     );
 
-    @Override
-    public String parse(StringReader reader) throws CommandSyntaxException {
-        String str = reader.readString();
-        if (!COLORS.contains(str)) {
-            throw new CommandSyntaxException(null, Text.of("No such color '" + str + "'"));
-        }
+    static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
 
-        return str;
+    public static BlockColorArgumentType blockColor() {
+        return INSTANCE;
     }
 
     @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        for (String str : COLORS) {
-            builder.suggest(str);
-        }
+    protected List<String> getSet() {
+        return COLORS;
+    }
 
-        return builder.buildFuture();
+    @Override
+    protected boolean isOnlyExact() {
+        return false;
     }
 
 }
