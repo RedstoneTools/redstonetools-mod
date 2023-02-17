@@ -70,7 +70,6 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
         String blockId = oldType.getId();
 
         // get colorless id
-        System.out.println("block-id: " + blockId);
         Matcher matcher = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
         if (!matcher.find())
             return state.toBaseBlock();
@@ -80,7 +79,6 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
         // get colored block
         String coloredId = "minecraft:" + color + colorlessBlockId;
         BlockType blockType = BlockType.REGISTRY.get(coloredId);
-        System.out.println("colored: " + coloredId);
         if (blockType == null)
             return state.toBaseBlock();
 
