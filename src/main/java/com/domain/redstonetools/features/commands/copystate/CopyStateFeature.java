@@ -50,18 +50,14 @@ public class CopyStateFeature extends CommandFeature<EmptyOptions> {
         Block block = blockState.getBlock();
         ItemStack itemStack = block.getPickStack(client.world, blockPos, blockState);
 
-        BlockEntity blockEntity = null;
         if (blockState.hasBlockEntity()) {
-            blockEntity = client.world.getBlockEntity(blockPos);
-        }
-
-        if (blockEntity != null) {
+            BlockEntity blockEntity = client.world.getBlockEntity(blockPos);
             addBlockEntityNbt(itemStack, blockEntity);
         }
+
         addBlockStateText(itemStack);
 
-        NbtCompound nbt = itemStack.getNbt();
-        if (nbt == null) nbt = new NbtCompound();
+        NbtCompound nbt = itemStack.getOrCreateNbt();
 
         nbt.putString("blockstate",BlockStateNbtUtil.blockStateToString(blockState));
 

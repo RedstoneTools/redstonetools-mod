@@ -18,6 +18,7 @@ public abstract class BlockItemMixin {
     @Shadow public abstract Block getBlock();
 
 
+    //Checks, if block that is being placed has "blockstate" nbt. If so, replaces original blockstate with the one in nbt.
     @Overwrite
     public BlockState getPlacementState(ItemPlacementContext context) {
         NbtCompound nbt = context.getStack().getNbt();
