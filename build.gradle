@@ -77,3 +77,8 @@ publishing {
 		// retrieving dependencies.
 	}
 }
+
+test {
+	useJUnit()
+	useJUnitPlatform()
+}

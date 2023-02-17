@@ -2,6 +2,7 @@ package com.domain.redstonetools;
 
 import com.domain.redstonetools.features.AbstractFeature;
 import com.domain.redstonetools.features.commands.baseconvert.BaseConvertFeature;
+import com.domain.redstonetools.features.commands.colorcode.ColorCodeFeature;
 import com.domain.redstonetools.features.commands.binaryread.BinaryBlockReadFeature;
 import com.domain.redstonetools.features.commands.glass.GlassFeature;
 import com.domain.redstonetools.features.commands.quicktp.QuickTpFeature;
@@ -30,7 +31,8 @@ public class RedstoneToolsClient implements ClientModInitializer {
             GlassFeature.class,
             BinaryBlockReadFeature.class,
             RedstonerFeature.class,
-            SsBarrelFeature.class
+            SsBarrelFeature.class,
+            ColorCodeFeature.class
     );
 
     @Override
