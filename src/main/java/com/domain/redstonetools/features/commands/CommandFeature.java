@@ -8,6 +8,9 @@ import com.domain.redstonetools.utils.ReflectionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.List;
 
@@ -20,19 +23,21 @@ public abstract class CommandFeature<O extends Options> extends AbstractFeature<
                 info.name(),
                 getArguments(),
                 context -> {
-                    var argumentObj = ReflectionUtils.getArgumentInstance(this);
-
                     try {
+                        var argumentObj = ReflectionUtils.getArgumentInstance(this);
+
                         for (var argument : ReflectionUtils.getArguments(argumentObj)) {
                             argument.setValue(context);
                         }
-                    } catch (IllegalArgumentException e) {
-                        // This should be unreachable, if it isn't, there is something wrong with
-                        // registering commands
-                        throw new RuntimeException(e);
-                    }
 
-                    return execute(context.getSource(), argumentObj);
+                        return execute(context.getSource(), argumentObj);
+                    } catch (Throwable t) {
+                        context.getSource().sendFeedback(Text.of("").getWithStyle(Style.EMPTY.withColor(Formatting.RED))
+                                .get(0), false);
+                        System.err.println("An uncaught error occurred in command '" + info.name() + "'");
+                        t.printStackTrace();
+                        return -1;
+                    }
                 },
                 dispatcher,
                 dedicated);
