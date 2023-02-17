@@ -1,6 +1,7 @@
 package com.domain.redstonetools;
 
 import com.domain.redstonetools.features.AbstractFeature;
+import com.domain.redstonetools.features.commands.copystate.CopyStateFeature;
 import com.domain.redstonetools.features.commands.glass.GlassFeature;
 import com.domain.redstonetools.features.commands.quicktp.QuickTpFeature;
 import com.domain.redstonetools.utils.ReflectionUtils;
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static com.domain.redstonetools.RedstoneToolsGameRules.DO_CONTAINER_DROPS;
 
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_ID = "redstonetools";
@@ -23,14 +23,13 @@ public class RedstoneToolsClient implements ClientModInitializer {
     // Feature annotation, it might also be useful for other reflection related
     // tasks
     public static final List<Class<? extends AbstractFeature<?>>> FEATURE_CLASSES = List.of(
-        QuickTpFeature.class, GlassFeature.class
+        QuickTpFeature.class, GlassFeature.class, CopyStateFeature.class
     );
 
 
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing Redstone Tools");
-
         RedstoneToolsGameRules.register();
 
         CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) -> {
