@@ -1,6 +1,7 @@
 package com.domain.redstonetools;
 
 import com.domain.redstonetools.features.AbstractFeature;
+import com.domain.redstonetools.features.commands.copystate.CopyStateFeature;
 import com.domain.redstonetools.features.commands.baseconvert.BaseConvertFeature;
 import com.domain.redstonetools.features.commands.colorcode.ColorCodeFeature;
 import com.domain.redstonetools.features.commands.binaryread.BinaryBlockReadFeature;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+
 
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_ID = "redstonetools";
@@ -32,13 +34,15 @@ public class RedstoneToolsClient implements ClientModInitializer {
             BinaryBlockReadFeature.class,
             RedstonerFeature.class,
             SsBarrelFeature.class,
+
+            CopyStateFeature.class,
             ColorCodeFeature.class
+
     );
 
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing Redstone Tools");
-
         RedstoneToolsGameRules.register();
 
         CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) -> {
