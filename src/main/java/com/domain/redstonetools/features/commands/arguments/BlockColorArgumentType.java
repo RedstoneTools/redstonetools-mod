@@ -8,10 +8,12 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.text.Text;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class BlockColorArgumentType implements ArgumentType<String> {
+public class BlockColorArgumentType extends SetArgumentType<String> {
 
     static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
 
@@ -21,7 +23,11 @@ public class BlockColorArgumentType implements ArgumentType<String> {
 
     /////////////////////
 
-    static final Set<String> COLORS = Set.of(
+    public BlockColorArgumentType() {
+        super(Arrays.asList(COLORS), false);
+    }
+
+    static final String[] COLORS = new String[]{
             "white",
             "orange",
             "magenta",
@@ -38,35 +44,6 @@ public class BlockColorArgumentType implements ArgumentType<String> {
             "green",
             "red",
             "black"
-    );
-
-    @Override
-    public String parse(StringReader reader) throws CommandSyntaxException {
-        String str = reader.readString();
-        String color = null;
-        for (String col : COLORS) {
-            if (col.startsWith(str)) {
-                if (color == null) {
-                    color = col;
-                } else
-                    throw new CommandSyntaxException(null, Text.of("Ambiguous color string '" + str + "'"));
-            }
-        }
-
-        if (color == null) {
-            throw new CommandSyntaxException(null, Text.of("No such color '" + str + "'"));
-        }
-
-        return str;
-    }
-
-    @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        for (String str : COLORS) {
-            builder.suggest(str);
-        }
-
-        return builder.buildFuture();
-    }
+    };
 
 }
