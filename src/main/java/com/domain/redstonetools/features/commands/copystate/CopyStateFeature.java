@@ -1,53 +1,37 @@
 package com.domain.redstonetools.features.commands.copystate;
 
 import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.features.commands.CommandFeature;
+import com.domain.redstonetools.features.commands.PickBlockFeature;
 import com.domain.redstonetools.features.options.EmptyOptions;
+import com.domain.redstonetools.features.options.Options;
 import com.domain.redstonetools.utils.BlockStateNbtUtil;
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 
 import java.lang.reflect.Method;
 
-import static com.domain.redstonetools.RedstoneToolsClient.LOGGER;
-
 @Feature(name = "copystate")
-public class CopyStateFeature extends CommandFeature<EmptyOptions> {
+public class CopyStateFeature extends PickBlockFeature<EmptyOptions> {
 
 
     @Override
-    protected int execute(ServerCommandSource source, EmptyOptions options) throws CommandSyntaxException {
+    protected ItemStack getItemStack(ServerCommandSource source, Options options, BlockHitResult blockHit) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || client.world == null) {
-            throw new CommandSyntaxException(null, Text.of("This command is client-side only"));
-        }
 
-        if (client.crosshairTarget == null || client.crosshairTarget.getType() != HitResult.Type.BLOCK) {
-            source.sendError(Text.of("You must be looking at a block to use this command"));
-            return -1;
-        }
-
-        BlockHitResult blockHit = (BlockHitResult) client.crosshairTarget;
         BlockPos blockPos = blockHit.getBlockPos();
-        BlockState blockState = client.world.getBlockState(blockHit.getBlockPos());
-
+        BlockState blockState = client.world.getBlockState(blockPos);
         Block block = blockState.getBlock();
+
         ItemStack itemStack = block.getPickStack(client.world, blockPos, blockState);
 
         if (blockState.hasBlockEntity()) {
@@ -55,22 +39,25 @@ public class CopyStateFeature extends CommandFeature<EmptyOptions> {
             addBlockEntityNbt(itemStack, blockEntity);
         }
 
+        int i = addBlockStateNbt(itemStack,blockState);
+        if (i == -1) {
+            source.sendError(Text.of("This block doesn't have any BlockState!"));
+            return null;
+        }
+
+        return itemStack;
+    }
+
+    private int addBlockStateNbt(ItemStack itemStack, BlockState blockState) {
         addBlockStateText(itemStack);
 
         NbtCompound nbt = itemStack.getOrCreateNbt();
+        String stringState = BlockStateNbtUtil.blockStateToString(blockState);
+        if (stringState == null) return -1;
 
-        nbt.putString("blockstate",BlockStateNbtUtil.blockStateToString(blockState));
+        nbt.putString("blockstate",stringState);
 
-        PlayerInventory playerInventory = client.player.getInventory();
-        playerInventory.addPickBlock(itemStack);
-
-        if (client.interactionManager == null) {
-            throw new CommandSyntaxException(null, Text.of("Failed to get interaction manager"));
-        }
-
-        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.selectedSlot);
-
-        return Command.SINGLE_SUCCESS;
+        return 1;
     }
 
     private void addBlockStateText(ItemStack itemStack) {
@@ -101,5 +88,4 @@ public class CopyStateFeature extends CommandFeature<EmptyOptions> {
             e.printStackTrace();
         }
     }
-
 }
