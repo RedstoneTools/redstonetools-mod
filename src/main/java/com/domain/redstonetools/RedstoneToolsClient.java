@@ -15,7 +15,9 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class RedstoneToolsClient implements ClientModInitializer {
@@ -37,18 +39,29 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
             CopyStateFeature.class,
             ColorCodeFeature.class
-
     );
+
+    // the feature instances loaded
+    static final Map<String, AbstractFeature<?>> featureMap =
+            new HashMap<>();
+
+    public static AbstractFeature<?> getFeature(String str) {
+        return featureMap.get(str);
+    }
 
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing Redstone Tools");
         RedstoneToolsGameRules.register();
 
-        CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) -> {
-            for (var featureClass : FEATURE_CLASSES) {
-                var feature = ReflectionUtils.getFeatureInstance(featureClass);
+        // create features
+        for (Class<? extends AbstractFeature<?>> featureClass : FEATURE_CLASSES) {
+            AbstractFeature<?> feature = ReflectionUtils.newFeatureInstance(featureClass);
+            featureMap.put(feature.getInfo().name(), feature);
+        }
 
+        CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) -> {
+            for (var feature : featureMap.values()) {
                 feature.registerCommands(dispatcher, dedicated);
             }
         }));

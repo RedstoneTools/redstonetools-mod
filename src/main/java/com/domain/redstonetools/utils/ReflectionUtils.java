@@ -66,7 +66,7 @@ public class ReflectionUtils {
                 .toArray(Class[]::new);
     }
 
-    public static AbstractFeature<?> getFeatureInstance(Class<? extends AbstractFeature<?>> featureClass) {
+    public static AbstractFeature<?> newFeatureInstance(Class<? extends AbstractFeature<?>> featureClass) {
         try {
             return featureClass.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
