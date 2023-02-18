@@ -18,6 +18,7 @@ public class BlockStateNbtUtil {
         for (Property<?> property : blockState.getEntries().keySet()) {
             valueMap.put(property.getName(), blockState.getEntries().get(property));
         }
+        if (valueMap.isEmpty()) return null;
 
         return valueMap.toString();
     }
