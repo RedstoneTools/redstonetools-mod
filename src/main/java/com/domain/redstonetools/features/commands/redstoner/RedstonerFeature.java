@@ -23,7 +23,7 @@ public class RedstonerFeature extends CommandFeature<EmptyOptions> {
         rules.get(GameRules.DO_DAYLIGHT_CYCLE).set(false, server);
         rules.get(GameRules.DO_MOB_SPAWNING).set(false, server);
         rules.get(RedstoneToolsGameRules.DO_CONTAINER_DROPS).set(false, server);
-
+        source.getWorld().setTimeOfDay(18000); // Midnight
         return Command.SINGLE_SUCCESS;
     }
 }
