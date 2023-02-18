@@ -16,7 +16,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -25,11 +24,8 @@ import net.minecraft.util.math.BlockPos;
 
 import java.lang.reflect.Method;
 
-import static com.domain.redstonetools.RedstoneToolsClient.LOGGER;
-
 @Feature(name = "copystate")
 public class CopyStateFeature extends CommandFeature<EmptyOptions> {
-
 
     @Override
     protected int execute(ServerCommandSource source, EmptyOptions options) throws CommandSyntaxException {
@@ -59,7 +55,7 @@ public class CopyStateFeature extends CommandFeature<EmptyOptions> {
 
         NbtCompound nbt = itemStack.getOrCreateNbt();
 
-        nbt.putString("blockstate",BlockStateNbtUtil.blockStateToString(blockState));
+        nbt.putString("blockstate", BlockStateNbtUtil.blockStateToString(blockState));
 
         PlayerInventory playerInventory = client.player.getInventory();
         playerInventory.addPickBlock(itemStack);
@@ -68,7 +64,8 @@ public class CopyStateFeature extends CommandFeature<EmptyOptions> {
             throw new CommandSyntaxException(null, Text.of("Failed to get interaction manager"));
         }
 
-        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.selectedSlot);
+        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND),
+                36 + playerInventory.selectedSlot);
 
         return Command.SINGLE_SUCCESS;
     }

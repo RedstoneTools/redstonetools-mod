@@ -26,21 +26,19 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 
 @Feature(name = "/colorcode")
 public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
 
     static final java.util.regex.Pattern MATCH_TARGET_PATH_PATTERN = java.util.regex.Pattern.compile(
-            "(_wool$)|(_concrete$)|(_stained_glass$)|(_terracotta$)|(_concrete_powder$)|(_glazed_terracotta$)"
-    );
+            "(_wool$)|(_concrete$)|(_stained_glass$)|(_terracotta$)|(_concrete_powder$)|(_glazed_terracotta$)");
 
     // checks if the block at the position
     // is a target for the transformation
     private boolean checkBlock(World world,
-                               BlockVector3 pos,
-                               boolean onlyWhite) {
+            BlockVector3 pos,
+            boolean onlyWhite) {
         BlockState state = world.getBlock(pos);
         if (state == null)
             return false;
@@ -63,8 +61,8 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
     // all non targets should have been excluded
     // by the mask, but just in case
     private BaseBlock changeBlock(World world,
-                                  BlockVector3 pos,
-                                  String color) {
+            BlockVector3 pos,
+            String color) {
         BlockState state = world.getBlock(pos);
         BlockType oldType = state.getBlockType();
         String blockId = oldType.getId();
@@ -86,7 +84,7 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
     }
 
     /*
-        Command
+     * Command
      */
 
     @Override
@@ -101,7 +99,8 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
         if (playerSession != null) {
             try {
                 selection = playerSession.getSelection();
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
         }
 
         if (selection == null) {
@@ -128,15 +127,16 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
 
                         @Nullable
                         @Override
-                        public Mask2D toMask2D() { return null; }
+                        public Mask2D toMask2D() {
+                            return null;
+                        }
                     },
                     (new Pattern() {
                         @Override
                         public BaseBlock applyBlock(BlockVector3 position) {
                             return changeBlock(world, position, color);
                         }
-                    })
-            ));
+                    })));
 
             Operations.complete(session.commit());
 
@@ -144,15 +144,17 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
             playerSession.remember(session);
 
             source.sendFeedback(Text.of("Successfully changed " + counter.get() + " blocks to color " + color)
-                            .getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)).get(0),
+                    .getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)).get(0),
                     true);
         } catch (Exception e) {
-            source.sendFeedback(Text.of("An error occurred").getWithStyle(Style.EMPTY.withColor(Formatting.RED)).get(0), false);
+            source.sendFeedback(Text.of("An error occurred").getWithStyle(Style.EMPTY.withColor(Formatting.RED)).get(0),
+                    false);
             e.printStackTrace();
         }
 
-//        source.sendFeedback(Text.of("Successfully replaced " + counter.get() + " blocks with " +
-//                "color " + color + ""), false);
+        // source.sendFeedback(Text.of("Successfully replaced " + counter.get() + "
+        // blocks with " +
+        // "color " + color + ""), false);
 
         return 0;
     }

@@ -4,7 +4,6 @@ import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.commands.CommandFeature;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.LiteralMessage;
-import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 

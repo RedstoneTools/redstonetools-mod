@@ -1,11 +1,5 @@
 package com.domain.redstonetools.features.commands.binaryread;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import com.domain.redstonetools.RedstoneToolsClient;
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.commands.CommandFeature;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;

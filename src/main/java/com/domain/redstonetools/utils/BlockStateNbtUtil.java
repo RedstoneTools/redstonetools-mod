@@ -11,7 +11,6 @@ public class BlockStateNbtUtil {
     private BlockStateNbtUtil() {
     }
 
-
     public static String blockStateToString(BlockState blockState) {
         HashMap<String, Object> valueMap = new HashMap<>();
 
@@ -29,9 +28,10 @@ public class BlockStateNbtUtil {
         for (String stringProperty : map.keySet()) {
             for (Property property : defaultState.getProperties()) {
                 if (property.getName().equals(stringProperty)) {
-                    Comparable comparable = propertyValueFromStringValue(property,map.get(stringProperty));
-                    if (comparable == null) continue;
-                    finalState = finalState.with(property,comparable);
+                    Comparable comparable = propertyValueFromStringValue(property, map.get(stringProperty));
+                    if (comparable == null)
+                        continue;
+                    finalState = finalState.with(property, comparable);
                 }
             }
 
@@ -42,14 +42,15 @@ public class BlockStateNbtUtil {
 
     private static Comparable propertyValueFromStringValue(Property property, String string) {
         for (Object o : property.getValues()) {
-            if (o.toString().equals(string)) return (Comparable) o;
+            if (o.toString().equals(string))
+                return (Comparable) o;
         }
 
         return null;
     }
 
     private static Map<String, String> stringToMap(String string) {
-        //https://stackoverflow.com/questions/26485964/how-to-convert-string-into-hashmap-in-java
+        // https://stackoverflow.com/questions/26485964/how-to-convert-string-into-hashmap-in-java
         string = string.substring(1, string.length() - 1);
         String[] keyValuePairs = string.split(",");
         Map<String, String> map = new HashMap<>();
