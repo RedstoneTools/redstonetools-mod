@@ -13,29 +13,19 @@ import net.minecraft.text.Text;
 
 @Feature(name = "base")
 public class BaseConvertFeature extends CommandFeature<BaseConvertOptions> {
-
     @Override
     protected int execute(ServerCommandSource source, BaseConvertOptions options) throws CommandSyntaxException {
-
-        Integer input;
-
+        int input;
         try {
-
             input = Integer.parseInt(options.number.getValue(), options.fromBase.getValue());
-
         } catch (NumberFormatException e) {
-
-            LiteralMessage message = new LiteralMessage("The input number does not match the input base");
-            throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
-
+            throw new CommandSyntaxException(null, Text.of("Inputted number does not match the specified base"));
         }
 
-        String result = Integer.toString(
-                input,
-                options.toBase.getValue());
-        source.sendFeedback(Text.of(result), false);
-        return Command.SINGLE_SUCCESS;
+        String output = Integer.toString(input, options.toBase.getValue());
+        source.sendFeedback(Text.of(output), false);
 
+        return Command.SINGLE_SUCCESS;
     }
 
 }
