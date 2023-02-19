@@ -8,48 +8,43 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.text.Text;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class SetArgumentType<E> implements ArgumentType<E>, TypeProvider {
+public abstract class SetArgumentType<T> implements ArgumentType<T>, TypeProvider {
+    protected abstract Set<T> getSet();
 
-    protected abstract List<E> getSet();
-    protected abstract boolean isOnlyExact();
+    protected abstract boolean onlyMatchExact();
 
-    protected SetArgumentType() {
+    protected SetArgumentType() { }
 
-    }
+    public T find(String input) throws CommandSyntaxException {
+        var matches = getSet().stream()
+                .filter(elem -> onlyMatchExact()
+                        ? elem.toString().equals(input)
+                        : elem.toString().startsWith(input))
+                .toList();
 
-    /** Find an element for string. */
-    public E find(String str) throws CommandSyntaxException {
-        E r = null;
-        for (E elem : getSet()) {
-            String elemStr = Objects.toString(elem);
-            if ((!isOnlyExact() && elemStr.startsWith(str)) ||
-                    elemStr.equals(str)) {
-                if (r == null)
-                    r = elem;
-                else
-                    throw new CommandSyntaxException(null,
-                            Text.of("Ambiguous option '" + str + "'"));
-            }
+        if (matches.isEmpty()) {
+            throw new CommandSyntaxException(null, Text.of("No such option '" + input + "'"));
         }
 
-        if (r == null)
-            throw new CommandSyntaxException(null,
-                    Text.of("No such option '" + str + "'"));
-        return r;
+        if (matches.size() > 1) {
+            throw new CommandSyntaxException(null, Text.of("Ambiguous option '" + input + "'"));
+        }
+
+        return matches.get(0);
     }
 
     @Override
-    public E parse(StringReader reader) throws CommandSyntaxException {
+    public T parse(StringReader reader) throws CommandSyntaxException {
         return find(reader.readString());
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        for (E option : getSet()) {
+        for (T option : getSet()) {
             builder.suggest(Objects.toString(option));
         }
 
