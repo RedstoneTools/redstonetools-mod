@@ -1,8 +1,7 @@
 package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.features.commands.CommandFeature;
-import com.domain.redstonetools.features.options.Argument;
+import com.domain.redstonetools.features.arguments.Argument;
 import com.domain.redstonetools.utils.RedstoneUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;

@@ -1,6 +1,6 @@
 package com.domain.redstonetools.utils;
 
-import com.domain.redstonetools.features.options.Argument;
+import com.domain.redstonetools.features.arguments.Argument;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;

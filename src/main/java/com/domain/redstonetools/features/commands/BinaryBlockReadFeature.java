@@ -1,8 +1,7 @@
 package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.features.commands.CommandFeature;
-import com.domain.redstonetools.features.options.Argument;
+import com.domain.redstonetools.features.arguments.Argument;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.IncompleteRegionException;
@@ -11,7 +10,6 @@ import com.sk89q.worldedit.fabric.FabricAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.command.argument.BlockStateArgument;

@@ -2,7 +2,7 @@ package com.domain.redstonetools.utils;
 
 import com.domain.redstonetools.features.AbstractFeature;
 import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.features.options.Argument;
+import com.domain.redstonetools.features.arguments.Argument;
 import com.google.inject.AbstractModule;
 import org.reflections.Reflections;
 
