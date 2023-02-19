@@ -1,6 +1,7 @@
 package com.domain.redstonetools;
 
 import com.domain.redstonetools.features.AbstractFeature;
+import com.domain.redstonetools.features.commands.airplace.AirPlaceFeature;
 import com.domain.redstonetools.features.commands.copystate.CopyStateFeature;
 import com.domain.redstonetools.features.commands.baseconvert.BaseConvertFeature;
 import com.domain.redstonetools.features.commands.colorcode.ColorCodeFeature;
@@ -34,15 +35,15 @@ public class RedstoneToolsClient implements ClientModInitializer {
             BinaryBlockReadFeature.class,
             RedstonerFeature.class,
             SsBarrelFeature.class,
-
             CopyStateFeature.class,
-            ColorCodeFeature.class
-
+            ColorCodeFeature.class,
+            AirPlaceFeature.class
     );
 
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing Redstone Tools");
+
         RedstoneToolsGameRules.register();
 
         CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) -> {
