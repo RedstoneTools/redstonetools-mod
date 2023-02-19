@@ -13,7 +13,6 @@ import net.minecraft.world.GameRules;
 public class RedstonerFeature extends CommandFeature<EmptyOptions> {
     @Override
     protected int execute(ServerCommandSource source, EmptyOptions options) {
-
         GameRules rules = source.getWorld().getGameRules();
         MinecraftServer server = source.getServer();
 
@@ -23,7 +22,9 @@ public class RedstonerFeature extends CommandFeature<EmptyOptions> {
         rules.get(GameRules.DO_DAYLIGHT_CYCLE).set(false, server);
         rules.get(GameRules.DO_MOB_SPAWNING).set(false, server);
         rules.get(RedstoneToolsGameRules.DO_CONTAINER_DROPS).set(false, server);
+
         source.getWorld().setTimeOfDay(6000); // Noon
+
         return Command.SINGLE_SUCCESS;
     }
 }
