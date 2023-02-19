@@ -1,6 +1,6 @@
 package com.domain.redstonetools.mixin;
 
-import com.domain.redstonetools.features.commands.airplace.AirPlaceFeature;
+import com.domain.redstonetools.features.toggleable.AirPlaceFeature;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -13,15 +13,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import static com.domain.redstonetools.RedstoneToolsClient.INJECTOR;
+
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
+    private final AirPlaceFeature airPlaceFeature = INJECTOR.getInstance(AirPlaceFeature.class);
+
     @Shadow
     public HitResult crosshairTarget;
 
     @Inject(method = "doItemUse", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
     public void doItemUse(CallbackInfo callbackInfo) {
         // If airplace is disabled
-        if (!AirPlaceFeature.enabled) {
+        if (!airPlaceFeature.isEnabled()) {
             return;
         }
 

@@ -8,10 +8,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 
-public abstract class RayCastFeature<O extends Options> extends CommandFeature<O>{
-
-
-    protected int execute(ServerCommandSource source, Options options) throws CommandSyntaxException {
+public abstract class RayCastFeature extends CommandFeature {
+    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) {
             throw new CommandSyntaxException(null, Text.of("This command is client-side only"));
@@ -23,11 +21,8 @@ public abstract class RayCastFeature<O extends Options> extends CommandFeature<O
             return -1;
         }
 
-
-        return execute(source, options,(BlockHitResult) client.crosshairTarget);
+        return execute(source, (BlockHitResult) client.crosshairTarget);
     }
 
-    protected abstract int execute(ServerCommandSource source, Options options,BlockHitResult blockHit) throws CommandSyntaxException;
-
-
+    protected abstract int execute(ServerCommandSource source, BlockHitResult blockHit) throws CommandSyntaxException;
 }

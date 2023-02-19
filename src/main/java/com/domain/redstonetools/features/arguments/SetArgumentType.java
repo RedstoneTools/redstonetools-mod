@@ -1,4 +1,4 @@
-package com.domain.redstonetools.features.commands.arguments;
+package com.domain.redstonetools.features.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class SetArgumentType<T> implements ArgumentType<T>, TypeProvider {
+public abstract class SetArgumentType<T> implements ArgumentType<T> {
     protected abstract Set<T> getSet();
 
     protected abstract boolean onlyMatchExact();
