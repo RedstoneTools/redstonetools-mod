@@ -44,7 +44,7 @@ public abstract class SetArgumentType<T> implements ArgumentType<T>, TypeProvide
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        for (T option : getSet()) {
+        for (var option : getSet()) {
             builder.suggest(Objects.toString(option));
         }
 
