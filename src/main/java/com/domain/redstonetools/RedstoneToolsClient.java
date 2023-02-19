@@ -9,9 +9,19 @@ import com.domain.redstonetools.features.commands.glass.GlassFeature;
 import com.domain.redstonetools.features.commands.quicktp.QuickTpFeature;
 import com.domain.redstonetools.features.commands.redstoner.RedstonerFeature;
 import com.domain.redstonetools.features.commands.ssbarrel.SsBarrelFeature;
+import com.domain.redstonetools.features.commands.update.RegionUpdater;
+import com.domain.redstonetools.features.commands.update.UpdateFeature;
 import com.domain.redstonetools.utils.ReflectionUtils;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.command.ClipboardCommands;
+import com.sk89q.worldedit.event.extent.EditSessionEvent;
+import com.sk89q.worldedit.util.eventbus.EventHandler;
+import com.sk89q.worldedit.util.eventbus.Subscribe;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,15 +44,15 @@ public class RedstoneToolsClient implements ClientModInitializer {
             BinaryBlockReadFeature.class,
             RedstonerFeature.class,
             SsBarrelFeature.class,
-
             CopyStateFeature.class,
-            ColorCodeFeature.class
-
+            ColorCodeFeature.class,
+            UpdateFeature.class
     );
 
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing Redstone Tools");
+        ClientTickEvents.END_CLIENT_TICK.register(new RegionUpdater());
         RedstoneToolsGameRules.register();
 
         CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) -> {
