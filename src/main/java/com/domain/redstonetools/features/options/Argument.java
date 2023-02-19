@@ -1,37 +1,60 @@
 package com.domain.redstonetools.features.options;
 
-import com.domain.redstonetools.utils.ReflectionUtils;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 public class Argument<T> {
-    public final String name;
-    public final ArgumentType<T> type;
-    public final Class<T> klass;
-    public final boolean optional;
-    private final T defaultValue;
+    private String name;
+    private final ArgumentType<T> type;
+    private boolean optional;
     private T value;
+    private T defaultValue;
 
-    private Argument(String name, ArgumentType<T> type, boolean optional, T defaultValue) {
-        this.name = name;
+    private Argument(ArgumentType<T> type) {
         this.type = type;
-        this.klass = ReflectionUtils.getArgumentType(type);
-        this.optional = optional;
+        optional = false;
+    }
+
+    public static <T> Argument<T> ofType(ArgumentType<T> type) {
+        return new Argument<>(type);
+    }
+
+    public Argument<T> withDefault(T defaultValue) {
+        optional = true;
         this.defaultValue = defaultValue;
-        this.value = defaultValue;
+
+        return this;
     }
 
-    public Argument(String name, ArgumentType<T> type) {
-        this(name, type, false, null);
+    public Argument<T> named(String name) {
+        this.name = name;
+
+        return this;
     }
 
-    public Argument(String name, ArgumentType<T> type, T defaultValue) {
-        this(name, type, true, defaultValue);
+    public Argument<T> ensureNamed(String fieldName) {
+        if (name == null) {
+            name = fieldName;
+        }
+
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ArgumentType<T> getType() {
+        return type;
+    }
+
+    public boolean isOptional() {
+        return optional;
     }
 
     public void setValue(CommandContext<?> context) {
         try {
-            value = context.getArgument(name, klass);
+            value = (T) context.getArgument(name, Object.class);
         } catch (IllegalArgumentException e) {
             if (!optional) {
                 throw e;

@@ -26,8 +26,11 @@ dependencies {
 	// jUnit 5
 	implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 
-	// Spring DI
-	implementation 'org.springframework:spring-context:5.3.13'
+	// Guice
+	implementation 'com.google.inject:guice:5.0.1'
+
+	// Reflections
+	implementation 'org.reflections:reflections:0.9.12'
 
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

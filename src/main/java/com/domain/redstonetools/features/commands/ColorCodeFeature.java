@@ -1,7 +1,7 @@
-package com.domain.redstonetools.features.commands.colorcode;
+package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.features.commands.CommandFeature;
+import com.domain.redstonetools.features.options.Argument;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.EditSession;
@@ -21,19 +21,23 @@ import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
+import static com.domain.redstonetools.features.arguments.BlockColorArgumentType.blockColor;
+import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 
-@Feature(name = "/colorcode")
-public class ColorCodeFeature extends CommandFeature<ColorCodeOptions> {
+@Feature(name = "Color Code", description = "Color codes all colorable blocks in your WorldEdit selection.", command = "/colorcode")
+public class ColorCodeFeature extends CommandFeature {
     private static final java.util.regex.Pattern MATCH_TARGET_PATH_PATTERN = java.util.regex.Pattern.compile(
-            "(_wool$)|(_concrete$)|(_stained_glass$)|(_terracotta$)|(_concrete_powder$)|(_glazed_terracotta$)"
+    "(_wool$)|(_concrete$)|(_stained_glass$)|(_terracotta$)|(_concrete_powder$)|(_glazed_terracotta$)"
     );
+
+    public static final Argument<String> color = Argument
+            .ofType(blockColor());
+    public static final Argument<Boolean> onlyWhite = Argument
+            .ofType(bool())
+            .withDefault(false);
 
     private boolean shouldBeColored(World world, BlockVector3 pos, boolean onlyWhite) {
         BlockState state = world.getBlock(pos);
@@ -94,7 +98,7 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeOptions> {
     }
 
     @Override
-    protected int execute(ServerCommandSource source, ColorCodeOptions options) throws CommandSyntaxException {
+    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
         final WorldEdit worldEdit = WorldEdit.getInstance();
 
         ServerPlayerEntity player = source.getPlayer();
@@ -114,9 +118,6 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeOptions> {
             return -1;
         }
 
-        var color = options.color.getValue();
-        var onlyWhite = options.onlyWhite.getValue();
-
         // for each block in the selection
         final World world = FabricAdapter.adapt(player.getWorld());
         try (EditSession session = worldEdit.newEditSession(FabricAdapter.adapt(player.getWorld()))) {
@@ -125,7 +126,7 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeOptions> {
                 new Mask() {
                     @Override
                     public boolean test(BlockVector3 vector) {
-                        return shouldBeColored(world, vector, onlyWhite);
+                        return shouldBeColored(world, vector, onlyWhite.getValue());
                     }
 
                     @Nullable
@@ -135,7 +136,7 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeOptions> {
                 new Pattern() {
                     @Override
                     public BaseBlock applyBlock(BlockVector3 position) {
-                        return setBlockColor(world, position, color);
+                        return setBlockColor(world, position, color.getValue());
                     }
                 }
             );
@@ -145,7 +146,7 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeOptions> {
             // call remember to allow undo
             playerSession.remember(session);
 
-            source.sendFeedback(Text.of("Successfully colored " + blocksColored + " blocks " + color), false);
+            source.sendFeedback(Text.of("Successfully colored " + blocksColored + " blocks " + color.getValue()), false);
         } catch (Exception e) {
             source.sendError(Text.of("An error occurred while coloring the blocks."));
 

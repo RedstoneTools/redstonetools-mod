@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BlockStateNbtUtil {
-
     private BlockStateNbtUtil() {
     }
-
 
     public static String blockStateToString(BlockState blockState) {
         HashMap<String, Object> valueMap = new HashMap<>();
@@ -62,5 +60,4 @@ public class BlockStateNbtUtil {
 
         return map;
     }
-
 }

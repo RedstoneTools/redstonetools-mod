@@ -1,4 +1,4 @@
-package com.domain.redstonetools.features.commands.arguments;
+package com.domain.redstonetools.features.arguments;
 
 import java.util.Set;
 
