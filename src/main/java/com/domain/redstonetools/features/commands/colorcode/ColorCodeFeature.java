@@ -2,6 +2,7 @@ package com.domain.redstonetools.features.commands.colorcode;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.commands.CommandFeature;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalSession;
@@ -26,71 +27,74 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 
 @Feature(name = "/colorcode")
-public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
-
-    static final java.util.regex.Pattern MATCH_TARGET_PATH_PATTERN = java.util.regex.Pattern.compile(
+public class ColorCodeFeature extends CommandFeature<ColorCodeOptions> {
+    private static final java.util.regex.Pattern MATCH_TARGET_PATH_PATTERN = java.util.regex.Pattern.compile(
             "(_wool$)|(_concrete$)|(_stained_glass$)|(_terracotta$)|(_concrete_powder$)|(_glazed_terracotta$)"
     );
 
-    // checks if the block at the position
-    // is a target for the transformation
-    private boolean checkBlock(World world,
-                               BlockVector3 pos,
-                               boolean onlyWhite) {
+    private boolean shouldBeColored(World world, BlockVector3 pos, boolean onlyWhite) {
         BlockState state = world.getBlock(pos);
         if (state == null)
             return false;
 
-        // check if it is a target
-        String blockId = state.getBlockType().getId();
-        Matcher matcher = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
-        boolean found = matcher.find();
-        if (!found)
+        var blockColor = getBlockColor(state);
+        if (blockColor == null)
             return false;
-        int colorlessBlockIdIndex = matcher.start();
-        if (onlyWhite && !blockId.substring(0, colorlessBlockIdIndex).equals("white"))
+
+        if (onlyWhite && !blockColor.equals("white"))  // TODO: Creating an enum for colors would be less error prone
             return false;
 
         return true;
     }
 
-    // changes the block at the given position
-    // to the correct color if it is a target
-    // all non targets should have been excluded
-    // by the mask, but just in case
-    private BaseBlock changeBlock(World world,
-                                  BlockVector3 pos,
-                                  String color) {
-        BlockState state = world.getBlock(pos);
-        BlockType oldType = state.getBlockType();
-        String blockId = oldType.getId();
-
-        // get colorless id
-        Matcher matcher = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
+    private int getColorEndIndex(String blockId) {
+        var matcher = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
         if (!matcher.find())
-            return state.toBaseBlock();
-        int colorlessBlockIdIndex = matcher.start();
-        String colorlessBlockId = blockId.substring(colorlessBlockIdIndex);
+            return -1;
 
-        // get colored block
-        String coloredId = "minecraft:" + color + colorlessBlockId;
-        BlockType blockType = BlockType.REGISTRY.get(coloredId);
+        return matcher.start();
+    }
+
+    private String getBlockColor(BlockState state) {
+        var blockId = state.getBlockType().getId();
+
+        var colorEndIndex = getColorEndIndex(blockId);
+
+        if (colorEndIndex == -1)
+            return null;
+
+        return blockId.substring(0, colorEndIndex);
+    }
+
+    private String getColorlessBlockId(BlockState state) {
+        var blockId = state.getBlockType().getId();
+
+        var colorEndIndex = getColorEndIndex(blockId);
+
+        if (colorEndIndex == -1)
+            return null;
+
+        return blockId.substring(colorEndIndex);
+    }
+
+    private BaseBlock setBlockColor(World world, BlockVector3 pos, String color) {
+        BlockState state = world.getBlock(pos);
+
+        var colorlessBlockId = getColorlessBlockId(state);
+        var coloredBlockId = "minecraft:" + color + colorlessBlockId;
+
+        BlockType blockType = BlockType.REGISTRY.get(coloredBlockId);
         if (blockType == null)
             return state.toBaseBlock();
 
         return blockType.getDefaultState().toBaseBlock();
     }
 
-    /*
-        Command
-     */
-
     @Override
-    protected int execute(ServerCommandSource source, ColorCodeFeatureOptions options) throws CommandSyntaxException {
+    protected int execute(ServerCommandSource source, ColorCodeOptions options) throws CommandSyntaxException {
         final WorldEdit worldEdit = WorldEdit.getInstance();
 
         ServerPlayerEntity player = source.getPlayer();
@@ -105,56 +109,50 @@ public class ColorCodeFeature extends CommandFeature<ColorCodeFeatureOptions> {
         }
 
         if (selection == null) {
-            source.sendError(Text.of("Please make a selection.").getWithStyle(
-                    Style.EMPTY.withColor(Formatting.RED)).get(0));
+            source.sendError(Text.of("Please make a worldedit selection first."));
+
             return -1;
         }
 
-        String color = options.argColor.getValue();
-        boolean onlyWhite = options.argOnlyWhite.getValue();
+        var color = options.color.getValue();
+        var onlyWhite = options.onlyWhite.getValue();
 
         // for each block in the selection
         final World world = FabricAdapter.adapt(player.getWorld());
         try (EditSession session = worldEdit.newEditSession(FabricAdapter.adapt(player.getWorld()))) {
-            AtomicInteger counter = new AtomicInteger();
-
             // create mask and pattern and execute block set
-            counter.set(session.replaceBlocks(selection,
-                    new Mask() {
-                        @Override
-                        public boolean test(BlockVector3 vector) {
-                            return checkBlock(world, vector, onlyWhite);
-                        }
+            int blocksColored = session.replaceBlocks(selection,
+                new Mask() {
+                    @Override
+                    public boolean test(BlockVector3 vector) {
+                        return shouldBeColored(world, vector, onlyWhite);
+                    }
 
-                        @Nullable
-                        @Override
-                        public Mask2D toMask2D() { return null; }
-                    },
-                    (new Pattern() {
-                        @Override
-                        public BaseBlock applyBlock(BlockVector3 position) {
-                            return changeBlock(world, position, color);
-                        }
-                    })
-            ));
+                    @Nullable
+                    @Override
+                    public Mask2D toMask2D() { return null; }
+                },
+                new Pattern() {
+                    @Override
+                    public BaseBlock applyBlock(BlockVector3 position) {
+                        return setBlockColor(world, position, color);
+                    }
+                }
+            );
 
             Operations.complete(session.commit());
 
             // call remember to allow undo
             playerSession.remember(session);
 
-            source.sendFeedback(Text.of("Successfully changed " + counter.get() + " blocks to color " + color)
-                            .getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)).get(0),
-                    true);
+            source.sendFeedback(Text.of("Successfully colored " + blocksColored + " blocks " + color), false);
         } catch (Exception e) {
-            source.sendFeedback(Text.of("An error occurred").getWithStyle(Style.EMPTY.withColor(Formatting.RED)).get(0), false);
+            source.sendError(Text.of("An error occurred while coloring the blocks."));
+
             e.printStackTrace();
         }
 
-//        source.sendFeedback(Text.of("Successfully replaced " + counter.get() + " blocks with " +
-//                "color " + color + ""), false);
-
-        return 0;
+        return Command.SINGLE_SUCCESS;
     }
 
 }
