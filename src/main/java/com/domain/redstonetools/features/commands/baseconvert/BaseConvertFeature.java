@@ -22,7 +22,7 @@ public class BaseConvertFeature extends CommandFeature<BaseConvertOptions> {
             throw new CommandSyntaxException(null, Text.of("Inputted number does not match the specified base"));
         }
 
-        String output = Integer.toString(input, options.toBase.getValue());
+        var output = Integer.toString(input, options.toBase.getValue());
         source.sendFeedback(Text.of(output), false);
 
         return Command.SINGLE_SUCCESS;
