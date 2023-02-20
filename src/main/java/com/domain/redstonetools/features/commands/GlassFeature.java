@@ -1,9 +1,6 @@
 package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.features.commands.PickBlockFeature;
-import com.domain.redstonetools.features.options.EmptyOptions;
-import com.domain.redstonetools.features.options.Options;
 import com.domain.redstonetools.utils.ItemUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Block;
@@ -14,13 +11,15 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.registry.Registry;
 
-
 @Feature(name = "Glass", description = "Converts glass to wool and vice versa.", command = "glass")
 public class GlassFeature extends PickBlockFeature {
     @Override
-    protected ItemStack getItemStack(ServerCommandSource source, BlockHitResult blockHit) throws CommandSyntaxException {
-        ItemStack stack = getWoolOrGlassStackFromBlock(source.getPlayer().world.getBlockState(blockHit.getBlockPos()).getBlock());
-        if (stack == null) source.sendError(Text.of("Invalid block! Use on wool or glass"));
+    protected ItemStack getItemStack(ServerCommandSource source, BlockHitResult blockHit)
+            throws CommandSyntaxException {
+        ItemStack stack = getWoolOrGlassStackFromBlock(
+                source.getPlayer().world.getBlockState(blockHit.getBlockPos()).getBlock());
+        if (stack == null)
+            source.sendError(Text.of("Invalid block! Use on wool or glass"));
 
         return stack;
     }

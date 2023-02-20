@@ -2,8 +2,6 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.RedstoneToolsGameRules;
 import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.features.commands.CommandFeature;
-import com.domain.redstonetools.features.options.EmptyOptions;
 import com.mojang.brigadier.Command;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
