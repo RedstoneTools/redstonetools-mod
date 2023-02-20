@@ -1,4 +1,4 @@
-package com.domain.redstonetools.features.commands.copystate;
+package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.commands.PickBlockFeature;
@@ -20,12 +20,10 @@ import net.minecraft.util.math.BlockPos;
 
 import java.lang.reflect.Method;
 
-@Feature(name = "copystate")
-public class CopyStateFeature extends PickBlockFeature<EmptyOptions> {
-
-
+@Feature(name = "Copy State", description = "Gives you a copy of the block you're looking at with its BlockState.", command = "copystate")
+public class CopyStateFeature extends PickBlockFeature {
     @Override
-    protected ItemStack getItemStack(ServerCommandSource source, Options options, BlockHitResult blockHit) {
+    protected ItemStack getItemStack(ServerCommandSource source, BlockHitResult blockHit) {
         MinecraftClient client = MinecraftClient.getInstance();
 
         BlockPos blockPos = blockHit.getBlockPos();

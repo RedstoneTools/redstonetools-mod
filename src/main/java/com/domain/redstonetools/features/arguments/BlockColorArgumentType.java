@@ -1,10 +1,9 @@
-package com.domain.redstonetools.features.commands.arguments;
+package com.domain.redstonetools.features.arguments;
 
-import java.util.List;
+import java.util.Set;
 
 public class BlockColorArgumentType extends SetArgumentType<String> {
-
-    static final List<String> COLORS = List.of(
+    private static final Set<String> COLORS = Set.of(
             "white",
             "orange",
             "magenta",
@@ -23,20 +22,19 @@ public class BlockColorArgumentType extends SetArgumentType<String> {
             "black"
     );
 
-    static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
+    private static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
 
     public static BlockColorArgumentType blockColor() {
         return INSTANCE;
     }
 
     @Override
-    protected List<String> getSet() {
+    protected Set<String> getSet() {
         return COLORS;
     }
 
     @Override
-    protected boolean isOnlyExact() {
+    protected boolean onlyMatchExact() {
         return false;
     }
-
 }

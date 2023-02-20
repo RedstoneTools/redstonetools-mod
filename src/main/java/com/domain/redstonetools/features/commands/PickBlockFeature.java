@@ -11,15 +11,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 
-public abstract class PickBlockFeature<O extends Options> extends RayCastFeature<O> {
-
-
+public abstract class PickBlockFeature extends RayCastFeature {
     @Override
-    protected int execute(ServerCommandSource source, Options options, BlockHitResult blockHit) throws CommandSyntaxException {
+    protected int execute(ServerCommandSource source, BlockHitResult blockHit) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
-        ItemStack stack = getItemStack(source, options, blockHit);
+        ItemStack stack = getItemStack(source, blockHit);
 
-        if (stack == null) {//sending error message should be handled by extending class
+        if (stack == null || client.player == null) {
             return -1;
         }
 
@@ -35,8 +33,5 @@ public abstract class PickBlockFeature<O extends Options> extends RayCastFeature
         return Command.SINGLE_SUCCESS;
     }
 
-
-    protected abstract ItemStack getItemStack(ServerCommandSource source, Options options, BlockHitResult blockHit) throws CommandSyntaxException;
-
-
+    protected abstract ItemStack getItemStack(ServerCommandSource source, BlockHitResult blockHit) throws CommandSyntaxException;
 }

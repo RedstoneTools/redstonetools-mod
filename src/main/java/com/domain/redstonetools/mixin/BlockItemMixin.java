@@ -13,10 +13,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin {
-
     @Shadow protected abstract boolean canPlace(ItemPlacementContext context, BlockState state);
     @Shadow public abstract Block getBlock();
-
 
     //Checks, if block that is being placed has "blockstate" nbt. If so, replaces original blockstate with the one in nbt.
     @Overwrite
