@@ -2,7 +2,6 @@ package com.domain.redstonetools.features.commands.update;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.commands.CommandFeature;
-import com.domain.redstonetools.features.options.EmptyOptions;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -15,13 +14,13 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-@Feature(name = "/update")
-public class UpdateFeature extends CommandFeature<EmptyOptions> {
+@Feature(name = "Update", description = "Forces block updates in the selected area.", command = "/update")
+public class UpdateFeature extends CommandFeature {
 
 
 
     @Override
-    protected int execute(ServerCommandSource source, EmptyOptions options) throws CommandSyntaxException {
+    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
         WorldEdit worldEdit = WorldEdit.getInstance();
 
         ServerPlayerEntity player = source.getPlayer();
