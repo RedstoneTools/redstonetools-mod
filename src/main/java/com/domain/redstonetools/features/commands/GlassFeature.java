@@ -14,12 +14,9 @@ import net.minecraft.util.registry.Registry;
 @Feature(name = "Glass", description = "Converts glass to wool and vice versa.", command = "glass")
 public class GlassFeature extends PickBlockFeature {
     @Override
-    protected ItemStack getItemStack(ServerCommandSource source, BlockHitResult blockHit)
-            throws CommandSyntaxException {
-        ItemStack stack = getWoolOrGlassStackFromBlock(
-                source.getPlayer().world.getBlockState(blockHit.getBlockPos()).getBlock());
-        if (stack == null)
-            source.sendError(Text.of("Invalid block! Use on wool or glass"));
+    protected ItemStack getItemStack(ServerCommandSource source, BlockHitResult blockHit) throws CommandSyntaxException {
+        ItemStack stack = getWoolOrGlassStackFromBlock(source.getPlayer().world.getBlockState(blockHit.getBlockPos()).getBlock());
+        if (stack == null) source.sendError(Text.of("Invalid block! Use on wool or glass"));
 
         return stack;
     }
