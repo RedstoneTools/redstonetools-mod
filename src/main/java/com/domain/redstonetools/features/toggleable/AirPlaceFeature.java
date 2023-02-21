@@ -2,26 +2,15 @@ package com.domain.redstonetools.features.toggleable;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
-import com.domain.redstonetools.utils.ItemUtils;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import com.domain.redstonetools.utils.render.CameraRelativeRenderer;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.client.render.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.royawesome.jlibnoise.module.combiner.Min;
 
 import java.util.Random;
 
@@ -40,7 +29,8 @@ public class AirPlaceFeature extends ToggleableFeature {
 
     public static final Argument<Boolean> showGhostBlock = Argument
             .ofType(bool())
-            .withDefault(true);
+            .withDefault(true)
+            .build();
 
     static final Random RANDOM = new Random(System.nanoTime() ^ System.currentTimeMillis());
 
@@ -49,7 +39,7 @@ public class AirPlaceFeature extends ToggleableFeature {
         WorldRenderEvents.END.register(context -> {
             if (!isEnabled())
                 return;
-            if (!showGhostBlock.getValue())
+            if (showGhostBlock.getValue() != Boolean.TRUE)
                 return;
 
             MinecraftClient client = MinecraftClient.getInstance();
@@ -59,16 +49,19 @@ public class AirPlaceFeature extends ToggleableFeature {
             HitResult hitResult = getAirPlacePosition(client, client.interactionManager.getReachDistance());
             if (hitResult == null)
                 return;
-            BlockState state = ItemUtils.getPlacementState(client.player.getInventory().getMainHandStack());
-            if (state == null)
-                return;
             BlockPos blockPos = new BlockPos(hitResult.getPos());
 
-            BlockRenderManager blockRenderManager = client.getBlockRenderManager();
-            blockRenderManager.renderBlock(
-                    state, blockPos, context.world(), context.matrixStack(),
-                    null, false, RANDOM
-            );
+            /* render block outline */
+            Entity cam = client.cameraEntity;
+            if (cam == null)
+                return;
+            CameraRelativeRenderer renderer = new CameraRelativeRenderer(Tessellator.getInstance());
+            renderer.camera(cam.getX(), cam.getY(), cam.getZ());
+            renderer.beginLines(4f);
+            renderer.cuboidOutline(blockPos.getX(), blockPos.getY(), blockPos.getZ(),
+                    blockPos.getX() + 1, blockPos.getY() + 1, blockPos.getZ() + 1,
+                    v -> v.color(1.0f, 0, 0, 1.0f).next());
+            renderer.draw();
         });
     }
 }

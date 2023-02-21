@@ -6,9 +6,6 @@ import com.domain.redstonetools.utils.ReflectionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public abstract class CommandFeature extends AbstractFeature {
     @Override
@@ -21,7 +18,7 @@ public abstract class CommandFeature extends AbstractFeature {
                 arguments,
                 context -> {
                     for (var argument : arguments) {
-                        argument.setValue(context);
+                        argument.acquireValue(context);
                     }
 
                     return execute(context.getSource());

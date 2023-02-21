@@ -3,11 +3,13 @@ package com.domain.redstonetools.features.arguments;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class Argument<T> {
     private String name;
     private final ArgumentType<T> type;
     private boolean optional;
-    private T value;
+    private final AtomicReference<T> value = new AtomicReference<>(); // use atomic for thread safety
     private T defaultValue;
 
     private Argument(ArgumentType<T> type) {
@@ -52,19 +54,41 @@ public class Argument<T> {
         return optional;
     }
 
-    public void setValue(CommandContext<?> context) {
+    /**
+     * Bakes this argument and acquires it's
+     * initial value.
+     *
+     * @return This.
+     */
+    public Argument<T> build() {
+        if (!optional)
+            value.set(defaultValue);
+
+        return this;
+    }
+
+    /**
+     * Update the value of this argument globally
+     * based on the given context.
+     *
+     * @param context The command context.
+     */
+    @SuppressWarnings("unchecked")
+    public void acquireValue(CommandContext<?> context) {
         try {
-            value = (T) context.getArgument(name, Object.class);
+            if (context == null)
+                throw new IllegalArgumentException();
+            value.set((T) context.getArgument(name, Object.class));
         } catch (IllegalArgumentException e) {
             if (!optional) {
                 throw e;
             }
 
-            value = defaultValue;
+            value.set(defaultValue);
         }
     }
 
     public T getValue() {
-        return value;
+        return value.get();
     }
 }
