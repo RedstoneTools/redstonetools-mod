@@ -30,7 +30,7 @@ public class CommandUtils {
         dispatcher.register(base);
     }
 
-    private static ArgumentBuilder<ServerCommandSource, ?> createArgumentChain(List<Argument<?>> arguments, Command<ServerCommandSource> executor) {
+    public static ArgumentBuilder<ServerCommandSource, ?> createArgumentChain(List<Argument<?>> arguments, Command<ServerCommandSource> executor) {
         var reversedArguments = new ArrayList<>(arguments);
         Collections.reverse(reversedArguments);
 

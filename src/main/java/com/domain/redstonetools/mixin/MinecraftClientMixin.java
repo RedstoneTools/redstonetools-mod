@@ -40,9 +40,7 @@ public abstract class MinecraftClientMixin {
             return;
         }
 
-        var reach = interactionManager.getReachDistance();
-        var hitResult = player.raycast(reach, 0, false);
-
+        HitResult hitResult = AirPlaceFeature.getAirPlacePosition((MinecraftClient)(Object) this, interactionManager.getReachDistance());
         crosshairTarget = new BlockHitResult(hitResult.getPos(), Direction.UP, new BlockPos(hitResult.getPos()), false);
     }
 }
