@@ -34,7 +34,7 @@ public class CopyStateFeature extends PickBlockFeature {
             addBlockEntityNbt(itemStack, blockEntity);
         }
 
-        int i = addBlockStateNbt(itemStack,blockState);
+        int i = addBlockStateNbt(itemStack, blockState);
         if (i == -1) {
             source.sendError(Text.of("This block doesn't have any BlockState!"));
             return null;
@@ -48,9 +48,10 @@ public class CopyStateFeature extends PickBlockFeature {
 
         NbtCompound nbt = itemStack.getOrCreateNbt();
         String stringState = BlockStateNbtUtil.blockStateToString(blockState);
-        if (stringState == null) return -1;
+        if (stringState == null)
+            return -1;
 
-        nbt.putString("blockstate",stringState);
+        nbt.putString("blockstate", stringState);
 
         return 1;
     }

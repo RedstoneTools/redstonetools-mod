@@ -27,10 +27,12 @@ public abstract class PickBlockFeature extends RayCastFeature {
             throw new CommandSyntaxException(null, Text.of("Failed to get interaction manager"));
         }
 
-        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.selectedSlot);
+        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND),
+                36 + playerInventory.selectedSlot);
 
         return Command.SINGLE_SUCCESS;
     }
 
-    protected abstract ItemStack getItemStack(ServerCommandSource source, BlockHitResult blockHit) throws CommandSyntaxException;
+    protected abstract ItemStack getItemStack(ServerCommandSource source, BlockHitResult blockHit)
+            throws CommandSyntaxException;
 }
