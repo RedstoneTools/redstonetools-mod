@@ -4,8 +4,10 @@ import com.domain.redstonetools.utils.ReflectionUtils;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_ID = "redstonetools";
