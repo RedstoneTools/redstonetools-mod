@@ -4,7 +4,6 @@ import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
 import com.domain.redstonetools.utils.ItemUtils;
 import com.domain.redstonetools.utils.ReflectionUtils;
-import com.domain.redstonetools.utils.render.CameraRelativeOverlayRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
