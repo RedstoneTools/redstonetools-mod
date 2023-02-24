@@ -19,6 +19,7 @@ import com.sk89q.worldedit.world.block.BlockTypes;
 import com.sk89q.worldedit.math.BlockVector3;
 
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 
 @Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection")
 public class MinSelectionFeature extends CommandFeature {
@@ -50,6 +51,8 @@ public class MinSelectionFeature extends CommandFeature {
 
         selector.learnChanges();
         selector.explainRegionAdjust(actor, localSession);
+
+        actor.printInfo(TextComponent.of("Done."));
 
         return Command.SINGLE_SUCCESS;
     }
