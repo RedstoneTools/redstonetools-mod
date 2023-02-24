@@ -40,8 +40,9 @@ public class CameraRelativeRenderer {
 
     public void beginLines(float lineWidth) {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.applyModelViewMatrix();
         RenderSystem.lineWidth(lineWidth);
-        buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
     }
 
     public VertexConsumer vertex(double x, double y, double z) {
