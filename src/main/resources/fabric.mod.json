@@ -31,5 +31,6 @@
     "java": ">=17"
   },
   "suggests": {
+    "worldedit": "*"
   }
 }
