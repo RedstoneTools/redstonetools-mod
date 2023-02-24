@@ -2,6 +2,7 @@ package com.domain.redstonetools.utils.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
+import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.function.Consumer;
 
@@ -9,7 +10,7 @@ import java.util.function.Consumer;
  * A renderer which renders relative to a specified
  * camera position using a provided tessellator.
  */
-public class CameraRelativeRenderer {
+public class CameraRelativeOverlayRenderer {
 
     // the camera position
     double camX;
@@ -19,9 +20,21 @@ public class CameraRelativeRenderer {
     Tessellator tessellator;
     BufferBuilder buffer;
 
-    public CameraRelativeRenderer(Tessellator tessellator) {
+    MatrixStack matrixStack;
+
+    VertexConsumerProvider vertexConsumerProvider;
+    VertexConsumer vertexConsumer;
+
+    public CameraRelativeOverlayRenderer(Tessellator tessellator,
+                                         VertexConsumerProvider vertexConsumerProvider) {
         this.tessellator = tessellator;
         this.buffer = tessellator.getBuffer();
+        this.vertexConsumerProvider = vertexConsumerProvider;
+    }
+
+    public CameraRelativeOverlayRenderer matrixStack(MatrixStack matrixStack) {
+        this.matrixStack = matrixStack;
+        return this;
     }
 
     public void camera(double x, double y, double z) {
@@ -39,14 +52,21 @@ public class CameraRelativeRenderer {
     }
 
     public void beginLines(float lineWidth) {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.applyModelViewMatrix();
+//        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+//        RenderSystem.applyModelViewMatrix();
         RenderSystem.lineWidth(lineWidth);
-        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getLines());
     }
 
     public VertexConsumer vertex(double x, double y, double z) {
-        return buffer.vertex(x - camX, y - camY, z - camZ);
+        if (matrixStack != null) {
+            return vertexConsumer.vertex(matrixStack.peek().getPositionMatrix(),
+                    (float)(x - camX),
+                    (float)(y - camY),
+                    (float)(z - camZ));
+        } else {
+            return vertexConsumer.vertex(x - camX, y - camY, z - camZ);
+        }
     }
 
     public void vertex(double x, double y, double z, Consumer<VertexConsumer> consumer) {
@@ -95,11 +115,11 @@ public class CameraRelativeRenderer {
         // x2z1 y-> v
         line(xBB, yAA, zAA, xBB, yBB, zAA, consumer);
         // x2z2 y-> v
-        line(xBB, yAA, zBB, zBB, yBB, zBB, consumer);
+        line(xBB, yAA, zBB, xBB, yBB, zBB, consumer);
     }
 
     public void draw() {
-        tessellator.draw();
+
     }
 
 }
