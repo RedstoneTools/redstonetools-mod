@@ -32,6 +32,10 @@ dependencies {
 	// Reflections
 	include implementation ('org.reflections:reflections:0.9.12')
 
+	include 'org.javassist:javassist:3.26.0-GA'
+	include 'javax.inject:javax.inject:1'
+	include 'aopalliance:aopalliance:1.0'
+
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
