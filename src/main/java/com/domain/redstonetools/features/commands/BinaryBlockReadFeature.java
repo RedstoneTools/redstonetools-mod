@@ -29,12 +29,12 @@ public class BinaryBlockReadFeature extends CommandFeature {
     public static final Argument<Integer> spacing = Argument
             .ofType(integer(1))
             .withDefault(2);
-    public static final Argument<Integer> toBase = Argument
-            .ofType(integer(2, 36))
-            .withDefault(2);
     public static final Argument<BlockStateArgument> onBlock = Argument
             .ofType(blockState())
             .withDefault(LIT_LAMP_ARG);
+    public static final Argument<Integer> toBase = Argument
+            .ofType(integer(2, 36))
+            .withDefault(10);
     public static final Argument<Boolean> reverseBits = Argument
             .ofType(bool())
             .withDefault(false);
