@@ -32,9 +32,9 @@ import static com.domain.redstonetools.features.arguments.BlockColorArgumentType
 public class ColorCodeFeature extends CommandFeature {
     public static final Argument<String> color = Argument
             .ofType(blockColor());
-    public static final Argument<Boolean> onlyWhite = Argument
-            .ofType(bool())
-            .withDefault(false);
+    public static final Argument<String> onlyColor = Argument
+            .ofType(blockColor())
+            .withDefault(null);
 
     private static final Pattern MATCH_TARGET_PATH_PATTERN = Pattern.compile(
             "^minecraft:(\\w+?)_(wool|concrete|stained_glass|glazed_terracotta|concrete_powder|terracotta)$"
@@ -125,22 +125,24 @@ public class ColorCodeFeature extends CommandFeature {
         try (EditSession session = worldEdit.newEditSession(FabricAdapter.adapt(player.getWorld()))) {
             // create mask and pattern and execute block set
             int blocksColored = session.replaceBlocks(selection,
-                new Mask() {
-                    @Override
-                    public boolean test(BlockVector3 vector) {
-                        return shouldBeColored(world, vector, onlyWhite.getValue());
-                    }
+                    new Mask() {
+                        @Override
+                        public boolean test(BlockVector3 vector) {
+                            return shouldBeColored(world, vector, onlyColor.getValue());
+                        }
 
-                    @Nullable
-                    @Override
-                    public Mask2D toMask2D() { return null; }
-                },
-                new Pattern() {
-                    @Override
-                    public BaseBlock applyBlock(BlockVector3 position) {
-                        return setBlockColor(world, position, color.getValue());
+                        @Nullable
+                        @Override
+                        public Mask2D toMask2D() {
+                            return null;
+                        }
+                    },
+                    new com.sk89q.worldedit.function.pattern.Pattern() {
+                        @Override
+                        public BaseBlock applyBlock(BlockVector3 position) {
+                            return setBlockColor(world, position, color.getValue());
+                        }
                     }
-                }
             );
 
             Operations.complete(session.commit());
