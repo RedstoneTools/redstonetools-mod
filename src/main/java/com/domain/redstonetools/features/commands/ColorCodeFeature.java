@@ -12,65 +12,58 @@ import com.sk89q.worldedit.fabric.FabricPlayer;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.Mask2D;
 import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BaseBlock;
-import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
+import oshi.util.tuples.Pair;
+
+import java.util.HashMap;
+import java.util.regex.Pattern;
 
 import static com.domain.redstonetools.features.arguments.BlockColorArgumentType.blockColor;
-import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 
-@Feature(name = "Color Code", description = "Color codes all colorable blocks in your WorldEdit selection.", command = "/colorcode")
+@Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
 public class ColorCodeFeature extends CommandFeature {
-    private static final java.util.regex.Pattern MATCH_TARGET_PATH_PATTERN = java.util.regex.Pattern.compile(
-    "(_wool$)|(_concrete$)|(_stained_glass$)|(_terracotta$)|(_concrete_powder$)|(_glazed_terracotta$)"
-    );
-
     public static final Argument<String> color = Argument
             .ofType(blockColor());
     public static final Argument<Boolean> onlyWhite = Argument
             .ofType(bool())
             .withDefault(false);
 
-    private boolean shouldBeColored(World world, BlockVector3 pos, boolean onlyWhite) {
-        BlockState state = world.getBlock(pos);
-        if (state == null)
-            return false;
+    private static final Pattern MATCH_TARGET_PATH_PATTERN = Pattern.compile(
+            "^minecraft:(\\w+?)_(wool|concrete|stained_glass|glazed_terracotta|concrete_powder|terracotta)$"
+    );
 
-        var blockColor = getBlockColor(state);
-        if (blockColor == null)
-            return false;
+    // memoize matched block-id's
+    private final HashMap<String, Pair<String, String>> blockMap = new HashMap<>();
 
-        if (onlyWhite && !blockColor.equals("white"))  // TODO: Creating an enum for colors would be less error prone
-            return false;
+    private Pair<String, String> getColorFromBlockId(String blockId) {
+        if (blockMap.containsKey(blockId)) {
+            return blockMap.get(blockId);
+        }
 
-        return true;
-    }
+        if (blockId.equals("minecraft:glass")) {
+            blockId = "minecraft:any_stained_glass";
+        }
 
-    private int getColorEndIndex(String blockId) {
-        var matcher = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
-        if (!matcher.find())
-            return -1;
+        var match = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
 
-        return matcher.start();
-    }
+        Pair<String, String> output;
+        if (match.matches()) {
+            output = new Pair<>(match.group(1), match.group(2));
+        } else {
+            output = null;
+        }
 
-    private String getBlockColor(BlockState state) {
-        var blockId = state.getBlockType().getId();
+        blockMap.put(blockId, output);
 
-        var colorEndIndex = getColorEndIndex(blockId);
-
-        if (colorEndIndex == -1)
-            return null;
-
-        return blockId.substring(0, colorEndIndex);
+        return output;
     }
 
     private String getColorlessBlockId(BlockState state) {
