@@ -37,7 +37,7 @@ public class ColorCodeFeature extends CommandFeature {
             .withDefault(null);
 
     private static final Pattern MATCH_TARGET_PATH_PATTERN = Pattern.compile(
-            "^minecraft:(\\w+?)_(wool|concrete|stained_glass|glazed_terracotta|concrete_powder|terracotta)$"
+            "^minecraft:(\\w+?)_(wool|stained_glass|concrete_powder|concrete|glazed_terracotta|terracotta)$"
     );
 
     // memoize matched block-id's
@@ -111,7 +111,8 @@ public class ColorCodeFeature extends CommandFeature {
         if (playerSession != null) {
             try {
                 selection = playerSession.getSelection();
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
         }
 
         if (selection == null) {
