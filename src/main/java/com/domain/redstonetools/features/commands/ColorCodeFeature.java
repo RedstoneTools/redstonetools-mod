@@ -66,27 +66,36 @@ public class ColorCodeFeature extends CommandFeature {
         return output;
     }
 
-    private String getColorlessBlockId(BlockState state) {
+    private boolean shouldBeColored(World world, BlockVector3 pos, String onlyColor) {
+        var state = world.getBlock(pos);
         var blockId = state.getBlockType().getId();
 
-        var colorEndIndex = getColorEndIndex(blockId);
+        var blockPair = getColorFromBlockId(blockId);
+        if (blockPair == null) return false;
 
-        if (colorEndIndex == -1)
-            return null;
+        if (onlyColor == null) return true;
 
-        return blockId.substring(colorEndIndex);
+        var blockColor = blockPair.getA();
+        return blockColor.equals("any") || blockColor.equals(onlyColor);
     }
 
     private BaseBlock setBlockColor(World world, BlockVector3 pos, String color) {
-        BlockState state = world.getBlock(pos);
 
-        var colorlessBlockId = getColorlessBlockId(state);
-        var coloredBlockId = "minecraft:" + color + colorlessBlockId;
+        var state = world.getBlock(pos);
+        var blockId = state.getBlockType().getId();
 
-        BlockType blockType = BlockType.REGISTRY.get(coloredBlockId);
-        if (blockType == null)
+        var colorlessBlockId = getColorFromBlockId(blockId);
+
+        String coloredBlockId;
+        if (colorlessBlockId == null) {
             return state.toBaseBlock();
+        } else {
+            coloredBlockId = "minecraft:" + color + "_" + colorlessBlockId.getB();
+        }
 
+        var blockType = BlockType.REGISTRY.get(coloredBlockId);
+
+        assert blockType != null;
         return blockType.getDefaultState().toBaseBlock();
     }
 
