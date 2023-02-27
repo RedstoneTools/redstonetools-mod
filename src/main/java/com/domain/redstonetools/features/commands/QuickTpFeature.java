@@ -19,7 +19,7 @@ import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
 public class QuickTpFeature extends CommandFeature {
     public static final Argument<Float> distance = Argument
             .ofType(floatArg(1.0f))
-            .withDefault(25.0f);
+            .withDefault(50.0f);
     public static final Argument<Boolean> includeFluids = Argument
             .ofType(bool())
             .withDefault(false);
@@ -36,7 +36,9 @@ public class QuickTpFeature extends CommandFeature {
     }
 
     private Vec3d getTargetPosition(PlayerEntity player) {
-        var hit = player.raycast(distance.getValue(), 0, includeFluids.getValue());
+        // 8 chunks default, 16 blocks per chunk
+        var renderDistanceBlocks = PlayerEntity.getRenderDistanceMultiplier() * 8 * 16;
+        var hit = player.raycast(Math.min(distance.getValue(), renderDistanceBlocks), 0, includeFluids.getValue());
 
         return clampHitPosition(hit);
     }
