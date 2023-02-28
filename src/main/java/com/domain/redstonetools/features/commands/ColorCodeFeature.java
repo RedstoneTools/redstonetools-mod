@@ -41,15 +41,19 @@ public class ColorCodeFeature extends CommandFeature {
     );
 
     // memoize matched block-id's
-    private final HashMap<String, Pair<String, String>> blockMap = new HashMap<>();
+    public static final HashMap<String, Pair<String, String>> blockMap = new HashMap<>();
 
-    private Pair<String, String> getColorFromBlockId(String blockId) {
+    public static Pair<String, String> getColorFromBlockId(String blockId) {
         if (blockMap.containsKey(blockId)) {
             return blockMap.get(blockId);
         }
 
         if (blockId.equals("minecraft:glass")) {
             blockId = "minecraft:any_stained_glass";
+        }
+
+        if (blockId.equals("minecraft:terracotta")) {
+            blockId = "minecraft:any_terracotta";
         }
 
         var match = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
