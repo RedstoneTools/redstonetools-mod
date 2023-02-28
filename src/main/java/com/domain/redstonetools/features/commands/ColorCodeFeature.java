@@ -21,12 +21,9 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
-import oshi.util.tuples.Pair;
-
-import java.util.HashMap;
-import java.util.regex.Pattern;
 
 import static com.domain.redstonetools.features.arguments.BlockColorArgumentType.blockColor;
+import static com.domain.redstonetools.utils.ColorUtils.getColorFromBlockId;
 
 @Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
 public class ColorCodeFeature extends CommandFeature {
@@ -36,39 +33,7 @@ public class ColorCodeFeature extends CommandFeature {
             .ofType(blockColor())
             .withDefault(null);
 
-    private static final Pattern MATCH_TARGET_PATH_PATTERN = Pattern.compile(
-            "^minecraft:(\\w+?)_(wool|stained_glass|concrete_powder|concrete|glazed_terracotta|terracotta)$"
-    );
 
-    // memoize matched block-id's
-    public static final HashMap<String, Pair<String, String>> blockMap = new HashMap<>();
-
-    public static Pair<String, String> getColorFromBlockId(String blockId) {
-        if (blockMap.containsKey(blockId)) {
-            return blockMap.get(blockId);
-        }
-
-        if (blockId.equals("minecraft:glass")) {
-            blockId = "minecraft:any_stained_glass";
-        }
-
-        if (blockId.equals("minecraft:terracotta")) {
-            blockId = "minecraft:any_terracotta";
-        }
-
-        var match = MATCH_TARGET_PATH_PATTERN.matcher(blockId);
-
-        Pair<String, String> output;
-        if (match.matches()) {
-            output = new Pair<>(match.group(1), match.group(2));
-        } else {
-            output = null;
-        }
-
-        blockMap.put(blockId, output);
-
-        return output;
-    }
 
     private boolean shouldBeColored(World world, BlockVector3 pos, String onlyColor) {
         var state = world.getBlock(pos);
