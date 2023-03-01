@@ -23,7 +23,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import static com.domain.redstonetools.features.arguments.BlockColorArgumentType.blockColor;
-import static com.domain.redstonetools.utils.ColorUtils.getColorFromBlockId;
+import static com.domain.redstonetools.utils.ColorUtils.getMatchedBlockId;
 
 @Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
 public class ColorCodeFeature extends CommandFeature {
@@ -39,7 +39,7 @@ public class ColorCodeFeature extends CommandFeature {
         var state = world.getBlock(pos);
         var blockId = state.getBlockType().getId();
 
-        var blockPair = getColorFromBlockId(blockId);
+        var blockPair = getMatchedBlockId(blockId);
         if (blockPair == null) return false;
 
         if (onlyColor == null) return true;
@@ -53,7 +53,7 @@ public class ColorCodeFeature extends CommandFeature {
         var state = world.getBlock(pos);
         var blockId = state.getBlockType().getId();
 
-        var colorlessBlockId = getColorFromBlockId(blockId);
+        var colorlessBlockId = getMatchedBlockId(blockId);
 
         String coloredBlockId;
         if (colorlessBlockId == null) {

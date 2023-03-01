@@ -1,26 +1,14 @@
 package com.domain.redstonetools.features.arguments;
 
+import com.domain.redstonetools.utils.ColorUtils;
+
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BlockColorArgumentType extends SetArgumentType<String> {
-    private static final Set<String> COLORS = Set.of(
-            "white",
-            "orange",
-            "magenta",
-            "light_blue",
-            "yellow",
-            "lime",
-            "pink",
-            "gray",
-            "light_gray",
-            "cyan",
-            "purple",
-            "blue",
-            "brown",
-            "green",
-            "red",
-            "black"
-    );
+    private static final Set<String> COLORS = Arrays.stream(ColorUtils.Color.values())
+            .map(x -> x.name).collect(Collectors.toUnmodifiableSet());
 
     private static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
 

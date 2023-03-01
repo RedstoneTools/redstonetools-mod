@@ -11,9 +11,9 @@ public class ColorUtils {
     );
 
     // memoize matched block-id's
-    public static final HashMap<String, Pair<String, String>> blockMap = new HashMap<>();
+    private static final HashMap<String, Pair<String, String>> blockMap = new HashMap<>();
 
-    public static Pair<String, String> getColorFromBlockId(String blockId) {
+    public static Pair<String, String> getMatchedBlockId(String blockId) {
         if (blockMap.containsKey(blockId)) {
             return blockMap.get(blockId);
         }
@@ -40,7 +40,7 @@ public class ColorUtils {
         return output;
     }
 
-    public enum Colors {
+    public enum Color {
         WHITE("white"),
         ORANGE("orange"),
         MAGENTA("magenta"),
@@ -61,7 +61,7 @@ public class ColorUtils {
 
         public final String name;
 
-        Colors(String name) {
+        Color(String name) {
             this.name = name;
         }
     }
