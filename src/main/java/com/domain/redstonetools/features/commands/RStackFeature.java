@@ -2,10 +2,18 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
+import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.sk89q.worldedit.IncompleteRegionException;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.fabric.FabricAdapter;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.util.Direction;
+import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import net.minecraft.server.command.ServerCommandSource;
 
 import static com.domain.redstonetools.features.arguments.DirectionArgumentType.directionArgument;
+import static com.domain.redstonetools.features.arguments.DirectionArgumentType.firstOrdinal;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 
 @Feature(name = "rstack", description = "Stacks with custom distance", command = "/rstack")
@@ -23,10 +31,28 @@ public class RStackFeature extends CommandFeature {
             .withDefault(2);
 
 
-
     @Override
     protected int execute(ServerCommandSource source) throws CommandSyntaxException {
+        var actor = FabricAdapter.adaptPlayer(source.getPlayer());
+        var localSession = WorldEdit.getInstance()
+                .getSessionManager()
+                .get(actor);
+        var selectionWorld = localSession.getSelectionWorld();
 
+        Region selection;
+        try {
+            if (selectionWorld == null) {
+                throw new IncompleteRegionException();
+            }
+
+            selection = localSession.getSelection(selectionWorld);
+        } catch (IncompleteRegionException ex) {
+            actor.printError(TextComponent.of("Please make a selection with worldedit first."));
+
+            return -1;
+        }
+
+        var z = actor.getLocation().getDirectionEnum();
 
         return 0;
     }
