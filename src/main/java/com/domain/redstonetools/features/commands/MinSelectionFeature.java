@@ -48,7 +48,7 @@ public class MinSelectionFeature extends CommandFeature {
             return -1;
         }
 
-        makeChanges(selectionWorld, selection);
+        minimiseSelection(selectionWorld, selection);
 
         selector.learnChanges();
         selector.explainRegionAdjust(actor, localSession);
@@ -58,7 +58,7 @@ public class MinSelectionFeature extends CommandFeature {
         return Command.SINGLE_SUCCESS;
     }
 
-    private List<BlockVector3> makeChanges(World selectionWorld, Region selection)
+    private List<BlockVector3> minimiseSelection(World selectionWorld, Region selection)
             throws CommandSyntaxException {
         List<BlockVector3> changes = new ArrayList<>();
         var faces = getFaces(selection);
@@ -94,7 +94,7 @@ public class MinSelectionFeature extends CommandFeature {
         }
 
         if (!finished)
-            changes = makeChanges(selectionWorld, selection);
+            changes = minimiseSelection(selectionWorld, selection);
 
         return changes;
     }
