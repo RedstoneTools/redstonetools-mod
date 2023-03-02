@@ -10,6 +10,7 @@ import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.exceptions.*;
 
 import com.sk89q.worldedit.regions.*;
+import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.fabric.FabricAdapter;
@@ -89,8 +90,7 @@ public class MinSelectionFeature extends CommandFeature {
         try {
             selection.contract(changes.toArray(new BlockVector3[changes.size()]));
         } catch (RegionOperationException e) {
-            var msg = new LiteralMessage("There was an error modifying the region.");
-            throw new CommandSyntaxException(new SimpleCommandExceptionType(msg), msg);
+            throw new net.minecraft.command.CommandException(Text.of("There was an error modifying the region."));
         }
 
         if (!finished)
