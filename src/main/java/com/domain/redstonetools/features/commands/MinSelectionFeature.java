@@ -56,7 +56,7 @@ public class MinSelectionFeature extends CommandFeature {
         return Command.SINGLE_SUCCESS;
     }
 
-    private List<BlockVector3> minimiseSelection(World selectionWorld, Region selection)
+    private void minimiseSelection(World selectionWorld, Region selection)
             throws CommandSyntaxException {
         List<BlockVector3> changes = new ArrayList<>();
         var faces = getFaces(selection);
@@ -92,9 +92,8 @@ public class MinSelectionFeature extends CommandFeature {
         }
 
         if (!finished)
-            changes = minimiseSelection(selectionWorld, selection);
+            minimiseSelection(selectionWorld, selection);
 
-        return changes;
     }
 
     private List<CuboidRegion> getFaces(Region selection) {
