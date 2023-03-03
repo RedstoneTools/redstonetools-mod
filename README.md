@@ -1,4 +1,4 @@
-![logo](rst_logo.png)
+![logo](src/main/resources/assets/redstonetools/icon.png)
 
 # Redstone Tools
 

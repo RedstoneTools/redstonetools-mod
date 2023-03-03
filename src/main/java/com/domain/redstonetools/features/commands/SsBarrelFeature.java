@@ -5,6 +5,7 @@ import com.domain.redstonetools.features.arguments.Argument;
 import com.domain.redstonetools.utils.RedstoneUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -33,13 +34,15 @@ public class SsBarrelFeature extends CommandFeature {
         for (int i = 0; i < RedstoneUtils.signalStrengthToNonStackableItemCount(signalStrength.getValue(), BARREL_CONTAINER_SLOTS); i++) {
             var item = new NbtCompound();
             item.putByte("Slot", (byte) i);
-            item.putString("id", Registry.ITEM.getId(Items.WOODEN_SHOVEL).toString());
+            item.putString("id", Registry.ITEM.getId(Items.TOTEM_OF_UNDYING).toString());
             item.putByte("Count", (byte) 1);
             items.add(item);
         }
 
         stack.getOrCreateSubNbt("BlockEntityTag").put("Items", items);
         stack.setCustomName(Text.of(signalStrength.getValue().toString()));
+        stack.addEnchantment(Enchantment.byRawId(0),0);
+        stack.getOrCreateNbt().putBoolean("HideFlags", true);
 
         source.getPlayer().giveItemStack(stack);
 
