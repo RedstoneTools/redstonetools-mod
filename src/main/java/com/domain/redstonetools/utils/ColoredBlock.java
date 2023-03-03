@@ -1,5 +1,10 @@
 package com.domain.redstonetools.utils;
 
+import net.minecraft.block.Block;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -50,6 +55,14 @@ public class ColoredBlock {
 
     public String toBlockId() {
         return String.format(blockIdFormat, color);
+    }
+
+    public static ColoredBlock fromBlock(@NotNull Block block) {
+        return fromBlockId(Registry.BLOCK.getId(block).toString());
+    }
+
+    public Block toBlock() {
+        return Registry.BLOCK.get(Identifier.tryParse(toBlockId()));
     }
 
     @Override

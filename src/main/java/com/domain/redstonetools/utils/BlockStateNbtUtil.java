@@ -47,6 +47,7 @@ public class BlockStateNbtUtil {
         return null;
     }
 
+    // TODO: Refactor, this method isn't related to block states
     private static Map<String, String> stringToMap(String string) {
         //https://stackoverflow.com/questions/26485964/how-to-convert-string-into-hashmap-in-java
         string = string.substring(1, string.length() - 1);
