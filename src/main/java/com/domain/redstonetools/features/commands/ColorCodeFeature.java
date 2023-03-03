@@ -2,7 +2,8 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
-import com.domain.redstonetools.utils.ColorUtils;
+import com.domain.redstonetools.utils.BlockColor;
+import com.domain.redstonetools.utils.ColoredBlock;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.EditSession;
@@ -24,48 +25,38 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import static com.domain.redstonetools.features.arguments.BlockColorArgumentType.blockColor;
-import static com.domain.redstonetools.utils.ColorUtils.getMatchedBlockId;
 
 @Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
 public class ColorCodeFeature extends CommandFeature {
-    public static final Argument<ColorUtils.Color> color = Argument
+    public static final Argument<BlockColor> color = Argument
             .ofType(blockColor());
-
-    public static final Argument<ColorUtils.Color> onlyColor = Argument
+    public static final Argument<BlockColor> onlyColor = Argument
             .ofType(blockColor())
             .withDefault(null);
 
-
-    private boolean shouldBeColored(World world, BlockVector3 pos, ColorUtils.Color onlyColor) {
+    private boolean shouldBeColored(World world, BlockVector3 pos, BlockColor onlyColor) {
         var state = world.getBlock(pos);
         var blockId = state.getBlockType().getId();
 
-        var blockPair = getMatchedBlockId(blockId);
-        if (blockPair == null) return false;
+        var coloredBlock = ColoredBlock.fromBlockId(blockId);
+        if (coloredBlock == null) return false;
 
-        if (onlyColor.toString().equals("null")) return true;
+        if (onlyColor == null) return true;
 
-        var blockColor = blockPair.getA();
-        return blockColor.equals("any") || blockColor.equals(onlyColor.toString());
+        var blockColor = coloredBlock.color;
+        return blockColor == onlyColor;
     }
 
-    private BaseBlock setBlockColor(World world, BlockVector3 pos, ColorUtils.Color color) {
-
+    private BaseBlock getColoredBlock(World world, BlockVector3 pos, BlockColor color) {
         var state = world.getBlock(pos);
         var blockId = state.getBlockType().getId();
 
-        var colorlessBlockId = getMatchedBlockId(blockId);
+        var coloredBlock = ColoredBlock.fromBlockId(blockId);
+        if (coloredBlock == null) return state.toBaseBlock();
 
-        String coloredBlockId;
-        if (colorlessBlockId == null) {
-            return state.toBaseBlock();
-        } else {
-            coloredBlockId = "minecraft:" + color + "_" + colorlessBlockId.getB();
-        }
-
-        var blockType = BlockType.REGISTRY.get(coloredBlockId);
-
+        var blockType = BlockType.REGISTRY.get(coloredBlock.withColor(color).toBlockId());
         assert blockType != null;
+
         return blockType.getDefaultState().toBaseBlock();
     }
 
@@ -111,7 +102,7 @@ public class ColorCodeFeature extends CommandFeature {
                     new com.sk89q.worldedit.function.pattern.Pattern() {
                         @Override
                         public BaseBlock applyBlock(BlockVector3 position) {
-                            return setBlockColor(world, position, color.getValue());
+                            return getColoredBlock(world, position, color.getValue());
                         }
                     }
             );

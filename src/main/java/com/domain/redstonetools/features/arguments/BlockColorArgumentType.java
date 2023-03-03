@@ -1,13 +1,13 @@
 package com.domain.redstonetools.features.arguments;
 
-import com.domain.redstonetools.utils.ColorUtils;
+import com.domain.redstonetools.utils.BlockColor;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BlockColorArgumentType extends SetArgumentType<ColorUtils.Color> {
-    private static final Set<ColorUtils.Color> COLORS = Arrays.stream(ColorUtils.Color.values()).collect(Collectors.toUnmodifiableSet());
+public class BlockColorArgumentType extends SetArgumentType<BlockColor> {
+    private static final Set<BlockColor> COLORS = Arrays.stream(BlockColor.values()).collect(Collectors.toUnmodifiableSet());
 
     private static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
 
@@ -16,7 +16,7 @@ public class BlockColorArgumentType extends SetArgumentType<ColorUtils.Color> {
     }
 
     @Override
-    protected Set<ColorUtils.Color> getSet() {
+    protected Set<BlockColor> getSet() {
         return COLORS;
     }
 
