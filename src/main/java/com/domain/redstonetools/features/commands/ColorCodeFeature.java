@@ -36,20 +36,20 @@ public class ColorCodeFeature extends CommandFeature {
             .withDefault(null);
 
 
-    private boolean shouldBeColored(World world, BlockVector3 pos, String onlyColor) {
+    private boolean shouldBeColored(World world, BlockVector3 pos, ColorUtils.Color onlyColor) {
         var state = world.getBlock(pos);
         var blockId = state.getBlockType().getId();
 
         var blockPair = getMatchedBlockId(blockId);
         if (blockPair == null) return false;
 
-        if (onlyColor.equals("null")) return true;
+        if (onlyColor.toString().equals("null")) return true;
 
         var blockColor = blockPair.getA();
-        return blockColor.equals("any") || blockColor.equals(onlyColor);
+        return blockColor.equals("any") || blockColor.equals(onlyColor.toString());
     }
 
-    private BaseBlock setBlockColor(World world, BlockVector3 pos, String color) {
+    private BaseBlock setBlockColor(World world, BlockVector3 pos, ColorUtils.Color color) {
 
         var state = world.getBlock(pos);
         var blockId = state.getBlockType().getId();
@@ -99,7 +99,7 @@ public class ColorCodeFeature extends CommandFeature {
                     new Mask() {
                         @Override
                         public boolean test(BlockVector3 vector) {
-                            return shouldBeColored(world, vector, "" + onlyColor.getValue());
+                            return shouldBeColored(world, vector, onlyColor.getValue());
                         }
 
                         @Nullable
@@ -111,7 +111,7 @@ public class ColorCodeFeature extends CommandFeature {
                     new com.sk89q.worldedit.function.pattern.Pattern() {
                         @Override
                         public BaseBlock applyBlock(BlockVector3 position) {
-                            return setBlockColor(world, position, "" + color.getValue());
+                            return setBlockColor(world, position, color.getValue());
                         }
                     }
             );
