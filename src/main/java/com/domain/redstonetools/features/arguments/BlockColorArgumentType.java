@@ -6,9 +6,8 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BlockColorArgumentType extends SetArgumentType<String> {
-    private static final Set<String> COLORS = Arrays.stream(ColorUtils.Color.values())
-            .map(x -> x.name).collect(Collectors.toUnmodifiableSet());
+public class BlockColorArgumentType extends SetArgumentType<ColorUtils.Color> {
+    private static final Set<ColorUtils.Color> COLORS = Arrays.stream(ColorUtils.Color.values()).collect(Collectors.toUnmodifiableSet());
 
     private static final BlockColorArgumentType INSTANCE = new BlockColorArgumentType();
 
@@ -17,7 +16,7 @@ public class BlockColorArgumentType extends SetArgumentType<String> {
     }
 
     @Override
-    protected Set<String> getSet() {
+    protected Set<ColorUtils.Color> getSet() {
         return COLORS;
     }
 

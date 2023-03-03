@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class ColorUtils {
     private static final Pattern MATCH_TARGET_PATH_PATTERN = Pattern.compile(
-            "^minecraft:(\\w+?)_(wool|stained_glass|concrete_powder|concrete|glazed_terracotta|terracotta)$"
+            "^minecraft:(\\w+?)_(wool|stained_glass|concrete_powder|concrete|glazed_terracotta|terracotta|shulker_box)$"
     );
 
     // memoize matched block-id's
@@ -59,10 +59,15 @@ public class ColorUtils {
         BLACK("black"),
         ;
 
-        public final String name;
+        private final String name;
 
         Color(String name) {
             this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 }

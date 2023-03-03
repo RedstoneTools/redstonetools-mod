@@ -2,6 +2,7 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
+import com.domain.redstonetools.utils.ColorUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.EditSession;
@@ -27,12 +28,12 @@ import static com.domain.redstonetools.utils.ColorUtils.getMatchedBlockId;
 
 @Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
 public class ColorCodeFeature extends CommandFeature {
-    public static final Argument<String> color = Argument
+    public static final Argument<ColorUtils.Color> color = Argument
             .ofType(blockColor());
-    public static final Argument<String> onlyColor = Argument
+
+    public static final Argument<ColorUtils.Color> onlyColor = Argument
             .ofType(blockColor())
             .withDefault(null);
-
 
 
     private boolean shouldBeColored(World world, BlockVector3 pos, String onlyColor) {
@@ -42,7 +43,7 @@ public class ColorCodeFeature extends CommandFeature {
         var blockPair = getMatchedBlockId(blockId);
         if (blockPair == null) return false;
 
-        if (onlyColor == null) return true;
+        if (onlyColor.equals("null")) return true;
 
         var blockColor = blockPair.getA();
         return blockColor.equals("any") || blockColor.equals(onlyColor);
@@ -98,7 +99,7 @@ public class ColorCodeFeature extends CommandFeature {
                     new Mask() {
                         @Override
                         public boolean test(BlockVector3 vector) {
-                            return shouldBeColored(world, vector, onlyColor.getValue());
+                            return shouldBeColored(world, vector, "" + onlyColor.getValue());
                         }
 
                         @Nullable
@@ -110,7 +111,7 @@ public class ColorCodeFeature extends CommandFeature {
                     new com.sk89q.worldedit.function.pattern.Pattern() {
                         @Override
                         public BaseBlock applyBlock(BlockVector3 position) {
-                            return setBlockColor(world, position, color.getValue());
+                            return setBlockColor(world, position, "" + color.getValue());
                         }
                     }
             );
