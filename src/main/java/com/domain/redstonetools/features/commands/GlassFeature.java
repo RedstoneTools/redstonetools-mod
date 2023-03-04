@@ -1,49 +1,45 @@
 package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
+import com.domain.redstonetools.utils.BlockColorUtils;
 import com.domain.redstonetools.utils.ItemUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import com.sk89q.worldedit.fabric.FabricAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.World;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.math.BlockPos;
+
+import static com.domain.redstonetools.RedstoneToolsClient.LOGGER;
 
 
 @Feature(name = "Glass", description = "Converts glass to wool and vice versa.", command = "glass")
 public class GlassFeature extends PickBlockFeature {
+
+
     @Override
     protected ItemStack getItemStack(ServerCommandSource source, BlockHitResult blockHit) throws CommandSyntaxException {
-        ItemStack stack = getWoolOrGlassStackFromBlock(source.getPlayer().world.getBlockState(blockHit.getBlockPos()).getBlock());
-        if (stack == null) source.sendError(Text.of("Invalid block! Use on wool or glass"));
-
-        return stack;
+        return getWoolOrGlassStackFromBlock(FabricAdapter.adapt(source.getPlayer().world), blockHit.getBlockPos());
     }
 
-    private ItemStack getWoolOrGlassStackFromBlock(Block block) {
-        String blockString = Registry.BLOCK.getId(block).toString().substring("minecraft:".length());
+    private ItemStack getWoolOrGlassStackFromBlock(World world, BlockPos pos) {
+        BlockVector3 vectorPos = BlockVector3.at(pos.getX(),pos.getY(),pos.getZ());
 
-        Item item = null;
+        if (!BlockColorUtils.shouldBeColored(world,vectorPos,false))
+            return new ItemStack(Items.WHITE_WOOL);
 
-        if (blockString.contains("stained_glass") && !blockString.contains("pane")) {
-            String color = blockString.substring(0, blockString.indexOf("_stained_glass"));
-            String newItemName = color + "_wool";
+        String color = BlockColorUtils.getBlockColor(world.getBlock(vectorPos)).substring("minecraft:".length());
+        String colorlessBlock = BlockColorUtils.getColorlessBlockId(world.getBlock(vectorPos));
 
-            item = ItemUtils.getItemByName(newItemName);
-        } else if (blockString.contains("wool")) {
-            String color = blockString.substring(0, blockString.indexOf("_wool"));
-            String newItemName = color + "_stained_glass";
-
-            item = ItemUtils.getItemByName(newItemName);
+        if (colorlessBlock.contains("wool")) {
+            LOGGER.info(color + "_stained_glass");
+            return new ItemStack(ItemUtils.getItemByName(color + "_stained_glass"));
         }
 
-        if (item != null) {
-            return new ItemStack(item);
-        }
-
-        return null;
+        return new ItemStack(ItemUtils.getItemByName(color + "_wool"));
     }
 
 }
