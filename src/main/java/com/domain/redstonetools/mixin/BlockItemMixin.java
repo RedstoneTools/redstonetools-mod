@@ -6,6 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,9 +17,12 @@ public abstract class BlockItemMixin {
     @Shadow protected abstract boolean canPlace(ItemPlacementContext context, BlockState state);
     @Shadow public abstract Block getBlock();
 
-    //Checks, if block that is being placed has "blockstate" nbt. If so, replaces original blockstate with the one in nbt.
+    /**
+     * @reason Checks, if block that is being placed has "blockstate" nbt. If so, replaces original blockstate with the one in nbt.
+     * @author MiranCZ
+     */
     @Overwrite
-    public BlockState getPlacementState(ItemPlacementContext context) {
+    public @Nullable BlockState getPlacementState(ItemPlacementContext context) {
         NbtCompound nbt = context.getStack().getNbt();
         String str = "";
         if (nbt != null) str = nbt.getString("blockstate");

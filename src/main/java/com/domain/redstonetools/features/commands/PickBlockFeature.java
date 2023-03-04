@@ -1,5 +1,6 @@
 package com.domain.redstonetools.features.commands;
 
+import com.domain.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
@@ -8,15 +9,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 
-public abstract class PickBlockFeature extends RayCastFeature {
+public abstract class PickBlockFeature extends BlockRaycastFeature {
     @Override
-    protected int execute(ServerCommandSource source, BlockHitResult blockHit) throws CommandSyntaxException {
+    protected final int execute(ServerCommandSource source, BlockInfo blockInfo) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
-        ItemStack stack = getItemStack(source, blockHit);
+        if (client.player == null) {
+            return -1;
+        }
 
-        if (stack == null || client.player == null) {
+        ItemStack stack = getItemStack(source, blockInfo);
+        if (stack == null) {
             return -1;
         }
 
@@ -32,5 +35,5 @@ public abstract class PickBlockFeature extends RayCastFeature {
         return Command.SINGLE_SUCCESS;
     }
 
-    protected abstract ItemStack getItemStack(ServerCommandSource source, BlockHitResult blockHit) throws CommandSyntaxException;
+    protected abstract ItemStack getItemStack(ServerCommandSource source, BlockInfo blockInfo) throws CommandSyntaxException;
 }
