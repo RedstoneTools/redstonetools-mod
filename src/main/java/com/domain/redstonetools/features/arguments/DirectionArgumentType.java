@@ -69,8 +69,8 @@ public class DirectionArgumentType extends SetArgumentType<String> {
                 default -> null;
             };
             case "back" -> switch (firstOrdinal(playerFacing)) {
-                case UP -> Direction.UP;
-                case DOWN -> Direction.DOWN;
+                case UP -> Direction.DOWN;
+                case DOWN -> Direction.UP;
                 case NORTH -> Direction.SOUTH;
                 case EAST -> Direction.WEST;
                 case SOUTH -> Direction.NORTH;
