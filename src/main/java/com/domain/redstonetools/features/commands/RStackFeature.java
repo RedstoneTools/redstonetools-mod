@@ -41,21 +41,51 @@ public class RStackFeature extends CommandFeature {
         var localSession = WorldEdit.getInstance()
                 .getSessionManager()
                 .get(actor);
-        var selectionWorld = localSession.getSelectionWorld();
 
-        Region selection;
+        final var selectionWorld = localSession.getSelectionWorld();
+        assert selectionWorld != null;
+
+        final Region selection;
         try {
-            if (selectionWorld == null) {
-                throw new IncompleteRegionException();
-            }
-
             selection = localSession.getSelection(selectionWorld);
         } catch (IncompleteRegionException ex) {
             actor.printError(TextComponent.of("Please make a selection with worldedit first."));
             return -1;
         }
 
-        var z = actor.getLocation().getDirectionEnum();
+        final Mask airFilter = new Mask() {
+            @Override
+            public boolean test(BlockVector3 vector) {
+                return !"minecraft:air".equals(selectionWorld.getBlock(vector).getBlockType().getId());
+            }
+
+            @Nullable
+            @Override
+            public Mask2D toMask2D() {
+                return null;
+            }
+        };
+
+        var playerFacing = actor.getLocation().getDirectionEnum();
+        var stackDirection = matchDirection(direction.getValue(), playerFacing);
+
+        assert stackDirection != null;
+        var stackVector = directionToBlock(stackDirection);
+
+        try (var editSession = localSession.createEditSession(actor)) {
+            for (var i = 1; i <= count.getValue(); i++) {
+                var copy = new ForwardExtentCopy(
+                        editSession,
+                        selection,
+                        editSession,
+                        selection.getMinimumPoint().add(stackVector.multiply(i * spacing.getValue()))
+                );
+                copy.setSourceMask(airFilter);
+                Operations.complete(copy);
+            }
+        } catch (WorldEditException e) {
+            throw new RuntimeException(e);
+        }
 
         return 0;
     }
