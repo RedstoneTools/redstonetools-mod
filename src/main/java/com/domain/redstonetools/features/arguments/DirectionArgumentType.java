@@ -1,9 +1,9 @@
 package com.domain.redstonetools.features.arguments;
 
-import com.mojang.brigadier.LiteralMessage;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.util.Direction;
+import net.minecraft.command.CommandException;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -41,12 +41,11 @@ public class DirectionArgumentType extends SetArgumentType<String> {
 
     // big evil match direction function, there might be a better way to do this but i don't know how
     @Nullable
-    public static Direction matchDirection(String direction, Direction playerFacing) throws CommandSyntaxException {
+    public static Direction matchDirection(String direction, Direction playerFacing) throws CommandException {
         return switch (direction) {
             case "me", "forward" -> firstOrdinal(playerFacing);
             case "left" -> switch (firstOrdinal(playerFacing)) {
-                case UP, DOWN ->
-                        throw new CommandSyntaxException(null, new LiteralMessage("Can't determine direction"));
+                case UP, DOWN -> throw new CommandException(Text.of("Can't determine direction"));
                 case NORTH -> Direction.EAST;
                 case EAST -> Direction.SOUTH;
                 case SOUTH -> Direction.WEST;
@@ -58,8 +57,7 @@ public class DirectionArgumentType extends SetArgumentType<String> {
                 default -> null;
             };
             case "right" -> switch (firstOrdinal(playerFacing)) {
-                case UP, DOWN ->
-                        throw new CommandSyntaxException(null, new LiteralMessage("Can't determine direction"));
+                case UP, DOWN -> throw new CommandException(Text.of("Can't determine direction"));
                 case NORTH -> Direction.WEST;
                 case EAST -> Direction.SOUTH;
                 case SOUTH -> Direction.EAST;
