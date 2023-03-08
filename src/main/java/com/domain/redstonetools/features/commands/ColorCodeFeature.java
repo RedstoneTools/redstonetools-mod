@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.domain.redstonetools.features.arguments.BlockColorSerializer.blockColor;
 
-@Feature(id = "color-code", name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
+@Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
 public class ColorCodeFeature extends CommandFeature {
     public static final Argument<BlockColor> color = Argument
             .ofType(blockColor());

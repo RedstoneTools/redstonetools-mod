@@ -14,7 +14,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-@Feature(id = "update", name = "Update", description = "Forces block updates in the selected area.", command = "/update")
+@Feature(name = "Update", description = "Forces block updates in the selected area.", command = "/update")
 public class UpdateFeature extends CommandFeature {
 
     @Override

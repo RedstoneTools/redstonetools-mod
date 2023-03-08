@@ -23,15 +23,11 @@ public abstract class AbstractFeature {
         return featureDesc.name();
     }
 
-    public String getIdentifier() {
-        return featureDesc.id();
-    }
-
     public String getDescription() {
         return featureDesc.description();
     }
 
-    public String getCommandName() {
+    public String getCommand() {
         return featureDesc.command();
     }
 

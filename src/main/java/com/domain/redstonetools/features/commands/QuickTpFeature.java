@@ -13,12 +13,12 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
 import static com.domain.redstonetools.features.arguments.BoolSerializer.bool;
-import static com.domain.redstonetools.features.arguments.FloatSerializer.floatType;
+import static com.domain.redstonetools.features.arguments.FloatSerializer.floatArg;
 
-@Feature(id = "quick-tp", name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
+@Feature(name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
 public class QuickTpFeature extends CommandFeature {
     public static final Argument<Float> distance = Argument
-            .ofType(floatType(1.0f))
+            .ofType(floatArg(1.0f))
             .withDefault(50.0f);
     public static final Argument<Boolean> includeFluids = Argument
             .ofType(bool())

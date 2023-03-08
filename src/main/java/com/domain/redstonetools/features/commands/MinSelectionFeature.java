@@ -20,7 +20,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
-@Feature(id = "minimize-selection", command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection")
+@Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection")
 public class MinSelectionFeature extends CommandFeature {
 
     @Override

@@ -1,36 +1,29 @@
 package com.domain.redstonetools.features.arguments;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 
-public class FloatSerializer extends NumberSerializer<Float> {
+public class FloatSerializer extends BrigadierSerializer<Float> {
+    private static final FloatSerializer INSTANCE = new FloatSerializer(FloatArgumentType.floatArg());
 
-    static final FloatSerializer BASE = new FloatSerializer();
-
-    public static FloatSerializer floatType() {
-        return BASE;
+    private FloatSerializer(FloatArgumentType argType) {
+        super(Float.class, argType);
     }
 
-    public static FloatSerializer floatType(float min) {
-        return new FloatSerializer((double)min, null);
+    public static FloatSerializer floatArg() {
+        return INSTANCE;
     }
 
-    public static FloatSerializer floatType(float min, float max) {
-        return new FloatSerializer((double)min, (double)max);
+    public static FloatSerializer floatArg(float min) {
+        return new FloatSerializer(FloatArgumentType.floatArg(min));
     }
 
-    //////////////////////////////////////
-
-    FloatSerializer() {
-        super(Float.class);
-    }
-
-    FloatSerializer(Double min, Double max) {
-        super(Float.class, min, max);
+    public static FloatSerializer floatArg(float min, float max) {
+        return new FloatSerializer(FloatArgumentType.floatArg(min, max));
     }
 
     @Override
-    protected Float parse0(StringReader reader) throws CommandSyntaxException {
-        return reader.readFloat();
+    public String serialize(Float value) {
+        return value.toString();
     }
 }
