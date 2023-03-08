@@ -8,6 +8,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 
+import javax.annotation.Nullable;
+
 public abstract class BlockRaycastFeature extends CommandFeature {
     protected int execute(ServerCommandSource source) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -16,9 +18,12 @@ public abstract class BlockRaycastFeature extends CommandFeature {
         }
 
         if (client.crosshairTarget == null || client.crosshairTarget.getType() != HitResult.Type.BLOCK) {
-            source.sendError(Text.of("You must be looking at a block to use this command"));
-
-            return -1;
+            if (requiresBlock()) {
+                source.sendError(Text.of("You must be looking at a block to use this command"));
+                return -1;
+            } else {
+                return execute(source, null);
+            }
         }
 
         var blockPos = ((BlockHitResult) client.crosshairTarget).getBlockPos();
@@ -29,5 +34,9 @@ public abstract class BlockRaycastFeature extends CommandFeature {
         return execute(source, new BlockInfo(block, blockPos, blockState, blockEntity));
     }
 
-    protected abstract int execute(ServerCommandSource source, BlockInfo blockInfo) throws CommandSyntaxException;
+    protected boolean requiresBlock() {
+        return true;
+    }
+
+    protected abstract int execute(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
 }
