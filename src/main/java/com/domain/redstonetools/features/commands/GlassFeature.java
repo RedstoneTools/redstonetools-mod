@@ -13,32 +13,38 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import javax.annotation.Nullable;
+
 @Feature(id = "glass", name = "Glass", description = "Converts colored blocks to their glass variant and glass to wool.", command = "glass")
 public class GlassFeature extends PickBlockFeature {
     @Override
-    protected ItemStack getItemStack(ServerCommandSource source, BlockInfo blockInfo) throws CommandSyntaxException {
-        var coloredBlock = getGlassOrSolidVariant(blockInfo.block);
-        if (coloredBlock == null) {
-            source.sendError(Text.of("Invalid block! Use on a colored block."));
-
-            return null;
-        }
-
-        return new ItemStack(coloredBlock);
+    protected boolean requiresBlock() {
+        return false;
     }
 
-    private Block getGlassOrSolidVariant(Block block) {
+    @Override
+    protected ItemStack getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) {
+        if (blockInfo == null) {
+            return new ItemStack(Blocks.GLASS);
+        }
+
+        var coloredBlock = getColoredGlassOrWoolVariant(blockInfo.block);
+
+        return coloredBlock == null
+            ? new ItemStack(Blocks.GLASS)
+            : new ItemStack(coloredBlock.toBlock());
+    }
+
+    private ColoredBlock getColoredGlassOrWoolVariant(Block block) {
         var blockId = Registry.BLOCK.getId(block).toString();
 
         var coloredBlock = ColoredBlock.fromBlockId(blockId);
         if (coloredBlock == null) return null;
 
-        var coloredResult = (isGlass(coloredBlock)
+        return (isGlass(coloredBlock)
             ? getColoredWool()
             : getColoredGlass()
         ).withColor(coloredBlock.color);
-
-        return coloredResult.toBlock();
     }
 
     private boolean isGlass(ColoredBlock coloredBlock) {
