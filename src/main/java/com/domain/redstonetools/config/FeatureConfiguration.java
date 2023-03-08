@@ -4,6 +4,7 @@ import com.domain.redstonetools.features.AbstractFeature;
 import com.domain.redstonetools.features.arguments.Argument;
 
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +117,9 @@ public class FeatureConfiguration {
 
     public void load() {
         try {
+            if (!Files.exists(file))
+                return; // no config to load
+
             RawConfiguration config = newRaw();
             config.reload();
 
