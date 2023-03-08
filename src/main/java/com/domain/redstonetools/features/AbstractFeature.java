@@ -5,6 +5,7 @@ import com.domain.redstonetools.config.FeatureConfiguration;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Identifier;
 
 public abstract class AbstractFeature {
 
@@ -26,16 +27,20 @@ public abstract class AbstractFeature {
         config = ConfigurationManager.get().newConfiguration(this);
     }
 
-    public Feature getFeatureDescriptor() {
-        return featureDesc;
+    public String getName() {
+        return featureDesc.name();
     }
 
-    public String getID() {
+    public String getIdentifier() {
         return featureDesc.id();
     }
 
-    public String getName() {
-        return featureDesc.name();
+    public String getDescription() {
+        return featureDesc.description();
+    }
+
+    public String getCommandName() {
+        return featureDesc.command();
     }
 
     /**

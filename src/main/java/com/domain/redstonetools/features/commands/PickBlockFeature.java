@@ -10,10 +10,11 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
-/* TODO: i think there should be an @Feature here? */
+import javax.annotation.Nullable;
+
 public abstract class PickBlockFeature extends BlockRaycastFeature {
     @Override
-    protected final int execute(ServerCommandSource source, BlockInfo blockInfo) throws CommandSyntaxException {
+    protected final int execute(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null) {
             return -1;
@@ -36,5 +37,5 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
         return Command.SINGLE_SUCCESS;
     }
 
-    protected abstract ItemStack getItemStack(ServerCommandSource source, BlockInfo blockInfo) throws CommandSyntaxException;
+    protected abstract ItemStack getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
 }

@@ -4,17 +4,18 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 public class Argument<T> {
+
     private String name;
-    private final ArgumentType<T> type;
+    private final TypeSerializer<T> type;
     private boolean optional = false;
     private T value;
     private T defaultValue;
 
-    private Argument(ArgumentType<T> type) {
+    private Argument(TypeSerializer<T> type) {
         this.type = type;
     }
 
-    public static <T> Argument<T> ofType(ArgumentType<T> type) {
+    public static <T> Argument<T> ofType(TypeSerializer<T> type) {
         return new Argument<>(type);
     }
 
@@ -47,7 +48,7 @@ public class Argument<T> {
         return name;
     }
 
-    public ArgumentType<T> getType() {
+    public TypeSerializer<T> getType() {
         return type;
     }
 
@@ -55,6 +56,7 @@ public class Argument<T> {
         return optional;
     }
 
+    @SuppressWarnings("unchecked")
     public void setValue(CommandContext<?> context) {
         try {
             value = (T) context.getArgument(name, Object.class);
@@ -70,4 +72,5 @@ public class Argument<T> {
     public T getValue() {
         return value;
     }
+
 }
