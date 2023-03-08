@@ -6,31 +6,29 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BlockColorSerializer extends OptionSetSerializer<BlockColor> {
-    private static final Set<BlockColor> COLORS = Arrays.stream(BlockColor.values()).collect(Collectors.toUnmodifiableSet());
+public class BlockColorSerializer extends EnumSerializer<BlockColor> {
 
-    private static final BlockColorSerializer INSTANCE = new BlockColorSerializer();
-
-    protected BlockColorSerializer() {
-        super(BlockColor.class);
-    }
+    static final BlockColorSerializer BASE_NOT_EXACT = new BlockColorSerializer(false);
+    static final BlockColorSerializer BASE_EXACT     = new BlockColorSerializer(true);
 
     public static BlockColorSerializer blockColor() {
-        return INSTANCE;
+        return BASE_NOT_EXACT;
     }
 
-    @Override
-    protected Set<BlockColor> getSet() {
-        return COLORS;
+    public static BlockColorSerializer blockColorExact() {
+        return BASE_EXACT;
+    }
+
+    final boolean onlyMatchExact;
+
+    protected BlockColorSerializer(boolean onlyMatchExact) {
+        super(BlockColor.class);
+        this.onlyMatchExact = onlyMatchExact;
     }
 
     @Override
     protected boolean onlyMatchExact() {
-        return false;
+        return onlyMatchExact;
     }
 
-    @Override
-    public String asString(BlockColor value) {
-        return value.toString();
-    }
 }

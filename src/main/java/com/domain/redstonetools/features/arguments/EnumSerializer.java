@@ -8,18 +8,13 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.text.Text;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
-public abstract class OptionSetSerializer<T> extends TypeSerializer<T> {
-
-    /**
-     * Get the set of options.
-     *
-     * @return The set.
-     */
-    protected abstract Set<T> getSet();
+public abstract class EnumSerializer<T extends Enum<T>> extends TypeSerializer<T> {
 
     /**
      * Get if this serializer should only
@@ -29,16 +24,16 @@ public abstract class OptionSetSerializer<T> extends TypeSerializer<T> {
      */
     protected abstract boolean onlyMatchExact();
 
-    protected OptionSetSerializer(Class<T> tClass) {
+    protected EnumSerializer(Class<T> tClass) {
         super(tClass);
     }
 
     public T find(String input) throws CommandSyntaxException {
-        var matches = getSet().stream()
-                .filter(elem -> onlyMatchExact()
-                        ? elem.toString().equals(input)
-                        : elem.toString().startsWith(input))
-                .toList();
+        var matches = Arrays.stream(valueType.getEnumConstants())
+                .filter(s -> onlyMatchExact() ?
+                        s.toString().equalsIgnoreCase(input) :
+                        s.toString().toLowerCase().startsWith(input.toLowerCase()))
+                .collect(Collectors.toList());
 
         if (matches.isEmpty()) {
             throw new CommandSyntaxException(null, Text.of("No such option '" + input + "'"));
@@ -58,11 +53,16 @@ public abstract class OptionSetSerializer<T> extends TypeSerializer<T> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        for (var option : getSet()) {
-            builder.suggest(Objects.toString(option));
+        for (var option : valueType.getEnumConstants()) {
+            builder.suggest(option.toString());
         }
 
         return builder.buildFuture();
+    }
+
+    @Override
+    public String asString(T value) {
+        return value.toString();
     }
 
 }
