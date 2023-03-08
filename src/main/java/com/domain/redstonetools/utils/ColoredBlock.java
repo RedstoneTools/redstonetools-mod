@@ -13,13 +13,14 @@ public class ColoredBlock {
             "^minecraft:(\\w+?)_(wool|stained_glass|concrete_powder|concrete|glazed_terracotta|terracotta|shulker_box)$"
     );
 
-    private static final HashMap<String, ColoredBlock> coloredBlockCache = new HashMap<>()
-    {
-        {
-            put("minecraft:glass", new ColoredBlock("minecraft:%s_stained_glass", BlockColor.WHITE));
-            put("minecraft:terracotta", new ColoredBlock("minecraft:%s_terracotta", BlockColor.WHITE));
-        }
-    };
+    private static final HashMap<String, ColoredBlock> COLORLESS_BLOCKS = new HashMap<>() {{
+        put("minecraft:glass", new ColoredBlock("minecraft:%s_stained_glass", BlockColor.WHITE));
+        put("minecraft:terracotta", new ColoredBlock("minecraft:%s_terracotta", BlockColor.WHITE));
+    }};
+
+    private static final HashMap<String, ColoredBlock> COLORED_BLOCK_CACHE = new HashMap<>() {{
+        putAll(COLORLESS_BLOCKS);
+    }};
 
     private final String blockIdFormat;
     public final BlockColor color;
@@ -34,8 +35,8 @@ public class ColoredBlock {
     }
 
     public static ColoredBlock fromBlockId(String blockId) {
-        if (coloredBlockCache.containsKey(blockId)) {
-            return coloredBlockCache.get(blockId);
+        if (COLORED_BLOCK_CACHE.containsKey(blockId)) {
+            return COLORED_BLOCK_CACHE.get(blockId);
         }
 
         var matcher = COLORED_BLOCK_REGEX.matcher(blockId);
@@ -48,7 +49,7 @@ public class ColoredBlock {
 
         var coloredBlock = new ColoredBlock("minecraft:%s_" + blockType, BlockColor.fromString(color));
 
-        coloredBlockCache.put(blockId, coloredBlock);
+        COLORED_BLOCK_CACHE.put(blockId, coloredBlock);
 
         return coloredBlock;
     }
