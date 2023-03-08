@@ -12,12 +12,26 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class SetArgumentType<T> implements ArgumentType<T> {
+public abstract class OptionSetSerializer<T> extends TypeSerializer<T> {
+
+    /**
+     * Get the set of options.
+     *
+     * @return The set.
+     */
     protected abstract Set<T> getSet();
 
+    /**
+     * Get if this serializer should only
+     * match exact options.
+     *
+     * @return True/false.
+     */
     protected abstract boolean onlyMatchExact();
 
-    protected SetArgumentType() { }
+    protected OptionSetSerializer(Class<T> tClass) {
+        super(tClass, null);
+    }
 
     public T find(String input) throws CommandSyntaxException {
         var matches = getSet().stream()
