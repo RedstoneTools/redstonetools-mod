@@ -17,7 +17,7 @@ public abstract class NumberSerializer<T extends Number> extends PrimitiveSerial
     Double min, max;
 
     NumberSerializer(Class<T> tClass) {
-        super(tClass, null);
+        super(tClass);
     }
 
     NumberSerializer(Class<T> tClass, Double min, Double max) {

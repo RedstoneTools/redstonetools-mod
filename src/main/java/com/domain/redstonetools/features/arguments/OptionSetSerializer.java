@@ -30,7 +30,7 @@ public abstract class OptionSetSerializer<T> extends TypeSerializer<T> {
     protected abstract boolean onlyMatchExact();
 
     protected OptionSetSerializer(Class<T> tClass) {
-        super(tClass, null);
+        super(tClass);
     }
 
     public T find(String input) throws CommandSyntaxException {

@@ -2,7 +2,7 @@ package com.domain.redstonetools.features.arguments;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-public class StringSerializer extends PrimitiveSerializer<String> {
+public class StringSerializer extends WrappingSerializer<String> {
 
     static final StringSerializer BASE_WORD   = new StringSerializer(StringArgumentType.word());
     static final StringSerializer BASE_STR    = new StringSerializer(StringArgumentType.string());
@@ -22,6 +22,11 @@ public class StringSerializer extends PrimitiveSerializer<String> {
 
     protected StringSerializer(StringArgumentType type) {
         super(String.class, type);
+    }
+
+    @Override
+    public String asString(String value) {
+        return value;
     }
 
 }

@@ -22,7 +22,7 @@ public abstract class AbstractFeature {
         return featureDesc;
     }
 
-    public String getID() {
+    public String getIdentifier() {
         return featureDesc.id();
     }
 

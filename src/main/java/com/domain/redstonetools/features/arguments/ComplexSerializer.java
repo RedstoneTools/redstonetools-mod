@@ -19,7 +19,7 @@ public abstract class ComplexSerializer<C, P> extends TypeSerializer<C> {
     final TypeSerializer<P> serializer;
 
     public ComplexSerializer(Class<C> valueType, TypeSerializer<P> serializer) {
-        super(valueType, null);
+        super(valueType);
         this.serializer = serializer;
     }
 

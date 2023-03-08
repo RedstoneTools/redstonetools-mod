@@ -18,37 +18,8 @@ public abstract class TypeSerializer<T> implements ArgumentType<T> {
 
     protected final Class<T> valueType;
 
-    @Nullable
-    protected final ArgumentType<T> wrappedType;
-
-    public TypeSerializer(Class<T> valueType, @Nullable ArgumentType<T> wrappedType) {
-        this.valueType = valueType;
-        this.wrappedType = wrappedType;
-    }
-
     public TypeSerializer(Class<T> valueType) {
-        this(valueType, null);
-    }
-
-    @Override
-    public T parse(StringReader reader) throws CommandSyntaxException {
-        if (wrappedType == null)
-            throw new UnsupportedOperationException();
-        return wrappedType.parse(reader);
-    }
-
-    @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        if (wrappedType == null)
-            throw new UnsupportedOperationException();
-        return wrappedType.listSuggestions(context, builder);
-    }
-
-    @Override
-    public Collection<String> getExamples() {
-        if (wrappedType == null)
-            throw new UnsupportedOperationException();
-        return wrappedType.getExamples();
+        this.valueType = valueType;
     }
 
     public Class<T> getValueType() {

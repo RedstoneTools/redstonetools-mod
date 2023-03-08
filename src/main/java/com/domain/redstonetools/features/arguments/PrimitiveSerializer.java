@@ -1,11 +1,9 @@
 package com.domain.redstonetools.features.arguments;
 
-import com.mojang.brigadier.arguments.*;
+public abstract class PrimitiveSerializer<T> extends TypeSerializer<T> {
 
-public class PrimitiveSerializer<T> extends TypeSerializer<T> {
-
-    protected PrimitiveSerializer(Class<T> tClass, ArgumentType<T> mcType) {
-        super(tClass, mcType);
+    public PrimitiveSerializer(Class<T> valueType) {
+        super(valueType);
     }
 
     @Override

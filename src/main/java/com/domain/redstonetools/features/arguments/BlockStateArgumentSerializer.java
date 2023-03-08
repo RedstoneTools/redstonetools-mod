@@ -6,7 +6,7 @@ import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.registry.Registry;
 
-public class BlockStateArgumentSerializer extends TypeSerializer<BlockStateArgument> {
+public class BlockStateArgumentSerializer extends WrappingSerializer<BlockStateArgument> {
 
     static final BlockStateArgumentSerializer BASE = new BlockStateArgumentSerializer();
 
