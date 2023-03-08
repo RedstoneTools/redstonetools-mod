@@ -6,29 +6,26 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Identifier;
 
 public abstract class AbstractFeature {
-
-    // cached descriptor for this
-    // feature to avoid regular slow
-    // reflection
-    final Feature featureDesc;
+    private final Feature feature;
 
     {
-        featureDesc = getClass().getAnnotation(Feature.class);
-        if (featureDesc == null)
-            throw new IllegalStateException("Supposed feature " + getClass() + " does not" +
-                    " have an @Feature descriptor annotation");
+        feature = getClass().getAnnotation(Feature.class);
+
+        if (feature == null) {
+            throw new IllegalStateException("Feature " + getClass() + " is not annotated with @Feature");
+        }
     }
 
     public String getName() {
-        return featureDesc.name();
+        return feature.name();
     }
 
     public String getDescription() {
-        return featureDesc.description();
+        return feature.description();
     }
 
     public String getCommand() {
-        return featureDesc.command();
+        return feature.command();
     }
 
     /**
