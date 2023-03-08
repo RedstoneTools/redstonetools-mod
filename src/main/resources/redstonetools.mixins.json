@@ -10,6 +10,7 @@
     "BlockItemMixin",
     "ItemScattererMixin",
     "LocalSessionMixin",
+    "DustPlacerMixin",
     "MinecraftClientMixin"
   ]
 }
