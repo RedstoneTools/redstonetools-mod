@@ -25,6 +25,10 @@ public class Argument<T> {
         return this;
     }
 
+    public T getDefaultValue() {
+        return defaultValue;
+    }
+
     public Argument<T> named(String name) {
         this.name = name;
 
