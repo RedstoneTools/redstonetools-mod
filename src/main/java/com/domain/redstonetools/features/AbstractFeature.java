@@ -19,16 +19,20 @@ public abstract class AbstractFeature {
                     " have an @Feature descriptor annotation");
     }
 
-    public Feature getFeatureDescriptor() {
-        return featureDesc;
-    }
-
     public String getName() {
         return featureDesc.name();
     }
 
     public String getIdentifier() {
         return featureDesc.id();
+    }
+
+    public String getDescription() {
+        return featureDesc.description();
+    }
+
+    public String getCommandName() {
+        return featureDesc.command();
     }
 
     /**

@@ -40,11 +40,11 @@ public class Argument<T> {
         return this;
     }
 
-    public String name() {
+    public String getName() {
         return name;
     }
 
-    public TypeSerializer<T> type() {
+    public TypeSerializer<T> getType() {
         return type;
     }
 
