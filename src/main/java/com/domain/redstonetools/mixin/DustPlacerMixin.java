@@ -1,12 +1,15 @@
 package com.domain.redstonetools.mixin;
 
 import com.domain.redstonetools.features.commands.DustPlacerFeature;
+import com.domain.redstonetools.utils.BlockColor;
+import com.domain.redstonetools.utils.ColoredBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +31,7 @@ public abstract class DustPlacerMixin {
                         !DustPlacerFeature.isActive ||
                         !Objects.equals(blockAbove.getBlock().getLootTableId().toString(), "minecraft:empty")
         ) return;
-        if (true) {
+        if (ColoredBlock.fromBlock(block.getBlock()) != null) {
             Block redstone = Blocks.REDSTONE_WIRE;
             placer.getWorld().setBlockState(redstonePos, redstone.getDefaultState() );
         }
