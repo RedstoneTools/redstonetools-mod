@@ -10,7 +10,7 @@ import net.minecraft.text.Text;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
 
-@Feature(name = "Base Convert", description = "Converts a number from one base to another.", command = "base")
+@Feature(id = "base-convert", name = "Base Convert", description = "Converts a number from one base to another.", command = "base")
 public class BaseConvertFeature extends CommandFeature {
     public static final Argument<Integer> fromBase = Argument
             .ofType(integer(2, 36));

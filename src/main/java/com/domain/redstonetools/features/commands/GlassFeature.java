@@ -13,7 +13,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-@Feature(name = "Glass", description = "Converts colored blocks to their glass variant and glass to wool.", command = "glass")
+@Feature(id = "glass", name = "Glass", description = "Converts colored blocks to their glass variant and glass to wool.", command = "glass")
 public class GlassFeature extends PickBlockFeature {
     @Override
     protected ItemStack getItemStack(ServerCommandSource source, BlockInfo blockInfo) throws CommandSyntaxException {

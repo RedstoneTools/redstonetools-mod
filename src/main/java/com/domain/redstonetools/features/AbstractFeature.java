@@ -22,6 +22,14 @@ public abstract class AbstractFeature {
         return featureDesc;
     }
 
+    public String getID() {
+        return featureDesc.id();
+    }
+
+    public String getName() {
+        return featureDesc.name();
+    }
+
     /**
      * Register this feature.
      */

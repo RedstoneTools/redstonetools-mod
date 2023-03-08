@@ -15,7 +15,7 @@ import net.minecraft.util.math.Vec3d;
 import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
 
-@Feature(name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
+@Feature(id = "quick-tp", name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
 public class QuickTpFeature extends CommandFeature {
     public static final Argument<Float> distance = Argument
             .ofType(floatArg(1.0f))

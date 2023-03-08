@@ -16,7 +16,7 @@ import net.minecraft.util.registry.Registry;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 
-@Feature(name = "Signal Strength Barrel", description = "Creates a barrel with the specified signal strength.", command = "ss")
+@Feature(id = "ss-barrel", name = "Signal Strength Barrel", description = "Creates a barrel with the specified signal strength.", command = "ss")
 public class SsBarrelFeature extends CommandFeature {
     private static final int BARREL_CONTAINER_SLOTS = 27;
 
