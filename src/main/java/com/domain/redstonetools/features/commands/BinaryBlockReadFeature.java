@@ -18,7 +18,7 @@ import net.minecraft.text.Text;
 
 import static com.domain.redstonetools.features.arguments.BlockStateArgumentSerializer.blockState;
 import static com.domain.redstonetools.features.arguments.BoolSerializer.bool;
-import static com.domain.redstonetools.features.arguments.IntSerializer.integer;
+import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
 
 @Feature(id = "binary-block-read", name = "Binary Block Read", description = "Interprets your WorldEdit selection as a binary number.", command = "/read")
 public class BinaryBlockReadFeature extends CommandFeature {

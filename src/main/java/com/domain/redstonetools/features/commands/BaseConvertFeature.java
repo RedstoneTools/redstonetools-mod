@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
-import static com.domain.redstonetools.features.arguments.IntSerializer.integer;
+import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
 import static com.domain.redstonetools.features.arguments.StringSerializer.word;
 
 @Feature(id = "base-convert", name = "Base Convert", description = "Converts a number from one base to another.", command = "base")

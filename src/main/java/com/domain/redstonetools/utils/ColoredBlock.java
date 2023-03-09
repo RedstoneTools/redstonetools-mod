@@ -59,7 +59,19 @@ public class ColoredBlock {
     }
 
     public static ColoredBlock fromBlock(@NotNull Block block) {
-        return fromBlockId(Registry.BLOCK.getId(block).toString());
+        var blockId = Registry.BLOCK.getId(block).toString();
+        if (COLORED_BLOCK_CACHE.containsKey(blockId)) {
+            return COLORED_BLOCK_CACHE.get(blockId);
+        }
+
+        var coloredBlock = fromBlockId(blockId);
+
+        // The reason we only cache nulls here and not in the fromBlockId method is because the fromBlockId method would
+        // also cache invalid block ids (literally any string) which would make the cache massive. This method however
+        // only accepts actual blocks which means that the cache will never grow bigger than the amount of mc blocks.
+        COLORED_BLOCK_CACHE.put(blockId, coloredBlock);
+
+        return coloredBlock;
     }
 
     public Block toBlock() {

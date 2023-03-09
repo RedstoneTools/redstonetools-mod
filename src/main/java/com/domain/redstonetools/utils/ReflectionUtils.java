@@ -6,7 +6,8 @@ import com.domain.redstonetools.features.arguments.Argument;
 import com.google.inject.AbstractModule;
 import org.reflections.Reflections;
 
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;

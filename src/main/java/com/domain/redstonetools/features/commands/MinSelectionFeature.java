@@ -1,24 +1,24 @@
 package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.exceptions.*;
-
-import com.sk89q.worldedit.regions.*;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.fabric.FabricAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.regions.RegionOperationException;
+import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockTypes;
-import com.sk89q.worldedit.math.BlockVector3;
-
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Feature(id = "minimize-selection", command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection")
 public class MinSelectionFeature extends CommandFeature {

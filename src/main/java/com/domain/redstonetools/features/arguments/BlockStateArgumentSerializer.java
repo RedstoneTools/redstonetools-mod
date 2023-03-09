@@ -1,63 +1,60 @@
 package com.domain.redstonetools.features.arguments;
 
-import net.minecraft.block.BlockState;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.BlockStateArgumentType;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.registry.Registry;
 
-public class BlockStateArgumentSerializer extends WrappingSerializer<BlockStateArgument> {
+public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockStateArgument, String> {
 
-    static final BlockStateArgumentSerializer BASE = new BlockStateArgumentSerializer();
+    private static final BlockStateArgumentSerializer INSTANCE = new BlockStateArgumentSerializer();
 
-    public static BlockStateArgumentSerializer blockState() {
-        return BASE;
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static String toStringBlockState(BlockStateArgument argument) {
-        BlockState state = argument.getBlockState();
-        StringBuilder b = new StringBuilder();
-
-        // append block id
-        b.append(Registry.BLOCK.getId(state.getBlock()));
-
-        // append properties
-        StringBuilder b2 = new StringBuilder("[");
-        boolean hasProperties = false;
-        for (Property property : state.getProperties()) {
-            Comparable value;
-            try {
-                value = state.get(property);
-            } catch (IllegalArgumentException e) {
-                continue;
-            }
-
-            hasProperties = true;
-
-            b2.append(property.getName());
-            b2.append("=");
-            b2.append(property.name(value));
-        }
-
-        if (hasProperties) {
-            b2.append("]");
-            b.append(b2);
-        }
-
-        // todo: maybe append NBT data
-        //  if present. not necessary now though
-
-        return b.toString();
-    }
-
-    public BlockStateArgumentSerializer() {
+    private BlockStateArgumentSerializer() {
         super(BlockStateArgument.class, BlockStateArgumentType.blockState());
     }
 
+    public static BlockStateArgumentSerializer blockState() {
+        return INSTANCE;
+    }
+
     @Override
-    public String asString(BlockStateArgument value) {
-        return toStringBlockState(value);
+    public BlockStateArgument deserialize(String serialized) {
+        try {
+            return deserialize(new StringReader(serialized));
+        } catch (CommandSyntaxException e) {
+            throw new IllegalStateException("Syntax Exception: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public String serialize(BlockStateArgument value) {
+        var state = value.getBlockState();
+        var block = state.getBlock();
+
+        var builder = new StringBuilder()
+                .append(Registry.BLOCK.getId(block));
+
+        if (state.getProperties().size() == 0) {
+            return builder.toString();
+        }
+
+        builder.append('[');
+        var first = true;
+        for (var prop : state.getProperties()) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append(',');
+            }
+
+            builder.append(prop.getName())
+                    .append('=')
+                    .append(state.get(prop));
+        }
+        builder.append(']');
+
+        return builder.toString();
     }
 
 }

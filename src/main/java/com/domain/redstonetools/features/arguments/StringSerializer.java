@@ -1,31 +1,32 @@
 package com.domain.redstonetools.features.arguments;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-public class StringSerializer extends WrappingSerializer<String> {
+public class StringSerializer extends StringBrigadierSerializer<String> {
 
-    static final StringSerializer BASE_WORD   = new StringSerializer(StringArgumentType.word());
-    static final StringSerializer BASE_STR    = new StringSerializer(StringArgumentType.string());
-    static final StringSerializer BASE_GREEDY = new StringSerializer(StringArgumentType.greedyString());
-
-    public static StringSerializer word() {
-        return BASE_WORD;
-    }
+    private static final StringSerializer INSTANCE_WORD = new StringSerializer(StringArgumentType.word());
+    private static final StringSerializer INSTANCE_STRING = new StringSerializer(StringArgumentType.string());
+    private static final StringSerializer INSTANCE_GREEDY_STRING = new StringSerializer(StringArgumentType.greedyString());
 
     public static StringSerializer string() {
-        return BASE_STR;
+        return INSTANCE_STRING;
     }
 
-    public static StringSerializer greedy() {
-        return BASE_GREEDY;
+    public static StringSerializer word() {
+        return INSTANCE_WORD;
     }
 
-    protected StringSerializer(StringArgumentType type) {
-        super(String.class, type);
+    public static StringSerializer greedyString() {
+        return INSTANCE_GREEDY_STRING;
+    }
+
+    private StringSerializer(ArgumentType<String> argumentType) {
+        super(String.class, argumentType);
     }
 
     @Override
-    public String asString(String value) {
+    public String serialize(String value) {
         return value;
     }
 

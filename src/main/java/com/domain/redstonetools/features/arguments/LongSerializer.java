@@ -1,36 +1,31 @@
 package com.domain.redstonetools.features.arguments;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.LongArgumentType;
 
-public class LongSerializer extends NumberSerializer<Long> {
+public class LongSerializer extends StringBrigadierSerializer<Long> {
 
-    static final LongSerializer BASE = new LongSerializer();
+    private static final LongSerializer INSTANCE = new LongSerializer(LongArgumentType.longArg());
 
-    public static LongSerializer longType() {
-        return BASE;
+    public static LongSerializer longArg() {
+        return INSTANCE;
     }
 
-    public static LongSerializer longType(long min) {
-        return new LongSerializer((double)min, null);
+    public static LongSerializer longArg(long min) {
+        return new LongSerializer(LongArgumentType.longArg(min));
     }
 
-    public static LongSerializer longType(long min, long max) {
-        return new LongSerializer((double)min, (double)max);
+    public static LongSerializer longArg(long min, long max) {
+        return new LongSerializer(LongArgumentType.longArg(min, max));
     }
 
-    //////////////////////////////////////
-
-    LongSerializer() {
-        super(Long.class);
-    }
-
-    LongSerializer(Double min, Double max) {
-        super(Long.class, min, max);
+    private LongSerializer(ArgumentType<Long> argumentType) {
+        super(Long.class, argumentType);
     }
 
     @Override
-    protected Long parse0(StringReader reader) throws CommandSyntaxException {
-        return reader.readLong();
+    public String serialize(Long value) {
+        return String.valueOf(value);
     }
+
 }
