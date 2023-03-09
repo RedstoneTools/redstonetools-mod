@@ -21,7 +21,7 @@ public class StringSerializer extends StringBrigadierSerializer<String> {
         return INSTANCE_GREEDY_STRING;
     }
 
-    StringSerializer(ArgumentType<String> argumentType) {
+    private StringSerializer(ArgumentType<String> argumentType) {
         super(String.class, argumentType);
     }
 

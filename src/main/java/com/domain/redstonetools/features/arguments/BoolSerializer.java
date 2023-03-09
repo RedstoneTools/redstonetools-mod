@@ -11,7 +11,7 @@ public class BoolSerializer extends StringBrigadierSerializer<Boolean> {
         return INSTANCE;
     }
 
-    BoolSerializer(ArgumentType<Boolean> argumentType) {
+    private BoolSerializer(ArgumentType<Boolean> argumentType) {
         super(Boolean.class, argumentType);
     }
 

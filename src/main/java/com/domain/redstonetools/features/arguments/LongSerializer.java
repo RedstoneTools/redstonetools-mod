@@ -19,7 +19,7 @@ public class LongSerializer extends StringBrigadierSerializer<Long> {
         return new LongSerializer(LongArgumentType.longArg(min, max));
     }
 
-    LongSerializer(ArgumentType<Long> argumentType) {
+    private LongSerializer(ArgumentType<Long> argumentType) {
         super(Long.class, argumentType);
     }
 

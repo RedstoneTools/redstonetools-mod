@@ -19,7 +19,7 @@ public class DoubleSerializer extends StringBrigadierSerializer<Double> {
         return new DoubleSerializer(DoubleArgumentType.doubleArg(min, max));
     }
 
-    DoubleSerializer(ArgumentType<Double> argumentType) {
+    private DoubleSerializer(ArgumentType<Double> argumentType) {
         super(Double.class, argumentType);
     }
 

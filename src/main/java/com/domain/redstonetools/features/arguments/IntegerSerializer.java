@@ -19,7 +19,7 @@ public class IntegerSerializer extends StringBrigadierSerializer<Integer> {
         return new IntegerSerializer(IntegerArgumentType.integer(min, max));
     }
 
-    IntegerSerializer(ArgumentType<Integer> argumentType) {
+    private IntegerSerializer(ArgumentType<Integer> argumentType) {
         super(Integer.class, argumentType);
     }
 

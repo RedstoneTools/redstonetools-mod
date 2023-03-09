@@ -19,7 +19,7 @@ public class FloatSerializer extends StringBrigadierSerializer<Float> {
         return new FloatSerializer(FloatArgumentType.floatArg(min, max));
     }
 
-    FloatSerializer(ArgumentType<Float> argumentType) {
+    private FloatSerializer(ArgumentType<Float> argumentType) {
         super(Float.class, argumentType);
     }
 
