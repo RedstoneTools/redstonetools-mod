@@ -21,14 +21,14 @@ public class BaseConvertFeature extends CommandFeature {
 
     @Override
     protected int execute(ServerCommandSource source) throws CommandSyntaxException {
-        int input;
+        long input;
         try {
-            input = Integer.parseInt(number.getValue(), fromBase.getValue());
+            input = Long.parseLong(number.getValue(), fromBase.getValue());
         } catch (NumberFormatException e) {
             throw new CommandSyntaxException(null, Text.of("Inputted number does not match the specified base"));
         }
 
-        var output = Integer.toString(input, toBase.getValue());
+        var output = Long.toString(input, toBase.getValue());
         source.sendFeedback(Text.of(output), false);
 
         return Command.SINGLE_SUCCESS;
