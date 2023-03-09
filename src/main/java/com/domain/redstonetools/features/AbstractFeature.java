@@ -1,5 +1,6 @@
 package com.domain.redstonetools.features;
 
+import com.domain.redstonetools.RedstoneToolsClient;
 import com.domain.redstonetools.config.ConfigurationManager;
 import com.domain.redstonetools.config.FeatureConfiguration;
 import com.mojang.brigadier.CommandDispatcher;
@@ -41,12 +42,19 @@ public abstract class AbstractFeature {
      * Register this feature.
      */
     public void register() {
+        RedstoneToolsClient.LOGGER.info("Initializing feature(" + getIdentifier() + ")");
+
         CommandRegistrationCallback.EVENT.register(this::registerCommands);
 
         // load and save initial configuration
         // we save to make sure defaults are saved
-        configuration.load();
-        configuration.save();
+        try {
+            configuration.load();
+            configuration.save();
+        } catch (Exception e) {
+            RedstoneToolsClient.LOGGER.error("Failed to load config for feature " + getIdentifier());
+            e.printStackTrace();
+        }
     }
 
     protected abstract void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated);

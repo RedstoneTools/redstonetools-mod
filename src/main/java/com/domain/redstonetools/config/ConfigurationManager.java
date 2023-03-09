@@ -1,6 +1,14 @@
 package com.domain.redstonetools.config;
 
+import com.domain.redstonetools.RedstoneToolsClient;
 import com.domain.redstonetools.features.AbstractFeature;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.nodes.ScalarNode;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +26,27 @@ public class ConfigurationManager {
     public static ConfigurationManager get() {
         return INSTANCE;
     }
+
+    /*
+        SnakeYAML Instance
+     */
+
+    private static final DumperOptions DUMPER_OPTIONS = new DumperOptions();
+    private static final LoaderOptions LOADER_OPTIONS = new LoaderOptions();
+
+    static {
+        DUMPER_OPTIONS.setProcessComments(true);
+        DUMPER_OPTIONS.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        DUMPER_OPTIONS.setPrettyFlow(true);
+        DUMPER_OPTIONS.setAllowUnicode(true);
+
+        LOADER_OPTIONS.setProcessComments(true);
+    }
+
+    private static final Yaml YAML = new Yaml(new Constructor(LOADER_OPTIONS), new Representer(DUMPER_OPTIONS), DUMPER_OPTIONS, LOADER_OPTIONS);
+
+    /** Configuration Format */
+    private static final RawFormat FORMAT = RawFormat.ofYaml(YAML);
 
     /////////////////////////////////////////
 
@@ -45,6 +74,17 @@ public class ConfigurationManager {
         FeatureConfiguration config = new FeatureConfiguration(this, feature);
         configs.put(feature.getIdentifier(), config);
         return config;
+    }
+
+    public void reloadAll() {
+        RedstoneToolsClient.LOGGER.info("Reloading all feature configs");
+        for (FeatureConfiguration config : configs.values()) {
+            config.load();
+        }
+    }
+
+    public RawFormat getFormat() {
+        return FORMAT;
     }
 
 }

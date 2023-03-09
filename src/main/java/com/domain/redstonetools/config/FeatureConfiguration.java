@@ -2,6 +2,9 @@ package com.domain.redstonetools.config;
 
 import com.domain.redstonetools.features.AbstractFeature;
 import com.domain.redstonetools.features.arguments.Argument;
+import com.domain.redstonetools.features.arguments.TypeSerializer;
+import com.domain.redstonetools.utils.ReflectionUtils;
+import org.yaml.snakeyaml.Yaml;
 
 import java.lang.reflect.Field;
 import java.nio.file.Files;
@@ -48,8 +51,10 @@ public class FeatureConfiguration {
         return file;
     }
 
-    public RawConfiguration newRaw() {
-        return new RawConfiguration(file, null);
+    // create a new raw configuration
+    // configured for this instance
+    private RawConfiguration newRaw() {
+        return new RawConfiguration(manager.getFormat(), null);
     }
 
     /**
@@ -59,45 +64,49 @@ public class FeatureConfiguration {
     @SuppressWarnings("unchecked")
     public void compile() {
         try {
-            Class<?> cl = feature.getClass();
-            for (Field field : cl.getDeclaredFields()) {
-                field.setAccessible(true);
+            ReflectionUtils.getArguments(feature.getClass())
+                    .stream()
+                    .forEachOrdered(arg0 -> {
+                        // have to do this cast otherwise generics
+                        // starts complaining which sucks
+                        Argument<Object> arg = (Argument<Object>) arg0;
+                        if (arg == null)
+                            return;
+                        if (!arg.isOptional())
+                            return;
 
-                // check for argument defaults
-                if (Argument.class.isAssignableFrom(field.getType())) {
-                    Argument<Object> arg = (Argument<Object>) field.get(feature);
-                    if (arg == null)
-                        continue;
+                        Accessor<Object> accessor = new Accessor<>() {
+                            @Override
+                            public void set(Object value) {
+                                arg.withDefault(value);
+                            }
 
-                    Accessor<Object> accessor = new Accessor<>() {
-                        @Override
-                        public void set(Object value) {
-                            arg.withDefault(value);
-                        }
+                            @Override
+                            public Object get() {
+                                return arg.getDefaultValue();
+                            }
+                        };
 
-                        @Override
-                        public Object get() {
-                            return arg.getDefaultValue();
-                        }
-                    };
+                        OptionInfo optionInfo = new OptionInfo(
+                                this,
+                                "defaults",
+                                arg.getName(),
+                                arg,
+                                (TypeSerializer<Object, Object>) arg.getType(),
+                                accessor
+                        );
 
-                    OptionInfo optionInfo = new OptionInfo(
-                            this,
-                            "defaults",
-                            arg.getName(),
-                            arg,
-                            accessor
-                    );
-
-                    options.add(optionInfo);
-                }
-            }
+                        options.add(optionInfo);
+                    });
         } catch (Exception t) {
             throw new RuntimeException("Error occurred while compiling config for feature " + feature.getIdentifier(), t);
         }
     }
 
     public void save() {
+        if (options.isEmpty())
+            return;
+
         try {
             RawConfiguration config = newRaw();
 
@@ -105,23 +114,27 @@ public class FeatureConfiguration {
             for (OptionInfo optionInfo : options) {
                 Section section = config.sectionDeep(optionInfo.section());
 
-                section.set(optionInfo.name(),
-                        optionInfo.accessor().get());
+                Object value = optionInfo.accessor().get();
+                Object saved = optionInfo.type().serialize(value);
+                section.set(optionInfo.name(), saved);
             }
 
-            config.save();
+            config.save(file);
         } catch (Exception t) {
-            throw new RuntimeException("Error occurred while saving config for feature " + feature.getIdentifier());
+            throw new RuntimeException("Error occurred while saving config for feature " + feature.getIdentifier(), t);
         }
     }
 
     public void load() {
+        if (options.isEmpty())
+            return;
+
         try {
             if (!Files.exists(file))
                 return; // no config to load
 
             RawConfiguration config = newRaw();
-            config.reload();
+            config.load(file);
 
             // get options
             for (OptionInfo option : options) {
@@ -129,10 +142,15 @@ public class FeatureConfiguration {
                 if (sec == null)
                     continue;
 
-                option.accessor().set(sec.get(option.name()));
+                if (!sec.contains(option.name()))
+                    continue;
+
+                Object saved = sec.get(option.name());
+                Object value = option.type().deserialize(saved);
+                option.accessor().set(value);
             }
         } catch (Exception t) {
-            throw new RuntimeException("Error occurred while loading config for feature " + feature.getIdentifier());
+            throw new RuntimeException("Error occurred while loading config for feature " + feature.getIdentifier(), t);
         }
     }
 
