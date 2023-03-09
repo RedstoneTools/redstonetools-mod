@@ -1,6 +1,5 @@
 package com.domain.redstonetools.features.arguments;
 
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 
 public class FloatSerializer extends BrigadierSerializer<Float> {

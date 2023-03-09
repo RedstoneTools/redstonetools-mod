@@ -10,7 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class BrigadierSerializer<T> extends TypeSerializer<T> {
+public abstract class BrigadierSerializer<T> extends ScalarSerializer<T> {
     private final ArgumentType<T> argType;
 
     protected BrigadierSerializer(Class<T> clazz, ArgumentType<T> argType) {
