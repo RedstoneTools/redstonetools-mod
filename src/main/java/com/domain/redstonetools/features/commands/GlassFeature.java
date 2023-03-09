@@ -4,12 +4,10 @@ import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.utils.BlockColor;
 import com.domain.redstonetools.utils.BlockInfo;
 import com.domain.redstonetools.utils.ColoredBlock;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 

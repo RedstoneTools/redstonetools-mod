@@ -1,20 +1,19 @@
 package com.domain.redstonetools.features.arguments;
 
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 public class Argument<T> {
     private String name;
-    private final TypeSerializer<T> type;
+    private final TypeSerializer<T, ?> type;
     private boolean optional = false;
     private T value;
     private T defaultValue;
 
-    private Argument(TypeSerializer<T> type) {
+    private Argument(TypeSerializer<T, ?> type) {
         this.type = type;
     }
 
-    public static <T> Argument<T> ofType(TypeSerializer<T> type) {
+    public static <T> Argument<T> ofType(TypeSerializer<T, ?> type) {
         return new Argument<>(type);
     }
 
@@ -43,7 +42,7 @@ public class Argument<T> {
         return name;
     }
 
-    public TypeSerializer<T> getType() {
+    public TypeSerializer<T, ?> getType() {
         return type;
     }
 
