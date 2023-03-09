@@ -1,6 +1,5 @@
 package com.domain.redstonetools.features.arguments;
 
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 public class Argument<T> {

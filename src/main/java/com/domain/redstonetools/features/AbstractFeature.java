@@ -3,7 +3,6 @@ package com.domain.redstonetools.features;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.Identifier;
 
 public abstract class AbstractFeature {
     private final Feature feature;
