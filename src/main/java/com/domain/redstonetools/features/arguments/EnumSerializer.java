@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class EnumSerializer<T extends Enum<T>> extends TypeSerializer<T> {
+public abstract class EnumSerializer<T extends Enum<T>> extends ScalarSerializer<T> {
     protected EnumSerializer(Class<T> clazz) {
         super(clazz);
     }
