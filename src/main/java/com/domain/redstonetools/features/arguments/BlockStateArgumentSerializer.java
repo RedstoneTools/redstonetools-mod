@@ -1,10 +1,13 @@
 package com.domain.redstonetools.features.arguments;
 
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.util.registry.Registry;
 
-public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockStateArgument> {
+public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockStateArgument, String> {
+
     private static final BlockStateArgumentSerializer INSTANCE = new BlockStateArgumentSerializer();
 
     private BlockStateArgumentSerializer() {
@@ -13,6 +16,15 @@ public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockState
 
     public static BlockStateArgumentSerializer blockState() {
         return INSTANCE;
+    }
+
+    @Override
+    public BlockStateArgument deserialize(String serialized) {
+        try {
+            return deserialize(new StringReader(serialized));
+        } catch (CommandSyntaxException e) {
+            throw new IllegalStateException("Syntax Exception: " + e.getMessage());
+        }
     }
 
     @Override
@@ -44,4 +56,5 @@ public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockState
 
         return builder.toString();
     }
+
 }

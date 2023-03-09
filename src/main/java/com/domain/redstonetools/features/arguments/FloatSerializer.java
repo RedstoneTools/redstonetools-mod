@@ -1,13 +1,11 @@
 package com.domain.redstonetools.features.arguments;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 
-public class FloatSerializer extends BrigadierSerializer<Float> {
-    private static final FloatSerializer INSTANCE = new FloatSerializer(FloatArgumentType.floatArg());
+public class FloatSerializer extends StringBrigadierSerializer<Float> {
 
-    private FloatSerializer(FloatArgumentType argType) {
-        super(Float.class, argType);
-    }
+    static final FloatSerializer INSTANCE = new FloatSerializer(FloatArgumentType.floatArg());
 
     public static FloatSerializer floatArg() {
         return INSTANCE;
@@ -21,8 +19,13 @@ public class FloatSerializer extends BrigadierSerializer<Float> {
         return new FloatSerializer(FloatArgumentType.floatArg(min, max));
     }
 
+    public FloatSerializer(ArgumentType<Float> argumentType) {
+        super(Float.class, argumentType);
+    }
+
     @Override
     public String serialize(Float value) {
-        return value.toString();
+        return String.valueOf(value);
     }
+
 }

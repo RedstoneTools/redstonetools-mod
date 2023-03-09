@@ -10,26 +10,29 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class BrigadierSerializer<T> extends ScalarSerializer<T> {
-    private final ArgumentType<T> argType;
+public abstract class BrigadierSerializer<T, S> extends TypeSerializer<T, S> {
 
-    protected BrigadierSerializer(Class<T> clazz, ArgumentType<T> argType) {
+    // the wrapped brigadier argument type
+    final ArgumentType<T> argumentType;
+
+    public BrigadierSerializer(Class<T> clazz, ArgumentType<T> argumentType) {
         super(clazz);
-        this.argType = argType;
+        this.argumentType = argumentType;
     }
 
     @Override
-    public final T deserialize(StringReader reader) throws CommandSyntaxException {
-        return argType.parse(reader);
+    public T deserialize(StringReader reader) throws CommandSyntaxException {
+        return argumentType.parse(reader);
     }
 
     @Override
-    public final Collection<String> getExamples() {
-        return argType.getExamples();
+    public <R> CompletableFuture<Suggestions> listSuggestions(CommandContext<R> context, SuggestionsBuilder builder) {
+        return argumentType.listSuggestions(context, builder);
     }
 
     @Override
-    public final <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return argType.listSuggestions(context, builder);
+    public Collection<String> getExamples() {
+        return argumentType.getExamples();
     }
+
 }

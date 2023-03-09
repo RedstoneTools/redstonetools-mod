@@ -12,8 +12,11 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Base class for the 'wrapped' argument type.
+ *
+ * @param <T> The value type.
+ * @param <S> The serialized type.
  */
-public abstract class TypeSerializer<T> implements ArgumentType<T> {
+public abstract class TypeSerializer<T, S> implements ArgumentType<T> {
 
     protected final Class<T> clazz;
 
@@ -28,15 +31,12 @@ public abstract class TypeSerializer<T> implements ArgumentType<T> {
     }
 
     /* String Serialization */
-    public abstract String serialize(T value);
     public abstract T deserialize(StringReader reader) throws CommandSyntaxException;
+    public abstract T deserialize(S serialized);
+    public abstract S serialize(T value);
 
-    /* Command Handling */
+    /* Usage In Commands */
     public abstract Collection<String> getExamples();
-    public abstract <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder);
-
-    /* Configuration */
-    public abstract T load(Object in);
-    public abstract Object save(T value);
+    public abstract <R> CompletableFuture<Suggestions> listSuggestions(CommandContext<R> context, SuggestionsBuilder builder);
 
 }

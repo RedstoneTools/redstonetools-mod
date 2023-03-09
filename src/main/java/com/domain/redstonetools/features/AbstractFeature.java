@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 
 public abstract class AbstractFeature {
+
     private final Feature feature;
 
     {

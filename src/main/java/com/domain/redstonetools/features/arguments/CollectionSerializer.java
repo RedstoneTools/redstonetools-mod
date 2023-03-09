@@ -18,44 +18,19 @@ import java.util.function.Function;
  * @param <C> The collection type.
  */
 public class CollectionSerializer<E, C extends Collection<E>>
-        extends TypeSerializer<C>
+        extends TypeSerializer<C, List<Object>>
 {
 
-    public static <E> CollectionSerializer<E, List<E>> listOf(TypeSerializer<E> element,
-                                                              SaveMode saveMode) {
-        return new CollectionSerializer<>(List.class, element, ArrayList::new, saveMode);
+    public static <E> CollectionSerializer<E, List<E>> listOf(TypeSerializer<E, ?> element) {
+        return new CollectionSerializer<>(List.class, element, ArrayList::new);
     }
 
-    public static <E> CollectionSerializer<E, List<E>> listOf(TypeSerializer<E> element) {
-        return listOf(element, SaveMode.BLOCK);
+    public static <E> CollectionSerializer<E, Set<E>> setOf(TypeSerializer<E, ?> element) {
+        return new CollectionSerializer<>(Set.class, element, HashSet::new);
     }
 
-    public static <E> CollectionSerializer<E, Set<E>> setOf(TypeSerializer<E> element,
-                                                            SaveMode saveMode) {
-        return new CollectionSerializer<>(Set.class, element, HashSet::new, saveMode);
-    }
-
-    public static <E> CollectionSerializer<E, Set<E>> setOf(TypeSerializer<E> element) {
-        return setOf(element, SaveMode.BLOCK);
-    }
-
-    public enum SaveMode {
-        /**
-         * It should save the list as a compact string
-         * in the configuration.
-         */
-        STRING,
-
-        /**
-         * It should save the list as a block in the
-         * configuration.
-         */
-        BLOCK
-    }
-
-    final TypeSerializer<E> elementType;
+    final TypeSerializer<E, Object> elementType;
     final Function<Collection<E>, C> collectionFactory;
-    final SaveMode saveMode;
 
     // cache example because
     // its relatively expensive
@@ -64,13 +39,11 @@ public class CollectionSerializer<E, C extends Collection<E>>
 
     @SuppressWarnings("unchecked")
     protected CollectionSerializer(Class<?> clazz,
-                                   TypeSerializer<E> elementType,
-                                   Function<Collection<E>, C> collectionFactory,
-                                   SaveMode saveMode) {
+                                   TypeSerializer<E, ?> elementType,
+                                   Function<Collection<E>, C> collectionFactory) {
         super((Class<C>) clazz);
-        this.elementType = elementType;
+        this.elementType = (TypeSerializer<E, Object>) elementType;
         this.collectionFactory = collectionFactory;
-        this.saveMode = saveMode;
 
         // build example
         StringBuilder b = new StringBuilder("[");
@@ -82,25 +55,8 @@ public class CollectionSerializer<E, C extends Collection<E>>
         this.example = b.delete(b.length() - 3, b.length()).append("]").toString();
     }
 
-    public TypeSerializer<E> getElementType() {
+    public TypeSerializer<E, ?> getElementType() {
         return elementType;
-    }
-
-    @Override
-    public String serialize(C value) {
-        StringBuilder b = new StringBuilder("[");
-
-        for (E element : value) {
-            b.append(elementType.serialize(element));
-            b.append(", ");
-        }
-
-        return b
-                /* remove trailing comma and space */
-                .delete(b.length() - 3, b.length())
-                /* close list value */
-                .append("]")
-                .toString();
     }
 
     @Override
@@ -150,6 +106,7 @@ public class CollectionSerializer<E, C extends Collection<E>>
             // of the last comma if open, otherwise
             // it will be -1 and no elements will
             // be suggested
+            // TODO: fix because this doesnt work for some reason
             StringReader inputParser = new StringReader(remaining);
             int startIndex = -1;
             try {
@@ -201,35 +158,19 @@ public class CollectionSerializer<E, C extends Collection<E>>
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public C load(Object in) {
-        if (in instanceof String str) {
-            try {
-                return deserialize(new StringReader(str));
-            } catch (CommandSyntaxException e) {
-                throw new IllegalStateException("Syntax Exception in list: " + e.getMessage());
-            }
-        }
-
-        if (in instanceof List list) {
-            List<E> elementList = list.stream()
-                    .map(elementType::load)
-                    .toList();
-            return collectionFactory.apply(elementList);
-        }
-
-        throw new IllegalArgumentException("Value Error: unsupported list type in configuration: " +
-                (in == null ? "null" : in.getClass().getName()));
+    public C deserialize(List<Object> in) {
+        List<E> elementList = in.stream()
+                .map(elementType::deserialize)
+                .toList();
+        return collectionFactory.apply(elementList);
     }
 
     @Override
-    public Object save(C value) {
-        return switch (saveMode) {
-            case STRING -> serialize(value);
-            case BLOCK -> value
-                    .stream()
-                    .map(elementType::save)
-                    .toList();
-        };
+    public List<Object> serialize(C value) {
+        return value
+                .stream()
+                .map(elementType::serialize)
+                .toList();
     }
 
 }

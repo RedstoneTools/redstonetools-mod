@@ -11,31 +11,47 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class EnumSerializer<T extends Enum<T>> extends ScalarSerializer<T> {
+public abstract class EnumSerializer<T extends Enum<T>>
+        extends TypeSerializer<T, String> {
+
     protected EnumSerializer(Class<T> clazz) {
         super(clazz);
     }
 
+    // common method for stringification
+    // of the enum constants, can be overridden
     @Override
     public String serialize(T value) {
         return value.toString();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T deserialize(StringReader reader) throws CommandSyntaxException {
         var input = reader.readUnquotedString();
-        var inputLowerCase = input.toLowerCase();
 
-        var matches = EnumSet.allOf(clazz).stream()
+        try {
+            return deserialize(input);
+        } catch (IllegalArgumentException e) {
+            throw new CommandSyntaxException(null, Text.of(e.getMessage()));
+        }
+    }
+
+    @Override
+    public T deserialize(String input) {
+        String inputLowerCase = input.toLowerCase();
+
+        var matches = EnumSet.allOf(clazz)
+                .stream()
                 .filter(elem -> serialize(elem).toLowerCase().startsWith(inputLowerCase))
                 .toList();
 
         if (matches.isEmpty()) {
-            throw new CommandSyntaxException(null, Text.of("No such option '" + input + "'"));
+            throw new IllegalArgumentException("No such option '" + input + "'");
         }
 
         if (matches.size() > 1) {
-            throw new CommandSyntaxException(null, Text.of("Ambiguous option '" + input + "'"));
+            throw new IllegalArgumentException("Ambiguous option '" + input + "'");
         }
 
         return matches.get(0);
@@ -44,16 +60,17 @@ public abstract class EnumSerializer<T extends Enum<T>> extends ScalarSerializer
     @Override
     public Collection<String> getExamples() {
         return EnumSet.allOf(clazz).stream()
-                .map(Enum::toString)
+                .map(this::serialize)
                 .toList();
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         for (var value : EnumSet.allOf(clazz)) {
-            builder = builder.suggest(value.toString());
+            builder = builder.suggest(serialize(value));
         }
 
         return builder.buildFuture();
     }
+
 }
