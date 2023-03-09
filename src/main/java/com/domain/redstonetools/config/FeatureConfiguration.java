@@ -93,7 +93,7 @@ public class FeatureConfiguration {
                 }
             }
         } catch (Exception t) {
-            throw new RuntimeException("Error occurred while compiling config for feature " + feature.getID(), t);
+            throw new RuntimeException("Error occurred while compiling config for feature " + feature.getIdentifier(), t);
         }
     }
 
@@ -111,7 +111,7 @@ public class FeatureConfiguration {
 
             config.save();
         } catch (Exception t) {
-            throw new RuntimeException("Error occurred while saving config for feature " + feature.getID());
+            throw new RuntimeException("Error occurred while saving config for feature " + feature.getIdentifier());
         }
     }
 
@@ -132,7 +132,7 @@ public class FeatureConfiguration {
                 option.accessor().set(sec.get(option.name()));
             }
         } catch (Exception t) {
-            throw new RuntimeException("Error occurred while loading config for feature " + feature.getID());
+            throw new RuntimeException("Error occurred while loading config for feature " + feature.getIdentifier());
         }
     }
 

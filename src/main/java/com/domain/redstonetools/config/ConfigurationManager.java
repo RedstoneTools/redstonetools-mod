@@ -34,7 +34,7 @@ public class ConfigurationManager {
     }
 
     public Path getConfigurationFile(AbstractFeature feature) {
-        return directory.resolve(feature.getFeatureDescriptor().id() + ".yml");
+        return directory.resolve(feature.getIdentifier() + ".yml");
     }
 
     public FeatureConfiguration getConfiguration(String id) {
@@ -43,7 +43,7 @@ public class ConfigurationManager {
 
     public FeatureConfiguration newConfiguration(AbstractFeature feature) {
         FeatureConfiguration config = new FeatureConfiguration(this, feature);
-        configs.put(feature.getID(), config);
+        configs.put(feature.getIdentifier(), config);
         return config;
     }
 
