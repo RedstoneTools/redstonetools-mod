@@ -22,10 +22,6 @@ import static com.domain.redstonetools.features.arguments.FloatSerializer.floatA
 
 @Feature(name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
 public class QuickTpFeature extends CommandFeature {
-    public static final Argument<List<BlockStateArgument>> test = Argument
-            .ofType(CollectionSerializer.listOf(
-                    BlockStateArgumentSerializer.blockState()));
-
     public static final Argument<Float> distance = Argument
             .ofType(floatArg(1.0f))
             .withDefault(50.0f);

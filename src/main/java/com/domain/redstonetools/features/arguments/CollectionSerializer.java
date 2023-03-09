@@ -1,5 +1,6 @@
 package com.domain.redstonetools.features.arguments;
 
+import com.domain.redstonetools.utils.CommandUtils;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -108,9 +109,12 @@ public class CollectionSerializer<E, C extends Collection<E>>
         List<E> list = new ArrayList<>();
         reader.expect('[');
         reader.skipWhitespace();
-        if (reader.peek() == ']') // empty list
+        if (reader.peek() == ']') { // empty list
+            reader.skip();
             return collectionFactory.apply(list);
-        while (true) {
+        }
+
+        while (reader.canRead()) {
             E element = elementType.deserialize(reader);
             list.add(element);
             reader.skipWhitespace();
@@ -142,7 +146,55 @@ public class CollectionSerializer<E, C extends Collection<E>>
             builder.suggest(",");
             builder.suggest("]");
 
-            elementType.listSuggestions(context, builder);
+            // suggest element options
+            // the start index is the index
+            // of the last comma if open, otherwise
+            // it will be -1 and no elements will
+            // be suggested
+            StringReader inputParser = new StringReader(remaining);
+            int startIndex = -1;
+            try {
+                inputParser.skip(); // [
+                while (inputParser.canRead()) {
+                    // skip element
+                    int oldCursor = inputParser.getCursor();
+                    try {
+                        elementType.deserialize(inputParser);
+                    } catch (CommandSyntaxException ignored) { }
+                    if (oldCursor == inputParser.getCursor())
+                        break;
+                    inputParser.skipWhitespace();
+
+                    // skip and register comma
+                    if (inputParser.peek() == ',') {
+                        startIndex = inputParser.getCursor();
+                    }
+
+                    inputParser.skip();
+                    if (!inputParser.canRead())
+                        break;
+
+                    // end on closer
+                    if (inputParser.peek() == ']') {
+                        startIndex = -1;
+                        break;
+                    }
+
+                    inputParser.skipWhitespace();
+                }
+            } catch (Exception e) {
+                startIndex = -1;
+            }
+
+            if (startIndex != -1) {
+                SuggestionsBuilder b2 = new SuggestionsBuilder(
+                        remaining,
+                        remaining.toLowerCase(),
+                        startIndex + 1);
+
+                elementType.listSuggestions(context, b2);
+                builder.add(b2);
+            }
         }
 
         return builder.buildFuture();
