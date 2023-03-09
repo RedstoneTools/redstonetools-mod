@@ -10,6 +10,8 @@ import net.minecraft.text.Text;
 import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
 import static com.domain.redstonetools.features.arguments.StringSerializer.word;
 
+import java.math.BigInteger;
+
 @Feature(name = "Base Convert", description = "Converts a number from one base to another.", command = "base")
 public class BaseConvertFeature extends CommandFeature {
     public static final Argument<Integer> fromBase = Argument
@@ -21,14 +23,14 @@ public class BaseConvertFeature extends CommandFeature {
 
     @Override
     protected int execute(ServerCommandSource source) throws CommandSyntaxException {
-        int input;
+        BigInteger input;
         try {
-            input = Integer.parseInt(number.getValue(), fromBase.getValue());
+            input = new BigInteger(number.getValue(), fromBase.getValue());
         } catch (NumberFormatException e) {
             throw new CommandSyntaxException(null, Text.of("Inputted number does not match the specified base"));
         }
 
-        var output = Integer.toString(input, toBase.getValue());
+        var output = input.toString(toBase.getValue());
         source.sendFeedback(Text.of(output), false);
 
         return Command.SINGLE_SUCCESS;
