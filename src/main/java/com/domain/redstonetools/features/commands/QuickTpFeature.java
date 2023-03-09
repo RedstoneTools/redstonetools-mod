@@ -30,7 +30,6 @@ public class QuickTpFeature extends CommandFeature {
         var player = source.getPlayer();
 
         var targetPosition = getTargetPosition(player);
-        player.onTeleportationDone();
 
         player.teleport(targetPosition.x, targetPosition.y, targetPosition.z);
 
