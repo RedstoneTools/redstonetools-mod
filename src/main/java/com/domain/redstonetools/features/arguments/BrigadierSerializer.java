@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 public abstract class BrigadierSerializer<T, S> extends TypeSerializer<T, S> {
 
     // the wrapped brigadier argument type
-    final ArgumentType<T> argumentType;
+    private final ArgumentType<T> argumentType;
 
     public BrigadierSerializer(Class<T> clazz, ArgumentType<T> argumentType) {
         super(clazz);
