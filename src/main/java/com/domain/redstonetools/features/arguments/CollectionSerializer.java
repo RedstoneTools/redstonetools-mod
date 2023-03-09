@@ -57,6 +57,11 @@ public class CollectionSerializer<E, C extends Collection<E>>
     final Function<Collection<E>, C> collectionFactory;
     final SaveMode saveMode;
 
+    // cache example because
+    // its relatively expensive
+    // to compute correctly
+    final String example;
+
     @SuppressWarnings("unchecked")
     protected CollectionSerializer(Class<?> clazz,
                                    TypeSerializer<E> elementType,
@@ -66,6 +71,15 @@ public class CollectionSerializer<E, C extends Collection<E>>
         this.elementType = elementType;
         this.collectionFactory = collectionFactory;
         this.saveMode = saveMode;
+
+        // build example
+        StringBuilder b = new StringBuilder("[");
+        for (String elemStr : elementType.getExamples()) {
+            b.append(elemStr);
+            b.append(", ");
+        }
+
+        this.example = b.delete(b.length() - 3, b.length()).append("]").toString();
     }
 
     public TypeSerializer<E> getElementType() {
@@ -74,22 +88,61 @@ public class CollectionSerializer<E, C extends Collection<E>>
 
     @Override
     public String serialize(C value) {
-        return null;
+        StringBuilder b = new StringBuilder("[");
+
+        for (E element : value) {
+            b.append(elementType.serialize(element));
+            b.append(", ");
+        }
+
+        return b
+                /* remove trailing comma and space */
+                .delete(b.length() - 3, b.length())
+                /* close list value */
+                .append("]")
+                .toString();
     }
 
     @Override
     public C deserialize(StringReader reader) throws CommandSyntaxException {
-        return null;
+        List<E> list = new ArrayList<>();
+        reader.expect('[');
+        while (true) {
+            E element = elementType.deserialize(reader);
+            list.add(element);
+            reader.skipWhitespace();
+            if (reader.peek() == ']')
+                break;
+            reader.expect(',');
+            reader.skipWhitespace();
+        }
+
+        reader.skipWhitespace();
+        reader.expect(']');
+
+        return collectionFactory.apply(list);
     }
 
     @Override
     public Collection<String> getExamples() {
-        return List.of("[a, b, c]", "[minecraft:dirt, minecraft:grass_block[snowy=true], minecraft:stone]");
+        return List.of("[a, b, c]");
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return null;
+        String remaining = builder.getRemaining();
+
+        if (remaining.isBlank()) {
+            // suggest opening the list
+            builder.suggest("[");
+        } else {
+            builder.suggest(",");
+            builder.suggest("]");
+
+            elementType.listSuggestions(context, builder);
+        }
+
+        return builder.buildFuture();
     }
 
     @Override
