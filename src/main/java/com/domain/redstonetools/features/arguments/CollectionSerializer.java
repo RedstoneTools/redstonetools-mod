@@ -107,6 +107,9 @@ public class CollectionSerializer<E, C extends Collection<E>>
     public C deserialize(StringReader reader) throws CommandSyntaxException {
         List<E> list = new ArrayList<>();
         reader.expect('[');
+        reader.skipWhitespace();
+        if (reader.peek() == ']') // empty list
+            return collectionFactory.apply(list);
         while (true) {
             E element = elementType.deserialize(reader);
             list.add(element);
