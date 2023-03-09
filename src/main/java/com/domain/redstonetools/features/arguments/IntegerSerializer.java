@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 public class IntegerSerializer extends StringBrigadierSerializer<Integer> {
 
-    static final IntegerSerializer INSTANCE = new IntegerSerializer(IntegerArgumentType.integer());
+    private static final IntegerSerializer INSTANCE = new IntegerSerializer(IntegerArgumentType.integer());
 
     public static IntegerSerializer integer() {
         return INSTANCE;
@@ -19,7 +19,7 @@ public class IntegerSerializer extends StringBrigadierSerializer<Integer> {
         return new IntegerSerializer(IntegerArgumentType.integer(min, max));
     }
 
-    public IntegerSerializer(ArgumentType<Integer> argumentType) {
+    IntegerSerializer(ArgumentType<Integer> argumentType) {
         super(Integer.class, argumentType);
     }
 

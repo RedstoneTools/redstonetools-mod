@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.LongArgumentType;
 
 public class LongSerializer extends StringBrigadierSerializer<Long> {
 
-    static final LongSerializer INSTANCE = new LongSerializer(LongArgumentType.longArg());
+    private static final LongSerializer INSTANCE = new LongSerializer(LongArgumentType.longArg());
 
     public static LongSerializer longArg() {
         return INSTANCE;
@@ -19,7 +19,7 @@ public class LongSerializer extends StringBrigadierSerializer<Long> {
         return new LongSerializer(LongArgumentType.longArg(min, max));
     }
 
-    public LongSerializer(ArgumentType<Long> argumentType) {
+    LongSerializer(ArgumentType<Long> argumentType) {
         super(Long.class, argumentType);
     }
 

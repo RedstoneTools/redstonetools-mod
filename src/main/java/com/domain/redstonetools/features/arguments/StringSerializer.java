@@ -5,9 +5,9 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 
 public class StringSerializer extends StringBrigadierSerializer<String> {
 
-    static final StringSerializer INSTANCE_WORD = new StringSerializer(StringArgumentType.word());
-    static final StringSerializer INSTANCE_STRING = new StringSerializer(StringArgumentType.string());
-    static final StringSerializer INSTANCE_GREEDY = new StringSerializer(StringArgumentType.greedyString());
+    private static final StringSerializer INSTANCE_WORD = new StringSerializer(StringArgumentType.word());
+    private static final StringSerializer INSTANCE_STRING = new StringSerializer(StringArgumentType.string());
+    private static final StringSerializer INSTANCE_GREEDY_STRING = new StringSerializer(StringArgumentType.greedyString());
 
     public static StringSerializer string() {
         return INSTANCE_STRING;
@@ -17,11 +17,11 @@ public class StringSerializer extends StringBrigadierSerializer<String> {
         return INSTANCE_WORD;
     }
 
-    public static StringSerializer greedy() {
-        return INSTANCE_GREEDY;
+    public static StringSerializer greedyString() {
+        return INSTANCE_GREEDY_STRING;
     }
 
-    public StringSerializer(ArgumentType<String> argumentType) {
+    StringSerializer(ArgumentType<String> argumentType) {
         super(String.class, argumentType);
     }
 

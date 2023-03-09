@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 
 public class FloatSerializer extends StringBrigadierSerializer<Float> {
 
-    static final FloatSerializer INSTANCE = new FloatSerializer(FloatArgumentType.floatArg());
+    private static final FloatSerializer INSTANCE = new FloatSerializer(FloatArgumentType.floatArg());
 
     public static FloatSerializer floatArg() {
         return INSTANCE;
@@ -19,7 +19,7 @@ public class FloatSerializer extends StringBrigadierSerializer<Float> {
         return new FloatSerializer(FloatArgumentType.floatArg(min, max));
     }
 
-    public FloatSerializer(ArgumentType<Float> argumentType) {
+    FloatSerializer(ArgumentType<Float> argumentType) {
         super(Float.class, argumentType);
     }
 

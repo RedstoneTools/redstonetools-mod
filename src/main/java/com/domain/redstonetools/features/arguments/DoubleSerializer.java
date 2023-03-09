@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 
 public class DoubleSerializer extends StringBrigadierSerializer<Double> {
 
-    static final DoubleSerializer INSTANCE = new DoubleSerializer(DoubleArgumentType.doubleArg());
+    private static final DoubleSerializer INSTANCE = new DoubleSerializer(DoubleArgumentType.doubleArg());
 
     public static DoubleSerializer doubleArg() {
         return INSTANCE;
@@ -19,7 +19,7 @@ public class DoubleSerializer extends StringBrigadierSerializer<Double> {
         return new DoubleSerializer(DoubleArgumentType.doubleArg(min, max));
     }
 
-    public DoubleSerializer(ArgumentType<Double> argumentType) {
+    DoubleSerializer(ArgumentType<Double> argumentType) {
         super(Double.class, argumentType);
     }
 

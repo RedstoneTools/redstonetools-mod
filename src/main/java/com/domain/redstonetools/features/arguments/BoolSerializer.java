@@ -5,13 +5,13 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 
 public class BoolSerializer extends StringBrigadierSerializer<Boolean> {
 
-    static final BoolSerializer INSTANCE = new BoolSerializer(BoolArgumentType.bool());
+    private static final BoolSerializer INSTANCE = new BoolSerializer(BoolArgumentType.bool());
 
     public static BoolSerializer bool() {
         return INSTANCE;
     }
 
-    public BoolSerializer(ArgumentType<Boolean> argumentType) {
+    BoolSerializer(ArgumentType<Boolean> argumentType) {
         super(Boolean.class, argumentType);
     }
 
