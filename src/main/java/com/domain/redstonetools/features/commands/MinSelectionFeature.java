@@ -5,6 +5,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.blocks.Blocks;
 import com.sk89q.worldedit.fabric.FabricAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
@@ -45,6 +46,18 @@ public class MinSelectionFeature extends CommandFeature {
             actor.printError(TextComponent.of("Please make a selection with worldedit first."));
             return -1;
         }
+
+        boolean isEmpty = true;
+        for (BlockVector3 point : selection) {
+            if (!selectionWorld.getBlock(point).equals(BlockTypes.AIR.getDefaultState()))
+                isEmpty = false;
+        }
+
+        if (isEmpty) {
+            actor.printError(TextComponent.of("could not minimize the selection because the selection is empty."));
+            return -1;
+        }
+            
 
         minimiseSelection(selectionWorld, selection);
 
