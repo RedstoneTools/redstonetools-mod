@@ -2,6 +2,7 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
+import com.domain.redstonetools.feedback.Feedback;
 import com.domain.redstonetools.utils.PositionUtils;
 import com.domain.redstonetools.utils.RaycastUtils;
 import com.mojang.brigadier.Command;
@@ -27,14 +28,14 @@ public class QuickTpFeature extends CommandFeature {
             .withDefault(false);
 
     @Override
-    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
+    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
         var player = source.getPlayer();
 
         var targetPosition = getTargetPosition(player);
 
         player.teleport(targetPosition.x, targetPosition.y, targetPosition.z);
 
-        return Command.SINGLE_SUCCESS;
+        return Feedback.none();
     }
 
     private Vec3d getTargetPosition(PlayerEntity player) {
