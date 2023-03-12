@@ -34,6 +34,11 @@ public class ReflectionUtils {
         return getConcreteSubclasses(AbstractModule.class);
     }
 
+    /**
+     * Get all classes which extend {@link AbstractFeature}.
+     *
+     * @return The feature classes.
+     */
     public static Set<Class<? extends AbstractFeature>> getFeatureClasses() {
         return getConcreteSubclasses(AbstractFeature.class);
     }
@@ -44,6 +49,13 @@ public class ReflectionUtils {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Get and load all declared arguments in the
+     * given feature class.
+     *
+     * @param featureClass The feature class to search.
+     * @return The list of arguments.
+     */
     public static List<Argument<?>> getArguments(Class<? extends AbstractFeature> featureClass) {
         return Arrays.stream(featureClass.getFields())
                 .filter(field -> Argument.class.isAssignableFrom(field.getType()))
@@ -65,6 +77,14 @@ public class ReflectionUtils {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get the feature descriptor of the given
+     * feature class if present.
+     *
+     * @param featureClass The feature class.
+     * @throws RuntimeException If no feature annotation is present.
+     * @return The annotation instance.
+     */
     public static Feature getFeatureInfo(Class<? extends AbstractFeature> featureClass) {
         var feature = featureClass.getAnnotation(Feature.class);
 

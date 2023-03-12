@@ -14,7 +14,22 @@ import java.util.List;
 public class CommandUtils {
     private CommandUtils() { }
 
-    public static void register(String name, List<Argument<?>> arguments, Command<ServerCommandSource> executor, CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+    /**
+     * Register a new command by name with the appropriate
+     * arguments. This handles optionals and other behaviours
+     * automatically.
+     *
+     * @param name The name of the command.
+     * @param arguments The list of arguments.
+     * @param executor The command executor.
+     * @param dispatcher The {@link CommandDispatcher} instance.
+     * @param dedicated todo: Unused?
+     */
+    public static void register(String name,
+                                List<Argument<?>> arguments,
+                                Command<ServerCommandSource> executor,
+                                CommandDispatcher<ServerCommandSource> dispatcher,
+                                boolean dedicated) {
         var base = CommandManager.literal(name);
 
         if (arguments.stream().allMatch(Argument::isOptional)) {
@@ -30,6 +45,9 @@ public class CommandUtils {
         dispatcher.register(base);
     }
 
+    // builds the command argument chain,
+    // handling optionals by injecting the
+    // executor before optional arguments
     private static ArgumentBuilder<ServerCommandSource, ?> createArgumentChain(List<Argument<?>> arguments, Command<ServerCommandSource> executor) {
         var reversedArguments = new ArrayList<>(arguments);
         Collections.reverse(reversedArguments);

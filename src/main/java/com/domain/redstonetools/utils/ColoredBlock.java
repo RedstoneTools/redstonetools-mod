@@ -9,6 +9,11 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class ColoredBlock {
+
+    /**
+     * The regex to recognize colored blocks
+     * and capture their color and colorless ID.
+     */
     private static final Pattern COLORED_BLOCK_REGEX = Pattern.compile(
             "^minecraft:(\\w+?)_(wool|stained_glass|concrete_powder|concrete|glazed_terracotta|terracotta)$"
     );
@@ -18,6 +23,7 @@ public class ColoredBlock {
         put("minecraft:terracotta", new ColoredBlock("minecraft:%s_terracotta", BlockColor.WHITE));
     }};
 
+    /** Cached for performance. */
     private static final HashMap<String, ColoredBlock> COLORED_BLOCK_CACHE = new HashMap<>() {{
         putAll(COLORLESS_BLOCKS);
     }};
@@ -34,6 +40,13 @@ public class ColoredBlock {
         return new ColoredBlock(blockIdFormat, color);
     }
 
+    /**
+     * Parse the colored block from the given block
+     * identifier.
+     *
+     * @param blockId The block identifier.
+     * @return The colored block.
+     */
     public static ColoredBlock fromBlockId(String blockId) {
         if (COLORED_BLOCK_CACHE.containsKey(blockId)) {
             return COLORED_BLOCK_CACHE.get(blockId);
@@ -54,6 +67,12 @@ public class ColoredBlock {
         return coloredBlock;
     }
 
+    /**
+     * Format the block ID with the color
+     * of this block.
+     *
+     * @return The identifier.
+     */
     public String toBlockId() {
         return String.format(blockIdFormat, color);
     }
@@ -82,4 +101,5 @@ public class ColoredBlock {
     public String toString() {
         return toBlockId();
     }
+
 }
