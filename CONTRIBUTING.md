@@ -2,7 +2,7 @@
 Please read this document before contributing.
 
 # Bug reports
-If you find a bug please create a new GitHub issue for it (make sure it hasn't been reported before) including the steps needed to reproduce the issue and the latest Minecraft log file (google how to find them if you don't know how to).
+If you find a bug please create a new GitHub issue for it (make sure it hasn't been reported before) including the steps needed to reproduce the issue, any relevant information about your environment and the latest Minecraft log file (google how to find them if you don't know how to).
 
 # Feature requests
 If you want to request a feature please create a new GitHub issue for it (make sure it hasn't been requested before) containing all the necessary details about the feature.
