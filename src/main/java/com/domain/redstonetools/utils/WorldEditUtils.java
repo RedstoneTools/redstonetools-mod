@@ -1,13 +1,18 @@
 package com.domain.redstonetools.utils;
 
+import com.domain.redstonetools.feedback.Feedback;
+import com.mojang.datafixers.util.Either;
+import com.sk89q.worldedit.IncompleteRegionException;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.fabric.FabricAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.function.Consumer;
 
 public class WorldEditUtils {
-
     /**
      * Execute a function for each block in
      * the provided region.
@@ -38,4 +43,19 @@ public class WorldEditUtils {
         }
     }
 
+    public static Either<Region, Feedback> getSelection(ServerPlayerEntity player) {
+        var actor = FabricAdapter.adaptPlayer(player);
+
+        var localSession = WorldEdit.getInstance()
+                .getSessionManager()
+                .get(actor);
+
+        var selectionWorld = localSession.getSelectionWorld();
+
+        try {
+            return Either.left(localSession.getSelection(selectionWorld));
+        } catch (IncompleteRegionException ex) {
+            return Either.right(Feedback.invalidUsage("Please make a selection with worldedit first."));
+        }
+    }
 }
