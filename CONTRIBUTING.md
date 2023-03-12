@@ -8,7 +8,7 @@ If you find a bug please create a new GitHub issue for it (make sure it hasn't b
 If you want to request a feature please create a new GitHub issue for it (make sure it hasn't been requested before) containing all the necessary details about the feature.
 
 # Contributions
-If you would like to work on this project by fixing bugs or adding features please ask to be assigned to the corresponding issue and create a pull request into the dev branch once you fixed the bug or added the feature and request a review from the person that assigned you. Be prepared to make any additional changes if the reviewer asks for them.
+If you would like to work on this project by fixing bugs or adding features please ask to be assigned to the corresponding issue and create a pull request into the dev branch once you fixed the bug or added the feature and request a review from the person that assigned you. Please write clear commit messages and keep your commits small. Be prepared to make any additional changes if the reviewer asks for them.
 
 <br>
 
