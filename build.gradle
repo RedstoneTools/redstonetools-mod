@@ -16,14 +16,25 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+	maven {
+        name = "WorldEdit Maven"
+        url = "https://maven.enginehub.org/repo/"
+    }
 }
 
 dependencies {
 	// jUnit 5
-    implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+	include implementation ('org.junit.jupiter:junit-jupiter:5.8.1')
 
-	// Spring DI
-	implementation 'org.springframework:spring-context:5.3.13'
+	// Guice
+	include implementation ('com.google.inject:guice:5.0.1')
+
+	// Reflections
+	include implementation ('org.reflections:reflections:0.9.12')
+
+	include 'org.javassist:javassist:3.26.0-GA'
+	include 'javax.inject:javax.inject:1'
+	include 'aopalliance:aopalliance:1.0'
 
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -32,7 +43,11 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// Worldedit API
+	modImplementation "com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10"
 }
+
 
 processResources {
 	inputs.property "version", project.version
@@ -45,13 +60,6 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
 	it.options.release = 17
-}
-
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
 }
 
 jar {
@@ -75,4 +83,9 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+
+test {
+	useJUnit()
+	useJUnitPlatform()
 }

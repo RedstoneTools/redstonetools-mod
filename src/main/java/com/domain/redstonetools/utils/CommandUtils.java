@@ -1,6 +1,6 @@
 package com.domain.redstonetools.utils;
 
-import com.domain.redstonetools.features.options.Argument;
+import com.domain.redstonetools.features.arguments.Argument;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -12,19 +12,18 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommandUtils {
-    private CommandUtils() {
-    }
+    private CommandUtils() { }
 
     public static void register(String name, List<Argument<?>> arguments, Command<ServerCommandSource> executor, CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
         var base = CommandManager.literal(name);
 
-        if (arguments.stream().allMatch(arg -> arg.optional)) {
+        if (arguments.stream().allMatch(Argument::isOptional)) {
             base.executes(executor);
         }
 
         if (!arguments.isEmpty()) {
             base.then(createArgumentChain(arguments.stream()
-                    .sorted((a, b) -> Boolean.compare(a.optional, b.optional))
+                    .sorted((a, b) -> Boolean.compare(a.isOptional(), b.isOptional()))
                     .toList(), executor));
         }
 
@@ -38,12 +37,12 @@ public class CommandUtils {
         ArgumentBuilder<ServerCommandSource, ?> argument = null;
         for (var arg : reversedArguments) {
             if (argument == null) {
-                argument = CommandManager.argument(arg.name, arg.type).executes(executor);
+                argument = CommandManager.argument(arg.getName(), arg.getType()).executes(executor);
             } else {
-                argument = CommandManager.argument(arg.name, arg.type).then(argument);
+                argument = CommandManager.argument(arg.getName(), arg.getType()).then(argument);
 
                 // If the argument is optional or if this is the last required argument it should run the executor
-                if (arg.optional || reversedArguments.get(reversedArguments.indexOf(arg) - 1).optional) {
+                if (arg.isOptional() || reversedArguments.get(reversedArguments.indexOf(arg) - 1).isOptional()) {
                     argument.executes(executor);
                 }
             }

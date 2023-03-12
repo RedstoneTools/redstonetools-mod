@@ -2,78 +2,76 @@ package com.domain.redstonetools.utils;
 
 import com.domain.redstonetools.features.AbstractFeature;
 import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.features.options.Argument;
-import com.domain.redstonetools.features.options.Options;
-import com.mojang.brigadier.arguments.ArgumentType;
+import com.domain.redstonetools.features.arguments.Argument;
+import com.google.inject.AbstractModule;
+import org.reflections.Reflections;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-// TODO: Someone with a better understanding of Java reflection should probably rewrite this, or maybe we should just use dependency injection
 public class ReflectionUtils {
-    private ReflectionUtils() {
+    private ReflectionUtils() { }
+
+    private static final Reflections reflections = new Reflections("com.domain.redstonetools");
+
+    public static Set<? extends AbstractModule> getModules() {
+        return getModuleClasses().stream()
+                .map(clazz -> {
+                    try {
+                        return clazz.getDeclaredConstructor().newInstance();
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                        throw new RuntimeException("Failed to instantiate module " + clazz.getName(), e);
+                    }
+                })
+                .collect(Collectors.toSet());
+    }
+
+    private static Set<Class<? extends AbstractModule>> getModuleClasses() {
+        return getConcreteSubclasses(AbstractModule.class);
+    }
+
+    public static Set<Class<? extends AbstractFeature>> getFeatureClasses() {
+        return getConcreteSubclasses(AbstractFeature.class);
+    }
+
+    private static <T> Set<Class<? extends T>> getConcreteSubclasses(Class<T> clazz) {
+        return reflections.getSubTypesOf(clazz).stream()
+                .filter(subclass -> !Modifier.isAbstract(subclass.getModifiers()))
+                .collect(Collectors.toSet());
+    }
+
+    public static List<Argument<?>> getArguments(Class<? extends AbstractFeature> featureClass) {
+        return Arrays.stream(featureClass.getFields())
+                .filter(field -> Argument.class.isAssignableFrom(field.getType()))
+                .map(field -> {
+                    if (!Modifier.isPublic(field.getModifiers())
+                     || !Modifier.isStatic(field.getModifiers())
+                     || !Modifier.isFinal(field.getModifiers())) {
+                        throw new RuntimeException("Field " + field.getName() + " of feature " + featureClass.getName() + " is not public static final");
+                    }
+
+                    try {
+                        var argument = (Argument<?>) field.get(null);
+
+                        return argument.ensureNamed(field.getName());
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("Failed to get value of field " + field.getName(), e);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     public static Feature getFeatureInfo(Class<? extends AbstractFeature> featureClass) {
-        return featureClass.getAnnotation(Feature.class);
-    }
+        var feature = featureClass.getAnnotation(Feature.class);
 
-    public static Feature getFeatureInfo(AbstractFeature<?> feature) {
-        return getFeatureInfo(feature.getClass());
-    }
-
-    public static <O extends Options> O getArgumentInstance(Class<? extends AbstractFeature> featureClass) {
-        var optionsClass = getGenericParameters(featureClass)[0];
-
-        try {
-            return (O) optionsClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            // TODO: Create separate catch blocks for each exception to provide more information
-            throw new RuntimeException("Failed to create instance of options class " + optionsClass.getName(), e);
+        if (feature == null) {
+            throw new RuntimeException("No feature annotation found for feature " + featureClass.getName());
         }
-    }
 
-    public static <O extends Options> O getArgumentInstance(AbstractFeature<O> feature) {
-        return getArgumentInstance(feature.getClass());
-    }
-
-    public static Argument<?>[] getArguments(Object arguments) {
-        return Arrays.stream(getArgumentFields(arguments))
-                .map(field -> getArgument(arguments, field))
-                .toArray(Argument[]::new);
-    }
-
-    private static Field[] getArgumentFields(Object options) {
-        return options.getClass().getFields();
-    }
-
-    public static Argument<?> getArgument(Object arguments, Field option) {
-        try {
-            return (Argument<?>)option.get(arguments);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Class<?>[] getGenericParameters(Class<?> clazz) {
-        // https://stackoverflow.com/questions/1901164/get-type-of-a-generic-parameter-in-java-with-reflection
-        return Arrays.stream(((ParameterizedType)clazz.getGenericSuperclass()).getActualTypeArguments())
-                .map(type -> (Class<?>)type)
-                .toArray(Class[]::new);
-    }
-
-    public static AbstractFeature<?> getFeatureInstance(Class<? extends AbstractFeature<?>> featureClass) {
-        try {
-            return featureClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static <T> Class<T> getArgumentType(ArgumentType<T> type) {
-        // https://stackoverflow.com/questions/1901164/get-type-of-a-generic-parameter-in-java-with-reflection
-        return (Class<T>)((ParameterizedType)type.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        return feature;
     }
 }
