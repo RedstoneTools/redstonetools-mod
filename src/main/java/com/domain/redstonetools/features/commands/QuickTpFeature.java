@@ -12,6 +12,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
+import static com.domain.redstonetools.RedstoneToolsClient.LOGGER;
 import static com.domain.redstonetools.features.arguments.BoolSerializer.bool;
 import static com.domain.redstonetools.features.arguments.FloatSerializer.floatArg;
 
@@ -39,16 +40,22 @@ public class QuickTpFeature extends CommandFeature {
     private Vec3d getTargetPosition(PlayerEntity player) {
         // 8 chunks default, 16 blocks per chunk
         var renderDistanceBlocks = PlayerEntity.getRenderDistanceMultiplier() * 8 * 16;
+        LOGGER.error("Raycasting distance: {}", Math.min(distance.getValue(), renderDistanceBlocks));
         var hit = player.raycast(Math.min(distance.getValue(), renderDistanceBlocks), 0, includeFluids.getValue());
 
-        return clampHitPosition(hit);
+        return clampHitPosition(hit).subtract(0, 1.12, 0);
     }
 
     private Vec3d clampHitPosition(HitResult hit) {
-        if (!(hit instanceof BlockHitResult blockHit)) {
-            return hit.getPos();
+        if (hit.getType() != HitResult.Type.BLOCK) {
+            return hit.getPos().subtract(0, 0.5, 0);
         }
 
-        return PositionUtils.getBottomPositionOfBlock(RaycastUtils.getBlockHitNeighbor(blockHit).getBlockPos());
+        var blockHit = (BlockHitResult) hit;
+
+        var neighbor = RaycastUtils.getBlockHitNeighbor(blockHit);
+        var neighborPos = neighbor.getBlockPos();
+
+        return PositionUtils.getBottomPositionOfBlock(neighborPos);
     }
 }
