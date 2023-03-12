@@ -6,10 +6,16 @@ import net.minecraft.state.property.Property;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utilities for working with block states.
+ */
 public class BlockStateNbtUtil {
     private BlockStateNbtUtil() {
     }
 
+    /**
+     * Stringifies the given block state.
+     */
     public static String blockStateToString(BlockState blockState) {
         HashMap<String, Object> valueMap = new HashMap<>();
 
@@ -21,6 +27,12 @@ public class BlockStateNbtUtil {
         return valueMap.toString();
     }
 
+    /**
+     * Parses a string into a block state
+     * and returns it.
+     *
+     * @param defaultState The base state to build on.
+     */
     public static BlockState stringToBlockState(String string, BlockState defaultState) {
         BlockState finalState = defaultState;
         Map<String, String> map = stringToMap(string);
@@ -39,6 +51,8 @@ public class BlockStateNbtUtil {
         return finalState;
     }
 
+    // parses a value from string
+    // for the given property
     private static Comparable propertyValueFromStringValue(Property property, String string) {
         for (Object o : property.getValues()) {
             if (o.toString().equals(string)) return (Comparable) o;

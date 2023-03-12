@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Utilities for working with commands and
+ * {@link Argument} objects.
+ */
 public class CommandUtils {
     private CommandUtils() { }
 

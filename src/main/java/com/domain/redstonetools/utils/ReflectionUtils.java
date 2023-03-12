@@ -18,6 +18,12 @@ public class ReflectionUtils {
 
     private static final Reflections reflections = new Reflections("com.domain.redstonetools");
 
+    /**
+     * Gets all module classes using {@link #getModuleClasses()}
+     * and instantiates them.
+     *
+     * @return The module set.
+     */
     public static Set<? extends AbstractModule> getModules() {
         return getModuleClasses().stream()
                 .map(clazz -> {
@@ -30,6 +36,11 @@ public class ReflectionUtils {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Get all classes which extend {@link AbstractModule}.
+     *
+     * @return The module classes.
+     */
     private static Set<Class<? extends AbstractModule>> getModuleClasses() {
         return getConcreteSubclasses(AbstractModule.class);
     }

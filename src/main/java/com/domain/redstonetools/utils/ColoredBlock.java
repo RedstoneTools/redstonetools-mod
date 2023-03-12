@@ -8,6 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+/**
+ * Represents a color-able block type with an associated {@link BlockColor},
+ * which can be recolored.
+ */
 public class ColoredBlock {
 
     /**

@@ -2,7 +2,12 @@ package com.domain.redstonetools.utils;
 
 import java.util.Arrays;
 
+/**
+ * A Minecraft block color, on for example
+ * wool or concrete.
+ */
 public enum BlockColor {
+
     WHITE("white"),
     ORANGE("orange"),
     MAGENTA("magenta"),
@@ -26,6 +31,9 @@ public enum BlockColor {
         this.name = name;
     }
 
+    /**
+     * Get a block color by name.
+     */
     public static BlockColor fromString(String name) {
         return Arrays.stream(BlockColor.values())
                 .filter(color -> color.name.equals(name))
@@ -37,4 +45,5 @@ public enum BlockColor {
     public String toString() {
         return name;
     }
+
 }
