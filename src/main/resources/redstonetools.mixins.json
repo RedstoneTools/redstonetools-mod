@@ -11,5 +11,8 @@
     "ItemScattererMixin",
     "LocalSessionMixin",
     "MinecraftClientMixin"
+  ],
+  "client": [
+    "OptionsScreenMixin"
   ]
 }
