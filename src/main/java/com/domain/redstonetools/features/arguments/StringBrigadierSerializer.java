@@ -4,6 +4,12 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+/**
+ * A Brigadier-based serializer which serializes to
+ * and deserializes from string.
+ *
+ * @see BrigadierSerializer
+ */
 public abstract class StringBrigadierSerializer<T> extends BrigadierSerializer<T, String> {
 
     public StringBrigadierSerializer(Class<T> clazz, ArgumentType<T> argumentType) {

@@ -11,7 +11,12 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Base class for the 'wrapped' argument type.
+ * Describes how to serialize and deserialize a value of type
+ * {@code T} to and from {@code S}. Additionally provides
+ * the ability to read the value from a string.
+ *
+ * Implements the Brigadier {@link ArgumentType}, so it can
+ * be directly used in commands.
  *
  * @param <T> The value type.
  * @param <S> The serialized type.

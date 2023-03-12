@@ -6,6 +6,7 @@ import net.minecraft.server.command.ServerCommandSource;
 
 public abstract class AbstractFeature {
 
+    /** Cached feature descriptor. */
     private final Feature feature;
 
     {
@@ -15,6 +16,8 @@ public abstract class AbstractFeature {
             throw new IllegalStateException("Feature " + getClass() + " is not annotated with @Feature");
         }
     }
+
+    /* Getters */
 
     public String getName() {
         return feature.name();

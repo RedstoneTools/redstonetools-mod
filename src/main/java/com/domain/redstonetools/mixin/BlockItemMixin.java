@@ -18,7 +18,8 @@ public abstract class BlockItemMixin {
     @Shadow public abstract Block getBlock();
 
     /**
-     * @reason Checks, if block that is being placed has "blockstate" nbt. If so, replaces original blockstate with the one in nbt.
+     * Checks, if block that is being placed has "blockstate" nbt. If so, replaces original blockstate with the one in nbt.
+     *
      * @author MiranCZ
      */
     @Overwrite

@@ -10,6 +10,12 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * A type serializer which wraps a Brigadier argument
+ * type for string deserialization and command features.
+ *
+ * @see TypeSerializer
+ */
 public abstract class BrigadierSerializer<T, S> extends TypeSerializer<T, S> {
 
     // the wrapped brigadier argument type

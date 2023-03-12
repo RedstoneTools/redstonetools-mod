@@ -18,7 +18,7 @@ public abstract class CommandFeature extends AbstractFeature {
                 arguments,
                 context -> {
                     for (var argument : arguments) {
-                        argument.setValue(context);
+                        argument.updateValue(context);
                     }
 
                     return execute(context.getSource());

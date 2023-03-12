@@ -5,6 +5,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 
+/**
+ * References a block in the world, with the
+ * block entity and type cached.
+ */
 public class BlockInfo {
     public final Block block;
     public final BlockPos pos;
