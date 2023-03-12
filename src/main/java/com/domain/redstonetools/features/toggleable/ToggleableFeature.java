@@ -20,14 +20,14 @@ public abstract class ToggleableFeature extends AbstractFeature {
         info = ReflectionUtils.getFeatureInfo(getClass());
 
         dispatcher.register(literal(info.command())
-                .executes(this::run));
+                .executes(this::toggle));
     }
 
     public boolean isEnabled() {
         return enabled;
     }
 
-    private int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int toggle(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         enabled = !enabled;
 
         return enabled ? onEnable(context.getSource()) : onDisable(context.getSource());
