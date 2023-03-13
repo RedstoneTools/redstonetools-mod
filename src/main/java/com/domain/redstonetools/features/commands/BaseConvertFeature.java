@@ -2,13 +2,13 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.domain.redstonetools.feedback.Feedback;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 
-import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
-import static com.mojang.brigadier.arguments.StringArgumentType.word;
+import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
+import static com.domain.redstonetools.features.arguments.StringSerializer.word;
+
+import java.math.BigInteger;
 
 @Feature(name = "Base Convert", description = "Converts a number from one base to another.", command = "base")
 public class BaseConvertFeature extends CommandFeature {
@@ -20,18 +20,16 @@ public class BaseConvertFeature extends CommandFeature {
             .ofType(integer(2, 36));
 
     @Override
-    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
-        int input;
+    protected Feedback execute(ServerCommandSource source) {
+        BigInteger input;
         try {
-            input = Integer.parseInt(number.getValue(), fromBase.getValue());
+            input = new BigInteger(number.getValue(), fromBase.getValue());
         } catch (NumberFormatException e) {
-            throw new CommandSyntaxException(null, Text.of("Inputted number does not match the specified base"));
+            return Feedback.invalidUsage("Inputted number does not match the specified base");
         }
 
-        var output = Integer.toString(input, toBase.getValue());
-        source.sendFeedback(Text.of(output), false);
-
-        return Command.SINGLE_SUCCESS;
+        var output = input.toString(toBase.getValue());
+        return Feedback.success(output);
     }
 
 }

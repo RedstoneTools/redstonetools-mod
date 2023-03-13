@@ -23,7 +23,7 @@ import static com.domain.redstonetools.RedstoneToolsGameRules.DO_BLOCK_UPDATES_A
 public class LocalSessionMixin {
 
     @Inject(method = "remember", at = @At("TAIL"), remap = false)
-    public void mixin(EditSession editSession, CallbackInfo ci) {
+    public void remember(EditSession editSession, CallbackInfo ci) {
         World world =FabricAdapter.adapt(editSession.getWorld());
 
         if (editSession.getChangeSet().size() > 0 && world.getGameRules().getBoolean(DO_BLOCK_UPDATES_AFTER_EDIT)) {

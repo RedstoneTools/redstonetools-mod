@@ -13,7 +13,7 @@ import static com.domain.redstonetools.RedstoneToolsGameRules.DO_CONTAINER_DROPS
 @Mixin(ItemScatterer.class)
 public class ItemScattererMixin {
     @Inject(method = "spawn(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)V", at = @At("HEAD"), cancellable = true)
-    private static void mixin(World world, double x, double y, double z, ItemStack stack, CallbackInfo ci) {
+    private static void spawn(World world, double x, double y, double z, ItemStack stack, CallbackInfo ci) {
         if (!world.getGameRules().getBoolean(DO_CONTAINER_DROPS)) ci.cancel();
     }
 }

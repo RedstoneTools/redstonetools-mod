@@ -1,28 +1,28 @@
 package com.domain.redstonetools.features.commands;
 
-import com.domain.redstonetools.RedstoneToolsGameRules;
 import com.domain.redstonetools.features.Feature;
+import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.utils.CommandSourceUtils;
 import com.mojang.brigadier.Command;
-import net.minecraft.server.MinecraftServer;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.world.GameRules;
 
-@Feature(name = "Redstoner", description = "Sets the game rules to be more redstone friendly.", command = "redstoner")
+import java.util.List;
+
+@Feature(name = "Redstoner", description = "Sets the gamerules to be more redstone friendly.", command = "redstoner")
 public class RedstonerFeature extends CommandFeature {
     @Override
-    protected int execute(ServerCommandSource source) {
-        GameRules rules = source.getWorld().getGameRules();
-        MinecraftServer server = source.getServer();
+    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
+        List.of(
+                "gamerule doTileDrops false",
+                "gamerule doTraderSpawning false",
+                "gamerule doWeatherCycle false",
+                "gamerule doDaylightCycle false",
+                "gamerule doMobSpawning false",
+                "gamerule doContainerDrops false",
+                "time set noon"
+                ).forEach(cmd -> CommandSourceUtils.executeCommand(source, cmd));
 
-        rules.get(GameRules.DO_TILE_DROPS).set(false, server);
-        rules.get(GameRules.DO_TRADER_SPAWNING).set(false, server);
-        rules.get(GameRules.DO_WEATHER_CYCLE).set(false, server);
-        rules.get(GameRules.DO_DAYLIGHT_CYCLE).set(false, server);
-        rules.get(GameRules.DO_MOB_SPAWNING).set(false, server);
-        rules.get(RedstoneToolsGameRules.DO_CONTAINER_DROPS).set(false, server);
-
-        source.getWorld().setTimeOfDay(6000); // Noon
-
-        return Command.SINGLE_SUCCESS;
+        return Feedback.none();
     }
 }
