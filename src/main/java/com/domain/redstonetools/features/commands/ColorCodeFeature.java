@@ -2,26 +2,22 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
+import com.domain.redstonetools.feedback.Feedback;
 import com.domain.redstonetools.utils.BlockColor;
 import com.domain.redstonetools.utils.ColoredBlock;
-import com.mojang.brigadier.Command;
+import com.domain.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.fabric.FabricAdapter;
-import com.sk89q.worldedit.fabric.FabricPlayer;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.Mask2D;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockType;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import static com.domain.redstonetools.features.arguments.BlockColorSerializer.blockColor;
@@ -61,26 +57,20 @@ public class ColorCodeFeature extends CommandFeature {
     }
 
     @Override
-    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
-        final WorldEdit worldEdit = WorldEdit.getInstance();
+    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
+        var player = source.getPlayer();
 
-        ServerPlayerEntity player = source.getPlayer();
-        FabricPlayer wePlayer = FabricAdapter.adaptPlayer(player);
-        LocalSession playerSession = worldEdit.getSessionManager().getIfPresent(wePlayer);
-
-        Region selection = null;
-        if (playerSession != null) {
-            try {
-                selection = playerSession.getSelection();
-            } catch (Exception ignored) {
-            }
+        var selectionOrFeedback = WorldEditUtils.getSelection(player);
+        if (selectionOrFeedback.right().isPresent()) {
+            return selectionOrFeedback.right().get();
         }
 
-        if (selection == null) {
-            source.sendError(Text.of("Please make a worldedit selection first."));
+        assert selectionOrFeedback.left().isPresent();
+        var selection = selectionOrFeedback.left().get();
 
-            return -1;
-        }
+        var worldEdit = WorldEdit.getInstance();
+        var wePlayer = FabricAdapter.adaptPlayer(player);
+        var playerSession = worldEdit.getSessionManager().get(wePlayer);
 
         // for each block in the selection
         final World world = FabricAdapter.adapt(player.getWorld());
@@ -112,14 +102,10 @@ public class ColorCodeFeature extends CommandFeature {
             // call remember to allow undo
             playerSession.remember(session);
 
-            source.sendFeedback(Text.of("Successfully colored " + blocksColored + " blocks " + color.getValue()), false);
+            return Feedback.success("Successfully colored " + blocksColored + " blocks " + color.getValue());
         } catch (Exception e) {
-            source.sendError(Text.of("An error occurred while coloring the blocks."));
-
-            e.printStackTrace();
+            return Feedback.error("An error occurred while coloring the blocks.");
         }
-
-        return Command.SINGLE_SUCCESS;
     }
 
 }

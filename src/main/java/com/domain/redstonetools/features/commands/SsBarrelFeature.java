@@ -2,6 +2,7 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
+import com.domain.redstonetools.feedback.Feedback;
 import com.domain.redstonetools.utils.RedstoneUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -25,7 +26,7 @@ public class SsBarrelFeature extends CommandFeature {
             .withDefault(15);
 
     @Override
-    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
+    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
         var stack = new ItemStack(Items.BARREL);
 
         // {BlockEntityTag:{Items:[{Slot:0,id:redstone,Count:3},{Slot:1,id:redstone,Count:61}]}}
@@ -46,6 +47,6 @@ public class SsBarrelFeature extends CommandFeature {
 
         source.getPlayer().giveItemStack(stack);
 
-        return Command.SINGLE_SUCCESS;
+        return Feedback.none();
     }
 }

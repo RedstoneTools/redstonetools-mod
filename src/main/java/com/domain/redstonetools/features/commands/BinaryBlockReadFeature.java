@@ -2,19 +2,15 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
-import com.mojang.brigadier.Command;
+import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.sk89q.worldedit.IncompleteRegionException;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.fabric.FabricAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 
 import static com.domain.redstonetools.features.arguments.BlockStateArgumentSerializer.blockState;
 import static com.domain.redstonetools.features.arguments.BoolSerializer.bool;
@@ -40,25 +36,15 @@ public class BinaryBlockReadFeature extends CommandFeature {
             .withDefault(false);
 
     @Override
-    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
-        var actor = FabricAdapter.adaptPlayer(source.getPlayer());
-        var localSession = WorldEdit.getInstance()
-                .getSessionManager()
-                .get(actor);
-        var selectionWorld = localSession.getSelectionWorld();
+    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
+        var selectionOrFeedback = WorldEditUtils.getSelection(source.getPlayer());
 
-        Region selection;
-        try {
-            if (selectionWorld == null)  {
-                throw new IncompleteRegionException();
-            }
-
-            selection = localSession.getSelection(selectionWorld);
-        } catch (IncompleteRegionException ex) {
-            actor.printError(TextComponent.of("Please make a selection with worldedit first."));
-
-            return -1;
+        if (selectionOrFeedback.right().isPresent()) {
+            return selectionOrFeedback.right().get();
         }
+
+        assert selectionOrFeedback.left().isPresent();
+        var selection = selectionOrFeedback.left().get();
 
         var boundingBox = selection.getBoundingBox();
         var pos1 = boundingBox.getPos1();
@@ -67,18 +53,17 @@ public class BinaryBlockReadFeature extends CommandFeature {
         var spacingVector = direction.multiply(spacing.getValue());
 
         if (direction.getX() + direction.getBlockY() + direction.getBlockZ() > 1) {
-            actor.printError(TextComponent.of("The selection must have 2 axis the same"));
-
-            return -1;
+            return Feedback.invalidUsage("The selection must have 2 axis the same");
         }
 
         var onBlockState = onBlock.getValue().getBlockState();
 
         var bits = new StringBuilder();
         for (BlockVector3 point = pos1; boundingBox.contains(point); point = point.add(spacingVector)) {
-            var pointBlockState = FabricAdapter.adapt(selectionWorld.getBlock(point));
+            var pos = new BlockPos(point.getBlockX(), point.getBlockY(), point.getBlockZ());
+            var blockState = source.getWorld().getBlockState(pos);
 
-            bits.append(pointBlockState.equals(onBlockState) ? 1 : 0);
+            bits.append(blockState.equals(onBlockState) ? 1 : 0);
         }
 
         if (reverseBits.getValue()) {
@@ -86,9 +71,7 @@ public class BinaryBlockReadFeature extends CommandFeature {
         }
 
         var output = Integer.toString(Integer.parseInt(bits.toString(), 2), toBase.getValue());
-        source.sendFeedback(Text.of(output), false);
-
-        return Command.SINGLE_SUCCESS;
+        return Feedback.success(output);
     }
 
 }

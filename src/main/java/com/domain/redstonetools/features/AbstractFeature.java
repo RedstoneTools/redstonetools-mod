@@ -3,9 +3,12 @@ package com.domain.redstonetools.features;
 import com.domain.redstonetools.RedstoneToolsClient;
 import com.domain.redstonetools.config.ConfigurationManager;
 import com.domain.redstonetools.config.FeatureConfiguration;
+import com.domain.redstonetools.feedback.AbstractFeedbackSender;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
+
+import static com.domain.redstonetools.RedstoneToolsClient.INJECTOR;
 
 public abstract class AbstractFeature {
 
@@ -58,5 +61,4 @@ public abstract class AbstractFeature {
     }
 
     protected abstract void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated);
-
 }

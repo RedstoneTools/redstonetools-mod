@@ -2,10 +2,8 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.domain.redstonetools.feedback.Feedback;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 
 import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
 import static com.domain.redstonetools.features.arguments.StringSerializer.word;
@@ -22,18 +20,16 @@ public class BaseConvertFeature extends CommandFeature {
             .ofType(integer(2, 36));
 
     @Override
-    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
+    protected Feedback execute(ServerCommandSource source) {
         BigInteger input;
         try {
             input = new BigInteger(number.getValue(), fromBase.getValue());
         } catch (NumberFormatException e) {
-            throw new CommandSyntaxException(null, Text.of("Inputted number does not match the specified base"));
+            return Feedback.invalidUsage("Inputted number does not match the specified base");
         }
 
         var output = input.toString(toBase.getValue());
-        source.sendFeedback(Text.of(output), false);
-
-        return Command.SINGLE_SUCCESS;
+        return Feedback.success(output);
     }
 
 }

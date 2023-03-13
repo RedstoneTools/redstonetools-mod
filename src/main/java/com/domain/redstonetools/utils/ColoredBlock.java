@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class ColoredBlock {
     private static final Pattern COLORED_BLOCK_REGEX = Pattern.compile(
-            "^minecraft:(\\w+?)_(wool|stained_glass|concrete_powder|concrete|glazed_terracotta|terracotta|shulker_box)$"
+            "^minecraft:(\\w+?)_(wool|stained_glass|concrete_powder|concrete|glazed_terracotta|terracotta)$"
     );
 
     private static final HashMap<String, ColoredBlock> COLORLESS_BLOCKS = new HashMap<>() {{

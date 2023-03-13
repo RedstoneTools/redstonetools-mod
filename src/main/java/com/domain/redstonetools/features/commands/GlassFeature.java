@@ -1,9 +1,11 @@
 package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
+import com.domain.redstonetools.feedback.Feedback;
 import com.domain.redstonetools.utils.BlockColor;
 import com.domain.redstonetools.utils.BlockInfo;
 import com.domain.redstonetools.utils.ColoredBlock;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
@@ -21,16 +23,16 @@ public class GlassFeature extends PickBlockFeature {
     }
 
     @Override
-    protected ItemStack getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) {
+    protected Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) {
         if (blockInfo == null) {
-            return new ItemStack(Blocks.GLASS);
+            return Either.left(new ItemStack(Blocks.GLASS));
         }
 
         var coloredBlock = getColoredGlassOrWoolVariant(blockInfo.block);
 
-        return coloredBlock == null
+        return Either.left(coloredBlock == null
             ? new ItemStack(Blocks.GLASS)
-            : new ItemStack(coloredBlock.toBlock());
+            : new ItemStack(coloredBlock.toBlock()));
     }
 
     private ColoredBlock getColoredGlassOrWoolVariant(Block block) {
