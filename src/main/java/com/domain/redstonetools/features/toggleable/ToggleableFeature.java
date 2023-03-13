@@ -44,7 +44,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
     }
 
     protected int onDisable(ServerCommandSource source) throws CommandSyntaxException {
-        INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.success(info.name() + " has been enabled."));
+        INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.success(info.name() + " has been disabled."));
         return 0;
     }
 }
