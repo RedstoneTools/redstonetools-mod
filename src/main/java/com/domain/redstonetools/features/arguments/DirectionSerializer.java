@@ -9,7 +9,7 @@ public class DirectionSerializer extends EnumSerializer<DirectionArgument> {
         super(DirectionArgument.class);
     }
 
-    public static DirectionSerializer directionArgument() {
+    public static DirectionSerializer direction() {
         return INSTANCE;
     }
 }

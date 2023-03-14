@@ -19,7 +19,7 @@ import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 
-import static com.domain.redstonetools.features.arguments.DirectionSerializer.directionArgument;
+import static com.domain.redstonetools.features.arguments.DirectionSerializer.direction;
 import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
 import static com.domain.redstonetools.utils.DirectionUtils.directionToBlock;
 import static com.domain.redstonetools.utils.DirectionUtils.matchDirection;
@@ -31,7 +31,7 @@ public class RStackFeature extends CommandFeature {
             .withDefault(1);
 
     public static final Argument<DirectionArgument> direction = Argument
-            .ofType(directionArgument())
+            .ofType(direction())
             .withDefault(DirectionArgument.ME);
 
     public static final Argument<Integer> spacing = Argument
