@@ -4,6 +4,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 
 public class FeedbackSender extends AbstractFeedbackSender {
+
     @Override
     public void sendFeedback(ServerCommandSource source, Feedback feedback) {
         if (feedback.getType() == FeedbackType.NONE) {
@@ -13,4 +14,5 @@ public class FeedbackSender extends AbstractFeedbackSender {
         source.sendFeedback(new LiteralText(feedback.getMessage())
                 .formatted(feedback.getFormatting()), false);
     }
+
 }
