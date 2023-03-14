@@ -2,6 +2,8 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
+import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.utils.DirectionArgument;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.WorldEdit;
@@ -17,8 +19,10 @@ import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 
-import static com.domain.redstonetools.features.arguments.DirectionArgumentType.*;
-import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import static com.domain.redstonetools.features.arguments.DirectionSerializer.directionArgument;
+import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
+import static com.domain.redstonetools.utils.DirectionUtils.directionToBlock;
+import static com.domain.redstonetools.utils.DirectionUtils.matchDirection;
 
 @Feature(name = "rstack", description = "Stacks with custom distance", command = "/rstack")
 public class RStackFeature extends CommandFeature {
@@ -26,16 +30,16 @@ public class RStackFeature extends CommandFeature {
             .ofType(integer())
             .withDefault(1);
 
-    public static final Argument<String> direction = Argument
+    public static final Argument<DirectionArgument> direction = Argument
             .ofType(directionArgument())
-            .withDefault("me");
+            .withDefault(DirectionArgument.ME);
 
     public static final Argument<Integer> spacing = Argument
             .ofType(integer())
             .withDefault(2);
 
     @Override
-    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
+    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
         var actor = FabricAdapter.adaptPlayer(source.getPlayer());
 
         var localSession = WorldEdit.getInstance()
@@ -50,7 +54,7 @@ public class RStackFeature extends CommandFeature {
             selection = localSession.getSelection(selectionWorld);
         } catch (IncompleteRegionException ex) {
             actor.printError(TextComponent.of("Please make a selection with worldedit first."));
-            return -1;
+            return Feedback.error("No selection found!");
         }
 
         final Mask airFilter = new Mask() {
@@ -69,7 +73,6 @@ public class RStackFeature extends CommandFeature {
         var playerFacing = actor.getLocation().getDirectionEnum();
         var stackDirection = matchDirection(direction.getValue(), playerFacing);
 
-        assert stackDirection != null;
         var stackVector = directionToBlock(stackDirection);
 
         try (var editSession = localSession.createEditSession(actor)) {
@@ -87,6 +90,6 @@ public class RStackFeature extends CommandFeature {
             throw new RuntimeException(e);
         }
 
-        return 0;
+        return Feedback.none();
     }
 }
