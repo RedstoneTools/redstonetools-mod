@@ -1,12 +1,10 @@
 package com.domain.redstonetools;
 
 
-import com.domain.redstonetools.features.commands.update.RegionUpdater;
 import com.domain.redstonetools.utils.ReflectionUtils;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +17,6 @@ public class RedstoneToolsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing Redstone Tools");
-        ClientTickEvents.END_CLIENT_TICK.register(new RegionUpdater());
 
         // Register game rules
         RedstoneToolsGameRules.register();
