@@ -3,6 +3,7 @@ package com.domain.redstonetools.features.commands.update;
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.commands.CommandFeature;
 import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.feedback.FeedbackSender;
 import com.domain.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -13,12 +14,11 @@ import com.sk89q.worldedit.history.change.BlockChange;
 import com.sk89q.worldedit.history.change.Change;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
 import java.util.Iterator;
 
+import static com.domain.redstonetools.RedstoneToolsClient.INJECTOR;
 import static net.minecraft.server.command.CommandManager.literal;
 
 @Feature(name = "Update", description = "Forces block updates in the selected area.", command = "/update")
@@ -43,20 +43,17 @@ public class UpdateFeature extends CommandFeature {
         assert selectionOrFeedback.left().isPresent();
         var selection = selectionOrFeedback.left().get();
 
-        RegionUpdater.updateRegion(source.getWorld(), source.getPlayer(), selection.getMinimumPoint(), selection.getMaximumPoint());
 
-        return Feedback.none();
+        return RegionUpdater.updateRegion(source.getWorld(), selection.getMinimumPoint(), selection.getMaximumPoint());
     }
 
     private int updateLastEdit(CommandContext<ServerCommandSource> serverCommandSourceCommandContext) throws CommandSyntaxException {
         ServerCommandSource source = serverCommandSourceCommandContext.getSource();
 
         if (lastEdit == null) {
-            source.sendError(Text.of("No edits were made!"));
+            INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.error("No edits were made!"));
             return -1;
         }
-
-        ServerPlayerEntity player = source.getPlayer();
 
         boolean containsBlocks = false;
         BlockVector3 minPos = BlockVector3.at(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
@@ -82,10 +79,15 @@ public class UpdateFeature extends CommandFeature {
         }
 
         World world = FabricAdapter.adapt(lastEdit.getWorld());
-        if (containsBlocks)
-            RegionUpdater.updateRegion(world, player, minPos, maxPos);
+        if (containsBlocks) {
+            Feedback feedback = RegionUpdater.updateRegion(world, minPos, maxPos);
+            INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, feedback);
+            return 0;
+        }
 
-        return 0;
+        INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.error("Edit doesn't contain any blocks!"));
+        return -1;
+
     }
 
 }
