@@ -1,6 +1,7 @@
 package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
+import com.domain.redstonetools.feedback.Feedback;
 import com.domain.redstonetools.utils.CommandSourceUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -8,10 +9,10 @@ import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;
 
-@Feature(name = "Redstoner", description = "Sets the game rules to be more redstone friendly.", command = "redstoner")
+@Feature(name = "Redstoner", description = "Sets the gamerules to be more redstone friendly.", command = "redstoner")
 public class RedstonerFeature extends CommandFeature {
     @Override
-    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
+    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
         List.of(
                 "gamerule doTileDrops false",
                 "gamerule doTraderSpawning false",
@@ -22,6 +23,6 @@ public class RedstonerFeature extends CommandFeature {
                 "time set noon"
                 ).forEach(cmd -> CommandSourceUtils.executeCommand(source, cmd));
 
-        return Command.SINGLE_SUCCESS;
+        return Feedback.none();
     }
 }
