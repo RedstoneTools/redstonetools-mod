@@ -8,9 +8,12 @@
   },
   "mixins": [
     "BlockItemMixin",
+    "BlockMixin",
     "ItemScattererMixin",
     "LocalSessionMixin",
-    "BlockMixin",
     "MinecraftClientMixin"
+  ],
+  "client": [
+    "OptionsScreenMixin"
   ]
 }
