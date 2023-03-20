@@ -13,6 +13,5 @@
     "MinecraftClientMixin"
   ],
   "client": [
-    "OptionsScreenMixin"
   ]
 }
