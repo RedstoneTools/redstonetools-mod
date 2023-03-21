@@ -1,5 +1,6 @@
 package com.domain.redstonetools.macroStuff;
 
+import com.domain.redstonetools.macros.Macro;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -8,6 +9,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+
 
 public class MacroEditScreen extends GameOptionsScreen {
 
@@ -19,7 +21,7 @@ public class MacroEditScreen extends GameOptionsScreen {
     public MacroEditScreen(Screen parent, GameOptions gameOptions, Text title, MacrosListWidget macrosListWidget) {
         super(parent, gameOptions, title);
         this.macrosListWidget = macrosListWidget;
-        this.editing = null;
+        this.editing = Macro.buildEmpty();
     }
 
     public MacroEditScreen(Screen parent, GameOptions gameOptions, Text title, MacrosListWidget macrosListWidget, Macro macro) {
@@ -34,14 +36,14 @@ public class MacroEditScreen extends GameOptionsScreen {
         super.init();
         nameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 20, Text.of(""));
 
-        if (editing != null) nameField.setText(editing.getName());
+        if (editing != null) nameField.setText(editing.name);
 
         doneButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 144 + 5, 98, 20, Text.of("Done"), (button) -> {
            String name = nameField.getText();
            if (name.isEmpty()) return;
 
-           if (editing == null) macrosListWidget.addMacro(new Macro(name));
-           else editing.setName(name);
+           if (editing == null) macrosListWidget.addMacro(Macro.buildEmpty());
+           else editing.name = name;
 
            client.setScreen(parent);
         }));

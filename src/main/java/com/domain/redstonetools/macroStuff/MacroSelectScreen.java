@@ -12,8 +12,6 @@ public class MacroSelectScreen extends GameOptionsScreen {
 
 
     private MacrosListWidget controlsList;
-    private ButtonWidget editButton;
-    private ButtonWidget deleteButton;
 
     public MacroSelectScreen(Screen parent, GameOptions gameOptions, Text title) {
         super(parent, gameOptions, title);
@@ -23,36 +21,18 @@ public class MacroSelectScreen extends GameOptionsScreen {
     public void init() {
         super.init();
 
-        this.controlsList = new MacrosListWidget(this,client /*client, parent.width + 45, parent.height, 20, this.height - 64, 20*/);
+        this.controlsList = new MacrosListWidget(this,client);
         this.addSelectableChild(this.controlsList);
 
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 154, this.height - 51, 99, 20, Text.of("Create New"), (button) -> {
-
+        this.addDrawableChild(new ButtonWidget(this.width / 2 +1, this.height - 29, 150, 20, Text.of("Create New..."), (button) -> {
             this.client.setScreen(new MacroEditScreen(this,gameOptions,Text.of("Create New Macro"), controlsList));
         }));
 
-        this.editButton = new ButtonWidget(this.width / 2 - 54, this.height - 51, 99, 20, Text.of("Edit"), (button) -> {
-            MacrosListWidget.MacroEntry selected = controlsList.getSelectedOrNull();
-            if (selected == null) return;
-
-            this.client.setScreen(new MacroEditScreen(this,gameOptions,Text.of("Edit Macro"), controlsList, selected.macro));
-        });
-        this.addDrawableChild(editButton);
-
-        this.deleteButton = new ButtonWidget(this.width / 2 + 46, this.height - 51, 99, 20, Text.of("Delete"), (button) -> {
-            MacrosListWidget.MacroEntry selected = controlsList.getSelectedOrNull();
-            if (selected == null) return;
-
-            selected.deleteIfConfirmed();
-        });
-        this.addDrawableChild(deleteButton);
-
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 29, 200, 20, ScreenTexts.DONE, (button) -> {
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 151, this.height - 29, 150, 20, ScreenTexts.DONE, (button) -> {
             this.client.setScreen(this.parent);
         }));
 
         this.setFocused(controlsList);
-        this.setActive(false);
     }
 
     @Override
@@ -65,10 +45,8 @@ public class MacroSelectScreen extends GameOptionsScreen {
 
     }
 
-
-    public void setActive(boolean active){
-        editButton.active = active;
-        deleteButton.active = active;
+    public void openEditScreen(MacrosListWidget.MacroEntry entry) {
+        client.setScreen(new MacroEditScreen(this,gameOptions,Text.of("Edit Macro"), controlsList, entry.macro));
     }
 
 }
