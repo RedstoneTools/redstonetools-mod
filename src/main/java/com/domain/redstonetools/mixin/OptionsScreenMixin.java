@@ -1,6 +1,6 @@
 package com.domain.redstonetools.mixin;
 
-import com.domain.redstonetools.macroStuff.MacroSelectScreen;
+import com.domain.redstonetools.macros.gui.MacroSelectScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.ControlsOptionsScreen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
