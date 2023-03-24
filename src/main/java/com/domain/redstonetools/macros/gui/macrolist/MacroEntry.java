@@ -1,6 +1,7 @@
 package com.domain.redstonetools.macros.gui.macrolist;
 
 import com.domain.redstonetools.macros.Macro;
+import com.domain.redstonetools.macros.gui.IconButtonWidget;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.*;
@@ -9,6 +10,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 
 public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
 
@@ -25,10 +27,10 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
         this.owner = owner;
 
         buttonWidget = new CheckboxWidget(0, 0, 20, 20, null, macro.enabled, false);
-        deleteButton = new ButtonWidget(0, 0, 20, 20, Text.of("D"), (button) -> {
+        deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0, 0, 20, 20 ,Text.of(""), (button) -> {
             deleteIfConfirmed();
         });
-        editButton = new ButtonWidget(0, 0, 20, 20, Text.of("E"), (button) -> {
+        editButton = new IconButtonWidget(IconButtonWidget.PENCIL_ICON,0, 0, 20, 20, Text.of(""), (button) -> {
             owner.parent.openEditScreen(this);
         });
     }
@@ -50,7 +52,7 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
         }
 
 
-        owner.client.textRenderer.drawWithShadow(matrices, text, x, (float)(y + 1),macro.enabled?16777215:8355711, true);
+        owner.client.textRenderer.drawWithShadow(matrices, text, x, y+3,macro.enabled?16777215:8355711, true);
     }
 
     private void renderWidget(PressableWidget widget, MatrixStack matrices, int mouseX, int mouseY, float tickDelta, int x, int y) {

@@ -1,5 +1,6 @@
 package com.domain.redstonetools.macros.gui.commandlist;
 
+import com.domain.redstonetools.macros.gui.IconButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
@@ -23,7 +24,7 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
         command.setMaxLength(32500);
         command.setText(text);
 
-        deleteButton = new ButtonWidget(0, 0, 20, 20, Text.of("D"), (button) -> {
+        deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0, 0, 20, 20, Text.of(""), (button) -> {
             owner.removeCommand(this);
         });
     }
