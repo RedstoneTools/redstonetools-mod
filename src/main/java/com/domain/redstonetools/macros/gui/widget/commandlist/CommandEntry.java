@@ -1,6 +1,6 @@
-package com.domain.redstonetools.macros.gui.commandlist;
+package com.domain.redstonetools.macros.gui.widget.commandlist;
 
-import com.domain.redstonetools.macros.gui.IconButtonWidget;
+import com.domain.redstonetools.macros.gui.widget.IconButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;

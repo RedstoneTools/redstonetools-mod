@@ -1,6 +1,6 @@
 package com.domain.redstonetools.mixin;
 
-import com.domain.redstonetools.macros.gui.MacroSelectScreen;
+import com.domain.redstonetools.macros.gui.screen.MacroSelectScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.ControlsOptionsScreen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -17,9 +17,6 @@ public class OptionsScreenMixin extends GameOptionsScreen {
     public OptionsScreenMixin(Screen parent, GameOptions gameOptions, Text title) {
         super(parent, gameOptions, title);
     }
-
-    //  @Shadow @Final private GameOptions settings;
-
 
 
     @Inject(method = "init", at = @At("TAIL"))

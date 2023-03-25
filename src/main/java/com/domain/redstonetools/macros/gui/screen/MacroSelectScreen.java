@@ -1,7 +1,7 @@
-package com.domain.redstonetools.macros.gui;
+package com.domain.redstonetools.macros.gui.screen;
 
-import com.domain.redstonetools.macros.gui.macrolist.MacroEntry;
-import com.domain.redstonetools.macros.gui.macrolist.MacroListWidget;
+import com.domain.redstonetools.macros.gui.widget.macrolist.MacroEntry;
+import com.domain.redstonetools.macros.gui.widget.macrolist.MacroListWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -37,7 +37,7 @@ public class MacroSelectScreen extends GameOptionsScreen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackground(matrices);
+        this.renderBackgroundTexture(0);
         macroList.render(matrices, mouseX, mouseY, delta);
 
         drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);

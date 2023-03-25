@@ -1,7 +1,7 @@
-package com.domain.redstonetools.macros.gui.macrolist;
+package com.domain.redstonetools.macros.gui.widget.macrolist;
 
 import com.domain.redstonetools.macros.Macro;
-import com.domain.redstonetools.macros.gui.IconButtonWidget;
+import com.domain.redstonetools.macros.gui.widget.IconButtonWidget;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.*;
@@ -10,7 +10,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 
 public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
 

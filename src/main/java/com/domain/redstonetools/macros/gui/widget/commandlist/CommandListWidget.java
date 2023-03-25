@@ -1,4 +1,4 @@
-package com.domain.redstonetools.macros.gui.commandlist;
+package com.domain.redstonetools.macros.gui.widget.commandlist;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;

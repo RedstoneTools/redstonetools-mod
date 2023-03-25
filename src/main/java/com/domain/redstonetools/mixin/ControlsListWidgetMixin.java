@@ -1,6 +1,6 @@
 package com.domain.redstonetools.mixin;
 
-import com.domain.redstonetools.macros.gui.InvisibleKeyBinding;
+import com.domain.redstonetools.macros.InvisibleKeyBinding;
 import net.minecraft.client.gui.screen.option.ControlsListWidget;
 import net.minecraft.client.option.KeyBinding;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,7 +1,6 @@
 package com.domain.redstonetools.macros;
 
 import com.domain.redstonetools.macros.actions.Action;
-import com.domain.redstonetools.macros.gui.InvisibleKeyBinding;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;

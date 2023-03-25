@@ -1,7 +1,6 @@
-package com.domain.redstonetools.macros.gui.commandlist;
+package com.domain.redstonetools.macros.gui.widget.commandlist;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class CommandEntryPlaceHolder extends CommandEntry{

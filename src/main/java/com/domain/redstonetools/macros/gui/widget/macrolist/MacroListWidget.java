@@ -1,26 +1,17 @@
-package com.domain.redstonetools.macros.gui.macrolist;
+package com.domain.redstonetools.macros.gui.widget.macrolist;
 
 import com.domain.redstonetools.macros.Macro;
 import com.domain.redstonetools.macros.MacroManager;
-import com.domain.redstonetools.macros.gui.MacroSelectScreen;
+import com.domain.redstonetools.macros.gui.screen.MacroSelectScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-
-import java.util.ArrayList;
 
 import static com.domain.redstonetools.RedstoneToolsClient.INJECTOR;
 
 public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
 
     protected static final MacroManager macroManager = INJECTOR.getInstance(MacroManager.class);
-
-    static {
-        for (int i = 0; i < 30; i++) {
-            macroManager.addMacro(new Macro("test" + i, true, InputUtil.UNKNOWN_KEY,new ArrayList<>()));
-        }
-    }
 
     protected final MacroSelectScreen parent;
     protected final MinecraftClient client;
@@ -39,8 +30,6 @@ public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
         if (this.getSelectedOrNull() != null) {
             this.centerScrollOn(this.getEntry(0));
         }
-        this.left = 0;
-
     }
 
     public void addMacro(Macro macro) {

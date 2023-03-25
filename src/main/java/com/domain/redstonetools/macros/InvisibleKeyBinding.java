@@ -1,4 +1,4 @@
-package com.domain.redstonetools.macros.gui;
+package com.domain.redstonetools.macros;
 
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
