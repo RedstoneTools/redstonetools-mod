@@ -5,6 +5,7 @@ import com.domain.redstonetools.macros.MacroManager;
 import com.domain.redstonetools.macros.gui.MacroSelectScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
 
     static {
         for (int i = 0; i < 30; i++) {
-            macroManager.addMacro(new Macro("test" + i, true,-1,new ArrayList<>()));
+            macroManager.addMacro(new Macro("test" + i, true, InputUtil.UNKNOWN_KEY,new ArrayList<>()));
         }
     }
 

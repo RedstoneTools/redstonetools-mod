@@ -12,5 +12,8 @@
     "LocalSessionMixin",
     "MinecraftClientMixin",
     "OptionsScreenMixin"
+  ],
+  "client": [
+    "ControlsListWidgetMixin"
   ]
 }

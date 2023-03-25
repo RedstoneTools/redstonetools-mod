@@ -1,7 +1,5 @@
 package com.domain.redstonetools.macros.actions;
 
-import com.domain.redstonetools.utils.CommandSourceUtils;
-import com.domain.redstonetools.utils.CommandUtils;
 import net.minecraft.client.MinecraftClient;
 
 public class CommandAction extends Action {
@@ -16,6 +14,6 @@ public class CommandAction extends Action {
         var player = MinecraftClient.getInstance().player;
         assert player != null;
 
-        CommandSourceUtils.executeCommand(player.getCommandSource(), command);
+        if(command.startsWith("/")) player.sendChatMessage(command);
     }
 }

@@ -6,18 +6,24 @@ import com.domain.redstonetools.macros.actions.CommandAction;
 import com.domain.redstonetools.macros.gui.commandlist.CommandEntry;
 import com.domain.redstonetools.macros.gui.commandlist.CommandListWidget;
 import com.domain.redstonetools.macros.gui.macrolist.MacroListWidget;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.option.Option;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.InputUtil.Key;
+import net.minecraft.client.util.InputUtil.Type;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -81,21 +87,34 @@ public class MacroEditScreen extends GameOptionsScreen {
             client.setScreen(parent);
         }));
 
-        int keyCode = macro.key;
-        keyBindButton = new ButtonWidget(this.width / 2+26, 55, 75, 20,getTextForKey(keyCode>10?"keyboard":"mouse",keyCode), (button) -> {
+        Key keyCode = macro.getKey();
+        Text text = keyCode.getLocalizedText();
+        if (keyCode == InputUtil.UNKNOWN_KEY) text = Text.of("Not Bound");
+
+        keyBindButton = new ButtonWidget(this.width / 2+26, 55, 75, 20,text, (button) -> {
             detectingKeycodeKey = true;
             keyBindButton.setMessage((new LiteralText("> ")).append(keyBindButton.getMessage().shallowCopy().formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW));
         });
+        if (detectingKeycodeKey) keyBindButton.onPress();
 
         this.addDrawableChild(keyBindButton);
 
         int widgetWidth = 339;
+        List<CommandEntry> entries = null;
+        if (commandList != null) entries = commandList.children();
+
         commandList = new CommandListWidget(client,this ,widgetWidth, height, 85, this.height / 4 + 144 + 5 - 10, 24);
         commandList.setLeftPos(width/2 - widgetWidth/2);
 
-        for (Action action : macro.actions) {
-            if (action instanceof CommandAction commandAction) {
-                commandList.addCommand(commandAction.command);
+
+        if (entries != null)  {
+            commandList.children().clear();
+            commandList.children().addAll(entries);
+        } else {
+            for (Action action : macro.actions) {
+                if (action instanceof CommandAction commandAction) {
+                    commandList.addCommand(commandAction.command);
+                }
             }
         }
 
@@ -124,8 +143,12 @@ public class MacroEditScreen extends GameOptionsScreen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (pressed("keyboard", keyCode)) return false;
+        Key key = InputUtil.fromKeyCode(keyCode, scanCode);
+        if (keyCode == InputUtil.GLFW_KEY_ESCAPE) key = InputUtil.UNKNOWN_KEY;
+
+        if (pressed(key)) return false;
         if (commandList.keyPressed(keyCode, scanCode, modifiers)) return false;
+        if (keyCode == InputUtil.GLFW_KEY_TAB) return false;
 
         return super.keyPressed(keyCode,scanCode,modifiers);
     }
@@ -146,31 +169,25 @@ public class MacroEditScreen extends GameOptionsScreen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (pressed("mouse", button)) return false;
+        if (!commandList.isMouseOver(mouseX,mouseY)) commandList.mouseClicked(mouseX,mouseY,button);
+        if (pressed(Type.MOUSE.createFromCode(button))) return false;
 
 
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    private boolean pressed(String keyType, int keyCode) {
+    private boolean pressed(Key key) {
         if (detectingKeycodeKey) {
             detectingKeycodeKey = false;
-            Text text = getTextForKey(keyType,keyCode);
-
-            if (keyCode == InputUtil.GLFW_KEY_ESCAPE) keyCode = -1;
+            Text text = key.getLocalizedText();
+            if (key == InputUtil.UNKNOWN_KEY) text = Text.of("Not Bound");
 
             keyBindButton.setMessage(text);
-            macro.key = keyCode;
+            macro.setKey(key);
             return true;
         }
 
         return false;
-    }
-
-    private Text getTextForKey(String keyType, int keyCode) {
-        if (keyCode == InputUtil.GLFW_KEY_ESCAPE || keyCode == -1) return Text.of("Not Bound");
-
-        return InputUtil.fromTranslationKey("key." + keyType +"." + keyCode).getLocalizedText();
     }
 
 
