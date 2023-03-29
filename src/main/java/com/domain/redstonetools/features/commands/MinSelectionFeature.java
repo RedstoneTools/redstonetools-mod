@@ -1,59 +1,67 @@
 package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.exceptions.*;
-
-import com.sk89q.worldedit.regions.*;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.blocks.Blocks;
 import com.sk89q.worldedit.fabric.FabricAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.regions.RegionOperationException;
+import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockTypes;
-import com.sk89q.worldedit.math.BlockVector3;
-
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection")
 public class MinSelectionFeature extends CommandFeature {
 
     @Override
-    protected int execute(ServerCommandSource source) throws CommandSyntaxException {
+    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
+        var selectionOrFeedback = WorldEditUtils.getSelection(source.getPlayer());
+        if (selectionOrFeedback.right().isPresent()) {
+            return selectionOrFeedback.right().get();
+        }
+
+        assert selectionOrFeedback.left().isPresent();
+        var selection = selectionOrFeedback.left().get();
+        var selectionWorld = selection.getWorld();
+
         var actor = FabricAdapter.adaptPlayer(source.getPlayer());
+
         var localSession = WorldEdit.getInstance()
                 .getSessionManager()
                 .get(actor);
-        var selectionWorld = localSession.getSelectionWorld();
 
-        Region selection;
-        RegionSelector selector;
-        try {
+        var selector = localSession.getRegionSelector(selectionWorld);
 
-            if (selectionWorld == null) {
-                throw new IncompleteRegionException();
-            }
-
-            selection = localSession.getSelection(selectionWorld);
-            selector = localSession.getRegionSelector(selectionWorld);
-        } catch (IncompleteRegionException ex) {
-            actor.printError(TextComponent.of("Please make a selection with worldedit first."));
-            return -1;
+        boolean isEmpty = true;
+        for (BlockVector3 point : selection) {
+            if (!selectionWorld.getBlock(point).equals(BlockTypes.AIR.getDefaultState()))
+                isEmpty = false;
         }
+
+        if (isEmpty) {
+            return Feedback.invalidUsage("could not minimize the selection because the selection is empty.");
+        }
+            
 
         minimiseSelection(selectionWorld, selection);
 
         selector.learnChanges();
         selector.explainRegionAdjust(actor, localSession);
 
-        actor.printInfo(TextComponent.of("Done."));
-
-        return Command.SINGLE_SUCCESS;
+        return Feedback.success("Minimized selection.");
     }
 
     private void minimiseSelection(World selectionWorld, Region selection)

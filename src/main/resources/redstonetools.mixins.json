@@ -10,8 +10,10 @@
     "BlockItemMixin",
     "ItemScattererMixin",
     "LocalSessionMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "OptionsScreenMixin"
   ],
   "client": [
+    "ControlsListWidgetMixin"
   ]
 }

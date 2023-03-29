@@ -2,6 +2,7 @@ package com.domain.redstonetools.macros;
 
 import com.domain.redstonetools.macros.actions.Action;
 import com.domain.redstonetools.macros.actions.CommandAction;
+import net.minecraft.client.util.InputUtil;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -28,7 +29,8 @@ public class MacroManager {
         }
 
         if (macrosJson == null) {
-            macros = getDefaultMacros();
+            macros = new ArrayList<>();
+            macros.addAll(getDefaultMacros());
         } else {
             macros = getMacrosFromJson(macrosJson);
         }
@@ -54,6 +56,12 @@ public class MacroManager {
         saveChanges();
     }
 
+    public void removeMacro(Macro macro) {
+        macros.remove(macro);
+
+        saveChanges();
+    }
+
     public void saveChanges() {
         // Write %appdata%/.minecraft/config/redstonetools/macros.json
         assert macrosFile.mkdirs();
@@ -66,7 +74,7 @@ public class MacroManager {
         try (var writer = Json.createWriter(new FileWriter(macrosFile))) {
             writer.writeArray(macrosJson.build());
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace(); //would spam the console when doing stuff with macros
         }
     }
 
@@ -79,7 +87,7 @@ public class MacroManager {
         return Json.createObjectBuilder()
                 .add("name", macro.name)
                 .add("enabled", macro.enabled)
-                .add("key", macro.key)
+                .add("key", macro.getKey().getTranslationKey())
                 .add("actions", actionsJson)
                 .build();
     }
@@ -111,7 +119,7 @@ public class MacroManager {
             actions[i] = new CommandAction(commands[i]);
         }
 
-        return new Macro(name, true,-1, List.of(actions));
+        return new Macro(name, true, InputUtil.UNKNOWN_KEY, List.of(actions));
     }
 
     private List<Macro> getMacrosFromJson(JsonArray macrosJson) {
@@ -127,10 +135,10 @@ public class MacroManager {
     private Macro getMacroFromJson(JsonObject macroJson) {
         var name = macroJson.getString("name");
         var enabled = macroJson.getBoolean("enabled");
-        var key = macroJson.getInt("key");
+        var key = macroJson.getString("key");
         var actions = getActionsFromJson(macroJson.getJsonArray("actions"));
 
-        return new Macro(name, enabled, key, actions);
+        return new Macro(name, enabled, InputUtil.fromTranslationKey(key), actions);
     }
 
     private List<Action> getActionsFromJson(JsonArray actionsJson) {
