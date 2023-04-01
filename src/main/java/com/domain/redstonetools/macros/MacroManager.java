@@ -30,7 +30,8 @@ public class MacroManager {
         }
 
         if (macrosJson == null) {
-            macros = getDefaultMacros();
+            macros = new ArrayList<>();
+            macros.addAll(getDefaultMacros());
         } else {
             macros = getMacrosFromJson(macrosJson);
         }
