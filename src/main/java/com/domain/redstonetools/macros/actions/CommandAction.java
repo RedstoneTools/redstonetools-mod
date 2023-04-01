@@ -14,6 +14,6 @@ public class CommandAction extends Action {
         var player = MinecraftClient.getInstance().player;
         assert player != null;
 
-        if(command.startsWith("/")) player.sendChatMessage(command);
+        player.sendChatMessage(command.startsWith("/") ? command : "/" + command);
     }
 }
