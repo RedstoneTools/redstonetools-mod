@@ -1,6 +1,7 @@
 package com.domain.redstonetools.macros.gui.screen;
 
 import com.domain.redstonetools.macros.Macro;
+import com.domain.redstonetools.macros.MacroManager;
 import com.domain.redstonetools.macros.actions.Action;
 import com.domain.redstonetools.macros.actions.CommandAction;
 import com.domain.redstonetools.macros.gui.widget.commandlist.CommandEntry;
@@ -21,6 +22,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
+
+import static com.domain.redstonetools.RedstoneToolsClient.INJECTOR;
 
 
 public class MacroEditScreen extends GameOptionsScreen {
@@ -66,6 +69,8 @@ public class MacroEditScreen extends GameOptionsScreen {
 
             if (!macro.isCopy()) macroListWidget.addMacro(macro);
             else macro.applyChangesToOriginal();
+
+            INJECTOR.getInstance(MacroManager.class).saveChanges();
 
             client.setScreen(parent);
         }));

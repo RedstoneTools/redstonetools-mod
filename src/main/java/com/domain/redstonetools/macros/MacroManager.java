@@ -7,30 +7,30 @@ import net.minecraft.client.util.InputUtil;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MacroManager {
-    private final File macrosFile = Path.of(System.getenv("APPDATA"), ".minecraft", "config", "redstonetools", "macros.json").toFile();
-    private List<Macro> macros;
+    private final Path macrosFilePath = Path.of(System.getenv("APPDATA"), ".minecraft", "config", "redstonetools", "macros.json");
+    private final List<Macro> macros;
 
     public MacroManager() {
         // Read %appdata%/.minecraft/config/redstonetools/macros.json
         JsonArray macrosJson = null;
         try {
-            assert macrosFile.mkdirs();
-            macrosJson = Json.createReader(new FileReader(macrosFile)).readArray();
+            Files.createDirectories(macrosFilePath.getParent());
+            macrosJson = Json.createReader(new FileReader(macrosFilePath.toFile())).readArray();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (macrosJson == null) {
-            macros = new ArrayList<>();
-            macros.addAll(getDefaultMacros());
+            macros = getDefaultMacros();
         } else {
             macros = getMacrosFromJson(macrosJson);
         }
@@ -64,17 +64,21 @@ public class MacroManager {
 
     public void saveChanges() {
         // Write %appdata%/.minecraft/config/redstonetools/macros.json
-        assert macrosFile.mkdirs();
+        try {
+            Files.createDirectories(macrosFilePath.getParent());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         var macrosJson = Json.createArrayBuilder();
         for (Macro macro : macros) {
             macrosJson.add(getMacroJson(macro));
         }
 
-        try (var writer = Json.createWriter(new FileWriter(macrosFile))) {
+        try (var writer = Json.createWriter(new FileWriter(macrosFilePath.toFile()))) {
             writer.writeArray(macrosJson.build());
         } catch (Exception e) {
-            //e.printStackTrace(); //would spam the console when doing stuff with macros
+            e.printStackTrace();
         }
     }
 
@@ -153,10 +157,9 @@ public class MacroManager {
 
     private Action getActionFromJson(JsonObject actionJson) {
         var type = actionJson.getString("type");
-        var data = actionJson.getString("data");
 
         if ("command".equals(type)) {
-            return new CommandAction(data);
+            return new CommandAction(actionJson.getString("command"));
         }
 
         throw new RuntimeException("Unknown action type: " + type);
