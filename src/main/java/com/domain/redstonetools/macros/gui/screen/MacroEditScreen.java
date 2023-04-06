@@ -74,10 +74,11 @@ public class MacroEditScreen extends GameOptionsScreen {
 
             client.setScreen(parent);
         }));
+        doneButton.active = canClickDone();
 
         nameField.setChangedListener(s -> {
             macro.name = s;
-            doneButton.active = !nameField.getText().isEmpty() && !nameField.getText().contains(" ") && macroListWidget.canAdd(macro);
+            doneButton.active = canClickDone();
         });
         addSelectableChild(nameField);
 
@@ -88,7 +89,7 @@ public class MacroEditScreen extends GameOptionsScreen {
 
         Key keyCode = macro.getKey();
         Text text = keyCode.getLocalizedText();
-        if (keyCode == InputUtil.UNKNOWN_KEY) text = Text.of("Not Bound");
+        if (keyCode == InputUtil.UNKNOWN_KEY) text = Text.of("");
 
         keyBindButton = new ButtonWidget(this.width / 2 + 26, 55, 75, 20, text, (button) -> {
             detectingKeycodeKey = true;
@@ -120,6 +121,10 @@ public class MacroEditScreen extends GameOptionsScreen {
         this.addSelectableChild(commandList);
     }
 
+    private boolean canClickDone() {
+        return !nameField.getText().isEmpty() && !nameField.getText().contains(" ") && macroListWidget.canAdd(macro);
+    }
+
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackgroundTexture(0);
@@ -127,7 +132,7 @@ public class MacroEditScreen extends GameOptionsScreen {
 
         drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);
 
-        drawCenteredText(matrices, this.textRenderer, "KeyBind", width / 2 - (99 - textRenderer.getWidth("KeyBind") / 2), 55 + textRenderer.fontHeight / 2, 16777215);
+        drawCenteredText(matrices, this.textRenderer, "Key Bind", width / 2 - (99 - textRenderer.getWidth("Key Bind") / 2), 55 + textRenderer.fontHeight / 2, 16777215);
         nameField.render(matrices, mouseX, mouseY, delta);
         super.render(matrices, mouseX, mouseY, delta);
     }
@@ -179,7 +184,7 @@ public class MacroEditScreen extends GameOptionsScreen {
         if (detectingKeycodeKey) {
             detectingKeycodeKey = false;
             Text text = key.getLocalizedText();
-            if (key == InputUtil.UNKNOWN_KEY) text = Text.of("Not Bound");
+            if (key == InputUtil.UNKNOWN_KEY) text = Text.of("");
 
             keyBindButton.setMessage(text);
             macro.setKey(key);

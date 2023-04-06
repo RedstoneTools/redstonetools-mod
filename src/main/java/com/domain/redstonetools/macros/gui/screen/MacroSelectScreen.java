@@ -27,7 +27,7 @@ public class MacroSelectScreen extends GameOptionsScreen {
         this.addSelectableChild(this.macroList);
 
         this.addDrawableChild(new ButtonWidget(this.width / 2 +1, this.height - 29, 150, 20, Text.of("Create New..."), (button) -> {
-            this.client.setScreen(new MacroEditScreen(this,gameOptions,Text.of("Create New Macro"), macroList));
+            this.client.setScreen(new MacroEditScreen(this,gameOptions,Text.of("New Macro"), macroList));
         }));
 
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 151, this.height - 29, 150, 20, ScreenTexts.DONE, (button) -> {
