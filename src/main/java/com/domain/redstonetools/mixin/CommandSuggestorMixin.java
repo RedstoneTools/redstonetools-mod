@@ -33,9 +33,11 @@ public class CommandSuggestorMixin{
 
     @Shadow @Final
     MinecraftClient client;
-    @Shadow @Final private TextFieldWidget textField;
+    @Shadow @Final
+    TextFieldWidget textField;
     @Shadow private @Nullable CompletableFuture<Suggestions> pendingSuggestions;
-    @Shadow @Final private int maxSuggestionSize;
+    @Shadow @Final
+    int maxSuggestionSize;
     private final ClientPlayerEntity dummyPlayer = new ClientPlayerEntity(MinecraftClient.getInstance(),new ClientWorld(WorldlessCommandHelper.dummyNetworkHandler,new ClientWorld.Properties(Difficulty.EASY,false,false),null,new RegistryEntry.Direct<>(DimensionType.create(OptionalLong.empty(), true, false, false, true, 1.0, false, false, true, false, true, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD, OVERWORLD_ID, 0.0F)),0,0,null,null,true,0 ), WorldlessCommandHelper.dummyNetworkHandler, null,null,false,false);
 
     private ClientPlayerEntity player;
@@ -74,7 +76,7 @@ public class CommandSuggestorMixin{
     }
 
     @ModifyVariable(method = "showSuggestions", at = @At("STORE"), ordinal = 1)
-    public int injectJ(int j){
+    public int suggestionWindXPos(int j){
         if (WorldlessCommandSuggestor.instance(this)) {
             Suggestions suggestions = this.pendingSuggestions.join();
             return this.textField.getCharacterX(suggestions.getRange().getStart())+4;
@@ -83,7 +85,7 @@ public class CommandSuggestorMixin{
     }
 
     @ModifyVariable(method = "showSuggestions", at = @At("STORE"), ordinal = 2)
-    public int injectK(int k){
+    public int suggestionWindYPos(int k){
         if (WorldlessCommandSuggestor.instance(this)) {
             Suggestions suggestions = this.pendingSuggestions.join();
 
@@ -96,14 +98,13 @@ public class CommandSuggestorMixin{
 
     private int i = 0;
 
-
     @Inject(method = "render", at = @At("HEAD"))
     public void render(MatrixStack matrices, int mouseX, int mouseY, CallbackInfo ci){
         i = 0;
     }
 
     @ModifyVariable(method = "render", at = @At("STORE"), ordinal = 3)
-    public int injectJ2(int j) {
+    public int messageYPos(int j) {
         if (WorldlessCommandSuggestor.instance(this)) {
             int y = WorldlessCommandSuggestor.getY(this);
             i++;
