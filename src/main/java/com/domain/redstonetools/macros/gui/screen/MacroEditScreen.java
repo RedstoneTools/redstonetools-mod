@@ -109,7 +109,10 @@ public class MacroEditScreen extends GameOptionsScreen {
 
         if (entries != null) {
             commandList.children().clear();
-            commandList.children().addAll(entries);
+            for (CommandEntry entry : entries) {
+                entry.setOwner(commandList);
+                commandList.children().add(entry);
+            }
         } else {
             for (Action action : macro.actions) {
                 if (action instanceof CommandAction commandAction) {

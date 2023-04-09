@@ -1,6 +1,7 @@
 package com.domain.redstonetools;
 
 
+import com.domain.redstonetools.macros.gui.commandsuggestor.WorldlessCommandSuggestor;
 import com.domain.redstonetools.utils.ReflectionUtils;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -20,6 +21,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
         // Register game rules
         RedstoneToolsGameRules.register();
+        WorldlessCommandSuggestor.dummyNetworkHandler.getCommandDispatcher();//should call the "static" method
 
         // Register features
         for (var featureClass : ReflectionUtils.getFeatureClasses()) {
