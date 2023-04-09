@@ -14,7 +14,8 @@
     "OptionsScreenMixin"
   ],
   "client": [
-    "ControlsListWidgetMixin",
-    "CommandDispatcherMixin"
+    "CommandDispatcherMixin",
+    "CommandSuggestorMixin",
+    "ControlsListWidgetMixin"
   ]
 }

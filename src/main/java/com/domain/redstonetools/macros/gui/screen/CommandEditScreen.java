@@ -14,18 +14,18 @@ import net.minecraft.text.Text;
 public class CommandEditScreen extends GameOptionsScreen {
 
     private final TextFieldWidget commandField;
-    private final WorldlessCommandSuggestor commandSuggestor;
+    private final WorldlessCommandSuggestor commandWorldlessCommandSuggestor;
     private boolean changed = false;
 
     public CommandEditScreen(Screen parent, GameOptions gameOptions, TextFieldWidget commandField) {
         super(parent, gameOptions, Text.of(""));
         this.commandField = commandField;
         client = MinecraftClient.getInstance();
-        this.commandSuggestor = new WorldlessCommandSuggestor(client, parent, commandField,client.textRenderer,true,false, commandField.y -20,5,-805306368);
+        this.commandWorldlessCommandSuggestor = new WorldlessCommandSuggestor(client, parent, commandField,client.textRenderer,true,false, commandField.y -20,5,-805306368);
 
         commandField.setChangedListener((s) -> changed = true);
-        commandSuggestor.setWindowActive(true);
-        commandSuggestor.refresh();
+        commandWorldlessCommandSuggestor.setWindowActive(true);
+        commandWorldlessCommandSuggestor.refresh();
     }
 
     @Override
@@ -36,9 +36,9 @@ public class CommandEditScreen extends GameOptionsScreen {
 
         commandField.render(matrices, mouseX, mouseY, delta);
 
-        commandSuggestor.render(matrices, mouseX, mouseY);
+        commandWorldlessCommandSuggestor.render(matrices, mouseX, mouseY);
         if (changed) {
-            commandSuggestor.refresh();
+            commandWorldlessCommandSuggestor.refresh();
             changed = false;
         }
 
@@ -62,14 +62,15 @@ public class CommandEditScreen extends GameOptionsScreen {
         super.close();
         commandField.setTextFieldFocused(false);
         commandField.setChangedListener(null);
-        commandSuggestor.setWindowActive(false);
-        commandSuggestor.refresh();
+        commandWorldlessCommandSuggestor.setWindowActive(false);
+        commandWorldlessCommandSuggestor.refresh();
+        commandWorldlessCommandSuggestor.close();
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!commandField.mouseClicked(mouseX, mouseY, button)) {
-            if (!commandSuggestor.mouseClicked(mouseX, mouseY, button)) {
+            if (!commandWorldlessCommandSuggestor.mouseClicked(mouseX, mouseY, button)) {
                 close();
             } else {
                 commandField.setTextFieldFocused(true);
@@ -81,7 +82,7 @@ public class CommandEditScreen extends GameOptionsScreen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        return commandSuggestor.mouseScrolled(amount);
+        return commandWorldlessCommandSuggestor.mouseScrolled(amount);
     }
 
     @Override
@@ -95,7 +96,7 @@ public class CommandEditScreen extends GameOptionsScreen {
             close();
             return true;
         }
-        commandSuggestor.keyPressed(keyCode, scanCode, modifiers);
+        commandWorldlessCommandSuggestor.keyPressed(keyCode, scanCode, modifiers);
 
         return commandField.keyPressed(keyCode, scanCode, modifiers);
     }

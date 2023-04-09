@@ -29,9 +29,10 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
             this.owner.removeCommand(this);
         });
 
-        WorldlessCommandSuggestor commandSuggestor = new WorldlessCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
-        commandSuggestor.setWindowActive(false);
-        commandSuggestor.refresh();
+        WorldlessCommandSuggestor commandWorldlessCommandSuggestor = new WorldlessCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
+        commandWorldlessCommandSuggestor.setWindowActive(false);
+        commandWorldlessCommandSuggestor.refresh();
+        commandWorldlessCommandSuggestor.close();
     }
 
 
