@@ -16,12 +16,10 @@ public class CommandDispatcherMixin<S> {
 
 
     @Inject(method = "register", at =  @At("HEAD"), remap = false)
-    private void inject(LiteralArgumentBuilder<S> command, CallbackInfoReturnable<LiteralCommandNode<S>> cir) {
+    private void register(LiteralArgumentBuilder<S> command, CallbackInfoReturnable<LiteralCommandNode<S>> cir) {
         if (!WorldlessCommandSuggestor.registered && !WorldlessCommandSuggestor.dummyNetworkHandler.getCommandDispatcher().equals(this)){
             WorldlessCommandSuggestor.dummyNetworkHandler.getCommandDispatcher().register((LiteralArgumentBuilder<CommandSource>) command);
         }
-
-
     }
 
 }

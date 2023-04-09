@@ -1,6 +1,5 @@
 package com.domain.redstonetools.macros.gui.commandsuggestor;
 
-import com.domain.redstonetools.RedstoneToolsClient;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -9,7 +8,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.Message;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContextBuilder;
 import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.context.SuggestionContext;
@@ -18,7 +16,6 @@ import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -32,7 +29,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
@@ -174,7 +170,7 @@ public class WorldlessCommandSuggestor {
 
     }
 
-    public void refresh(boolean showSuggestion) {
+    public void refresh() {
         String string = this.textField.getText();
         if (this.parse != null && !this.parse.getReader().getString().equals(string)) {
             this.parse = null;
@@ -207,7 +203,7 @@ public class WorldlessCommandSuggestor {
                 this.pendingSuggestions = commandDispatcher.getCompletionSuggestions(this.parse, i);
                 this.pendingSuggestions.thenRun(() -> {
                     if (this.pendingSuggestions.isDone()) {
-                        this.show(showSuggestion);
+                        this.show();
                     }
                 });
             }
@@ -236,7 +232,7 @@ public class WorldlessCommandSuggestor {
         return string == null ? text.asOrderedText() : (new TranslatableText("command.context.parse_error", text, exception.getCursor(), string)).asOrderedText();
     }
 
-    private void show(boolean showSuggestion) {
+    private void show() {
         if (this.textField.getCursor() == this.textField.getText().length()) {
             if ((this.pendingSuggestions.join()).isEmpty() && !this.parse.getExceptions().isEmpty()) {
                 int i = 0;
@@ -260,7 +256,7 @@ public class WorldlessCommandSuggestor {
 
         this.x = 0;
         this.width = this.owner.width;
-        if (this.messages.isEmpty() && showSuggestion) {
+        if (this.messages.isEmpty()) {
             this.showUsages();
         }
 

@@ -30,7 +30,8 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
         });
 
         WorldlessCommandSuggestor commandSuggestor = new WorldlessCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
-        commandSuggestor.refresh(false);
+        commandSuggestor.setWindowActive(false);
+        commandSuggestor.refresh();
     }
 
 
