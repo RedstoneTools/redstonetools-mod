@@ -1,8 +1,9 @@
 package com.domain.redstonetools.macros.gui.widget.commandlist;
 
+import com.domain.redstonetools.macros.gui.screen.CommandEditScreen;
+import com.domain.redstonetools.macros.gui.screen.MacroEditScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.EntryListWidget;
 
 import java.util.ArrayList;
@@ -10,9 +11,9 @@ import java.util.List;
 
 public class CommandListWidget extends EntryListWidget<CommandEntry> {
 
-    private final GameOptionsScreen parent;
+    private final MacroEditScreen parent;
 
-    public CommandListWidget(MinecraftClient client, GameOptionsScreen parent, int width, int height, int top, int bottom, int itemHeight) {
+    public CommandListWidget(MinecraftClient client, MacroEditScreen parent, int width, int height, int top, int bottom, int itemHeight) {
         super(client, width, height, top, bottom, itemHeight);
         this.parent = parent;
         addEntry(new CommandEntryPlaceHolder(client,this,""));
@@ -26,24 +27,33 @@ public class CommandListWidget extends EntryListWidget<CommandEntry> {
 
 
 
-    public void addCommand(String command) {
+    public CommandEntry addCommand(String command) {
         CommandEntry entry = new CommandEntry(client,this,command);
         List<CommandEntry> entries = children();
 
         entries.add(entries.size()-1,entry);
+
+        return entry;
     }
 
-    protected void addCommandFromPlaceHolder(String command,CommandEntryPlaceHolder placeHolder, double y) {
-        addCommand(command);
+    protected void addCommandFromPlaceHolder(String command,CommandEntryPlaceHolder placeHolder) {
+        CommandEntry entry = addCommand(command);
         placeHolder.setFocused(false);
 
-        CommandEntry entry = getEntryAtPosition(width/2,y);
+        entry.command.x = placeHolder.command.x;
+        entry.command.y = placeHolder.command.y;
         entry.setFocused(true);
     }
+
+    public void centerScrollOn(CommandEntry entry) {
+        super.centerScrollOn(entry);
+    }
+
 
 
     protected void removeCommand(CommandEntry command) {
         removeEntry(command);
+        setScrollAmount(getScrollAmount());
     }
 
     protected int getScrollbarPositionX() {
@@ -100,7 +110,7 @@ public class CommandListWidget extends EntryListWidget<CommandEntry> {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    protected GameOptionsScreen getParent() {
+    protected MacroEditScreen getParent() {
         return parent;
     }
 

@@ -1,5 +1,6 @@
 package com.domain.redstonetools.macros.gui.commandsuggestor;
 
+import com.domain.redstonetools.RedstoneToolsClient;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -68,16 +69,15 @@ public class WorldlessCommandSuggestor {
         HIGHLIGHT_STYLES = var10000.map(var10001::withColor).collect(ImmutableList.toImmutableList());
     }
 
-    final MinecraftClient client;
-    final Screen owner;
-    final TextFieldWidget textField;
-    final TextRenderer textRenderer;
+    private final MinecraftClient client;
+    private final Screen owner;
+    private final TextFieldWidget textField;
+    private final TextRenderer textRenderer;
     private final boolean slashOptional;
     private final boolean suggestingWhenEmpty;
-    final int inWindowIndexOffset;
-    final int maxSuggestionSize;
-    final boolean chatScreenSized;
-    final int color;
+    private final int y;
+    private final int maxSuggestionSize;
+    private final int color;
     private final List<OrderedText> messages = Lists.newArrayList();
     private int x;
     private int width;
@@ -86,20 +86,19 @@ public class WorldlessCommandSuggestor {
     @Nullable
     private CompletableFuture<Suggestions> pendingSuggestions;
     @Nullable
-    WorldlessCommandSuggestor.SuggestionWindow window;
+    private WorldlessCommandSuggestor.SuggestionWindow window;
     private boolean windowActive;
     boolean completingSuggestions;
 
-    public WorldlessCommandSuggestor(MinecraftClient client, Screen owner, TextFieldWidget textField, TextRenderer textRenderer, boolean slashOptional, boolean suggestingWhenEmpty, int inWindowIndexOffset, int maxSuggestionSize, boolean chatScreenSized, int color) {
+    public WorldlessCommandSuggestor(MinecraftClient client, Screen owner, TextFieldWidget textField, TextRenderer textRenderer, boolean slashOptional, boolean suggestingWhenEmpty, int y, int maxSuggestionSize, int color) {
         this.client = client;
         this.owner = owner;
         this.textField = textField;
         this.textRenderer = textRenderer;
         this.slashOptional = slashOptional;
         this.suggestingWhenEmpty = suggestingWhenEmpty;
-        this.inWindowIndexOffset = inWindowIndexOffset;
+        this.y = y;
         this.maxSuggestionSize = maxSuggestionSize;
-        this.chatScreenSized = chatScreenSized;
         this.color = color;
         textField.setRenderTextProvider(this::provideRenderText);
     }
@@ -142,10 +141,9 @@ public class WorldlessCommandSuggestor {
                 for (Iterator<Suggestion> var4 = suggestions.getList().iterator(); var4.hasNext(); i = Math.max(i, this.textRenderer.getWidth(suggestion.getText()))) {
                     suggestion = var4.next();
                 }
+                int j = this.textField.getCharacterX(suggestions.getRange().getStart());// MathHelper.clamp(this.textField.getCharacterX(suggestions.getRange().getStart()), 0, (this.textField.getCharacterX(0) + this.textField.getInnerWidth() - i));
 
-                int j = MathHelper.clamp(this.textField.getCharacterX(suggestions.getRange().getStart()), 0, this.textField.getCharacterX(0) + this.textField.getInnerWidth() - i);
-                int k = this.chatScreenSized ? this.owner.height - 12 : 72;
-                this.window = new WorldlessCommandSuggestor.SuggestionWindow(j, k, i, this.sortSuggestions(suggestions), narrateFirstSuggestion);
+                this.window = new WorldlessCommandSuggestor.SuggestionWindow(j, y-2, i, this.sortSuggestions(suggestions), narrateFirstSuggestion);
             }
         }
 
@@ -350,7 +348,7 @@ public class WorldlessCommandSuggestor {
 
             for (Iterator<OrderedText> var5 = this.messages.iterator(); var5.hasNext(); ++i) {
                 OrderedText orderedText = var5.next();
-                int j = this.chatScreenSized ? this.owner.height - 14 - 13 - 12 * i : 72 + 12 * i;
+                int j = y - 12*i+43;
                 DrawableHelper.fill(matrices, this.x - 1, j, this.x + this.width + 1, j + 12, this.color);
                 this.textRenderer.drawWithShadow(matrices, orderedText, (float) this.x, (float) (j + 2), -1);
             }
@@ -374,8 +372,8 @@ public class WorldlessCommandSuggestor {
 
         SuggestionWindow(int x, int y, int width, List<Suggestion> suggestions, boolean narrateFirstSuggestion) {
             this.mouse = Vec2f.ZERO;
-            int i = x - 1;
-            int j = WorldlessCommandSuggestor.this.chatScreenSized ? y - 3 - Math.min(suggestions.size(), WorldlessCommandSuggestor.this.maxSuggestionSize) * 12 : y;
+            int i = x +3;
+            int j = y +20 - Math.min(suggestions.size(), WorldlessCommandSuggestor.this.maxSuggestionSize) * 12;
             this.area = new Rect2i(i, j, width + 1, Math.min(suggestions.size(), WorldlessCommandSuggestor.this.maxSuggestionSize) * 12);
             this.typedText = WorldlessCommandSuggestor.this.textField.getText();
             this.lastNarrationIndex = narrateFirstSuggestion ? -1 : 0;
@@ -384,10 +382,10 @@ public class WorldlessCommandSuggestor {
         }
 
         public void render(MatrixStack matrices, int mouseX, int mouseY) {
-            int i = Math.min(this.suggestions.size(), WorldlessCommandSuggestor.this.maxSuggestionSize);
+            int suggestionCount = Math.min(this.suggestions.size(), WorldlessCommandSuggestor.this.maxSuggestionSize);
 
             boolean bl = this.inWindowIndex > 0;
-            boolean bl2 = this.suggestions.size() > this.inWindowIndex + i;
+            boolean bl2 = this.suggestions.size() > this.inWindowIndex + suggestionCount;
             boolean bl3 = bl || bl2;
             boolean bl4 = this.mouse.x != (float) mouseX || this.mouse.y != (float) mouseY;
             if (bl4) {
@@ -417,7 +415,7 @@ public class WorldlessCommandSuggestor {
 
             boolean bl5 = false;
 
-            for (int l = 0; l < i; ++l) {
+            for (int l = 0; l < suggestionCount; ++l) {
                 Suggestion suggestion = this.suggestions.get(l + this.inWindowIndex);
                 DrawableHelper.fill(matrices, this.area.getX(), this.area.getY() + 12 * l, this.area.getX() + this.area.getWidth(), this.area.getY() + 12 * l + 12, WorldlessCommandSuggestor.this.color);
                 if (mouseX > this.area.getX() && mouseX < this.area.getX() + this.area.getWidth() && mouseY > this.area.getY() + 12 * l && mouseY < this.area.getY() + 12 * l + 12) {
@@ -496,7 +494,7 @@ public class WorldlessCommandSuggestor {
             if (this.selection < i) {
                 this.inWindowIndex = MathHelper.clamp(this.selection, 0, Math.max(this.suggestions.size() - WorldlessCommandSuggestor.this.maxSuggestionSize, 0));
             } else if (this.selection > j) {
-                this.inWindowIndex = MathHelper.clamp(this.selection + WorldlessCommandSuggestor.this.inWindowIndexOffset - WorldlessCommandSuggestor.this.maxSuggestionSize, 0, Math.max(this.suggestions.size() - WorldlessCommandSuggestor.this.maxSuggestionSize, 0));
+                this.inWindowIndex = MathHelper.clamp(this.selection - WorldlessCommandSuggestor.this.maxSuggestionSize, 0, Math.max(this.suggestions.size() - WorldlessCommandSuggestor.this.maxSuggestionSize, 0));
             }
 
         }

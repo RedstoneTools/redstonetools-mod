@@ -13,9 +13,8 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
 
 
     protected CommandListWidget owner;
-    private final WorldlessCommandSuggestor commandSuggestor;
 
-    protected final TextFieldWidget command;
+    public final TextFieldWidget command;
     protected final ButtonWidget deleteButton;
 
 
@@ -30,7 +29,7 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
             this.owner.removeCommand(this);
         });
 
-        this.commandSuggestor = new WorldlessCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,true,0);
+        WorldlessCommandSuggestor commandSuggestor = new WorldlessCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
         commandSuggestor.refresh(false);
     }
 
@@ -46,23 +45,24 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
         deleteButton.y = y;
         deleteButton.render(matrices,mouseX,mouseY,tickDelta);
 
-
-        if (command.isFocused()) {
-            commandSuggestor.refresh(true);
-            if (!command.getText().isEmpty()) commandSuggestor.showSuggestions(false);
+        if (edit) {
+            edit = false;
+            owner.getParent().editCommandField(command);
         }
-
     }
 
     public void tick() {
         command.tick();
     }
+    private boolean edit = false;
 
     public void setFocused(boolean focused){
         command.setTextFieldFocused(focused);
-        if (!focused) {
-            commandSuggestor.refresh(false);
+        if (focused){
+            owner.centerScrollOn(this);
+            edit = true;
         }
+        owner.focusOn(this);
     }
 
     protected String getText() {
@@ -75,7 +75,11 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        command.mouseClicked(mouseX,mouseY,button);
+        if (command.mouseClicked(mouseX,mouseY,button)) {
+            owner.centerScrollOn(this);
+            edit = true;
+            return true;
+        }
         deleteButton.mouseClicked(mouseX,mouseY,button);
 
         return super.mouseClicked(mouseX, mouseY, button);
@@ -91,7 +95,6 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (command.isFocused()) {
-            commandSuggestor.keyPressed(keyCode, scanCode, modifiers);
             return command.keyPressed(keyCode, scanCode, modifiers);
         }
 
