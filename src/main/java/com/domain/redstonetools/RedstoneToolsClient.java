@@ -21,7 +21,6 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
         // Register game rules
         RedstoneToolsGameRules.register();
-        WorldlessCommandSuggestor.dummyNetworkHandler.getCommandDispatcher();//should call the "static" method
 
         // Register features
         for (var featureClass : ReflectionUtils.getFeatureClasses()) {
@@ -29,5 +28,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
             feature.register();
         }
+
+        WorldlessCommandSuggestor.dummyNetworkHandler.getCommandDispatcher();//should call the "static" method
     }
 }
