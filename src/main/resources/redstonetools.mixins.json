@@ -8,12 +8,15 @@
   },
   "mixins": [
     "BlockItemMixin",
+    "BlockMixin",
+    "CommandTelemetryMixin",
     "ItemScattererMixin",
     "LocalSessionMixin",
     "MinecraftClientMixin",
     "OptionsScreenMixin"
   ],
   "client": [
+    "CrashTelemetryMixin",
     "CommandDispatcherMixin",
     "CommandSuggestorMixin",
     "ControlsListWidgetMixin"
