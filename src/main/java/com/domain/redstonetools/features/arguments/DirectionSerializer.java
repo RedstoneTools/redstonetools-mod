@@ -1,5 +1,6 @@
 package com.domain.redstonetools.features.arguments;
 
+import com.domain.redstonetools.features.arguments.serializers.EnumSerializer;
 import com.domain.redstonetools.utils.DirectionArgument;
 
 public class DirectionSerializer extends EnumSerializer<DirectionArgument> {

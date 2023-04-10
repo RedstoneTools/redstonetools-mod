@@ -1,5 +1,6 @@
 package com.domain.redstonetools.macros.gui.screen;
 
+import com.domain.redstonetools.RedstoneToolsClient;
 import com.domain.redstonetools.macros.Macro;
 import com.domain.redstonetools.macros.MacroManager;
 import com.domain.redstonetools.macros.actions.Action;
@@ -7,6 +8,7 @@ import com.domain.redstonetools.macros.actions.CommandAction;
 import com.domain.redstonetools.macros.gui.widget.commandlist.CommandEntry;
 import com.domain.redstonetools.macros.gui.widget.commandlist.CommandListWidget;
 import com.domain.redstonetools.macros.gui.widget.macrolist.MacroListWidget;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -36,6 +38,7 @@ public class MacroEditScreen extends GameOptionsScreen {
     private ButtonWidget doneButton;
     private ButtonWidget keyBindButton;
 
+    private boolean overlapped = false;
     private boolean detectingKeycodeKey = false;
 
     public MacroEditScreen(Screen parent, GameOptions gameOptions, Text title, MacroListWidget macroListWidget) {
@@ -54,6 +57,7 @@ public class MacroEditScreen extends GameOptionsScreen {
     @Override
     public void init() {
         super.init();
+        overlapped = false;
         nameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 20, Text.of(""));
         nameField.setText(macro.name);
 
@@ -101,7 +105,11 @@ public class MacroEditScreen extends GameOptionsScreen {
 
         int widgetWidth = 339;
         List<CommandEntry> entries = null;
-        if (commandList != null) entries = commandList.children();
+        double scrollAmount = 0;
+        if (commandList != null) {
+            entries = commandList.children();
+            scrollAmount = commandList.getScrollAmount();
+        }
 
         commandList = new CommandListWidget(client, this, widgetWidth, height, 85, this.height / 4 + 144 + 5 - 10, 24);
         commandList.setLeftPos(width / 2 - widgetWidth / 2);
@@ -109,7 +117,10 @@ public class MacroEditScreen extends GameOptionsScreen {
 
         if (entries != null) {
             commandList.children().clear();
-            commandList.children().addAll(entries);
+            for (CommandEntry entry : entries) {
+                entry.setOwner(commandList);
+                commandList.children().add(entry);
+            }
         } else {
             for (Action action : macro.actions) {
                 if (action instanceof CommandAction commandAction) {
@@ -117,6 +128,7 @@ public class MacroEditScreen extends GameOptionsScreen {
                 }
             }
         }
+        commandList.setScrollAmount(scrollAmount);
 
         this.addSelectableChild(commandList);
     }
@@ -127,14 +139,21 @@ public class MacroEditScreen extends GameOptionsScreen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        if (overlapped) {
+            mouseX = -1;
+            mouseY = -1;
+        }
+
         this.renderBackgroundTexture(0);
         commandList.render(matrices, mouseX, mouseY, delta);
+        super.render(matrices, mouseX, mouseY, delta);
 
         drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);
 
         drawCenteredText(matrices, this.textRenderer, "Key Bind", width / 2 - (99 - textRenderer.getWidth("Key Bind") / 2), 55 + textRenderer.fontHeight / 2, 16777215);
         nameField.render(matrices, mouseX, mouseY, delta);
-        super.render(matrices, mouseX, mouseY, delta);
+
+
     }
 
     @Override
@@ -143,6 +162,17 @@ public class MacroEditScreen extends GameOptionsScreen {
         commandList.tick();
 
         super.tick();
+    }
+
+    @Override
+    public void resize(MinecraftClient client, int width, int height) {
+        super.resize(client, width, height);
+        if (overlapped) client.setScreen(new CommandEditScreen(this,gameOptions,commandList.getFocused().command));
+    }
+
+    public void editCommandField(TextFieldWidget commandField) {
+        client.setScreen(new CommandEditScreen(this,gameOptions, commandField));
+        overlapped = true;
     }
 
     @Override
