@@ -134,7 +134,7 @@ public class MacroEditScreen extends GameOptionsScreen {
     }
 
     private boolean canClickDone() {
-        return !nameField.getText().isEmpty() && !nameField.getText().contains(" ") && macroListWidget.canAdd(macro);
+        return !nameField.getText().isEmpty() && macroListWidget.canAdd(macro);
     }
 
     @Override
