@@ -2,7 +2,7 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
-import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.Feedback;
 import com.domain.redstonetools.utils.DirectionArgument;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.IncompleteRegionException;
@@ -20,7 +20,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 
 import static com.domain.redstonetools.features.arguments.DirectionSerializer.direction;
-import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
+import static com.domain.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 import static com.domain.redstonetools.utils.DirectionUtils.directionToBlock;
 import static com.domain.redstonetools.utils.DirectionUtils.matchDirection;
 

@@ -12,9 +12,13 @@
     "CommandTelemetryMixin",
     "ItemScattererMixin",
     "LocalSessionMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "OptionsScreenMixin"
   ],
   "client": [
-    "CrashTelemetryMixin"
+    "CrashTelemetryMixin",
+    "CommandDispatcherMixin",
+    "CommandSuggestorMixin",
+    "ControlsListWidgetMixin"
   ]
 }

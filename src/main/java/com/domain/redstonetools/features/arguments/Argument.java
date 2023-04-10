@@ -1,5 +1,6 @@
 package com.domain.redstonetools.features.arguments;
 
+import com.domain.redstonetools.features.arguments.serializers.TypeSerializer;
 import com.mojang.brigadier.context.CommandContext;
 
 public class Argument<T> {

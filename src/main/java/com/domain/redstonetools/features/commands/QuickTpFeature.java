@@ -2,7 +2,7 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
-import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.Feedback;
 import com.domain.redstonetools.utils.PositionUtils;
 import com.domain.redstonetools.utils.RaycastUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -12,8 +12,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
-import static com.domain.redstonetools.features.arguments.BoolSerializer.bool;
-import static com.domain.redstonetools.features.arguments.FloatSerializer.floatArg;
+import static com.domain.redstonetools.features.arguments.serializers.BoolSerializer.bool;
+import static com.domain.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
 
 @Feature(name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
 public class QuickTpFeature extends CommandFeature {

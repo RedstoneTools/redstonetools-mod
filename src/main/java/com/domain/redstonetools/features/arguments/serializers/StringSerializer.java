@@ -1,4 +1,4 @@
-package com.domain.redstonetools.features.arguments;
+package com.domain.redstonetools.features.arguments.serializers;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -21,12 +21,13 @@ public class StringSerializer extends StringBrigadierSerializer<String> {
         return INSTANCE_GREEDY_STRING;
     }
 
-    private StringSerializer(ArgumentType<String> argumentType) {
+    protected StringSerializer(ArgumentType<String> argumentType) {
         super(String.class, argumentType);
     }
 
     @Override
     public String serialize(String value) {
+        // TODO: Check if this is correct, doesn't StringArgumentType.string() require quotes which this doesn't add?
         return value;
     }
 

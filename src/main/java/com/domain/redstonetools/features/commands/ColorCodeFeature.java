@@ -2,7 +2,7 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
-import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.Feedback;
 import com.domain.redstonetools.utils.BlockColor;
 import com.domain.redstonetools.utils.ColoredBlock;
 import com.domain.redstonetools.utils.WorldEditUtils;
@@ -20,7 +20,7 @@ import com.sk89q.worldedit.world.block.BlockType;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 
-import static com.domain.redstonetools.features.arguments.BlockColorSerializer.blockColor;
+import static com.domain.redstonetools.features.arguments.serializers.BlockColorSerializer.blockColor;
 
 @Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
 public class ColorCodeFeature extends CommandFeature {

@@ -1,6 +1,6 @@
 package com.domain.redstonetools.utils;
 
-import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.Feedback;
 import com.mojang.datafixers.util.Either;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.WorldEdit;
