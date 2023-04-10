@@ -27,6 +27,7 @@ public class StringSerializer extends StringBrigadierSerializer<String> {
 
     @Override
     public String serialize(String value) {
+        // TODO: Check if this is correct, doesn't StringArgumentType.string() require quotes which this doesn't add?
         return value;
     }
 
