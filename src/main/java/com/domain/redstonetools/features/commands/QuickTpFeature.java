@@ -12,8 +12,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
-import static com.domain.redstonetools.features.arguments.BoolSerializer.bool;
-import static com.domain.redstonetools.features.arguments.FloatSerializer.floatArg;
+import static com.domain.redstonetools.features.arguments.serializers.BoolSerializer.bool;
+import static com.domain.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
 
 @Feature(name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
 public class QuickTpFeature extends CommandFeature {

@@ -5,8 +5,8 @@ import com.domain.redstonetools.features.arguments.Argument;
 import com.domain.redstonetools.feedback.Feedback;
 import net.minecraft.server.command.ServerCommandSource;
 
-import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
-import static com.domain.redstonetools.features.arguments.StringSerializer.word;
+import static com.domain.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
+import static com.domain.redstonetools.features.arguments.serializers.StringSerializer.word;
 
 import java.math.BigInteger;
 

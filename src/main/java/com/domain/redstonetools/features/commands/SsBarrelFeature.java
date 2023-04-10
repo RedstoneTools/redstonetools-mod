@@ -4,7 +4,6 @@ import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
 import com.domain.redstonetools.feedback.Feedback;
 import com.domain.redstonetools.utils.RedstoneUtils;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
@@ -15,7 +14,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
 
-import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
+import static com.domain.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 
 @Feature(name = "Signal Strength Barrel", description = "Creates a barrel with the specified signal strength.", command = "ss")
 public class SsBarrelFeature extends CommandFeature {

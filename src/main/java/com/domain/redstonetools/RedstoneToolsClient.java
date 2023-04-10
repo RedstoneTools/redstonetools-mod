@@ -1,6 +1,7 @@
 package com.domain.redstonetools;
 
 
+import com.domain.redstonetools.macros.WorldlessCommandHelper;
 import com.domain.redstonetools.utils.ReflectionUtils;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -27,5 +28,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
             feature.register();
         }
+
+        WorldlessCommandHelper.dummyNetworkHandler.getCommandDispatcher();//should call the "static" method
     }
 }

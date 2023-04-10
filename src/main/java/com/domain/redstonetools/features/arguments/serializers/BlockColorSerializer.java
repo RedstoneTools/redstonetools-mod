@@ -1,4 +1,4 @@
-package com.domain.redstonetools.features.arguments;
+package com.domain.redstonetools.features.arguments.serializers;
 
 import com.domain.redstonetools.utils.BlockColor;
 

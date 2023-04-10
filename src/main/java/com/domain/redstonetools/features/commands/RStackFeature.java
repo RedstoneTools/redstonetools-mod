@@ -20,7 +20,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 
 import static com.domain.redstonetools.features.arguments.DirectionSerializer.direction;
-import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
+import static com.domain.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 import static com.domain.redstonetools.utils.DirectionUtils.directionToBlock;
 import static com.domain.redstonetools.utils.DirectionUtils.matchDirection;
 

@@ -12,9 +12,9 @@ import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
 
-import static com.domain.redstonetools.features.arguments.BlockStateArgumentSerializer.blockState;
-import static com.domain.redstonetools.features.arguments.BoolSerializer.bool;
-import static com.domain.redstonetools.features.arguments.IntegerSerializer.integer;
+import static com.domain.redstonetools.features.arguments.serializers.BlockStateArgumentSerializer.blockState;
+import static com.domain.redstonetools.features.arguments.serializers.BoolSerializer.bool;
+import static com.domain.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 
 @Feature(name = "Binary Block Read", description = "Interprets your WorldEdit selection as a binary number.", command = "/read")
 public class BinaryBlockReadFeature extends CommandFeature {
