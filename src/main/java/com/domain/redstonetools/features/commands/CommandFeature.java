@@ -1,8 +1,8 @@
 package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.AbstractFeature;
-import com.domain.redstonetools.feedback.AbstractFeedbackSender;
-import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.AbstractFeedbackSender;
+import com.domain.redstonetools.features.feedback.Feedback;
 import com.domain.redstonetools.utils.CommandUtils;
 import com.domain.redstonetools.utils.ReflectionUtils;
 import com.mojang.brigadier.CommandDispatcher;

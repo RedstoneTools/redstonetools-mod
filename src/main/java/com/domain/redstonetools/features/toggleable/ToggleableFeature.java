@@ -2,14 +2,13 @@ package com.domain.redstonetools.features.toggleable;
 
 import com.domain.redstonetools.features.AbstractFeature;
 import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.feedback.Feedback;
-import com.domain.redstonetools.feedback.FeedbackSender;
+import com.domain.redstonetools.features.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.FeedbackSender;
 import com.domain.redstonetools.utils.ReflectionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 
 
 import static com.domain.redstonetools.RedstoneToolsClient.INJECTOR;

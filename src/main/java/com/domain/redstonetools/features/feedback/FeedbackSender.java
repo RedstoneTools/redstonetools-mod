@@ -1,4 +1,4 @@
-package com.domain.redstonetools.feedback;
+package com.domain.redstonetools.features.feedback;
 
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;

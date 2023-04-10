@@ -1,7 +1,7 @@
 package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
-import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.Feedback;
 import com.domain.redstonetools.utils.BlockColor;
 import com.domain.redstonetools.utils.BlockInfo;
 import com.domain.redstonetools.utils.ColoredBlock;

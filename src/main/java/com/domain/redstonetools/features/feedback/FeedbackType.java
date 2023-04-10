@@ -1,4 +1,4 @@
-package com.domain.redstonetools.feedback;
+package com.domain.redstonetools.features.feedback;
 
 public enum FeedbackType {
     SUCCESS(1),

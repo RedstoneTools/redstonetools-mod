@@ -13,7 +13,7 @@ public class MacroNameSerializer extends StringSerializer {
     private static final MacroNameSerializer INSTANCE = new MacroNameSerializer();
 
     private MacroNameSerializer() {
-        super(StringSerializer.word());
+        super(StringSerializer.greedyString());
     }
 
     public static MacroNameSerializer macroName() {

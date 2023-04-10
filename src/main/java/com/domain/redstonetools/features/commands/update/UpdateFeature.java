@@ -2,8 +2,8 @@ package com.domain.redstonetools.features.commands.update;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.commands.CommandFeature;
-import com.domain.redstonetools.feedback.Feedback;
-import com.domain.redstonetools.feedback.FeedbackSender;
+import com.domain.redstonetools.features.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.FeedbackSender;
 import com.domain.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;

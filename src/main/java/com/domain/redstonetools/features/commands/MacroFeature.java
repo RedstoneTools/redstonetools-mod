@@ -2,7 +2,7 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
-import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.Feedback;
 import com.domain.redstonetools.macros.MacroManager;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;

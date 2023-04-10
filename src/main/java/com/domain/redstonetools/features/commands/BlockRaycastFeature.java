@@ -1,6 +1,6 @@
 package com.domain.redstonetools.features.commands;
 
-import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.Feedback;
 import com.domain.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;

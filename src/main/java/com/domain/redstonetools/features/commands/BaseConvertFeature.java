@@ -2,7 +2,7 @@ package com.domain.redstonetools.features.commands;
 
 import com.domain.redstonetools.features.Feature;
 import com.domain.redstonetools.features.arguments.Argument;
-import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.Feedback;
 import net.minecraft.server.command.ServerCommandSource;
 
 import static com.domain.redstonetools.features.arguments.serializers.IntegerSerializer.integer;

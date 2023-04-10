@@ -1,7 +1,7 @@
 package com.domain.redstonetools.di;
 
-import com.domain.redstonetools.feedback.AbstractFeedbackSender;
-import com.domain.redstonetools.feedback.FeedbackSender;
+import com.domain.redstonetools.features.feedback.AbstractFeedbackSender;
+import com.domain.redstonetools.features.feedback.FeedbackSender;
 import com.google.inject.AbstractModule;
 
 public class UtilityModule extends AbstractModule {

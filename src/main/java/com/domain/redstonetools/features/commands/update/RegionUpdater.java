@@ -1,6 +1,6 @@
 package com.domain.redstonetools.features.commands.update;
 
-import com.domain.redstonetools.feedback.Feedback;
+import com.domain.redstonetools.features.feedback.Feedback;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
