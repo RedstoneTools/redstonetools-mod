@@ -23,6 +23,9 @@ repositories {
 }
 
 dependencies {
+	// OkHttp
+	include implementation ('com.squareup.okhttp:okhttp:2.7.5')
+
 	// jUnit 5
 	include implementation ('org.junit.jupiter:junit-jupiter:5.8.1')
 
