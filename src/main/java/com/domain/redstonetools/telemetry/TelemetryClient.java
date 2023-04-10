@@ -25,10 +25,8 @@ public class TelemetryClient {
     private volatile String token;
 
     public TelemetryClient() {
-        LOGGER.error("Initializing telemetry client");
-
         Executors.newSingleThreadScheduledExecutor()
-                .scheduleAtFixedRate(this::refreshSessionAsync, FAILED_REQUEST_RETRY_TIME_MILLIS, SESSION_EXPIRE_TIME_SECONDS, TimeUnit.SECONDS);
+                .scheduleAtFixedRate(this::refreshSessionAsync, 10, SESSION_EXPIRE_TIME_SECONDS, TimeUnit.SECONDS);
     }
 
     public CompletableFuture<Response> sendCommandAsync(TelemetryCommand command) {
