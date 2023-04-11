@@ -20,6 +20,7 @@ public abstract class TypeSerializer<T, S> implements ArgumentType<T> {
 
     protected final Class<T> clazz;
 
+    // TODO: Consider moving this constructor to enum serializer as it's the only class that uses the clazz field
     protected TypeSerializer(Class<T> clazz) {
         this.clazz = clazz;
     }
