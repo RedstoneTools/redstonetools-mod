@@ -2,6 +2,7 @@ package com.domain.redstonetools.macros;
 
 import com.domain.redstonetools.macros.actions.Action;
 import com.domain.redstonetools.macros.actions.CommandAction;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
 
 import javax.json.Json;
@@ -16,11 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MacroManager {
-    private final Path macrosFilePath = Path.of(System.getenv("APPDATA"), ".minecraft", "config", "redstonetools", "macros.json");
+    private final Path macrosFilePath;
     private final List<Macro> macros;
 
     public MacroManager() {
-        // Read %appdata%/.minecraft/config/redstonetools/macros.json
+        macrosFilePath = MinecraftClient.getInstance().runDirectory.toPath()
+                .resolve("config")
+                .resolve("redstonetools")
+                .resolve("macros.json");
+
         JsonArray macrosJson = null;
         try {
             Files.createDirectories(macrosFilePath.getParent());
