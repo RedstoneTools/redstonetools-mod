@@ -29,9 +29,6 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
             feature.register();
         }
-
-        // Instantiate telemetry client
-        INJECTOR.getInstance(TelemetryClient.class);
         
         WorldlessCommandHelper.dummyNetworkHandler.getCommandDispatcher();//should call the "static" method
     }
