@@ -9,9 +9,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
-import tools.redstone.redstonetools.RedstoneToolsClient;
 
 
+import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public abstract class ToggleableFeature extends AbstractFeature {
@@ -38,12 +38,14 @@ public abstract class ToggleableFeature extends AbstractFeature {
 
     //TODO: these need to be replaced when the sendMessage util gets made.
     protected int onEnable(ServerCommandSource source) throws CommandSyntaxException {
-        RedstoneToolsClient.INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.success(info.name() + " has been enabled."));
+        INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.success(info.name() + " has been enabled."));
+
         return 0;
     }
 
     protected int onDisable(ServerCommandSource source) throws CommandSyntaxException {
-        RedstoneToolsClient.INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.success(info.name() + " has been disabled."));
+        INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.success(info.name() + " has been disabled."));
+
         return 0;
     }
 }

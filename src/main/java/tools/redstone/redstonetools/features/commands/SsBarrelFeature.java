@@ -13,7 +13,6 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
-import tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer;
 
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 
@@ -22,7 +21,7 @@ public class SsBarrelFeature extends CommandFeature {
     private static final int BARREL_CONTAINER_SLOTS = 27;
 
     public static final Argument<Integer> signalStrength = Argument
-            .ofType(IntegerSerializer.integer(0, 15))
+            .ofType(integer(0, 15))
             .withDefault(15);
 
     @Override

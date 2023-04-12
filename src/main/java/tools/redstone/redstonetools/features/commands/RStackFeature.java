@@ -18,24 +18,26 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
-import tools.redstone.redstonetools.features.arguments.DirectionSerializer;
-import tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer;
-import tools.redstone.redstonetools.utils.DirectionUtils;
 
+import static tools.redstone.redstonetools.features.arguments.DirectionSerializer.direction;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
+import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
+import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
+
 
 @Feature(name = "rstack", description = "Stacks with custom distance", command = "/rstack")
 public class RStackFeature extends CommandFeature {
     public static final Argument<Integer> count = Argument
-            .ofType(IntegerSerializer.integer())
+            .ofType(integer())
             .withDefault(1);
 
     public static final Argument<DirectionArgument> direction = Argument
-            .ofType(DirectionSerializer.direction())
+            .ofType(direction())
             .withDefault(DirectionArgument.ME);
 
     public static final Argument<Integer> spacing = Argument
-            .ofType(IntegerSerializer.integer())
+            .ofType(integer())
+
             .withDefault(2);
 
     @Override
@@ -71,9 +73,10 @@ public class RStackFeature extends CommandFeature {
         };
 
         var playerFacing = actor.getLocation().getDirectionEnum();
-        var stackDirection = DirectionUtils.matchDirection(direction.getValue(), playerFacing);
+        var stackDirection = matchDirection(direction.getValue(), playerFacing);
 
-        var stackVector = DirectionUtils.directionToBlock(stackDirection);
+        var stackVector = directionToBlock(stackDirection);
+
 
         try (var editSession = localSession.createEditSession(actor)) {
             for (var i = 1; i <= count.getValue(); i++) {

@@ -11,19 +11,18 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
-import tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer;
-import tools.redstone.redstonetools.features.arguments.serializers.FloatSerializer;
-
+import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
 
 @Feature(name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
 public class QuickTpFeature extends CommandFeature {
 
     public static final Argument<Float> distance = Argument
-            .ofType(FloatSerializer.floatArg(1.0f))
+
+            .ofType(floatArg(1.0f))
             .withDefault(50.0f);
     public static final Argument<Boolean> includeFluids = Argument
-            .ofType(BoolSerializer.bool())
+            .ofType(bool())
             .withDefault(false);
 
     @Override

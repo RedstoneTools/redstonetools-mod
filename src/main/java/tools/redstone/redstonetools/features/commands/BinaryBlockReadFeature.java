@@ -11,10 +11,8 @@ import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
-import tools.redstone.redstonetools.features.arguments.serializers.BlockStateArgumentSerializer;
-import tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer;
-import tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer;
-
+import static tools.redstone.redstonetools.features.arguments.serializers.BlockStateArgumentSerializer.blockState;
+import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 
 @Feature(name = "Binary Block Read", description = "Interprets your WorldEdit selection as a binary number.", command = "/read")
@@ -24,16 +22,17 @@ public class BinaryBlockReadFeature extends CommandFeature {
     );
 
     public static final Argument<Integer> spacing = Argument
-            .ofType(IntegerSerializer.integer(1))
+            .ofType(integer(1))
             .withDefault(2);
     public static final Argument<BlockStateArgument> onBlock = Argument
-            .ofType(BlockStateArgumentSerializer.blockState())
+            .ofType(blockState())
             .withDefault(LIT_LAMP_ARG);
     public static final Argument<Integer> toBase = Argument
-            .ofType(IntegerSerializer.integer(2, 36))
+            .ofType(integer(2, 36))
             .withDefault(10);
     public static final Argument<Boolean> reverseBits = Argument
-            .ofType(BoolSerializer.bool())
+            .ofType(bool())
+
             .withDefault(false);
 
     @Override

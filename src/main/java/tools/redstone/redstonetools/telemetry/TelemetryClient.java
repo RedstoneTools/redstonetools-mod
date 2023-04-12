@@ -6,12 +6,13 @@ import tools.redstone.redstonetools.telemetry.dto.TelemetryException;
 import com.google.gson.Gson;
 import com.squareup.okhttp.*;
 import net.minecraft.client.MinecraftClient;
-import tools.redstone.redstonetools.RedstoneToolsClient;
-
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import static tools.redstone.redstonetools.RedstoneToolsClient.LOGGER;
 
 public class TelemetryClient {
     private static final String BASE_URL = "https://redstone.tools/api/v1";
@@ -49,8 +50,11 @@ public class TelemetryClient {
             Response response = null;
             try {
                 response = httpClient.newCall(request.build()).execute();
+            } catch (ConnectException e) {
+                // Either the server is down or the user is offline
             } catch (IOException e) {
-                RedstoneToolsClient.LOGGER.error("Failed to send telemetry request", e);
+                LOGGER.error("Failed to send telemetry request", e);
+
             }
 
             if (response != null && response.isSuccessful()) {
@@ -64,7 +68,8 @@ public class TelemetryClient {
             }
 
             if (response != null && responseIsUnauthorized(response)) {
-                RedstoneToolsClient.LOGGER.error("Failed to send telemetry request because the session was invalid, creating new session");
+                LOGGER.error("Failed to send telemetry request because the session was invalid, creating new session");
+
 
                 createSessionAsync().join();
             }
@@ -96,7 +101,7 @@ public class TelemetryClient {
                 throw new RuntimeException(e);
             }
 
-            RedstoneToolsClient.LOGGER.debug("Refreshed telemetry session");
+            LOGGER.debug("Refreshed telemetry session");
         });
     }
 

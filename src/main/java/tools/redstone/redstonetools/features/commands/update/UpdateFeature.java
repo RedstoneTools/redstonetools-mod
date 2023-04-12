@@ -15,10 +15,9 @@ import com.sk89q.worldedit.history.change.Change;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.World;
-import tools.redstone.redstonetools.RedstoneToolsClient;
-
 import java.util.Iterator;
 
+import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 import static net.minecraft.server.command.CommandManager.literal;
 
 @Feature(name = "Update", description = "Forces block updates in the selected area.", command = "/update")
@@ -51,7 +50,7 @@ public class UpdateFeature extends CommandFeature {
         ServerCommandSource source = serverCommandSourceCommandContext.getSource();
 
         if (lastEdit == null) {
-            RedstoneToolsClient.INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.error("No edits were made!"));
+            INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.error("No edits were made!"));
             return -1;
         }
 
@@ -81,11 +80,11 @@ public class UpdateFeature extends CommandFeature {
         World world = FabricAdapter.adapt(lastEdit.getWorld());
         if (containsBlocks) {
             Feedback feedback = RegionUpdater.updateRegion(world, minPos, maxPos);
-            RedstoneToolsClient.INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, feedback);
+            INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, feedback);
             return 0;
         }
 
-        RedstoneToolsClient.INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.error("Edit doesn't contain any blocks!"));
+        INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.error("Edit doesn't contain any blocks!"));
         return -1;
 
     }

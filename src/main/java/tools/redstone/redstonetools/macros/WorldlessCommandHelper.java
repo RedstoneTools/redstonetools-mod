@@ -18,11 +18,14 @@ import java.util.OptionalLong;
 
 import static net.minecraft.world.dimension.DimensionType.OVERWORLD_ID;
 
+
 public class WorldlessCommandHelper {
 
     public static final ClientPlayNetworkHandler dummyNetworkHandler;
     public static final WorldlessCommandSource commandSource;
+
     public static final ClientPlayerEntity dummyPlayer;
+
     public static boolean registered = false;
 
 
@@ -32,9 +35,8 @@ public class WorldlessCommandHelper {
 
         new CommandManager(CommandManager.RegistrationEnvironment.DEDICATED); //registers commands using CommandDispatcherMixin
         registered = true;
-
+        
         dummyPlayer = new ClientPlayerEntity(MinecraftClient.getInstance(),new ClientWorld(dummyNetworkHandler,new ClientWorld.Properties(Difficulty.EASY,false,false),null,new RegistryEntry.Direct<>(DimensionType.create(OptionalLong.empty(), true, false, false, true, 1.0, false, false, true, false, true, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD, OVERWORLD_ID, 0.0F)),0,0,null,null,true,0 ), dummyNetworkHandler, null,null,false,false);
-
     }
 
 }

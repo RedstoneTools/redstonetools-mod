@@ -35,6 +35,13 @@ dependencies {
 	// Reflections
 	include implementation ('org.reflections:reflections:0.9.12')
 
+	// Json
+	include implementation ('javax.json:javax.json-api:1.1.4')
+	include implementation ('org.glassfish:javax.json:1.1.4')
+
+	// Gson
+	include implementation ('com.google.code.gson:gson:2.8.8')
+
 	include 'org.javassist:javassist:3.26.0-GA'
 	include 'javax.inject:javax.inject:1'
 	include 'aopalliance:aopalliance:1.0'
