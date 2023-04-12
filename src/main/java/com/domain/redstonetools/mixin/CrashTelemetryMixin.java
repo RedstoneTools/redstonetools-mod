@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public class CrashTelemetryMixin {
-    @Inject(method = "printCrashReport", at = @At("HEAD"))
+    @Inject(method = "printCrashReport", at = @At("TAIL"))
     private static void printCrashReport(CrashReport report, CallbackInfo ci) {
         TelemetryUtils.sendCrash(report);
     }
