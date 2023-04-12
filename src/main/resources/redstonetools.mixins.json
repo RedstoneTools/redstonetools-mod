@@ -16,9 +16,10 @@
     "OptionsScreenMixin"
   ],
   "client": [
-    "CrashTelemetryMixin",
     "CommandDispatcherMixin",
     "CommandSuggestorMixin",
-    "ControlsListWidgetMixin"
+    "ControlsListWidgetMixin",
+    "CrashTelemetryMixin",
+    "TitleScreenMixin"
   ]
 }

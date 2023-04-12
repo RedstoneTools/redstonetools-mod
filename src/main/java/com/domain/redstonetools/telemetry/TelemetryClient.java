@@ -26,7 +26,7 @@ public class TelemetryClient {
 
     public TelemetryClient() {
         Executors.newSingleThreadScheduledExecutor()
-                .scheduleAtFixedRate(this::refreshSessionAsync, 10, SESSION_EXPIRE_TIME_SECONDS, TimeUnit.SECONDS);
+                .scheduleAtFixedRate(this::refreshSessionAsync, 0, SESSION_EXPIRE_TIME_SECONDS, TimeUnit.SECONDS);
     }
 
     public CompletableFuture<Response> sendCommandAsync(TelemetryCommand command) {

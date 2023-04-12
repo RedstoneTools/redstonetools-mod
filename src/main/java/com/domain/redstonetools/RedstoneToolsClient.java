@@ -1,7 +1,6 @@
 package com.domain.redstonetools;
 
 
-import com.domain.redstonetools.telemetry.TelemetryClient;
 import com.domain.redstonetools.macros.WorldlessCommandHelper;
 import com.domain.redstonetools.utils.ReflectionUtils;
 import com.google.inject.Guice;
@@ -29,9 +28,6 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
             feature.register();
         }
-
-        // Instantiate telemetry client
-        INJECTOR.getInstance(TelemetryClient.class);
         
         WorldlessCommandHelper.dummyNetworkHandler.getCommandDispatcher();//should call the "static" method
     }
