@@ -1,7 +1,6 @@
 package com.domain.redstonetools.mixin;
 
-import com.domain.redstonetools.RedstoneToolsClient;
-import com.domain.redstonetools.macros.IClientPlayerEntityMixin;
+import com.domain.redstonetools.macros.ClientPlayerEntityMixin;
 import com.domain.redstonetools.macros.gui.commandsuggestor.WorldlessCommandSuggestor;
 import com.mojang.brigadier.suggestion.Suggestions;
 import net.minecraft.client.MinecraftClient;
@@ -47,7 +46,7 @@ public class CommandSuggestorMixin{
                 client.player = dummyPlayer;
             } else {
                 if (client.player.networkHandler != dummyNetworkHandler) networkHandler = client.player.networkHandler;
-                ((IClientPlayerEntityMixin)client.player).setNetworkHandler(dummyNetworkHandler);
+                ((ClientPlayerEntityMixin)client.player).setNetworkHandler(dummyNetworkHandler);
             }
         }
     }
@@ -58,7 +57,7 @@ public class CommandSuggestorMixin{
             if (client.player == null || client.player.equals(dummyPlayer)) {
                 client.player = null;
             } else if (networkHandler != null){
-                ((IClientPlayerEntityMixin)client.player).setNetworkHandler(networkHandler);
+                ((ClientPlayerEntityMixin)client.player).setNetworkHandler(networkHandler);
             }
         }
     }
@@ -70,7 +69,7 @@ public class CommandSuggestorMixin{
                 client.player = dummyPlayer;
             } else {
                 if (client.player.networkHandler != dummyNetworkHandler) networkHandler = client.player.networkHandler;
-                ((IClientPlayerEntityMixin)client.player).setNetworkHandler(dummyNetworkHandler);
+                ((ClientPlayerEntityMixin)client.player).setNetworkHandler(dummyNetworkHandler);
             }
         }
     }
@@ -81,7 +80,7 @@ public class CommandSuggestorMixin{
             if (client.player == null || client.player.equals(dummyPlayer) ) {
                 client.player = null;
             } else if (networkHandler != null){
-                ((IClientPlayerEntityMixin)client.player).setNetworkHandler(networkHandler);
+                ((ClientPlayerEntityMixin)client.player).setNetworkHandler(networkHandler);
             }
         }
     }

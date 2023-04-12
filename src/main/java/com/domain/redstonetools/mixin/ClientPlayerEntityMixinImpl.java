@@ -1,7 +1,5 @@
 package com.domain.redstonetools.mixin;
 
-import com.domain.redstonetools.macros.IClientPlayerEntityMixin;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Final;
@@ -10,7 +8,7 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(ClientPlayerEntity.class)
-public class ClientPlayerEntityMixin implements IClientPlayerEntityMixin {
+public class ClientPlayerEntityMixinImpl implements com.domain.redstonetools.macros.ClientPlayerEntityMixin {
 
     @Mutable
     @Shadow @Final public ClientPlayNetworkHandler networkHandler;
