@@ -1,18 +1,14 @@
 package com.domain.redstonetools.mixin;
 
-import com.domain.redstonetools.macros.WorldlessCommandHelper;
+import com.domain.redstonetools.RedstoneToolsClient;
+import com.domain.redstonetools.macros.IClientPlayerEntityMixin;
 import com.domain.redstonetools.macros.gui.commandsuggestor.WorldlessCommandSuggestor;
 import com.mojang.brigadier.suggestion.Suggestions;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.CommandSuggestor;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,10 +18,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.OptionalLong;
 import java.util.concurrent.CompletableFuture;
 
-import static net.minecraft.world.dimension.DimensionType.OVERWORLD_ID;
+import static com.domain.redstonetools.macros.WorldlessCommandHelper.dummyNetworkHandler;
+import static com.domain.redstonetools.macros.WorldlessCommandHelper.dummyPlayer;
 
 
 @Mixin(CommandSuggestor.class)
@@ -38,40 +34,55 @@ public class CommandSuggestorMixin{
     @Shadow private @Nullable CompletableFuture<Suggestions> pendingSuggestions;
     @Shadow @Final
     int maxSuggestionSize;
-    private final ClientPlayerEntity dummyPlayer = new ClientPlayerEntity(MinecraftClient.getInstance(),new ClientWorld(WorldlessCommandHelper.dummyNetworkHandler,new ClientWorld.Properties(Difficulty.EASY,false,false),null,new RegistryEntry.Direct<>(DimensionType.create(OptionalLong.empty(), true, false, false, true, 1.0, false, false, true, false, true, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD, OVERWORLD_ID, 0.0F)),0,0,null,null,true,0 ), WorldlessCommandHelper.dummyNetworkHandler, null,null,false,false);
 
-    private ClientPlayerEntity player;
+
+    private ClientPlayNetworkHandler networkHandler;
+
 
 
     @Inject(method = "refresh", at = @At("HEAD"))
     public void refreshHead(CallbackInfo ci){
         if (WorldlessCommandSuggestor.instance(this)) {
-            player = client.player;
-            client.player = dummyPlayer;
+            if (client.player == null || client.player.equals(dummyPlayer)) {
+                client.player = dummyPlayer;
+            } else {
+                if (client.player.networkHandler != dummyNetworkHandler) networkHandler = client.player.networkHandler;
+                ((IClientPlayerEntityMixin)client.player).setNetworkHandler(dummyNetworkHandler);
+            }
         }
     }
 
     @Inject(method = "refresh", at = @At("TAIL"))
     public void refreshTail(CallbackInfo ci){
         if (WorldlessCommandSuggestor.instance(this)) {
-            client.player = player;
-            player = null;
+            if (client.player == null || client.player.equals(dummyPlayer)) {
+                client.player = null;
+            } else if (networkHandler != null){
+                ((IClientPlayerEntityMixin)client.player).setNetworkHandler(networkHandler);
+            }
         }
     }
 
     @Inject(method = "showUsages", at = @At("HEAD"))
     public void showUsagesHead(CallbackInfo ci){
         if (WorldlessCommandSuggestor.instance(this)) {
-            player = client.player;
-            client.player = dummyPlayer;
+            if (client.player == null || client.player.equals(dummyPlayer)) {
+                client.player = dummyPlayer;
+            } else {
+                if (client.player.networkHandler != dummyNetworkHandler) networkHandler = client.player.networkHandler;
+                ((IClientPlayerEntityMixin)client.player).setNetworkHandler(dummyNetworkHandler);
+            }
         }
     }
 
     @Inject(method = "showUsages", at = @At("TAIL"))
     public void showUsagesTail(CallbackInfo ci){
         if (WorldlessCommandSuggestor.instance(this)) {
-            client.player = player;
-            player = null;
+            if (client.player == null || client.player.equals(dummyPlayer) ) {
+                client.player = null;
+            } else if (networkHandler != null){
+                ((IClientPlayerEntityMixin)client.player).setNetworkHandler(networkHandler);
+            }
         }
     }
 
