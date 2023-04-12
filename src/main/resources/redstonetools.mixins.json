@@ -20,6 +20,6 @@
     "CommandSuggestorMixin",
     "ControlsListWidgetMixin",
     "CrashTelemetryMixin",
-    "TitleScreenMixin"
+    "TelemetryInitializeMixin"
   ]
 }
