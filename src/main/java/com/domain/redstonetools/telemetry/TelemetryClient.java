@@ -8,6 +8,7 @@ import com.squareup.okhttp.*;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +51,8 @@ public class TelemetryClient {
             Response response = null;
             try {
                 response = httpClient.newCall(request.build()).execute();
+            } catch (ConnectException e) {
+                // Either the server is down or the user is offline
             } catch (IOException e) {
                 LOGGER.error("Failed to send telemetry request", e);
             }
