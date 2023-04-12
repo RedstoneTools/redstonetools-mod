@@ -11,7 +11,6 @@ import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
-
 import static tools.redstone.redstonetools.features.arguments.serializers.BlockStateArgumentSerializer.blockState;
 import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
@@ -33,6 +32,7 @@ public class BinaryBlockReadFeature extends CommandFeature {
             .withDefault(10);
     public static final Argument<Boolean> reverseBits = Argument
             .ofType(bool())
+
             .withDefault(false);
 
     @Override

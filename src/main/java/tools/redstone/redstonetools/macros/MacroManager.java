@@ -26,6 +26,7 @@ public class MacroManager {
                 .resolve("redstonetools")
                 .resolve("macros.json");
 
+
         JsonArray macrosJson = null;
         try {
             Files.createDirectories(macrosFilePath.getParent());

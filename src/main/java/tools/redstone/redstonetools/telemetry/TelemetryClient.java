@@ -6,7 +6,6 @@ import tools.redstone.redstonetools.telemetry.dto.TelemetryException;
 import com.google.gson.Gson;
 import com.squareup.okhttp.*;
 import net.minecraft.client.MinecraftClient;
-
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.concurrent.CompletableFuture;
@@ -55,6 +54,7 @@ public class TelemetryClient {
                 // Either the server is down or the user is offline
             } catch (IOException e) {
                 LOGGER.error("Failed to send telemetry request", e);
+
             }
 
             if (response != null && response.isSuccessful()) {
@@ -69,6 +69,7 @@ public class TelemetryClient {
 
             if (response != null && responseIsUnauthorized(response)) {
                 LOGGER.error("Failed to send telemetry request because the session was invalid, creating new session");
+
 
                 createSessionAsync().join();
             }

@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 
-
 @org.spongepowered.asm.mixin.Mixin(CommandDispatcher.class)
 public class CommandDispatcherMixin<S> {
 

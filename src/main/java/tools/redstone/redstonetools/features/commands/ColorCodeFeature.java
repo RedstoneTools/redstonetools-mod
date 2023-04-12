@@ -19,12 +19,12 @@ import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockType;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
-
 import static tools.redstone.redstonetools.features.arguments.serializers.BlockColorSerializer.blockColor;
 
 @Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
 public class ColorCodeFeature extends CommandFeature {
     public static final Argument<BlockColor> color = Argument
+
             .ofType(blockColor());
     public static final Argument<BlockColor> onlyColor = Argument
             .ofType(blockColor())

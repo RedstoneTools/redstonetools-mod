@@ -16,6 +16,7 @@
     "OptionsScreenMixin"
   ],
   "client": [
+    "ClientPlayerEntityMixinImpl",
     "CommandDispatcherMixin",
     "CommandSuggestorMixin",
     "ControlsListWidgetMixin",

@@ -11,7 +11,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
-
 import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
 
@@ -19,6 +18,7 @@ import static tools.redstone.redstonetools.features.arguments.serializers.FloatS
 public class QuickTpFeature extends CommandFeature {
 
     public static final Argument<Float> distance = Argument
+
             .ofType(floatArg(1.0f))
             .withDefault(50.0f);
     public static final Argument<Boolean> includeFluids = Argument

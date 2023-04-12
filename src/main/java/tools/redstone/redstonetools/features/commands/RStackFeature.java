@@ -24,6 +24,7 @@ import static tools.redstone.redstonetools.features.arguments.serializers.Intege
 import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
+
 @Feature(name = "rstack", description = "Stacks with custom distance", command = "/rstack")
 public class RStackFeature extends CommandFeature {
     public static final Argument<Integer> count = Argument
@@ -36,6 +37,7 @@ public class RStackFeature extends CommandFeature {
 
     public static final Argument<Integer> spacing = Argument
             .ofType(integer())
+
             .withDefault(2);
 
     @Override
@@ -74,6 +76,7 @@ public class RStackFeature extends CommandFeature {
         var stackDirection = matchDirection(direction.getValue(), playerFacing);
 
         var stackVector = directionToBlock(stackDirection);
+
 
         try (var editSession = localSession.createEditSession(actor)) {
             for (var i = 1; i <= count.getValue(); i++) {

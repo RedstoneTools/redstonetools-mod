@@ -4,6 +4,7 @@ import tools.redstone.redstonetools.macros.MacroManager;
 import com.google.inject.AbstractModule;
 
 public class MacroModule extends AbstractModule {
+
     private static MacroManager macroManager;
 
     @Override
@@ -15,5 +16,6 @@ public class MacroModule extends AbstractModule {
 
             return macroManager;
         });
+
     }
 }

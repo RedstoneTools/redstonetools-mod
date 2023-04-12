@@ -15,7 +15,6 @@ import com.sk89q.worldedit.history.change.Change;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.World;
-
 import java.util.Iterator;
 
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
