@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public class ReflectionUtils {
     private ReflectionUtils() { }
 
-
     private static final Reflections reflections = new Reflections("tools.redstone.redstonetools");
 
     /**

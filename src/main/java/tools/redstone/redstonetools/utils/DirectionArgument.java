@@ -1,7 +1,11 @@
 package tools.redstone.redstonetools.utils;
 
 public enum DirectionArgument {
+
+    /** Indicates to use the direction of the target. */
     ME,
+
+    /* Directions */
     FORWARD,
     BACK,
     NORTH,
@@ -16,4 +20,5 @@ public enum DirectionArgument {
     DOWN,
     LEFT,
     RIGHT
+
 }
