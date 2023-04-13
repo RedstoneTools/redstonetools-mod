@@ -89,10 +89,11 @@ public class RStackFeature extends CommandFeature {
                 copy.setSourceMask(airFilter);
                 Operations.complete(copy);
             }
+            localSession.remember(editSession);
         } catch (WorldEditException e) {
             throw new RuntimeException(e);
         }
 
-        return Feedback.none();
+        return Feedback.success("Stacked " + count.getValue() + " time(s)");
     }
 }
