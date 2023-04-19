@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
+import org.lwjgl.glfw.GLFW;
 import tools.redstone.redstonetools.macros.gui.commandsuggestor.WorldlessCommandSuggestor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -92,7 +93,7 @@ public class CommandEditScreen extends GameOptionsScreen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == InputUtil.GLFW_KEY_ESCAPE) {
+        if (keyCode == InputUtil.GLFW_KEY_ESCAPE || keyCode == InputUtil.GLFW_KEY_ENTER || keyCode == InputUtil.GLFW_KEY_KP_ENTER) {
             close();
             return true;
         }
