@@ -13,7 +13,8 @@
     "ItemScattererMixin",
     "LocalSessionMixin",
     "MinecraftClientMixin",
-    "OptionsScreenMixin"
+    "OptionsScreenMixin",
+    "TelemetryPromptPopupMixin"
   ],
   "client": [
     "ClientPlayerEntityMixinImpl",
