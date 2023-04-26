@@ -55,8 +55,7 @@ public class RStackFeature extends CommandFeature {
         try {
             selection = localSession.getSelection(selectionWorld);
         } catch (IncompleteRegionException ex) {
-            actor.printError(TextComponent.of("Please make a selection with worldedit first."));
-            return Feedback.error("No selection found!");
+            return Feedback.error("Please make a selection with worldedit first.");
         }
 
         final Mask airFilter = new Mask() {
