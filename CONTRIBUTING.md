@@ -10,6 +10,9 @@ If you want to request a feature please create a new GitHub issue for it (make s
 ## Contributions
 If you would like to work on this project by fixing bugs or adding features please ask to be assigned to the corresponding issue and create a pull request into the dev branch once you fixed the bug or added the feature and request a review from the person that assigned you. Please write clear commit messages and keep your commits small. Be prepared to make any additional changes if the reviewer asks for them.
 
+## Code Principles
+While contributing to the project, we encourage all contributors to follow good coding practices and principles to ensure the maintainability and readability of the codebase. Some of the principles that we recommend following are SOLID principles, YAGNI (You Ain't Gonna Need It), KISS (Keep It Simple, Stupid), and DRY (Don't Repeat Yourself). By adhering to these principles, we can ensure that the project codebase remains clean and easy to maintain.
+
 <br>
 
 If you have any questions or feedback, please reach out to us on Discord (link in the README).
