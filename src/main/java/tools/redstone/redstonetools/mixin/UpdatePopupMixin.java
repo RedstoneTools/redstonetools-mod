@@ -56,9 +56,7 @@ public class UpdatePopupMixin extends Screen {
                 return;
 
             MinecraftClient.getInstance().setScreen(new UpdatePopupScreen(this));
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JsonSyntaxException | IOException e) {
             e.printStackTrace();
         } finally {
             updateChecked = true;
