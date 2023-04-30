@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.text.Text;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,6 +25,8 @@ import tools.redstone.redstonetools.gui.UpdatePopupScreen;
 @Mixin(TitleScreen.class)
 
 public class UpdatePopupMixin extends Screen {
+    private static long timeout = 250;
+    
     public boolean updateChecked = false;
 
     public UpdatePopupMixin(Text title) {
@@ -42,6 +45,8 @@ public class UpdatePopupMixin extends Screen {
                 return;
 
             OkHttpClient client = new OkHttpClient();
+            client.setReadTimeout(timeout, TimeUnit.MILLISECONDS);
+            client.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
             Request request = new Request.Builder()
                     .url("https://api.github.com/repos/RedstoneTools/redstonetools/releases/latest")
                     .build();
