@@ -6,6 +6,8 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.text.Text;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +28,7 @@ import tools.redstone.redstonetools.gui.UpdatePopupScreen;
 
 public class UpdatePopupMixin extends Screen {
     private static long timeout = 250;
-    
+
     public boolean updateChecked = false;
 
     public UpdatePopupMixin(Text title) {
@@ -55,13 +57,14 @@ public class UpdatePopupMixin extends Screen {
 
             Gson gson = new Gson();
             JsonObject release = gson.fromJson(responseBody, JsonObject.class);
+            URI uri = new URI(release.get("url").getAsString());
             String newVersion = release.get("tag_name").getAsString();
 
             if (currentVersion.equals(newVersion))
                 return;
 
-            MinecraftClient.getInstance().setScreen(new UpdatePopupScreen(this));
-        } catch (JsonSyntaxException | IOException e) {
+            MinecraftClient.getInstance().setScreen(new UpdatePopupScreen(this, uri));
+        } catch (JsonSyntaxException | IOException | URISyntaxException e) {
             e.printStackTrace();
         } finally {
             updateChecked = true;
