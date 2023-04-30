@@ -18,7 +18,6 @@ public class UpdatePopupScreen extends PopupScreen {
             this.close();
         }));
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, y, 150, 20, Text.of("Ignore"), (button) -> {
-            RedstoneToolsClient.LOGGER.info("Ignored Update");
             this.close();
         }));
     }
