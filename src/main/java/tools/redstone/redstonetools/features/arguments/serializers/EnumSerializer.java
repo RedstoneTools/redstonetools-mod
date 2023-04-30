@@ -26,7 +26,6 @@ public abstract class EnumSerializer<T extends Enum<T>>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T deserialize(StringReader reader) throws CommandSyntaxException {
         var input = reader.readUnquotedString();
 
