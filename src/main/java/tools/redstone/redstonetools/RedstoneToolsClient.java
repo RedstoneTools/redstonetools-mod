@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools;
 
+
 import tools.redstone.redstonetools.macros.WorldlessCommandHelper;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 import com.google.inject.Guice;
@@ -8,9 +9,9 @@ import net.fabricmc.api.ClientModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_ID = "redstonetools";
-    public static final String MOD_VERSION = "1.18.2-1.0.0-beta";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final Injector INJECTOR = Guice.createInjector(ReflectionUtils.getModules());
 
@@ -27,7 +28,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
             feature.register();
         }
-
-        WorldlessCommandHelper.dummyNetworkHandler.getCommandDispatcher();// should call the "static" method
+        
+        WorldlessCommandHelper.dummyNetworkHandler.getCommandDispatcher();//should call the "static" method
     }
 }
