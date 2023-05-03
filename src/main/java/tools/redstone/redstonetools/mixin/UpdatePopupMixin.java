@@ -54,6 +54,8 @@ public class UpdatePopupMixin extends Screen {
                     .build();
             Response response = client.newCall(request).execute();
             String responseBody = response.body().string();
+            if (response.code() != 200)
+                return;
 
             Gson gson = new Gson();
             JsonObject release = gson.fromJson(responseBody, JsonObject.class);
