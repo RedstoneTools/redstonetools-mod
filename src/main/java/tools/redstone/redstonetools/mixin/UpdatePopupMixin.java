@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,11 +42,6 @@ public class UpdatePopupMixin extends Screen {
             return;
 
         try {
-            String currentVersion = RedstoneToolsClient.MOD_VERSION;
-
-            if (currentVersion.split("-")[2] == "beta")
-                return;
-
             OkHttpClient client = new OkHttpClient();
             client.setReadTimeout(timeout, TimeUnit.MILLISECONDS);
             client.setConnectTimeout(timeout, TimeUnit.MILLISECONDS);
@@ -62,7 +58,7 @@ public class UpdatePopupMixin extends Screen {
             URI uri = new URI(release.get("url").getAsString());
             String newVersion = release.get("tag_name").getAsString();
 
-            if (currentVersion.equals(newVersion))
+            if (RedstoneToolsClient.MOD_VERSION.equals(newVersion) || newVersion.contains("alpha") || newVersion.contains("beta"))
                 return;
 
             MinecraftClient.getInstance().setScreen(new UpdatePopupScreen(this, uri));
