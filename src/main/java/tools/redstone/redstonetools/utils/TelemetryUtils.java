@@ -12,7 +12,7 @@ public class TelemetryUtils {
     }
 
     public static void sendCommand(String command) {
-        INJECTOR.getInstance(TelemetryClient.class).sendCommandAsync(new TelemetryCommand(command));
+        INJECTOR.getInstance(TelemetryClient.class).sendCommand(new TelemetryCommand(command));
     }
 
     public static void sendException(Throwable throwable) {
@@ -22,10 +22,14 @@ public class TelemetryUtils {
         throwable.printStackTrace(printWriter);
         printWriter.close();
 
-        INJECTOR.getInstance(TelemetryClient.class).sendExceptionAsync(new TelemetryException(writer.toString(), false));
+        INJECTOR.getInstance(TelemetryClient.class).sendException(new TelemetryException(writer.toString(), false));
     }
 
     public static void sendCrash(CrashReport report) {
-        INJECTOR.getInstance(TelemetryClient.class).sendExceptionAsync(new TelemetryException(report.asString(), true)).join();
+        var client = INJECTOR.getInstance(TelemetryClient.class);
+
+        client.sendException(new TelemetryException(report.asString(), true));
+
+        client.waitForQueueToEmpty();
     }
 }
