@@ -1,60 +1,141 @@
 package tools.redstone.redstonetools.telemetry;
 
-import tools.redstone.redstonetools.telemetry.dto.TelemetryAuth;
-import tools.redstone.redstonetools.telemetry.dto.TelemetryCommand;
-import tools.redstone.redstonetools.telemetry.dto.TelemetryException;
 import com.google.gson.Gson;
 import com.squareup.okhttp.*;
 import net.minecraft.client.MinecraftClient;
+import org.jetbrains.annotations.NotNull;
+import tools.redstone.redstonetools.telemetry.dto.TelemetryAuth;
+import tools.redstone.redstonetools.telemetry.dto.TelemetryCommand;
+import tools.redstone.redstonetools.telemetry.dto.TelemetryException;
+
 import java.io.IOException;
 import java.net.ConnectException;
+import java.time.Instant;
+import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 import static tools.redstone.redstonetools.RedstoneToolsClient.LOGGER;
 
 public class TelemetryClient {
     private static final String BASE_URL = "https://redstone.tools/api/v1";
-    private static final int SESSION_EXPIRE_TIME_SECONDS = 60 * 5 - 10; // 5 minutes - 10 seconds
-    private static final int FAILED_REQUEST_RETRY_TIME_MILLIS = 1000 * 5; // 5 seconds
+    private static final int SESSION_REFRESH_TIME_SECONDS = 60 * 5 - 10; // 5 minutes - 10 seconds
+    private static final int REQUEST_SEND_TIME_SECONDS = 3;
+
+    private static volatile Instant lastAuthorization = Instant.MIN;
 
     private final Gson gson = new Gson();
     private final OkHttpClient httpClient = new OkHttpClient();
+    private final Queue<Request.Builder> requestQueue = new ConcurrentLinkedQueue<>();
 
     private volatile String token;
 
     public TelemetryClient() {
-        Executors.newSingleThreadScheduledExecutor()
-                .scheduleAtFixedRate(this::refreshSessionAsync, 0, SESSION_EXPIRE_TIME_SECONDS, TimeUnit.SECONDS);
+        LOGGER.info("Initializing telemetry client");
+
+        Executors.newSingleThreadExecutor()
+                .execute(this::refreshSessionThread);
+
+        Executors.newSingleThreadExecutor()
+                .execute(this::sendQueuedRequestsAsync);
     }
 
-    public CompletableFuture<Response> sendCommandAsync(TelemetryCommand command) {
-        return sendPostRequestAsync("/command", command);
+    public void sendCommand(TelemetryCommand command) {
+        if (INJECTOR.getInstance(TelemetryManager.class).telemetryEnabled) {
+            requestQueue.add(createRequest("/command", command));
+        }
     }
 
-    public CompletableFuture<Response> sendExceptionAsync(TelemetryException exception) {
-        return sendPostRequestAsync("/exception", exception);
+    public void sendException(TelemetryException exception) {
+        if (INJECTOR.getInstance(TelemetryManager.class).telemetryEnabled) {
+            requestQueue.add(createRequest("/exception", exception));
+        }
     }
 
-    private synchronized CompletableFuture<Response> sendPostRequestAsync(String path, Object body) {
-        var request = new Request.Builder()
+    public synchronized void waitForQueueToEmpty() {
+        while (!requestQueue.isEmpty()) {
+            try {
+                TimeUnit.SECONDS.sleep(REQUEST_SEND_TIME_SECONDS);
+            } catch (InterruptedException ignored) {
+            }
+        }
+    }
+
+    private Request.Builder createRequest(String path, Object body) {
+        return new Request.Builder()
                 .url(BASE_URL + path)
                 .post(RequestBody.create(MediaType.parse("application/json"), body == null ? "" : gson.toJson(body)));
+    }
 
-        if (token != null) {
-            request.addHeader("Authorization", token);
-        }
+    private synchronized CompletableFuture<Void> sendQueuedRequestsAsync() {
+        return CompletableFuture.runAsync(() -> {
+            while (true) {
+                try {
+                    TimeUnit.SECONDS.sleep(REQUEST_SEND_TIME_SECONDS);
+                } catch (InterruptedException ignored) {
+                }
 
+                while (!requestQueue.isEmpty()) {
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(250);
+                    } catch (InterruptedException ignored) {
+                    }
+
+                    var request = requestQueue.peek();
+                    assert request != null;
+
+                    if (token != null) {
+                        request.addHeader("Authorization", token);
+                    }
+
+                    var response = sendPostRequestAsync(request).join();
+
+                    if (response == null || !response.isSuccessful()) {
+                        if (response != null && responseIsUnauthorized(response)) {
+                            lastAuthorization = Instant.MIN;
+                        }
+
+                        try {
+                            TimeUnit.SECONDS.sleep(3);
+                        } catch (InterruptedException ignored) {
+                        }
+
+                        continue;
+                    }
+
+                    requestQueue.remove();
+                }
+            }
+        });
+    }
+
+    private synchronized @NotNull CompletableFuture<Response> sendPostRequestAsync(Request.Builder request) {
+        LOGGER.trace("Sending telemetry request to " + request.build().urlString());
+
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return httpClient.newCall(request.build()).execute();
+            } catch (ConnectException e) {
+                // Either the server is down or the user isn't connected to the internet
+            } catch (IOException e) {
+                LOGGER.error("Failed to send telemetry request", e);
+            }
+
+            return null;
+        });
+
+        /*
         return CompletableFuture.supplyAsync(() -> {
             Response response = null;
             try {
                 response = httpClient.newCall(request.build()).execute();
             } catch (ConnectException e) {
-                // Either the server is down or the user is offline
+                // Either the server is down or the user isn't connected to the internet
             } catch (IOException e) {
                 LOGGER.error("Failed to send telemetry request", e);
-
             }
 
             if (response != null && response.isSuccessful()) {
@@ -62,7 +143,7 @@ public class TelemetryClient {
             }
 
             try {
-                Thread.sleep(FAILED_REQUEST_RETRY_TIME_MILLIS);
+                TimeUnit.SECONDS.sleep(REQUEST_SEND_TIME_SECONDS);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -70,46 +151,54 @@ public class TelemetryClient {
             if (response != null && responseIsUnauthorized(response)) {
                 LOGGER.error("Failed to send telemetry request because the session was invalid, creating new session");
 
-
                 createSessionAsync().join();
             }
 
-            return sendPostRequestAsync(path, body).join();
+            return sendPostRequestAsync(request).join();
         });
+        */
     }
 
-    private boolean responseIsUnauthorized(Response response) {
-        return response.code() == 401
-            || response.code() == 403;
-    }
-
-    private synchronized CompletableFuture<Void> refreshSessionAsync(boolean forceCreateNew) {
-        if (forceCreateNew) {
-            token = null;
-        }
-
-        return CompletableFuture.runAsync(() -> {
-            var response = sendPostRequestAsync(token == null ? "/session/create" : "/session/refresh", getAuth()).join();
-
-            if (response == null) {
-                return;
+    private void refreshSessionThread() {
+        while (true) {
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException ignored) {
             }
 
-            try {
-                token = response.body().string();
+            var nextAuthorization = lastAuthorization.plusSeconds(SESSION_REFRESH_TIME_SECONDS);
+            if (Instant.now().isAfter(nextAuthorization)) {
+                refreshSessionAsync().join();
+            }
+        }
+    }
+
+    private synchronized CompletableFuture<Boolean> refreshSessionAsync(boolean forceCreateNew) {
+        return CompletableFuture.supplyAsync(() -> {
+            var response = sendPostRequestAsync(createRequest(token == null || forceCreateNew ? "/session/create" : "/session/refresh", getAuth())).join();
+
+            if (response == null || !response.isSuccessful() || responseIsUnauthorized(response)) {
+                return false;
+            }
+
+            try (var body = response.body()) {
+                token = body.string();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                LOGGER.error("Failed to read telemetry session response", e);
+                return false;
             }
 
             LOGGER.debug("Refreshed telemetry session");
+            lastAuthorization = Instant.now();
+            return true;
         });
     }
 
-    private synchronized CompletableFuture<Void> refreshSessionAsync() {
+    private synchronized CompletableFuture<Boolean> refreshSessionAsync() {
         return refreshSessionAsync(false);
     }
 
-    private synchronized CompletableFuture<Void> createSessionAsync() {
+    private synchronized CompletableFuture<Boolean> createSessionAsync() {
         return refreshSessionAsync(true);
     }
 
@@ -121,5 +210,10 @@ public class TelemetryClient {
             session.getProfile().getId().toString(),
             session.getAccessToken()
         );
+    }
+
+    private static boolean responseIsUnauthorized(Response response) {
+        return response.code() == 401
+            || response.code() == 403;
     }
 }
