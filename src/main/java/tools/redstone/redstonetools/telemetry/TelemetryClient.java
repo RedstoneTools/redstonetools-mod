@@ -126,37 +126,6 @@ public class TelemetryClient {
 
             return null;
         });
-
-        /*
-        return CompletableFuture.supplyAsync(() -> {
-            Response response = null;
-            try {
-                response = httpClient.newCall(request.build()).execute();
-            } catch (ConnectException e) {
-                // Either the server is down or the user isn't connected to the internet
-            } catch (IOException e) {
-                LOGGER.error("Failed to send telemetry request", e);
-            }
-
-            if (response != null && response.isSuccessful()) {
-                return response;
-            }
-
-            try {
-                TimeUnit.SECONDS.sleep(REQUEST_SEND_TIME_SECONDS);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            if (response != null && responseIsUnauthorized(response)) {
-                LOGGER.error("Failed to send telemetry request because the session was invalid, creating new session");
-
-                createSessionAsync().join();
-            }
-
-            return sendPostRequestAsync(request).join();
-        });
-        */
     }
 
     private void refreshSessionThread() {
