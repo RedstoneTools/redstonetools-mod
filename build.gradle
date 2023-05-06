@@ -1,12 +1,13 @@
 plugins {
 	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
+	id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-archivesBaseName = project.archives_base_name
+archivesBaseName = "${project.archives_base_name}-${project.minecraft_version}"
 version = project.mod_version
 group = project.maven_group
 
@@ -22,40 +23,58 @@ repositories {
     }
 }
 
+shadowJar {
+	archiveClassifier = "unmapped"
+
+	configurations = [project.configurations.shadow]
+
+	from("LICENSE")
+
+	relocate "com.squareup.okhttp3", "tools.redstone.shadow.com.squareup.okhttp3"
+
+	doLast {
+		file("build/libs/redstonetools-1.18.2-1.0.0-all.jar").deleteOnExit()
+	}
+}
+
+remapJar {
+	inputFile = shadowJar.archiveFile
+}
+
 dependencies {
 	// OkHttp
-	include implementation ('com.squareup.okhttp:okhttp:2.7.5')
+	shadow implementation('com.squareup.okhttp3:okhttp:4.11.0')
 
 	// jUnit 5
-	include implementation ('org.junit.jupiter:junit-jupiter:5.8.1')
+	include implementation('org.junit.jupiter:junit-jupiter:5.8.1')
 
 	// Guice
-	include implementation ('com.google.inject:guice:5.0.1')
+	include implementation('com.google.inject:guice:5.0.1')
 
 	// Reflections
-	include implementation ('org.reflections:reflections:0.9.12')
+	include implementation('org.reflections:reflections:0.9.12')
 
 	// Json
-	include implementation ('javax.json:javax.json-api:1.1.4')
-	include implementation ('org.glassfish:javax.json:1.1.4')
+	include implementation('javax.json:javax.json-api:1.1.4')
+	include implementation('org.glassfish:javax.json:1.1.4')
 
 	// Gson
-	include implementation ('com.google.code.gson:gson:2.8.8')
+	include implementation('com.google.code.gson:gson:2.8.9')
 
 	include 'org.javassist:javassist:3.26.0-GA'
 	include 'javax.inject:javax.inject:1'
 	include 'aopalliance:aopalliance:1.0'
 
 	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	minecraft("com.mojang:minecraft:${project.minecraft_version}")
+	mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// Worldedit API
-	modImplementation "com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10"
+	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10")
 }
 
 
@@ -70,12 +89,6 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
 	it.options.release = 17
-}
-
-jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
 }
 
 // configure the maven publication
