@@ -23,7 +23,7 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.LOGGER;
 public class TelemetryClient {
     private static final String BASE_URL = "https://redstone.tools/api/v1";
     private static final int SESSION_REFRESH_TIME_SECONDS = 60 * 5 - 10; // 5 minutes - 10 seconds
-    private static final int REQUEST_SEND_TIME_SECONDS = 3;
+    private static final int REQUEST_SEND_TIME_MILLISECONDS = 50;
 
     private static volatile Instant lastAuthorization = Instant.MIN;
 
@@ -58,7 +58,7 @@ public class TelemetryClient {
     public synchronized void waitForQueueToEmpty() {
         while (!requestQueue.isEmpty()) {
             try {
-                TimeUnit.SECONDS.sleep(REQUEST_SEND_TIME_SECONDS);
+                TimeUnit.MILLISECONDS.sleep(REQUEST_SEND_TIME_MILLISECONDS);
             } catch (InterruptedException ignored) {
             }
         }
@@ -74,7 +74,7 @@ public class TelemetryClient {
         return CompletableFuture.runAsync(() -> {
             while (true) {
                 try {
-                    TimeUnit.SECONDS.sleep(REQUEST_SEND_TIME_SECONDS);
+                    TimeUnit.MILLISECONDS.sleep(REQUEST_SEND_TIME_MILLISECONDS);
                 } catch (InterruptedException ignored) {
                 }
 
@@ -146,7 +146,11 @@ public class TelemetryClient {
         return CompletableFuture.supplyAsync(() -> {
             var response = sendPostRequestAsync(createRequest(token == null || forceCreateNew ? "/session/create" : "/session/refresh", getAuth())).join();
 
-            if (response == null || !response.isSuccessful() || responseIsUnauthorized(response)) {
+            if (response == null || !response.isSuccessful()) {
+                if (response != null && responseIsUnauthorized(response)) {
+                    token = null;
+                }
+
                 return false;
             }
 
