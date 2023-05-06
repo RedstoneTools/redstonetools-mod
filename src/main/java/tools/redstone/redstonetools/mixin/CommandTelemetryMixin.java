@@ -22,7 +22,7 @@ public class CommandTelemetryMixin {
             return;
         }
 
-        if (player.getUuid().equals(Objects.requireNonNull(MinecraftClient.getInstance().player).getUuid())) {
+        if (!player.getUuid().equals(Objects.requireNonNull(MinecraftClient.getInstance().player).getUuid())) {
             return;
         }
 
