@@ -6,7 +6,7 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
-archivesBaseName = project.archives_base_name
+archivesBaseName = "${project.archives_base_name}-${project.minecraft_version}"
 version = project.mod_version
 group = project.maven_group
 
@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
 	// OkHttp
-	include implementation ('com.squareup.okhttp:okhttp:2.7.5')
+	include implementation ('com.squareup.okhttp3:okhttp:4.11.0')
 
 	// jUnit 5
 	include implementation ('org.junit.jupiter:junit-jupiter:5.8.1')
@@ -73,9 +73,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
+	from("LICENSE")
 }
 
 // configure the maven publication

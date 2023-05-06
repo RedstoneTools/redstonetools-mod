@@ -1,8 +1,8 @@
 package tools.redstone.redstonetools.telemetry;
 
 import com.google.gson.Gson;
-import com.squareup.okhttp.*;
 import net.minecraft.client.MinecraftClient;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import tools.redstone.redstonetools.telemetry.dto.TelemetryAuth;
 import tools.redstone.redstonetools.telemetry.dto.TelemetryCommand;
@@ -67,7 +67,7 @@ public class TelemetryClient {
     private Request.Builder createRequest(String path, Object body) {
         return new Request.Builder()
                 .url(BASE_URL + path)
-                .post(RequestBody.create(MediaType.parse("application/json"), body == null ? "" : gson.toJson(body)));
+                .post(RequestBody.create(body == null ? "" : gson.toJson(body), MediaType.parse("application/json")));
     }
 
     private synchronized CompletableFuture<Void> sendQueuedRequestsAsync() {
@@ -113,7 +113,7 @@ public class TelemetryClient {
     }
 
     private synchronized @NotNull CompletableFuture<Response> sendPostRequestAsync(Request.Builder request) {
-        LOGGER.trace("Sending telemetry request to " + request.build().urlString());
+        LOGGER.trace("Sending telemetry request to " + request.build().url());
 
         return CompletableFuture.supplyAsync(() -> {
             try {
