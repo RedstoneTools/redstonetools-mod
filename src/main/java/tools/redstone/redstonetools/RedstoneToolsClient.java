@@ -1,12 +1,12 @@
 package tools.redstone.redstonetools;
 
-import tools.redstone.redstonetools.macros.WorldlessCommandHelper;
-import tools.redstone.redstonetools.utils.ReflectionUtils;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import net.fabricmc.api.ClientModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.redstone.redstonetools.macros.WorldlessCommandHelper;
+import tools.redstone.redstonetools.utils.ReflectionUtils;
 
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_ID = "redstonetools";

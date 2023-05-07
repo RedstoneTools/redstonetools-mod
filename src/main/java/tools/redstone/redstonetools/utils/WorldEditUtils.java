@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.utils;
 
+import net.fabricmc.loader.api.FabricLoader;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import com.mojang.datafixers.util.Either;
 import com.sk89q.worldedit.IncompleteRegionException;
@@ -13,6 +14,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import java.util.function.Consumer;
 
 public class WorldEditUtils {
+    public static boolean isInstalled() {
+        return FabricLoader.getInstance().isModLoaded("worldedit");
+    }
+
     /**
      * Execute a function for each block in
      * the provided region.
