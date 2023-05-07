@@ -7,7 +7,7 @@ import tools.redstone.redstonetools.features.commands.CommandFeature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
-@Feature(name = "Update", description = "Forces block updates in the selected area.", command = "/update", isWorldEditFeature = true)
+@Feature(name = "Update", description = "Forces block updates in the selected area.", command = "/update")
 public class UpdateFeature extends CommandFeature {
     @Override
     protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {

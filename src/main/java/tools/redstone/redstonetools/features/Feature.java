@@ -11,5 +11,4 @@ public @interface Feature {
     String name();
     String description();
     String command();
-    boolean isWorldEditFeature() default false;
 }

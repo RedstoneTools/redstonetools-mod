@@ -18,7 +18,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-@Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection", isWorldEditFeature = true)
+@Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection")
 public class MinSelectionFeature extends CommandFeature {
 
     @Override
