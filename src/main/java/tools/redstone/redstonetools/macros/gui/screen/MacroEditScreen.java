@@ -172,7 +172,7 @@ public class MacroEditScreen extends GameOptionsScreen {
         if (!canClickDone()) return;
 
         updateMacroActions();
-        if (macro.needsSaving() && (!macro.isEmpty() || macro.isCopy())) {
+        if (macro.needsSaving() && !(macro.isEmpty() && !macro.isCopy())) {
             client.setScreen(new ConfirmScreen(accept -> {
                 if (accept) client.setScreen(parent);
                 else client.setScreen(this);
