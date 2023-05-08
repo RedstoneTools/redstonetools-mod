@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.MacroManager;
 import tools.redstone.redstonetools.macros.actions.Action;
@@ -64,11 +65,7 @@ public class MacroEditScreen extends GameOptionsScreen {
             String name = nameField.getText();
             if (name.isEmpty()) return;
 
-            macro.actions.clear();
-
-            for (String command : commandList.getCommandList()) {
-                macro.actions.add(new CommandAction(command));
-            }
+            updateMacroActions();
 
             if (!macro.isCopy()) macroListWidget.addMacro(macro);
             else macro.applyChangesToOriginal();
@@ -167,6 +164,30 @@ public class MacroEditScreen extends GameOptionsScreen {
     public void resize(MinecraftClient client, int width, int height) {
         super.resize(client, width, height);
         if (overlapped) client.setScreen(new CommandEditScreen(this,gameOptions,commandList.getFocused().command));
+    }
+
+
+    @Override
+    public void close(){
+        if (!canClickDone()) return;
+
+        updateMacroActions();
+        if (macro.needsSaving() && !(macro.isEmpty() && !macro.isCopy())) {
+            client.setScreen(new ConfirmScreen(accept -> {
+                if (accept) client.setScreen(parent);
+                else client.setScreen(this);
+            }, Text.of("Warning!"), Text.of("Are you sure you want to discard changes?")));
+        } else {
+            super.close();
+        }
+    }
+
+    private void updateMacroActions() {
+        macro.actions.clear();
+
+        for (String command : commandList.getCommandList()) {
+            macro.actions.add(new CommandAction(command));
+        }
     }
 
     public void editCommandField(TextFieldWidget commandField) {

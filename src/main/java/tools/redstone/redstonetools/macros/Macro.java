@@ -96,4 +96,27 @@ public class Macro {
         return new Macro(name,enabled,key,new ArrayList<>(actions),this);
     }
 
+    public boolean needsSaving() {
+        return !isCopy() || !original.equals(this);
+    }
+
+    public boolean isEmpty() {
+        return name.isEmpty() && key == InputUtil.UNKNOWN_KEY && actions.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Macro macro) {
+
+            if (actions.size() != macro.actions.size()) return false;
+            for (int i = 0; i < actions.size(); i++) {
+                if (!actions.get(i).equals(macro.actions.get(i))) return false;
+            }
+
+            return macro.name.equals(name) && macro.key.equals(key) && macro.enabled == enabled;
+        }
+
+        return super.equals(obj);
+    }
+
 }
