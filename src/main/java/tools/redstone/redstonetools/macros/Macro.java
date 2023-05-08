@@ -96,7 +96,7 @@ public class Macro {
         return new Macro(name,enabled,key,new ArrayList<>(actions),this);
     }
 
-    public boolean wasEdited() {
+    public boolean needsSaving() {
         return !isCopy() || !original.equals(this);
     }
 

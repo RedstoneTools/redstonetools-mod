@@ -1,8 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
-import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.gui.screen.ConfirmScreen;
-import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.MacroManager;
 import tools.redstone.redstonetools.macros.actions.Action;
@@ -174,7 +172,7 @@ public class MacroEditScreen extends GameOptionsScreen {
         if (!canClickDone()) return;
 
         updateMacroActions();
-        if (macro.wasEdited() && (!macro.isEmpty() || macro.isCopy())) {
+        if (macro.needsSaving() && (!macro.isEmpty() || macro.isCopy())) {
             client.setScreen(new ConfirmScreen(accept -> {
                 if (accept) client.setScreen(parent);
                 else client.setScreen(this);
