@@ -23,7 +23,7 @@ public class BinaryBlockReadFeature extends CommandFeature {
 
     public static final Argument<Integer> offset = Argument
             .ofType(integer(0))
-            .withDefault(1);
+            .withDefault(2);
     public static final Argument<BlockStateArgument> onBlock = Argument
             .ofType(blockState())
             .withDefault(LIT_LAMP_ARG);
