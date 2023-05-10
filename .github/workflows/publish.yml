@@ -29,8 +29,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: v${{ github.event.inputs.version }}
-          release_name: Release ${{ github.event.inputs.version }}
+          tag_name: 1.18.2-${{ github.event.inputs.mod-version }}
+          release_name: Release 1.18.2-${{ github.event.inputs.version }}
           body: |
             Release ${{ github.event.inputs.version }}
           draft: false
