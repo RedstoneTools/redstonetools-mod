@@ -50,6 +50,12 @@ public class BinaryBlockReadFeature extends CommandFeature {
         var pos1 = boundingBox.getPos1();
         var pos2 = boundingBox.getPos2();
         var direction = pos2.subtract(pos1).normalize();
+
+        // prevent infinite loop
+        if (direction.lengthSq() == 0) {
+            direction = BlockVector3.at(1, 1, 1);
+        }
+
         var spacingVector = direction.multiply(spacing.getValue() + 1);
 
         if (direction.getX() + direction.getBlockY() + direction.getBlockZ() > 1) {
