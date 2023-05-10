@@ -55,7 +55,7 @@ public class BinaryBlockReadFeature extends CommandFeature {
             direction = BlockVector3.at(1, 1, 1);
         }
 
-        var spacingVector = direction.multiply(offset.getValue() + 1);
+        var spacingVector = direction.multiply(offset.getValue());
 
         if (direction.getX() + direction.getBlockY() + direction.getBlockZ() > 1) {
             return Feedback.invalidUsage("The selection must have 2 axis the same");
