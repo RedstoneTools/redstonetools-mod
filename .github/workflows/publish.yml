@@ -2,8 +2,8 @@ name: Publish Mod
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'The version number of the release'
+      mod-version:
+        description: 'Mod version:'
         required: true
 
 jobs:
@@ -23,6 +23,19 @@ jobs:
       - name: Build
         run: ./gradlew build
 
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          release_name: Release ${{ github.event.inputs.version }}
+          body: |
+            Release ${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
+
       - name: Publish
         uses: Kir-Antipov/mc-publish@v3.2
         with:
@@ -32,7 +45,7 @@ jobs:
           # curseforge-id: 394468
           # curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          github-tag: ${{ github.event.inputs.version }}
+          github-tag: ${{ github.event.inputs.mod-version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           
           files-primary: build/libs/!(*-@(unmapped|dev|sources|javadoc)).jar
