@@ -84,7 +84,7 @@ public class MacroEditScreen extends GameOptionsScreen {
 
 
         this.addDrawableChild(new ButtonWidget(this.width / 2 + 2, this.height / 4 + 144 + 5, 98, 20, ScreenTexts.CANCEL, (button) -> {
-            client.setScreen(parent);
+            close();
         }));
 
         Key keyCode = macro.getKey();
