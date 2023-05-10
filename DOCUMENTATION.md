@@ -117,8 +117,8 @@ The amount of times to stack your selection, defaults to 1.
 #### **direction**
 The direction to stack your selection in, defaults to me (the direction you're looking in).
 
-#### **spacing**
-The space between copies, defaults to 2.
+#### **offset**
+The offset between copies, defaults to 2.
 
 <br>
 
