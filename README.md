@@ -11,7 +11,7 @@ If you're looking for documentation/usage of the Redstone Tools mod, check out [
 
 ## Contributing
 
-If you want to contribute to the Redstone Tools mod please read [CONTRIBUTING.md](CONTRIBUTING.md).
+If you want to contribute to the Redstone Tools mod, please read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
