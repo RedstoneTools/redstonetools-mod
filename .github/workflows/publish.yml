@@ -26,6 +26,8 @@ jobs:
       - name: Publish
         uses: Kir-Antipov/mc-publish@v3.2
         with:
+          name: Redstone Tools v1.18.2-${{ github.event.inputs.mod-version }}
+        
           modrinth-id: 9ySQVrz2
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
