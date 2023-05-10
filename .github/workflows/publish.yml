@@ -29,7 +29,7 @@ jobs:
           modrinth-id: 9ySQVrz2
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
-          # curseforge-id: 394468
+          # curseforge-id: 849609
           # curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           github-tag: 1.18.2-${{ github.event.inputs.mod-version }}
