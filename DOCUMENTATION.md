@@ -132,7 +132,7 @@ Minimizes your selection by removing surrounding layers consisting of only air.
 
 <br>
 
-### `//read [offset=1] [onBlock=redstone_lamp[lit=true]] [toBase=10] [reverseBits=false]`
+### `//read [offset=2] [onBlock=redstone_lamp[lit=true]] [toBase=10] [reverseBits=false]`
 Interprets your selection as a binary number and outputs it.
 
 #### **spacing**
