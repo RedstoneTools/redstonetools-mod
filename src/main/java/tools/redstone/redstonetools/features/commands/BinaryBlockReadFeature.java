@@ -21,9 +21,9 @@ public class BinaryBlockReadFeature extends CommandFeature {
             Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true), null, null
     );
 
-    public static final Argument<Integer> spacing = Argument
-            .ofType(integer(0))
-            .withDefault(1);
+    public static final Argument<Integer> offset = Argument
+            .ofType(integer(1))
+            .withDefault(2);
     public static final Argument<BlockStateArgument> onBlock = Argument
             .ofType(blockState())
             .withDefault(LIT_LAMP_ARG);
@@ -32,7 +32,6 @@ public class BinaryBlockReadFeature extends CommandFeature {
             .withDefault(10);
     public static final Argument<Boolean> reverseBits = Argument
             .ofType(bool())
-
             .withDefault(false);
 
     @Override
@@ -50,7 +49,13 @@ public class BinaryBlockReadFeature extends CommandFeature {
         var pos1 = boundingBox.getPos1();
         var pos2 = boundingBox.getPos2();
         var direction = pos2.subtract(pos1).normalize();
-        var spacingVector = direction.multiply(spacing.getValue() + 1);
+
+        // prevent infinite loop
+        if (direction.lengthSq() == 0) {
+            direction = BlockVector3.at(1, 1, 1);
+        }
+
+        var spacingVector = direction.multiply(offset.getValue());
 
         if (direction.getX() + direction.getBlockY() + direction.getBlockZ() > 1) {
             return Feedback.invalidUsage("The selection must have 2 axis the same");

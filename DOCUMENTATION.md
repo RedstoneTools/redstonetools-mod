@@ -108,7 +108,7 @@ If set will only color the blocks with this color. For example, if `onlyColor` i
 
 <br>
 
-### `//rstack [count=1] [direction=me] [spacing=2]`
+### `//rstack [count=1] [direction=me] [offset=2]`
 Stacks your selection with a custom distance.
 
 #### **count**
@@ -117,8 +117,8 @@ The amount of times to stack your selection, defaults to 1.
 #### **direction**
 The direction to stack your selection in, defaults to me (the direction you're looking in).
 
-#### **spacing**
-The space between copies, defaults to 2.
+#### **offset**
+The offset between copies, defaults to 2.
 
 <br>
 
@@ -131,11 +131,11 @@ Force updates all blocks in your selection.
 Minimizes your selection by removing surrounding layers consisting of only air. Note that this might not work with some selection visualisers like //drawsel.
 <br>
 
-### `//read [spacing=1] [onBlock=redstone_lamp[lit=true]] [toBase=10] [reverseBits=false]`
+### `//read [offset=2] [onBlock=redstone_lamp[lit=true]] [toBase=10] [reverseBits=false]`
 Interprets your selection as a binary number and outputs it.
 
-#### **spacing**
-The space between blocks, defaults to 1.
+#### **offset**
+The offset between tested blocks, defaults to 2.
 
 #### **onBlock**
 The block that represents a 1 bit, defaults to redstone_lamp[lit=true] (a lit redstone lamp).

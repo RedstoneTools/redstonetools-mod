@@ -32,3 +32,6 @@ bin/
 
 run/
 logs/
+
+# desktop
+desktop.ini

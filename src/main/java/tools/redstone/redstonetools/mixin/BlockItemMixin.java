@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.mixin;
 
-import tools.redstone.redstonetools.utils.BlockStateNbtUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
@@ -10,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import tools.redstone.redstonetools.utils.BlockStateNbtUtil;
 
 
 @Mixin(BlockItem.class)
