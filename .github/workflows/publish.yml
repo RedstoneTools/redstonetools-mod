@@ -1,0 +1,19 @@
+name: Publish Mod
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Publish
+        uses: Kir-Antipov/mc-publish@v3.2
+        with:
+          modrinth-id: 9ySQVrz2
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # curseforge-id: 394468
+          # curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          github-token: ${{ secrets.GITHUB_TOKEN }}
