@@ -108,7 +108,7 @@ If set will only color the blocks with this color. For example, if `onlyColor` i
 
 <br>
 
-### `//rstack [count=1] [direction=me] [spacing=2]`
+### `//rstack [count=1] [direction=me] [offset=2]`
 Stacks your selection with a custom distance.
 
 #### **count**
@@ -132,7 +132,7 @@ Minimizes your selection by removing surrounding layers consisting of only air.
 
 <br>
 
-### `//read [spacing=1] [onBlock=redstone_lamp[lit=true]] [toBase=10] [reverseBits=false]`
+### `//read [offset=1] [onBlock=redstone_lamp[lit=true]] [toBase=10] [reverseBits=false]`
 Interprets your selection as a binary number and outputs it.
 
 #### **spacing**
