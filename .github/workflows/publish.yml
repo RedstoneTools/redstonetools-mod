@@ -14,6 +14,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
     
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+    
       - name: Build
         run: ./gradlew build
 
