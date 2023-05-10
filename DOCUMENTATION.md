@@ -135,8 +135,8 @@ Minimizes your selection by removing surrounding layers consisting of only air.
 ### `//read [offset=2] [onBlock=redstone_lamp[lit=true]] [toBase=10] [reverseBits=false]`
 Interprets your selection as a binary number and outputs it.
 
-#### **spacing**
-The space between blocks, defaults to 1.
+#### **offset**
+The offset between tested blocks, defaults to 2.
 
 #### **onBlock**
 The block that represents a 1 bit, defaults to redstone_lamp[lit=true] (a lit redstone lamp).
