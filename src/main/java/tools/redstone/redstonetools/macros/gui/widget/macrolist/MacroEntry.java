@@ -111,8 +111,6 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
             }
 
             owner.client.setScreen(owner.parent);
-        }, Text.of("Are you sure you want to delete '" + macro.name + "'?"), Text.of(""), new TranslatableText("selectWorld.deleteButton"), ScreenTexts.CANCEL));
+        }, Text.of("Delete macro"), Text.of("Are you sure you want to delete '" + macro.name + "'?")));
     }
-
-
 }

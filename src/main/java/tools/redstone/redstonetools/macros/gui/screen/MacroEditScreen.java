@@ -59,10 +59,10 @@ public class MacroEditScreen extends GameOptionsScreen {
         super.init();
         overlapped = false;
         nameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 20, Text.of(""));
-        nameField.setText(macro.name);
+        nameField.setText(macro.name.trim());
 
         doneButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 144 + 5, 98, 20, Text.of("Done"), (button) -> {
-            String name = nameField.getText();
+            String name = nameField.getText().trim();
             if (name.isEmpty()) return;
 
             updateMacroActions();
@@ -77,7 +77,7 @@ public class MacroEditScreen extends GameOptionsScreen {
         doneButton.active = canClickDone();
 
         nameField.setChangedListener(s -> {
-            macro.name = s;
+            macro.name = s.trim();
             doneButton.active = canClickDone();
         });
         addSelectableChild(nameField);
@@ -130,7 +130,7 @@ public class MacroEditScreen extends GameOptionsScreen {
     }
 
     private boolean canClickDone() {
-        return !nameField.getText().isEmpty() && macroListWidget.canAdd(macro);
+        return !nameField.getText().trim().isEmpty() && macroListWidget.canAdd(macro);
     }
 
     @Override
@@ -169,14 +169,17 @@ public class MacroEditScreen extends GameOptionsScreen {
 
     @Override
     public void close(){
-        if (!canClickDone()) return;
+        if (!macro.isCopy() && macro.isEmpty()) {
+            super.close();
+            return;
+        }
 
         updateMacroActions();
-        if (macro.needsSaving() && !(macro.isEmpty() && !macro.isCopy())) {
+        if (macro.needsSaving()) {
             client.setScreen(new ConfirmScreen(accept -> {
                 if (accept) client.setScreen(parent);
                 else client.setScreen(this);
-            }, Text.of("Warning!"), Text.of("Are you sure you want to discard changes?")));
+            }, Text.of("Unsaved changes"), Text.of("Are you sure you want to discard changes?")));
         } else {
             super.close();
         }
