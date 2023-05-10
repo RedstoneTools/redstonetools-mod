@@ -34,7 +34,7 @@ jobs:
           # curseforge-id: 849609
           # curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          github-tag: 1.18.2-${{ github.event.inputs.mod-version }}
+          github-tag: v1.18.2-${{ github.event.inputs.mod-version }}
           github-token: ${{ secrets.RELEASE_TOKEN }}
           
           files-primary: build/libs/!(*-@(unmapped|dev|sources|javadoc)).jar
