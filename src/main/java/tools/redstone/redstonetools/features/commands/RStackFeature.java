@@ -35,7 +35,7 @@ public class RStackFeature extends CommandFeature {
             .withDefault(DirectionArgument.ME);
 
     public static final Argument<Integer> offset = Argument
-            .ofType(integer())
+            .ofType(integer(1))
             .withDefault(2);
 
     @Override
