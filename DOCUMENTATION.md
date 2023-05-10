@@ -18,6 +18,19 @@ Once you're editing a macro you'll have the option to change its name, keybind, 
 
 <br>
 
+# Gamerules
+Redstone Tools adds gamerules to help users configure their worlds just the way they like them, below is a list of all gamerules added by Redstone Tools and what they do.
+
+### `doContainerDrops`
+Whether or not containers should drop their items when they're broken, defaults to true.
+
+<br>
+
+### `doBlockUpdatesAfterEdit`
+When enabled, force updates all blocks in your selection after a WorldEdit action such as //paste, //set, etc., defaults to false.
+
+<br>
+
 # Commands
 Redstone Tools adds a bunch of commands to improve productivity. Below is a list of the names of all commands added by Redstone Tools and what they do.
 
