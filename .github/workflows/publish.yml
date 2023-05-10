@@ -1,12 +1,19 @@
 name: Publish Mod
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version number of the release'
+        required: true
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Build
+        run: ./gradlew build
+
       - name: Publish
         uses: Kir-Antipov/mc-publish@v3.2
         with:
@@ -16,4 +23,8 @@ jobs:
           # curseforge-id: 394468
           # curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
+          github-tag: ${{ github.event.inputs.version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+          files-primary: build/libs/!(*-@(unmapped|dev|sources|javadoc)).jar
+          files-secondary: ''
