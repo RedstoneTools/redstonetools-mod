@@ -134,4 +134,26 @@ Not a very useful feature or command, but it shows the different systems
 associated with creating a command.
 
 ### Making a toggleable feature
-> **TODO**
+There is a standardized API for creating toggleable features.
+To create one, replicate the `CommandFeature` example but extend `ToggleableFeature` instead.
+Features are toggled through commands, which are automatically created, so you don't have to build the commands manually.
+Due to this, we don't need an `execute` method for the command either.
+
+```java
+@Feature(name = "My Second Feature", description = "Test toggleable feature", command = "mytoggleable")
+public class MySecondFeature extends ToggleableFeature {
+    
+}
+```
+
+To query the state of the feature anywhere in the code, first use `INJECTOR.getInstance(YourFeature.class)` to get
+the feature's instance, then follow up with `.isEnabled()`.
+
+```java
+// cache the instance
+private final MyToggleableFeature feature = RedstoneToolsClient.INJECTOR.getInstance(MyToggleableFeature.class);
+
+/* some code */ {
+    if (!feature.isEnabled()) /* ... */
+}
+```
