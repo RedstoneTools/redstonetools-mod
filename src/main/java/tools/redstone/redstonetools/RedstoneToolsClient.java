@@ -11,7 +11,7 @@ import tools.redstone.redstonetools.utils.ReflectionUtils;
 
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_ID = "redstonetools";
-    public static final String MOD_VERSION = "1.18.2-1.0.0-beta";
+    public static final String MOD_VERSION = "v1.18.2-1.0.0";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final Injector INJECTOR = Guice.createInjector(ReflectionUtils.getModules());
 
