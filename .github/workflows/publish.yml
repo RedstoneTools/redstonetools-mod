@@ -1,0 +1,41 @@
+name: Publish Mod
+on:
+  workflow_dispatch:
+    inputs:
+      mod-version:
+        description: 'Mod version:'
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+    
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+    
+      - name: Build
+        run: ./gradlew build
+
+      - name: Publish
+        uses: Kir-Antipov/mc-publish@v3.2
+        with:
+          name: Redstone Tools v1.18.2-${{ github.event.inputs.mod-version }}
+        
+          modrinth-id: 9ySQVrz2
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          # curseforge-id: 849609
+          # curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          github-tag: v1.18.2-${{ github.event.inputs.mod-version }}
+          github-token: ${{ secrets.RELEASE_TOKEN }}
+          
+          files-primary: build/libs/!(*-@(unmapped|dev|sources|javadoc)).jar
+          files-secondary: ''
