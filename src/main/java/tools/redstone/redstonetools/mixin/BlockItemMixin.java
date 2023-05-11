@@ -22,13 +22,11 @@ public abstract class BlockItemMixin {
     @Inject(method = "getPlacementState", at = @At("TAIL"), cancellable = true)
     public void getPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> cir) {
         NbtCompound nbt = context.getStack().getNbt();
-        String str = "";
-        if (nbt != null) str = nbt.getString("blockstate");
-        BlockState state = this.getBlock().getPlacementState(context);
 
-        if (!str.equals("")) {
-            state = BlockStateNbtUtil.stringToBlockState(str,this.getBlock().getDefaultState());
-        }
+        if (nbt == null) return;
+        String str = nbt.getString("blockstate");
+        BlockState state = BlockStateNbtUtil.stringToBlockState(str,this.getBlock().getDefaultState());
+
         if (state != null && this.canPlace(context, state)) {
             cir.setReturnValue(state);
         }
