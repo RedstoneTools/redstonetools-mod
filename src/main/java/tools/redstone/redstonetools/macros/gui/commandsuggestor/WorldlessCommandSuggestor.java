@@ -31,5 +31,13 @@ public class WorldlessCommandSuggestor extends CommandSuggestor {
         return yMap.get(object);
     }
 
+    @Override
+    public void refresh() {
+        try{
+            super.refresh();
+        } catch (Exception ignored) {
+        }
+    }
+
 
 }

@@ -1,27 +1,27 @@
 {
-	"required": true,
-	"minVersion": "0.8",
-	"package": "tools.redstone.redstonetools.mixin",
-	"compatibilityLevel": "JAVA_17",
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"mixins": [
-		"BlockItemMixin",
-		"BlockMixin",
-		"CommandTelemetryMixin",
-		"ItemScattererMixin",
-		"MinecraftClientMixin",
-		"OptionsScreenMixin",
-		"TelemetryPromptPopupMixin",
-		"UpdatePopupMixin"
-	],
-	"client": [
-		"ClientPlayerEntityMixinImpl",
-		"CommandDispatcherMixin",
-		"CommandSuggestorMixin",
-		"ControlsListWidgetMixin",
-		"CrashTelemetryMixin",
-		"TelemetryInitializeMixin"
-	]
+  "required": true,
+  "minVersion": "0.8",
+  "package": "tools.redstone.redstonetools.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "BlockItemMixin",
+    "BlockMixin",
+    "CommandTelemetryMixin",
+    "ItemScattererMixin",
+    "MinecraftClientMixin",
+    "OptionsScreenMixin",
+    "TelemetryPromptPopupMixin",
+    "UpdatePopupMixin"
+  ],
+  "client": [
+    "ClientPlayerEntityMixinImpl",
+    "CommandDispatcherMixin",
+    "CommandSuggestorMixin",
+    "CrashTelemetryMixin",
+    "KeyBindingMixinImp",
+    "TelemetryInitializeMixin"
+  ]
 }
