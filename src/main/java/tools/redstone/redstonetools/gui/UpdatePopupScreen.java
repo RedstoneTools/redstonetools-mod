@@ -7,13 +7,15 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
+import static tools.redstone.redstonetools.RedstoneToolsClient.MOD_VERSION;
+
 public class UpdatePopupScreen extends PopupScreen {
 
     URI uri;
     
-    public UpdatePopupScreen(Screen parent, URI uri) {
+    public UpdatePopupScreen(Screen parent, URI uri, String newVersion) {
         super(parent, "Update Available",
-                "An update is available for redstone tools! You are on version {currentVersion} but version {newVersion} is available.");
+                "An update is available for redstone tools! You are on version " + MOD_VERSION + " but version " + newVersion + " is available.");
         this.uri = uri;
     }
 

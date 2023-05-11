@@ -60,12 +60,11 @@ public class UpdatePopupMixin extends Screen {
             if (RedstoneToolsClient.MOD_VERSION.equals(newVersion) || newVersion.contains("alpha") || newVersion.contains("beta"))
                 return;
 
-            MinecraftClient.getInstance().setScreen(new UpdatePopupScreen(this, uri));
+            MinecraftClient.getInstance().setScreen(new UpdatePopupScreen(this, uri, newVersion));
         } catch (JsonSyntaxException | IOException | URISyntaxException e) {
             e.printStackTrace();
         } finally {
             updateChecked = true;
         }
-
     }
 }
