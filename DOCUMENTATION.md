@@ -128,8 +128,7 @@ Force updates all blocks in your selection.
 <br>
 
 ### `//minsel`
-Minimizes your selection by removing surrounding layers consisting of only air.
-
+Minimizes your selection by removing surrounding layers consisting of only air. Note that this might not work with some selection visualisers like //drawsel.
 <br>
 
 ### `//read [offset=2] [onBlock=redstone_lamp[lit=true]] [toBase=10] [reverseBits=false]`

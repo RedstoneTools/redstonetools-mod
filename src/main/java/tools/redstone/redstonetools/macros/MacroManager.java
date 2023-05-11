@@ -173,4 +173,11 @@ public class MacroManager {
 
         throw new RuntimeException("Unknown action type: " + type);
     }
+
+    public void updateMacroKeys() {
+        for (Macro macro : macros) {
+            macro.changeKeyBindingKeyCode();
+        }
+    }
+
 }

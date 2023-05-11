@@ -1,6 +1,8 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
 import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.util.math.MathHelper;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.MacroManager;
 import tools.redstone.redstonetools.macros.actions.Action;
@@ -149,7 +151,11 @@ public class MacroEditScreen extends GameOptionsScreen {
         drawCenteredText(matrices, this.textRenderer, "Key Bind", width / 2 - (99 - textRenderer.getWidth("Key Bind") / 2), 55 + textRenderer.fontHeight / 2, 16777215);
         nameField.render(matrices, mouseX, mouseY, delta);
 
-
+        if (nameField.getText().isEmpty() && !nameField.isFocused()) {
+            nameField.setSuggestion("Name");
+        } else {
+            nameField.setSuggestion("");
+        }
     }
 
     @Override
