@@ -1,10 +1,8 @@
 package tools.redstone.redstonetools.macros.gui.widget.macrolist;
 
-import net.minecraft.client.util.InputUtil;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
@@ -102,7 +100,7 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
 
     public void delete() {
         owner.removeEntry(this);
-        macro.close();
+        macro.unregisterKeyBinding();
         MacroListWidget.macroManager.removeMacro(this.macro);
         MacroListWidget.macroManager.updateMacroKeys();
     }

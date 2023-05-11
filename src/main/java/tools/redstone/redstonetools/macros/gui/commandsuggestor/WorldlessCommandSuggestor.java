@@ -35,7 +35,7 @@ public class WorldlessCommandSuggestor extends CommandSuggestor {
     public void refresh() {
         try{
             super.refresh();
-        } catch (Exception ignored) {
+        } catch (NullPointerException ignored) {
         }
     }
 

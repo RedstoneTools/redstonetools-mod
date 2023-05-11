@@ -1,13 +1,11 @@
 package tools.redstone.redstonetools.macros;
 
-import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.macros.actions.Action;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
-import tools.redstone.redstonetools.mixin.KeyBindingMixinImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +27,8 @@ public class Macro {
     public Macro(String name, boolean enabled, Key key, List<Action> actions) {
         this(name,enabled,key,actions,null);
         keyBinding = new KeyBinding("macro." + System.nanoTime(),-1,"macros");
-        addKeyBindingToOptions();
-        setKey(key);
+        addKeyBinding();
+        registerKeyBinding();
     }
 
     public Macro(String name, boolean enabled, Key key, List<Action> actions, Macro original) {
@@ -41,7 +39,7 @@ public class Macro {
         this.original = original;
     }
 
-    public void addKeyBindingToOptions() {
+    public void addKeyBinding() {
         if (keyBinding == null) return;
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -82,8 +80,11 @@ public class Macro {
 
     public void setKey(Key key) {
         this.key = key;
-        if (this.keyBinding != null) {
+        registerKeyBinding();
+    }
 
+    public void registerKeyBinding() {
+        if (this.keyBinding != null) {
             MinecraftClient.getInstance().options.setKeyCode(keyBinding,key);
             KeyBinding.updateKeysByCode();
         }
@@ -97,8 +98,7 @@ public class Macro {
         return new Macro(name,enabled,key,new ArrayList<>(actions),this);
     }
 
-    public void close(){
-        keyBinding.setBoundKey(InputUtil.UNKNOWN_KEY);
+    public void unregisterKeyBinding(){
         ((KeyBindingMixin)keyBinding).removeKeybinding(keyBinding);
     }
 

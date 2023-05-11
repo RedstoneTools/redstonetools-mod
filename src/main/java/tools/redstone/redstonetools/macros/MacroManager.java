@@ -176,7 +176,7 @@ public class MacroManager {
 
     public void updateMacroKeys() {
         for (Macro macro : macros) {
-            macro.setKey(macro.getKey());
+            macro.registerKeyBinding();
         }
     }
 
