@@ -16,4 +16,14 @@ public class CommandAction extends Action {
 
         player.sendChatMessage(command.startsWith("/") ? command : "/" + command);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CommandAction commandAction) {
+            return command.equals(commandAction.command);
+        }
+
+        return super.equals(obj);
+    }
+
 }

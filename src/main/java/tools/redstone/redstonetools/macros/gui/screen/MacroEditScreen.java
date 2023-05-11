@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.MacroManager;
 import tools.redstone.redstonetools.macros.actions.Action;
@@ -58,17 +59,13 @@ public class MacroEditScreen extends GameOptionsScreen {
         super.init();
         overlapped = false;
         nameField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 20, Text.of(""));
-        nameField.setText(macro.name);
+        nameField.setText(macro.name.trim());
 
         doneButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 144 + 5, 98, 20, Text.of("Done"), (button) -> {
-            String name = nameField.getText();
+            String name = nameField.getText().trim();
             if (name.isEmpty()) return;
 
-            macro.actions.clear();
-
-            for (String command : commandList.getCommandList()) {
-                macro.actions.add(new CommandAction(command));
-            }
+            updateMacroActions();
 
             if (!macro.isCopy()) macroListWidget.addMacro(macro);
             else macro.applyChangesToOriginal();
@@ -80,14 +77,14 @@ public class MacroEditScreen extends GameOptionsScreen {
         doneButton.active = canClickDone();
 
         nameField.setChangedListener(s -> {
-            macro.name = s;
+            macro.name = s.trim();
             doneButton.active = canClickDone();
         });
         addSelectableChild(nameField);
 
 
         this.addDrawableChild(new ButtonWidget(this.width / 2 + 2, this.height / 4 + 144 + 5, 98, 20, ScreenTexts.CANCEL, (button) -> {
-            client.setScreen(parent);
+            close();
         }));
 
         Key keyCode = macro.getKey();
@@ -133,7 +130,7 @@ public class MacroEditScreen extends GameOptionsScreen {
     }
 
     private boolean canClickDone() {
-        return !nameField.getText().isEmpty() && macroListWidget.canAdd(macro);
+        return !nameField.getText().trim().isEmpty() && macroListWidget.canAdd(macro);
     }
 
     @Override
@@ -167,6 +164,33 @@ public class MacroEditScreen extends GameOptionsScreen {
     public void resize(MinecraftClient client, int width, int height) {
         super.resize(client, width, height);
         if (overlapped) client.setScreen(new CommandEditScreen(this,gameOptions,commandList.getFocused().command));
+    }
+
+
+    @Override
+    public void close(){
+        if (!macro.isCopy() && macro.isEmpty()) {
+            super.close();
+            return;
+        }
+
+        updateMacroActions();
+        if (macro.needsSaving()) {
+            client.setScreen(new ConfirmScreen(accept -> {
+                if (accept) client.setScreen(parent);
+                else client.setScreen(this);
+            }, Text.of("Unsaved changes"), Text.of("Are you sure you want to discard changes?")));
+        } else {
+            super.close();
+        }
+    }
+
+    private void updateMacroActions() {
+        macro.actions.clear();
+
+        for (String command : commandList.getCommandList()) {
+            macro.actions.add(new CommandAction(command));
+        }
     }
 
     public void editCommandField(TextFieldWidget commandField) {

@@ -19,6 +19,15 @@ public enum DirectionArgument {
     UP,
     DOWN,
     LEFT,
+<<<<<<< HEAD
     RIGHT
 
+=======
+    RIGHT;
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
+>>>>>>> dev
 }

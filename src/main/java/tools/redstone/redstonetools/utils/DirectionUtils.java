@@ -44,7 +44,7 @@ public class DirectionUtils {
                 case SOUTHEAST -> DirectionArgument.SOUTHWEST;
                 default -> null;
             };
-            case RIGHT -> switch (firstOrdinal(playerFacing)) {
+            case EAST -> switch (firstOrdinal(playerFacing)) {
                 case UP, DOWN -> throw new CommandException(Text.of("Can't determine direction"));
                 case NORTH -> DirectionArgument.WEST;
                 case EAST -> DirectionArgument.SOUTH;
