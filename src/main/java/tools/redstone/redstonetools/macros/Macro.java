@@ -28,8 +28,8 @@ public class Macro {
     public Macro(String name, boolean enabled, Key key, List<Action> actions) {
         this(name,enabled,key,actions,null);
         keyBinding = new KeyBinding("macro." + System.nanoTime(),-1,"macros");
-        addKeyBinding();
         registerKeyBinding();
+        changeKeyBindingKeyCode();
     }
 
     public Macro(String name, boolean enabled, Key key, List<Action> actions, Macro original) {
@@ -40,7 +40,7 @@ public class Macro {
         this.original = original;
     }
 
-    public void addKeyBinding() {
+    public void registerKeyBinding() {
         if (keyBinding == null) return;
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -81,10 +81,10 @@ public class Macro {
 
     public void setKey(Key key) {
         this.key = key;
-        registerKeyBinding();
+        changeKeyBindingKeyCode();
     }
 
-    public void registerKeyBinding() {
+    public void changeKeyBindingKeyCode() {
         if (this.keyBinding != null) {
             MinecraftClient.getInstance().options.setKeyCode(keyBinding,key);
             KeyBinding.updateKeysByCode();
