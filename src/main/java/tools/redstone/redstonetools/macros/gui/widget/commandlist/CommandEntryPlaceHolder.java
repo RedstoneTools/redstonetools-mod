@@ -11,6 +11,7 @@ public class CommandEntryPlaceHolder extends CommandEntry{
 
     @Override
     public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        command.setSuggestion("Add new command");
         if (!super.command.getText().isEmpty()) {
             super.owner.addCommandFromPlaceHolder(command.getText(),this);
             command.setText("");
