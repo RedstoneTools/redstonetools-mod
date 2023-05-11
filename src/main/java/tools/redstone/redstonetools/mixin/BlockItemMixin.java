@@ -5,10 +5,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.nbt.NbtCompound;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.utils.BlockStateNbtUtil;
 
 
@@ -17,12 +18,9 @@ public abstract class BlockItemMixin {
     @Shadow protected abstract boolean canPlace(ItemPlacementContext context, BlockState state);
     @Shadow public abstract Block getBlock();
 
-    /**
-     * @reason Checks, if block that is being placed has "blockstate" nbt. If so, replaces original blockstate with the one in nbt.
-     * @author MiranCZ
-     */
-    @Overwrite
-    public @Nullable BlockState getPlacementState(ItemPlacementContext context) {
+
+    @Inject(method = "getPlacementState", at = @At("TAIL"), cancellable = true)
+    public void getPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> cir) {
         NbtCompound nbt = context.getStack().getNbt();
         String str = "";
         if (nbt != null) str = nbt.getString("blockstate");
@@ -31,7 +29,9 @@ public abstract class BlockItemMixin {
         if (!str.equals("")) {
             state = BlockStateNbtUtil.stringToBlockState(str,this.getBlock().getDefaultState());
         }
-        return state != null && this.canPlace(context, state) ? state : null;
+        if (state != null && this.canPlace(context, state)) {
+            cir.setReturnValue(state);
+        }
     }
 
 
