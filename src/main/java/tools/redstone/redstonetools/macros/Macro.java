@@ -2,11 +2,11 @@ package tools.redstone.redstonetools.macros;
 
 import tools.redstone.redstonetools.macros.actions.Action;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
+import tools.redstone.redstonetools.utils.KeyBindingUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,9 @@ public class Macro {
 
     public Macro(String name, boolean enabled, Key key, List<Action> actions) {
         this(name,enabled,key,actions,null);
-        keyBinding = new InvisibleKeyBinding("macro." + System.nanoTime(),-1,"macros");
-        addKeyBindingToOptions();
+        keyBinding = new KeyBinding("macro." + System.nanoTime(),-1,"macros");
+        registerKeyBinding();
+        changeKeyBindingKeyCode();
     }
 
     public Macro(String name, boolean enabled, Key key, List<Action> actions, Macro original) {
@@ -39,10 +40,9 @@ public class Macro {
         this.original = original;
     }
 
-    public void addKeyBindingToOptions() {
+    public void registerKeyBinding() {
         if (keyBinding == null) return;
 
-        keyBinding = KeyBindingHelper.registerKeyBinding(keyBinding);
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (keyBinding == null || key == InputUtil.UNKNOWN_KEY) return;
 
@@ -81,8 +81,11 @@ public class Macro {
 
     public void setKey(Key key) {
         this.key = key;
-        if (this.keyBinding != null) {
+        changeKeyBindingKeyCode();
+    }
 
+    public void changeKeyBindingKeyCode() {
+        if (this.keyBinding != null) {
             MinecraftClient.getInstance().options.setKeyCode(keyBinding,key);
             KeyBinding.updateKeysByCode();
         }
@@ -94,6 +97,33 @@ public class Macro {
 
     public Macro createCopy() {
         return new Macro(name,enabled,key,new ArrayList<>(actions),this);
+    }
+
+    public void unregisterKeyBinding(){
+        KeyBindingUtils.removeKeyBinding(keyBinding);
+    }
+
+    public boolean needsSaving() {
+        return !isCopy() || !original.equals(this);
+    }
+
+    public boolean isEmpty() {
+        return name.isEmpty() && key == InputUtil.UNKNOWN_KEY && actions.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Macro macro) {
+
+            if (actions.size() != macro.actions.size()) return false;
+            for (int i = 0; i < actions.size(); i++) {
+                if (!actions.get(i).equals(macro.actions.get(i))) return false;
+            }
+
+            return macro.name.equals(name) && macro.key.equals(key) && macro.enabled == enabled;
+        }
+
+        return super.equals(obj);
     }
 
 }

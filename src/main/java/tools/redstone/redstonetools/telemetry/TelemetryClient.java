@@ -2,6 +2,7 @@ package tools.redstone.redstonetools.telemetry;
 
 import com.google.gson.Gson;
 import kotlin.Pair;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,9 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 import static tools.redstone.redstonetools.RedstoneToolsClient.LOGGER;
 
 public class TelemetryClient {
-    private static final String BASE_URL = "https://redstone.tools/api/v1";
+    private static final String BASE_URL = FabricLoader.getInstance().isDevelopmentEnvironment()
+            ? "https://localhost/api/telemetry/v1"
+            : "https://redstone.tools/api/telemetry/v1";
     private static final int SESSION_REFRESH_TIME_SECONDS = 60 * 5 - 10; // 5 minutes - 10 seconds
     private static final int REQUEST_SEND_TIME_MILLISECONDS = 50;
     private static final int REQUEST_VALID_FOR_SECONDS = 30;
@@ -134,6 +137,7 @@ public class TelemetryClient {
                 return httpClient.newCall(request.build()).execute();
             } catch (ConnectException e) {
                 // Either the server is down or the user isn't connected to the internet
+                LOGGER.debug("Failed to send telemetry request: " + e.getMessage());
             } catch (IOException e) {
                 LOGGER.error("Failed to send telemetry request", e);
             }

@@ -3,7 +3,6 @@ package tools.redstone.redstonetools.macros.gui.widget.macrolist;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
@@ -101,7 +100,9 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
 
     public void delete() {
         owner.removeEntry(this);
+        macro.unregisterKeyBinding();
         MacroListWidget.macroManager.removeMacro(this.macro);
+        MacroListWidget.macroManager.updateMacroKeys();
     }
 
     public void deleteIfConfirmed() {
@@ -111,8 +112,6 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
             }
 
             owner.client.setScreen(owner.parent);
-        }, Text.of("Are you sure you want to delete '" + macro.name + "'?"), Text.of(""), new TranslatableText("selectWorld.deleteButton"), ScreenTexts.CANCEL));
+        }, Text.of("Delete macro"), Text.of("Are you sure you want to delete '" + macro.name + "'?")));
     }
-
-
 }

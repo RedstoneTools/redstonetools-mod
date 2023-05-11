@@ -13,6 +13,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
+import java.util.Random;
 
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 
@@ -45,6 +46,20 @@ public class SsBarrelFeature extends CommandFeature {
         stack.getOrCreateNbt().putBoolean("HideFlags", true);
 
         source.getPlayer().giveItemStack(stack);
+
+        //funny
+        if(signalStrength.getValue() == 0)
+
+        {
+            String[] funny = {
+                    "Why would you want this??", "Wtf are you going to use this for?", "What for?",
+                    "... Ok, if you're sure.", "I'm 99% sure you could just use any other block.",
+                    "This seems unnecessary.", "Is that a typo?", "Do you just like the glint?",
+                    "Wow, what a fancy but otherwise useless barrel.", "For decoration?"};
+            return Feedback.success(funny[new Random(
+
+            ).nextInt(funny.length)]);
+        }
 
         return Feedback.none();
     }

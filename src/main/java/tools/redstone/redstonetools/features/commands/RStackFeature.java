@@ -15,7 +15,6 @@ import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldedit.util.formatting.text.TextComponent;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,9 +34,8 @@ public class RStackFeature extends CommandFeature {
             .ofType(direction())
             .withDefault(DirectionArgument.ME);
 
-    public static final Argument<Integer> spacing = Argument
-            .ofType(integer())
-
+    public static final Argument<Integer> offset = Argument
+            .ofType(integer(1))
             .withDefault(2);
 
     @Override
@@ -55,7 +53,7 @@ public class RStackFeature extends CommandFeature {
         try {
             selection = localSession.getSelection(selectionWorld);
         } catch (IncompleteRegionException ex) {
-            return Feedback.error("Please make a selection with worldedit first.");
+            return Feedback.error("Please make a selection with WorldEdit first.");
         }
 
         final Mask airFilter = new Mask() {
@@ -83,7 +81,7 @@ public class RStackFeature extends CommandFeature {
                         editSession,
                         selection,
                         editSession,
-                        selection.getMinimumPoint().add(stackVector.multiply(i * spacing.getValue()))
+                        selection.getMinimumPoint().add(stackVector.multiply(i * offset.getValue()))
                 );
                 copy.setSourceMask(airFilter);
                 Operations.complete(copy);

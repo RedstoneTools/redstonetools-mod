@@ -118,10 +118,14 @@ public class MacroManager {
 
     private List<Macro> getDefaultMacros() {
         return List.of(
-                createCommandMacro("test", new String[] {
-                        "/say hello",
-                        "/say world",
-                        "/say macros!",
+                createCommandMacro("redstoner", new String[] {
+                        "/gamerule doTileDrops false",
+                        "/gamerule doTraderSpawning false",
+                        "/gamerule doWeatherCycle false",
+                        "/gamerule doDaylightCycle false",
+                        "/gamerule doMobSpawning false",
+                        "/gamerule doContainerDrops false",
+                        "/time set noon",
                 })
         );
     }
@@ -173,4 +177,11 @@ public class MacroManager {
 
         throw new RuntimeException("Unknown action type: " + type);
     }
+
+    public void updateMacroKeys() {
+        for (Macro macro : macros) {
+            macro.changeKeyBindingKeyCode();
+        }
+    }
+
 }

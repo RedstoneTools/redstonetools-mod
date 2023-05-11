@@ -41,7 +41,7 @@ public abstract class CommandFeature extends AbstractFeature {
                 info.name(),
                 InputUtil.Type.KEYSYM,
                 -1,
-                "Commands"
+                "Redstone Tools"
         ));
 
         keyBindings.add(keyBinding);
