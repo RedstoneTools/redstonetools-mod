@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
+import tools.redstone.redstonetools.utils.KeyBindingUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +100,7 @@ public class Macro {
     }
 
     public void unregisterKeyBinding(){
-        ((KeyBindingMixin)keyBinding).removeKeybinding(keyBinding);
+        KeyBindingUtils.removeKeyBinding(keyBinding);
     }
 
     public boolean needsSaving() {
