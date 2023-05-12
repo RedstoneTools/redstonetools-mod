@@ -25,6 +25,7 @@ public abstract class BlockItemMixin {
 
         if (nbt == null) return;
         String str = nbt.getString("blockstate");
+        if (str.isEmpty()) return;
         BlockState state = BlockStateNbtUtil.stringToBlockState(str,this.getBlock().getDefaultState());
 
         if (state != null && this.canPlace(context, state)) {
