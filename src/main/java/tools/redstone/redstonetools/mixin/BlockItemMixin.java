@@ -15,23 +15,16 @@ import tools.redstone.redstonetools.utils.BlockStateNbtUtil;
 
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin {
+
     @Shadow protected abstract boolean canPlace(ItemPlacementContext context, BlockState state);
     @Shadow public abstract Block getBlock();
 
-
     @Inject(method = "getPlacementState", at = @At("TAIL"), cancellable = true)
     public void getPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> cir) {
-        NbtCompound nbt = context.getStack().getNbt();
-
-        if (nbt == null) return;
-        String str = nbt.getString("blockstate");
-        if (str.isEmpty()) return;
-        BlockState state = BlockStateNbtUtil.stringToBlockState(str,this.getBlock().getDefaultState());
-
+        BlockState state = BlockStateNbtUtil.getPlacementStateOrNull(context.getStack());
         if (state != null && this.canPlace(context, state)) {
             cir.setReturnValue(state);
         }
     }
-
 
 }
