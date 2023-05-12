@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -116,12 +117,10 @@ public final class BlockStateNbtUtil {
      *
      * @param stack The input stack.
      * @param state The block state to assign.
-     * @return The input stack.
      */
-    public static ItemStack putPlacement(ItemStack stack, BlockState state) {
+    public static void putPlacement(ItemStack stack, BlockState state) {
         Objects.requireNonNull(stack);
         stack.getOrCreateNbt().put(EXACT_STATE_KEY, toNBT(state));
-        return stack;
     }
 
     /**
@@ -134,7 +133,9 @@ public final class BlockStateNbtUtil {
      * @return The item stack.
      */
     public static ItemStack createPlacementStack(BlockState state) {
-        return putPlacement(new ItemStack(state.getBlock()), state);
+        ItemStack stack = new ItemStack(state.getBlock());
+        putPlacement(stack, state);
+        return stack;
     }
 
     /**
