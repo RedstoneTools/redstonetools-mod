@@ -38,7 +38,7 @@ public class CopyStateFeature extends PickBlockFeature {
 
     private int addBlockStateNbt(ItemStack itemStack, BlockState blockState) {
         addBlockStateText(itemStack);
-        BlockStateNbtUtil.createPlacementStack(itemStack, blockState);
+        BlockStateNbtUtil.putPlacement(itemStack, blockState);
         return 1;
     }
 

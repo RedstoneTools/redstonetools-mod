@@ -11,8 +11,7 @@ import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * Utilities for block state (de)serialization into NBT tags.
@@ -111,24 +110,31 @@ public final class BlockStateNbtUtil {
     public static final String EXACT_STATE_KEY = "ExactBlockState";
 
     /**
-     * Modifies or creates an item stack which should place the exact given
+     * Modifies the given item stack to add the exact block state
+     * placement data. The item stack should place the exact given
      * block state when attempted.
      *
-     * If the item stack has to be created it has a count of 1 by default.
-     *
-     * @param stack The stack to modify. Null signals a new stack.
-     * @param state The placement state.
-     * @return The item stack.
+     * @param stack The input stack.
+     * @param state The block state to assign.
+     * @return The input stack.
      */
-    public static ItemStack createPlacementStack(ItemStack stack, BlockState state) {
-        if (stack == null)
-            stack = new ItemStack(state.getBlock());
+    public static ItemStack putPlacement(ItemStack stack, BlockState state) {
+        Objects.requireNonNull(stack);
         stack.getOrCreateNbt().put(EXACT_STATE_KEY, toNBT(state));
         return stack;
     }
 
+    /**
+     * Creates an item stack which should place the exact given
+     * block state when attempted.
+     *
+     * The created item stack has a count of 1 by default.
+     *
+     * @param state The placement state.
+     * @return The item stack.
+     */
     public static ItemStack createPlacementStack(BlockState state) {
-        return createPlacementStack(null, state);
+        return putPlacement(new ItemStack(state.getBlock()), state);
     }
 
     /**
