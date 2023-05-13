@@ -38,5 +38,5 @@ jobs:
           github-generate-changelog: false
           github-token: ${{ secrets.RELEASE_TOKEN }}
           
-          files-primary: build/libs/!(*-@(unmapped|dev|sources|javadoc)).jar
+          files-primary: build/libs/redstonetools-1.18.2-${{ github.event.inputs.mod-version }}.jar
           files-secondary: ''
