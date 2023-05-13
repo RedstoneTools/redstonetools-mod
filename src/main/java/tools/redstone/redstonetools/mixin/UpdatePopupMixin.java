@@ -54,7 +54,7 @@ public class UpdatePopupMixin extends Screen {
 
             Gson gson = new Gson();
             JsonObject release = gson.fromJson(responseBody, JsonObject.class);
-            URI uri = new URI(release.get("url").getAsString());
+            URI uri = new URI(release.get("html_url").getAsString());
             String newVersion = release.get("tag_name").getAsString();
 
             if (RedstoneToolsClient.MOD_VERSION.equals(newVersion) || newVersion.contains("alpha") || newVersion.contains("beta"))
