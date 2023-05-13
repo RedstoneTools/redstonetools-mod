@@ -35,6 +35,7 @@ jobs:
           # curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           github-tag: v1.18.2-${{ github.event.inputs.mod-version }}
+          github-generate-changelog: false
           github-token: ${{ secrets.RELEASE_TOKEN }}
           
           files-primary: build/libs/!(*-@(unmapped|dev|sources|javadoc)).jar
