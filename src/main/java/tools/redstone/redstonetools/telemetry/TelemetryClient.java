@@ -1,7 +1,6 @@
 package tools.redstone.redstonetools.telemetry;
 
 import com.google.gson.Gson;
-import kotlin.Pair;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import okhttp3.*;
