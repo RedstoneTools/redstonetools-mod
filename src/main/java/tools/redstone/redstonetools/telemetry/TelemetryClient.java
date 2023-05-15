@@ -1,16 +1,19 @@
 package tools.redstone.redstonetools.telemetry;
 
 import com.google.gson.Gson;
+import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import okhttp3.*;
-import org.jetbrains.annotations.NotNull;
 import tools.redstone.redstonetools.telemetry.dto.TelemetryAuth;
 import tools.redstone.redstonetools.telemetry.dto.TelemetryCommand;
 import tools.redstone.redstonetools.telemetry.dto.TelemetryException;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Queue;
@@ -30,16 +33,21 @@ public class TelemetryClient {
     private static final int REQUEST_SEND_TIME_MILLISECONDS = 50;
     private static final int REQUEST_VALID_FOR_SECONDS = 30;
 
+    private final TelemetryManager manager = INJECTOR.getInstance(TelemetryManager.class);
+
     private static volatile Instant lastAuthorization = Instant.MIN;
 
     private final Gson gson = new Gson();
-    private final OkHttpClient httpClient = new OkHttpClient();
-    private final Queue<Pair<Request.Builder, Instant>> requestQueue = new ConcurrentLinkedQueue<>();
+    private final HttpClient httpClient;
+    private final Queue<Pair<HttpRequest.Builder, Instant>> requestQueue = new ConcurrentLinkedQueue<>();
 
     private volatile String token;
 
     public TelemetryClient() {
         LOGGER.info("Initializing telemetry client");
+
+        httpClient = HttpClient.newBuilder()
+                .build();
 
         Executors.newSingleThreadExecutor()
                 .execute(this::refreshSessionThread);
@@ -49,19 +57,19 @@ public class TelemetryClient {
     }
 
     public void sendCommand(TelemetryCommand command) {
-        if (INJECTOR.getInstance(TelemetryManager.class).telemetryEnabled) {
+        if (manager.telemetryEnabled) {
             addRequest(createRequest("/command", command));
         }
     }
 
     public void sendException(TelemetryException exception) {
-        if (INJECTOR.getInstance(TelemetryManager.class).telemetryEnabled) {
+        if (manager.telemetryEnabled) {
             addRequest(createRequest("/exception", exception));
         }
     }
 
-    private void addRequest(Request.Builder request) {
-        requestQueue.add(new Pair<>(request, Instant.now()));
+    private void addRequest(HttpRequest.Builder request) {
+        requestQueue.add(Pair.of(request, Instant.now()));
     }
 
     public synchronized void waitForQueueToEmpty() {
@@ -73,10 +81,17 @@ public class TelemetryClient {
         }
     }
 
-    private Request.Builder createRequest(String path, Object body) {
-        return new Request.Builder()
-                .url(BASE_URL + path)
-                .post(RequestBody.create(body == null ? "" : gson.toJson(body), MediaType.parse("application/json")));
+    private HttpRequest.Builder createRequest(String path, Object body) {
+        final String bodyData = body == null ? "" : gson.toJson(body);
+        return HttpRequest.newBuilder()
+                .header("Content-Type", "application/json")
+                .uri(URI.create(BASE_URL + path))
+                .POST(HttpRequest.BodyPublishers.ofString(bodyData));
+    }
+
+    private boolean isSuccessful(HttpResponse<?> response) {
+        if (response == null) return false;
+        return response.statusCode() >= 200 && response.statusCode() < 300;
     }
 
     private synchronized CompletableFuture<Void> sendQueuedRequestsAsync() {
@@ -89,8 +104,8 @@ public class TelemetryClient {
                     }
 
                     var pair = Objects.requireNonNull(requestQueue.peek());
-                    var request = pair.component1();
-                    var queuedAt = pair.component2();
+                    var request = pair.first();
+                    var queuedAt = pair.second();
 
                     if (queuedAt.plusSeconds(REQUEST_VALID_FOR_SECONDS).isBefore(Instant.now())) {
                         requestQueue.remove();
@@ -99,12 +114,12 @@ public class TelemetryClient {
                     }
 
                     if (token != null) {
-                        request.addHeader("Authorization", token);
+                        request.header("Authorization", token);
                     }
 
-                    var response = sendPostRequestAsync(request).join();
+                    var response = sendPostRequest(request);
 
-                    if (response == null || !response.isSuccessful()) {
+                    if (response == null || !isSuccessful(response)) {
                         if (response != null && responseIsUnauthorized(response)) {
                             lastAuthorization = Instant.MIN;
                         }
@@ -128,21 +143,26 @@ public class TelemetryClient {
         });
     }
 
-    private synchronized @NotNull CompletableFuture<Response> sendPostRequestAsync(Request.Builder request) {
-        LOGGER.trace("Sending telemetry request to " + request.build().url());
+    private synchronized HttpResponse<String> sendPostRequest(HttpRequest.Builder request) {
+        LOGGER.trace("Sending telemetry request to " + request.build().uri());
 
-        return CompletableFuture.supplyAsync(() -> {
+        // this doesnt have to be async as the only place this is
+        // ever called is from another thread
+
+//        return CompletableFuture.supplyAsync(() -> {
             try {
-                return httpClient.newCall(request.build()).execute();
+                return httpClient.send(request.build()
+                        /* the json as a string */,
+                        HttpResponse.BodyHandlers.ofString());
             } catch (ConnectException e) {
                 // Either the server is down or the user isn't connected to the internet
                 LOGGER.debug("Failed to send telemetry request: " + e.getMessage());
-            } catch (IOException e) {
+            } catch (InterruptedException | IOException e) {
                 LOGGER.error("Failed to send telemetry request", e);
             }
 
             return null;
-        });
+//        });
     }
 
     private void refreshSessionThread() {
@@ -164,27 +184,25 @@ public class TelemetryClient {
             var request = createRequest(token == null ? "/session/create" : "/session/refresh", getAuth());
 
             if (token != null) {
-                request.addHeader("Authorization", token);
+                request.header("Authorization", token);
             }
 
-            var response = sendPostRequestAsync(request).join();
+            var response = sendPostRequest(request);
 
-            if (response == null || !response.isSuccessful()) {
-                if (response != null && responseIsUnauthorized(response)) {
+            if (response == null)
+                return false;
+            if (!isSuccessful(response)) {
+                LOGGER.warn("Failed to refresh telemetry session, response code: " + response.statusCode() + ", message: " + response.body());
+                if (responseIsUnauthorized(response)) {
                     token = null;
                 }
 
                 return false;
             }
 
-            try (var body = response.body()) {
-                token = body.string();
-            } catch (IOException e) {
-                LOGGER.error("Failed to read telemetry session response", e);
-                return false;
-            }
+            token = response.body();
 
-            LOGGER.debug("Refreshed telemetry session");
+            LOGGER.info("Refreshed telemetry session, new token: " + token.substring(0, 8) + "...");
             lastAuthorization = Instant.now();
             return true;
         });
@@ -200,8 +218,8 @@ public class TelemetryClient {
         );
     }
 
-    private static boolean responseIsUnauthorized(Response response) {
-        return response.code() == 401
-            || response.code() == 403;
+    private static boolean responseIsUnauthorized(HttpResponse<?> response) {
+        return response.statusCode() == 401
+            || response.statusCode() == 403;
     }
 }
