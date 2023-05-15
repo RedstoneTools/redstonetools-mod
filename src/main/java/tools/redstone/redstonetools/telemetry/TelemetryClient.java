@@ -202,7 +202,7 @@ public class TelemetryClient {
 
             token = response.body();
 
-            LOGGER.info("Refreshed telemetry session, new token: " + token.substring(0, 8) + "...");
+            LOGGER.info("Refreshed telemetry session");
             lastAuthorization = Instant.now();
             return true;
         });
