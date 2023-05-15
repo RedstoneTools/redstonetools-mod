@@ -102,13 +102,15 @@ public abstract class IntTypeSerializer<T extends Number> extends TypeSerializer
 
     @Override
     public <R> CompletableFuture<Suggestions> listSuggestions(CommandContext<R> context, SuggestionsBuilder builder) {
-        builder.suggest("0b");
-        builder.suggest("0o");
-        builder.suggest("0d");
-        builder.suggest("0x");
+        if (builder.getRemainingLowerCase().isBlank() || builder.getRemainingLowerCase().equals("0")) {
+            builder.suggest("0b");
+            builder.suggest("0o");
+            builder.suggest("0d");
+            builder.suggest("0x");
+        }
 
         for (int i = 0; i < 10; i++) {
-            builder.suggest(builder.getInput() + i);
+            builder.suggest(builder.getRemainingLowerCase() + i);
         }
 
         return builder.buildFuture();
