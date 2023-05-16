@@ -30,9 +30,11 @@ public class MacroManager {
         JsonArray macrosJson = null;
         try {
             Files.createDirectories(macrosFilePath.getParent());
-            var reader = Json.createReader(new FileReader(macrosFilePath.toFile()));
-            macrosJson = reader.readArray();
-            reader.close();
+            if (Files.exists(macrosFilePath)) {
+                var reader = Json.createReader(new FileReader(macrosFilePath.toFile()));
+                macrosJson = reader.readArray();
+                reader.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

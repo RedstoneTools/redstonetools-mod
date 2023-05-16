@@ -24,15 +24,15 @@ public class TelemetryManager {
         JsonObject telemetryJson = null;
         try {
             Files.createDirectories(telemetryFilePath.getParent());
-            var reader = Json.createReader(new FileReader(telemetryFilePath.toFile()));
-            telemetryJson = reader.readObject();
-            reader.close();
+            if (Files.exists(telemetryFilePath)) {
+                var reader = Json.createReader(new FileReader(telemetryFilePath.toFile()));
+                telemetryJson = reader.readObject();
+                reader.close();
+
+                loadSettingsFromJson(telemetryJson);
+            }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (telemetryJson != null) {
-            loadSettingsFromJson(telemetryJson);
         }
     }
 
