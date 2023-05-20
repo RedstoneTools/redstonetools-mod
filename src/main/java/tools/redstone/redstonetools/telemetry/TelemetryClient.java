@@ -29,9 +29,9 @@ public class TelemetryClient {
     private static final String BASE_URL = FabricLoader.getInstance().isDevelopmentEnvironment()
             ? "https://localhost/api/telemetry/v1"
             : "https://redstone.tools/api/telemetry/v1";
-    private static final int SESSION_REFRESH_TIME_SECONDS = 60 * 5 - 10; // 5 minutes - 10 seconds
+    private static final int SESSION_REFRESH_TIME_SECONDS = 60 * 4; // 4 minutes
     private static final int REQUEST_SEND_TIME_MILLISECONDS = 50;
-    private static final int REQUEST_VALID_FOR_SECONDS = 30;
+    private static final int REQUEST_VALID_FOR_SECONDS = 15;
 
     private final TelemetryManager manager = INJECTOR.getInstance(TelemetryManager.class);
 
