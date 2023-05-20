@@ -23,14 +23,13 @@ repositories {
     }
 }
 
+
 shadowJar {
 	archiveClassifier = "unmapped"
 
 	configurations = [project.configurations.shadow]
 
 	from("LICENSE")
-
-	relocate "com.squareup.okhttp3", "tools.redstone.shadow.com.squareup.okhttp3"
 }
 
 remapJar {
@@ -38,9 +37,6 @@ remapJar {
 }
 
 dependencies {
-	// OkHttp
-	shadow implementation('com.squareup.okhttp3:okhttp:4.11.0')
-
 	// jUnit 5
 	include implementation('org.junit.jupiter:junit-jupiter:5.8.1')
 
