@@ -45,6 +45,11 @@ public abstract class EnumSerializer<T extends Enum<T>>
                 .filter(elem -> serialize(elem).toLowerCase().startsWith(inputLowerCase))
                 .toList();
 
+        var exactMatch = matches.stream().filter(elem -> serialize(elem).toLowerCase().equals(input)).findFirst();
+        if (exactMatch.isPresent()) {
+            return exactMatch.get();
+        }
+
         if (matches.isEmpty()) {
             throw new IllegalArgumentException("No such option '" + input + "'");
         }
