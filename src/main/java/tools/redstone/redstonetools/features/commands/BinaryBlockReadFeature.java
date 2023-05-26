@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import static tools.redstone.redstonetools.features.arguments.serializers.BlockStateArgumentSerializer.blockState;
 import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
+import static tools.redstone.redstonetools.features.arguments.serializers.NumberBaseSerializer.numberBase;
 
 @Feature(name = "Binary Block Read", description = "Interprets your WorldEdit selection as a binary number.", command = "/read")
 public class BinaryBlockReadFeature extends CommandFeature {
@@ -28,7 +29,7 @@ public class BinaryBlockReadFeature extends CommandFeature {
             .ofType(blockState())
             .withDefault(LIT_LAMP_ARG);
     public static final Argument<Integer> toBase = Argument
-            .ofType(integer(2, 36))
+            .ofType(numberBase())
             .withDefault(10);
     public static final Argument<Boolean> reverseBits = Argument
             .ofType(bool())
