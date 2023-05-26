@@ -94,6 +94,7 @@ public class IntegerSerializer extends TypeSerializer<Integer, String> {
             return tryParseInteger(number, numberBase.toInt());
         }
 
+        // TODO(Error handling): Add some checks here to make sure the specified base is valid
         var parts = serialized.split("_", 2);
         if (parts.length == 2) {
             var number = parts[0];

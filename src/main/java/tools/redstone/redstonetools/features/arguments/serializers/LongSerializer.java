@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.features.arguments.serializers;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.LongArgumentType;
 
+// TODO(Update): Copy the way integer serializer works, maybe make integer serialized abstract so we can reuse code? Also add a BigIntegerSerializer
 public class LongSerializer extends StringBrigadierSerializer<Long> {
 
     private static final LongSerializer INSTANCE = new LongSerializer(LongArgumentType.longArg());
