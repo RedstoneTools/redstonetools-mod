@@ -7,11 +7,11 @@ A Redstone Quality of Life mod. To improve efficiency and productivity.
 
 ## Documentation/usage
 
-If you're looking for documentation/usage of the Redstone Tools mod, check out [DOCUMENTATION.md](DOCUMENTATION.md).
+If you're looking for documentation/usage of the Redstone Tools mod, check out [the wiki page](https://github.com/RedstoneTools/redstonetools-mod/wiki/Documentation).
 
 ## Contributing
 
-If you want to contribute to the Redstone Tools mod, please read [CONTRIBUTING.md](CONTRIBUTING.md).
+If you want to contribute to the Redstone Tools mod, please read [the wiki page on contributing](https://github.com/RedstoneTools/redstonetools-mod/wiki/Contributing).
 
 ## License
 
