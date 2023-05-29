@@ -24,7 +24,6 @@ import static tools.redstone.redstonetools.features.arguments.serializers.BlockC
 @Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
 public class ColorCodeFeature extends CommandFeature {
     public static final Argument<BlockColor> color = Argument
-
             .ofType(blockColor());
     public static final Argument<BlockColor> onlyColor = Argument
             .ofType(blockColor())
