@@ -1,31 +1,32 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
-import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.LongArgumentType;
+import java.util.Optional;
 
-public class LongSerializer extends StringBrigadierSerializer<Long> {
-
-    private static final LongSerializer INSTANCE = new LongSerializer(LongArgumentType.longArg());
+public class LongSerializer extends IntLikeSerializer<Long> {
+    private static final LongSerializer INSTANCE = new LongSerializer(Long.MIN_VALUE, Long.MAX_VALUE);
 
     public static LongSerializer longArg() {
         return INSTANCE;
     }
 
     public static LongSerializer longArg(long min) {
-        return new LongSerializer(LongArgumentType.longArg(min));
+        return new LongSerializer(min, Long.MAX_VALUE);
     }
 
     public static LongSerializer longArg(long min, long max) {
-        return new LongSerializer(LongArgumentType.longArg(min, max));
+        return new LongSerializer(min, max);
     }
 
-    private LongSerializer(ArgumentType<Long> argumentType) {
-        super(Long.class, argumentType);
+    private LongSerializer(long min, long max) {
+        super(Long.class, min, max);
     }
 
     @Override
-    public String serialize(Long value) {
-        return String.valueOf(value);
+    protected Optional<Long> tryParseOptional(String string, int radix) {
+        try {
+            return Optional.of(Long.parseLong(string, radix));
+        } catch (NumberFormatException ignored) {
+            return Optional.empty();
+        }
     }
-
 }
