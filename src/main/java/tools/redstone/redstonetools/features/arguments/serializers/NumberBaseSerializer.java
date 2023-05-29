@@ -10,9 +10,7 @@ import tools.redstone.redstonetools.utils.NumberBase;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class NumberBaseSerializer extends TypeSerializer<Integer, String> {
     private static final IntegerSerializer INT_SERIALIZER = IntegerSerializer.integer(2, 36);
