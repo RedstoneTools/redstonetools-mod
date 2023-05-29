@@ -67,17 +67,28 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
                 case 'o' -> NumberBase.OCTAL;
                 case 'd' -> NumberBase.DECIMAL;
                 case 'x' -> NumberBase.HEXADECIMAL;
-                default  -> throw new IllegalArgumentException("Invalid base '" + prefixedBase.charAt(1) + "'.");
+                default  -> null;
             };
 
-            return tryParse(number, numberBase.toInt());
+            if (numberBase != null) {
+                return tryParse(number, numberBase.toInt());
+            }
         }
 
-        // TODO(Error handling): Add some checks here to make sure the specified base is valid
         var parts = serialized.split("_", 2);
         if (parts.length == 2) {
             var number = parts[0];
-            var base = Integer.parseInt(parts[1]);
+
+            int base;
+            try {
+                base = Integer.parseInt(parts[1]);
+
+                if (2 > base || base > 36) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException ignored) {
+                throw new IllegalArgumentException("Invalid base '" + parts[1] + "'.");
+            }
 
             return tryParse(number, base);
         }
