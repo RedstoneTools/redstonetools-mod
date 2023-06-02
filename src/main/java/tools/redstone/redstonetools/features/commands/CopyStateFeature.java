@@ -1,20 +1,18 @@
 package tools.redstone.redstonetools.features.commands;
 
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.BlockInfo;
-import tools.redstone.redstonetools.utils.BlockStateNbtUtil;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.server.command.ServerCommandSource;
-
-import java.lang.reflect.Method;
+import tools.redstone.redstonetools.features.Feature;
+import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.mixin.MinecraftClientAccessor;
+import tools.redstone.redstonetools.utils.BlockInfo;
+import tools.redstone.redstonetools.utils.BlockStateNbtUtil;
 
 @Feature(name = "Copy State", description = "Gives you a copy of the block you're looking at with its BlockState.", command = "copystate")
 public class CopyStateFeature extends PickBlockFeature {
@@ -25,7 +23,7 @@ public class CopyStateFeature extends PickBlockFeature {
         ItemStack itemStack = blockInfo.block.getPickStack(client.world, blockInfo.pos, blockInfo.state);
 
         if (blockInfo.state.hasBlockEntity()) {
-            addBlockEntityNbt(itemStack, blockInfo.entity);
+            ((MinecraftClientAccessor) client).addBlockEntityNbt(itemStack, blockInfo.entity);
         }
 
         int i = addBlockStateNbt(itemStack, blockInfo.state);
@@ -55,19 +53,5 @@ public class CopyStateFeature extends PickBlockFeature {
         loreList.add(NbtString.of("\"(+BlockState)\""));
         displayNbt.put("Lore", loreList);
         itemStack.setSubNbt("display", displayNbt);
-    }
-
-    private void addBlockEntityNbt(ItemStack itemStack, BlockEntity blockEntity) {
-        try {
-            Class<? extends MinecraftClient> clientClass = MinecraftClient.class;
-            MinecraftClient clientClassInstance = MinecraftClient.getInstance();
-            Method m = clientClass.getDeclaredMethod("addBlockEntityNbt", ItemStack.class, BlockEntity.class);
-
-            m.setAccessible(true);
-            m.invoke(clientClassInstance, itemStack, blockEntity);
-            m.setAccessible(false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
