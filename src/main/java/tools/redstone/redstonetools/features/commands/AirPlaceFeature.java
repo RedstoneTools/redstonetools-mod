@@ -11,20 +11,15 @@ import static tools.redstone.redstonetools.features.arguments.serializers.FloatS
 @Feature(name = "Air Place", description = "Allows you to place blocks in the air.", command = "airplace")
 public class AirPlaceFeature extends CommandFeature {
 
+    public boolean enabled;
+    public float reach = 5.0f;
+
     public static final Argument<Float> distance = Argument
-            .ofType(floatArg(1.0f))
-            .withDefault(null);
+        .ofType(floatArg(1.0f))
+        .withDefault(null);
 
-    private boolean enabled = false;
-    public boolean isEnabled() { return enabled; }
-
-    private float reach = 5.0f;
-    public float getReach() { return reach; }
-    public void setReach(float reach) { this.reach = reach;}
-
-    private Feedback toggle() {
+    private void toggle() {
         enabled = !enabled;
-        return enabled ? Feedback.success("AirPlace has been enabled.") : Feedback.success("AirPlace has been disabled.");
     }
 
     @Override
@@ -32,10 +27,11 @@ public class AirPlaceFeature extends CommandFeature {
 
         // If no distance is supplied, resort to toggling the feature.
         if ( distance.getValue() == null ) {
-            return toggle();
+            toggle();
+            return enabled ? Feedback.success("AirPlace has been enabled.") : Feedback.success("AirPlace has been disabled.");
         }
 
-        setReach(distance.getValue());
+        reach = distance.getValue();
         return Feedback.success("AirPlace Reach set to " + distance.getValue().toString() + " blocks.");
 
     }
