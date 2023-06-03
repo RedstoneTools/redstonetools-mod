@@ -23,8 +23,9 @@ public class AirPlaceClientMixin {
 
     @Inject(method = "doItemUse", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
     public void doItemUse(CallbackInfo callbackInfo) {
+
         // If airplace is disabled
-        if (!airPlaceFeature.isEnabled()) {
+        if (!airPlaceFeature.enabled) {
             return;
         }
 
@@ -33,15 +34,16 @@ public class AirPlaceClientMixin {
             return;
         }
 
-        var player = ((MinecraftClient) (Object) this).player;
-        var interactionManager = ((MinecraftClient) (Object) this).interactionManager;
-        if (player == null || interactionManager == null) {
+        var minecraftClient = (MinecraftClient) (Object) this;
+        var playerEntity = minecraftClient.player;
+        var interactionManager = minecraftClient.interactionManager;
+        if (playerEntity == null || interactionManager == null) {
             return;
         }
 
-        float reach = airPlaceFeature.getReach();
-        var hitResult = player.raycast(reach, 0, false);
+        var hitResult = playerEntity.raycast(airPlaceFeature.reach, 0, false);
 
         crosshairTarget = new BlockHitResult(hitResult.getPos(), Direction.UP, new BlockPos(hitResult.getPos()), false);
+
     }
 }
