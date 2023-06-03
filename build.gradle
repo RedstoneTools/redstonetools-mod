@@ -23,19 +23,6 @@ repositories {
     }
 }
 
-
-shadowJar {
-	archiveClassifier = "unmapped"
-
-	configurations = [project.configurations.shadow]
-
-	from("LICENSE")
-}
-
-remapJar {
-	inputFile = shadowJar.archiveFile
-}
-
 dependencies {
 	// jUnit 5
 	include implementation('org.junit.jupiter:junit-jupiter:5.8.1')
@@ -69,13 +56,33 @@ dependencies {
 	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10")
 }
 
-
 processResources {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}
+}
+
+java {
+	withSourcesJar()
+	withJavadocJar()
+
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+shadowJar {
+	archiveClassifier = "unmapped"
+
+	configurations = [project.configurations.shadow]
+
+	from("LICENSE")
+}
+
+remapJar {
+	inputFile = shadowJar.archiveFile
 }
 
 tasks.withType(JavaCompile).configureEach {
