@@ -1,0 +1,55 @@
+package tools.redstone.redstonetools.features.commands;
+
+
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtString;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.LiteralText;
+import tools.redstone.redstonetools.features.Feature;
+import tools.redstone.redstonetools.features.arguments.Argument;
+import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.utils.ItemUtils;
+
+import static tools.redstone.redstonetools.features.arguments.serializers.StringSerializer.greedyString;
+import static tools.redstone.redstonetools.features.arguments.serializers.StringSerializer.string;
+
+@Feature(command = "itembind", description = "Allows you to bind command to a specific item", name = "ItemBind")
+public class ItemBindFeature extends CommandFeature{
+
+    public static boolean waitingForCommand = false;
+    private static ItemStack bindStack = null;
+
+
+    @Override
+    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
+
+        ServerPlayerEntity player = source.getPlayer();
+        ItemStack mainHandStack = player.getMainHandStack();
+        if (mainHandStack == null || mainHandStack.getItem() == Items.AIR) {
+            return Feedback.error("You need to be holding an item!");
+        }
+        bindStack = mainHandStack;
+        waitingForCommand = true;
+
+
+        return Feedback.success("Please run the command you want to add to this item (" + mainHandStack.getItem().toString()+")");
+    }
+
+    public static void addCommand(ClientPlayerEntity player, String command) {
+        if (!waitingForCommand) return;
+
+        bindStack.getOrCreateNbt().put("command", NbtString.of(command));
+        ItemUtils.addExtraNBTText(bindStack,"Command");
+
+        player.sendMessage(new LiteralText("[RST] Successfully added: '" + command + "' to this item (" + bindStack.getItem().toString() + ")!"),false);
+
+        bindStack = null;
+        waitingForCommand = false;
+    }
+
+}

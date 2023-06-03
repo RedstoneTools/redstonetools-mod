@@ -9,6 +9,7 @@
   "mixins": [
     "features.AutoDustMixin",
     "features.CopyStateMixin",
+    "features.ItemBindMixin$ItemStackMixin",
     "gamerules.DoContainerDropsMixin",
     "telemetry.SendCommandMixin",
     "telemetry.ShowTelemetryPopupMixin"
@@ -16,6 +17,7 @@
   "client": [
     "accessors.MinecraftClientAccessor",
     "features.AirplaceMixin",
+    "features.ItemBindMixin$PlayerMixin",
     "macros.AddMacroButtonMixin",
     "macros.InitializeMacroManagerMixin",
     "macros.KeyBindingMixinImpl",
