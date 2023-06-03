@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.mixin;
+package tools.redstone.redstonetools.mixin.features;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,7 +23,7 @@ import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.utils.ColoredBlock;
 
 @Mixin(Block.class)
-public abstract class BlockMixin {
+public abstract class AutoDustMixin {
     private AutoDustFeature autoDustFeature;
 
     private AutoDustFeature getAutoDustFeature() {

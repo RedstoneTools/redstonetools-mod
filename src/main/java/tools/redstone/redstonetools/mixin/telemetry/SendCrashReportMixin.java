@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.mixin;
+package tools.redstone.redstonetools.mixin.telemetry;
 
 import tools.redstone.redstonetools.utils.TelemetryUtils;
 import net.minecraft.client.MinecraftClient;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public class CrashTelemetryMixin {
+public class SendCrashReportMixin {
     @Inject(method = "printCrashReport", at = @At("TAIL"))
     private static void printCrashReport(CrashReport report, CallbackInfo ci) {
         TelemetryUtils.sendCrash(report);

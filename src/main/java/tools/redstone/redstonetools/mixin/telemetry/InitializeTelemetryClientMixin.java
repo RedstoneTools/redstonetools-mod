@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.mixin;
+package tools.redstone.redstonetools.mixin.telemetry;
 
 import tools.redstone.redstonetools.telemetry.TelemetryClient;
 import net.minecraft.client.MinecraftClient;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
 @Mixin(MinecraftClient.class)
-public class TelemetryInitializeMixin {
+public class InitializeTelemetryClientMixin {
     @Inject(method = "<init>", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
         INJECTOR.getInstance(TelemetryClient.class);

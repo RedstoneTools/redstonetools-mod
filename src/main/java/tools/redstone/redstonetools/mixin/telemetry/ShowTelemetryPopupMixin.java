@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.mixin;
+package tools.redstone.redstonetools.mixin.telemetry;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -14,8 +14,8 @@ import tools.redstone.redstonetools.telemetry.gui.TelemetryPromptScreen;
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
 @Mixin(TitleScreen.class)
-public class TelemetryPromptPopupMixin extends Screen {
-    public TelemetryPromptPopupMixin(Text title) {
+public class ShowTelemetryPopupMixin extends Screen {
+    public ShowTelemetryPopupMixin(Text title) {
         super(title);
     }
 
