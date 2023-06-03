@@ -26,6 +26,17 @@ public class RedstoneToolsClient implements ClientModInitializer {
         ReflectionUtils.getFeatures().forEach(feature -> {
             LOGGER.trace("Registering feature {}", feature);
 
+            String[] modDependencies = feature.getModDependencies();
+            if (modDependencies.length != 0) {
+                LOGGER.trace("Checking mod dependencies for feature {}", feature);
+
+                for (String modDependency : modDependencies) {
+                    if (!FabricLoader.getInstance().isModLoaded(modDependency)) {
+                        LOGGER.warn("Mod dependency {} not found for feature {}, force disabling it", modDependency, feature);
+                        return;
+                    }
+                }
+            }
             feature.register();
         });
 

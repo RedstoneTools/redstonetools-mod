@@ -7,13 +7,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import static tools.redstone.redstonetools.RedstoneToolsGameRules.DO_CONTAINER_DROPS;
+import tools.redstone.redstonetools.RedstoneToolsGameRules;
 
 @Mixin(ItemScatterer.class)
 public class DoContainerDropsMixin {
     @Inject(method = "spawn(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)V", at = @At("HEAD"), cancellable = true)
     private static void spawn(World world, double x, double y, double z, ItemStack stack, CallbackInfo ci) {
-        if (!world.getGameRules().getBoolean(DO_CONTAINER_DROPS)) ci.cancel();
+        if (RedstoneToolsGameRules.DO_CONTAINER_DROPS != null && !world.getGameRules().getBoolean(RedstoneToolsGameRules.DO_CONTAINER_DROPS)) {
+            ci.cancel();
+        }
     }
 }

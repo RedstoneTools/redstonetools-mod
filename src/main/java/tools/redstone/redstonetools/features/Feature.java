@@ -11,4 +11,5 @@ public @interface Feature {
     String name();
     String description();
     String command();
+    String[] modDependencies() default {};
 }

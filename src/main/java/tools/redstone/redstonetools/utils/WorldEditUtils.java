@@ -13,6 +13,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import java.util.function.Consumer;
 
 public class WorldEditUtils {
+    public static final boolean WORLDEDIT_LOADED;
+
     /**
      * Execute a function for each block in
      * the provided region.
@@ -28,6 +30,10 @@ public class WorldEditUtils {
      */
     public static void forEachBlockInRegion(Region region,
                                             Consumer<BlockVector3> consumer) {
+        if (!WORLDEDIT_LOADED) {
+            throw new IllegalStateException("WorldEdit is not loaded.");
+        }
+
         CuboidRegion bb = region.getBoundingBox();
         BlockVector3 min = bb.getMinimumPoint();
         BlockVector3 max = bb.getMaximumPoint();
@@ -44,6 +50,10 @@ public class WorldEditUtils {
     }
 
     public static Either<Region, Feedback> getSelection(ServerPlayerEntity player) {
+        if (!WORLDEDIT_LOADED) {
+            return Either.right(Feedback.invalidUsage("WorldEdit is not loaded."));
+        }
+
         var actor = FabricAdapter.adaptPlayer(player);
 
         var localSession = WorldEdit.getInstance()
@@ -57,5 +67,15 @@ public class WorldEditUtils {
         } catch (IncompleteRegionException ex) {
             return Either.right(Feedback.invalidUsage("Please make a selection with worldedit first."));
         }
+    }
+
+    static {
+        boolean loaded = false;
+        try {
+            Class.forName("com.sk89q.worldedit.WorldEdit");
+            loaded = true;
+        } catch (Throwable ignored) {
+        }
+        WORLDEDIT_LOADED = loaded;
     }
 }

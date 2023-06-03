@@ -27,6 +27,10 @@ public abstract class AbstractFeature {
         return feature.command();
     }
 
+    public String[] getModDependencies() {
+        return feature.modDependencies();
+    }
+
     /**
      * Register this feature.
      */
