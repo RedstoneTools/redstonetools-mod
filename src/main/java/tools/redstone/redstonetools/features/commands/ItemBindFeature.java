@@ -5,20 +5,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.ItemUtils;
 
-import static tools.redstone.redstonetools.features.arguments.serializers.StringSerializer.greedyString;
-import static tools.redstone.redstonetools.features.arguments.serializers.StringSerializer.string;
 
-@Feature(command = "itembind", description = "Allows you to bind command to a specific item", name = "ItemBind")
+@Feature(command = "itembind", description = "Allows you to bind command to a specific item", name = "Item Bind")
 public class ItemBindFeature extends CommandFeature{
 
     public static boolean waitingForCommand = false;
