@@ -23,12 +23,13 @@ public class RedstoneToolsClient implements ClientModInitializer {
         RedstoneToolsGameRules.register();
 
         // Register features
-        for (var featureClass : ReflectionUtils.getFeatureClasses()) {
-            var feature = INJECTOR.getInstance(featureClass);
+        ReflectionUtils.getFeatures().forEach(feature -> {
+            LOGGER.trace("Registering feature {}", feature);
 
             feature.register();
-        }
+        });
 
-        WorldlessCommandHelper.dummyNetworkHandler.getCommandDispatcher();// should call the "static" method
+        // should call the "static" block
+        WorldlessCommandHelper.dummyNetworkHandler.getCommandDispatcher();
     }
 }

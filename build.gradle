@@ -32,9 +32,8 @@ dependencies {
 	include "jakarta.inject:jakarta.inject-api:2.0.1"
 	include "org.glassfish:javax.json:1.1.4"
 
-	// Reflections + dependencies
-	include implementation("org.reflections:reflections:0.9.12")
-	include "org.javassist:javassist:3.26.0-GA"
+	// AutoService
+	annotationProcessor implementation("com.google.auto.service:auto-service:1.1.0")
 
 	// To change the versions see the gradle.properties file
 	minecraft("com.mojang:minecraft:${project.minecraft_version}")

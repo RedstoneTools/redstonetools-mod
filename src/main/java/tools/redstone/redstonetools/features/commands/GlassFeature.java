@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.google.auto.service.AutoService;
+import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.BlockColor;
@@ -15,6 +17,7 @@ import net.minecraft.util.registry.Registry;
 
 import javax.annotation.Nullable;
 
+@AutoService(AbstractFeature.class)
 @Feature(name = "Glass", description = "Converts colored blocks to their glass variant and glass to wool.", command = "glass")
 public class GlassFeature extends PickBlockFeature {
     @Override
