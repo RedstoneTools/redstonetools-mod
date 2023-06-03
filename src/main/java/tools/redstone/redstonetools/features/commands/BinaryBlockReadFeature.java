@@ -65,14 +65,22 @@ public class BinaryBlockReadFeature extends CommandFeature {
             return Feedback.invalidUsage("The selection must have 2 axis the same");
         }
 
-        var onBlockState = onBlock.getValue().getBlockState();
-
         var bits = new StringBuilder();
         for (BlockVector3 point = pos1; boundingBox.contains(point); point = point.add(spacingVector)) {
             var pos = new BlockPos(point.getBlockX(), point.getBlockY(), point.getBlockZ());
-            var blockState = source.getWorld().getBlockState(pos);
+            var actualState = source.getWorld().getBlockState(pos);
 
-            bits.append(blockState.equals(onBlockState) ? 1 : 0);
+            var matches = true;
+            for (var property : onBlock.getValue().getProperties()) {
+                var propertyValue = onBlock.getValue().getBlockState().get(property);
+
+                if (!actualState.get(property).equals(propertyValue)) {
+                    matches = false;
+                    break;
+                }
+            }
+
+            bits.append(matches ? 1 : 0);
         }
 
         if (reverseBits.getValue()) {
