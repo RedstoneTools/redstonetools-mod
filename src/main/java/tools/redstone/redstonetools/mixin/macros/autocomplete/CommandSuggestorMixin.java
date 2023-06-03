@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.mixin;
+package tools.redstone.redstonetools.mixin.macros.autocomplete;
 
 import com.mojang.brigadier.suggestion.Suggestions;
 import net.minecraft.client.MinecraftClient;

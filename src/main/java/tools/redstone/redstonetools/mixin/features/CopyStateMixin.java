@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.mixin;
+package tools.redstone.redstonetools.mixin.features;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -13,7 +13,7 @@ import tools.redstone.redstonetools.utils.BlockStateNbtUtil;
 
 
 @Mixin(BlockItem.class)
-public abstract class BlockItemMixin {
+public abstract class CopyStateMixin {
 
     @Shadow protected abstract boolean canPlace(ItemPlacementContext context, BlockState state);
     @Shadow public abstract Block getBlock();

@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.mixin;
+package tools.redstone.redstonetools.mixin.telemetry;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
@@ -12,7 +12,7 @@ import tools.redstone.redstonetools.utils.TelemetryUtils;
 import java.util.Objects;
 
 @Mixin(net.minecraft.server.command.CommandManager.class)
-public class CommandTelemetryMixin {
+public class SendCommandMixin {
     @Inject(method = "execute", at = @At("HEAD"))
     private void execute(net.minecraft.server.command.ServerCommandSource source, String command, CallbackInfoReturnable<Integer> cir) {
         ServerPlayerEntity player;

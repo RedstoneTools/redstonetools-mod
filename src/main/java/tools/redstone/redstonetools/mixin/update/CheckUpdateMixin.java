@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.mixin;
+package tools.redstone.redstonetools.mixin.update;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -24,10 +24,10 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.LOGGER;
 
 @Mixin(TitleScreen.class)
 
-public class UpdatePopupMixin extends Screen {
+public class CheckUpdateMixin extends Screen {
     public boolean updateChecked = false;
 
-    public UpdatePopupMixin(Text title) {
+    public CheckUpdateMixin(Text title) {
         super(title);
     }
 
