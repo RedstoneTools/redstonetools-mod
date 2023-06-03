@@ -1,7 +1,7 @@
 plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'fabric-loom' version '1.2-SNAPSHOT'
 	id 'maven-publish'
-	id 'com.github.johnrengelman.shadow' version '7.0.0'
+	id 'com.github.johnrengelman.shadow' version '8.+'
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -23,39 +23,18 @@ repositories {
     }
 }
 
-
-shadowJar {
-	archiveClassifier = "unmapped"
-
-	configurations = [project.configurations.shadow]
-
-	from("LICENSE")
-}
-
-remapJar {
-	inputFile = shadowJar.archiveFile
-}
-
 dependencies {
-	// jUnit 5
-	include implementation('org.junit.jupiter:junit-jupiter:5.8.1')
+	// Guice + dependencies
+	include implementation("com.google.inject:guice:5.0.1")
+	include "aopalliance:aopalliance:1.0"
+	include "javax.inject:javax.inject:1"
+	include "javax.json:javax.json-api:1.1.4"
+	include "jakarta.inject:jakarta.inject-api:2.0.1"
+	include "org.glassfish:javax.json:1.1.4"
 
-	// Guice
-	include implementation('com.google.inject:guice:5.0.1')
-
-	// Reflections
-	include implementation('org.reflections:reflections:0.9.12')
-
-	// Json
-	include implementation('javax.json:javax.json-api:1.1.4')
-	include implementation('org.glassfish:javax.json:1.1.4')
-
-	// Gson
-	include implementation('com.google.code.gson:gson:2.8.9')
-
-	include 'org.javassist:javassist:3.26.0-GA'
-	include 'javax.inject:javax.inject:1'
-	include 'aopalliance:aopalliance:1.0'
+	// Reflections + dependencies
+	include implementation("org.reflections:reflections:0.9.12")
+	include "org.javassist:javassist:3.26.0-GA"
 
 	// To change the versions see the gradle.properties file
 	minecraft("com.mojang:minecraft:${project.minecraft_version}")
@@ -69,7 +48,6 @@ dependencies {
 	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10")
 }
 
-
 processResources {
 	inputs.property "version", project.version
 
@@ -78,9 +56,30 @@ processResources {
 	}
 }
 
+java {
+	withSourcesJar()
+	withJavadocJar()
+
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+shadowJar {
+	archiveClassifier.set("unmapped")
+
+	configurations = [project.configurations.shadow]
+
+	from("LICENSE")
+}
+
+remapJar {
+	inputFile = shadowJar.archiveFile
+}
+
 tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
+	it.options.release.set(17)
 }
 
 // configure the maven publication
@@ -98,9 +97,4 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
-}
-
-test {
-	useJUnit()
-	useJUnitPlatform()
 }
