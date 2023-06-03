@@ -14,7 +14,13 @@ public class AirPlaceServerMixin {
 
     @ModifyConstant(method = "onPlayerInteractBlock", constant = @Constant(doubleValue = 64.0) )
     private double modifyConstant(double originalValue) {
-        return airPlaceFeature.reach * airPlaceFeature.reach;
+
+        if (airPlaceFeature.enabled) {
+            return airPlaceFeature.reach * airPlaceFeature.reach;
+        } else {
+            return originalValue;
+        }
+
     }
 
 }
