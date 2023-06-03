@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.google.auto.service.AutoService;
+import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.feedback.Feedback;
@@ -16,6 +18,7 @@ import static tools.redstone.redstonetools.features.arguments.serializers.BoolSe
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 import static tools.redstone.redstonetools.features.arguments.serializers.NumberBaseSerializer.numberBase;
 
+@AutoService(AbstractFeature.class)
 @Feature(name = "Binary Block Read", description = "Interprets your WorldEdit selection as a binary number.", command = "/read")
 public class BinaryBlockReadFeature extends CommandFeature {
     private static final BlockStateArgument LIT_LAMP_ARG = new BlockStateArgument(

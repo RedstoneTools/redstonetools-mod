@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.google.auto.service.AutoService;
+import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.feedback.Feedback;
@@ -17,6 +19,7 @@ import java.util.Random;
 
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 
+@AutoService(AbstractFeature.class)
 @Feature(name = "Signal Strength Barrel", description = "Creates a barrel with the specified signal strength.", command = "ss")
 public class SsBarrelFeature extends CommandFeature {
     private static final int BARREL_CONTAINER_SLOTS = 27;

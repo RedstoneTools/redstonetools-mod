@@ -1,9 +1,11 @@
 package tools.redstone.redstonetools.di;
 
+import com.google.auto.service.AutoService;
 import tools.redstone.redstonetools.telemetry.TelemetryClient;
 import com.google.inject.AbstractModule;
 import tools.redstone.redstonetools.telemetry.TelemetryManager;
 
+@AutoService(AbstractModule.class)
 public class TelemetryModule extends AbstractModule {
     private static TelemetryClient telemetryClient;
     private static TelemetryManager telemetryManager;
