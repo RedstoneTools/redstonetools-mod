@@ -10,9 +10,11 @@ import tools.redstone.redstonetools.features.commands.AirPlaceFeature;
 @Mixin(ServerPlayNetworkHandler.class)
 public class AirPlaceServerMixin {
 
+    private final AirPlaceFeature airPlaceFeature = RedstoneToolsClient.INJECTOR.getInstance(AirPlaceFeature.class);
+
     @ModifyConstant(method = "onPlayerInteractBlock", constant = @Constant(doubleValue = 64.0) )
     private double modifyConstant(double originalValue) {
-        return Double.POSITIVE_INFINITY;
+        return airPlaceFeature.reach * airPlaceFeature.reach;
     }
 
 }
