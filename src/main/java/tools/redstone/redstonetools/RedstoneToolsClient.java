@@ -32,7 +32,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
                 for (String modDependency : modDependencies) {
                     if (!FabricLoader.getInstance().isModLoaded(modDependency)) {
-                        LOGGER.warn("Mod dependency {} not found for feature {}, force disabling it", modDependency, feature);
+                        LOGGER.warn("Mod dependency '{}' not found for feature {}, force disabling it", modDependency, feature.getClass().getName());
                         return;
                     }
                 }
