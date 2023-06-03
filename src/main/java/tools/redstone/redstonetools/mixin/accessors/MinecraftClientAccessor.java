@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.mixin;
+package tools.redstone.redstonetools.mixin.accessors;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;

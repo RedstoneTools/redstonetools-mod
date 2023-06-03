@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.mixin;
+package tools.redstone.redstonetools.mixin.macros.autocomplete;
 
 import tools.redstone.redstonetools.macros.WorldlessCommandHelper;
 import com.mojang.brigadier.CommandDispatcher;

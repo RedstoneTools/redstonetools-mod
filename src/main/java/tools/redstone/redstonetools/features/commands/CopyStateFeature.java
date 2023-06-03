@@ -10,7 +10,7 @@ import net.minecraft.nbt.NbtString;
 import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.mixin.MinecraftClientAccessor;
+import tools.redstone.redstonetools.mixin.accessors.MinecraftClientAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import tools.redstone.redstonetools.utils.BlockStateNbtUtil;
 

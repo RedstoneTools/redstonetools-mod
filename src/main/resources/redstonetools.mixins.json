@@ -7,22 +7,23 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "BlockItemMixin",
-    "BlockMixin",
-    "CommandTelemetryMixin",
-    "ItemScattererMixin",
-    "MinecraftClientMixin",
-    "OptionsScreenMixin",
-    "TelemetryPromptPopupMixin",
-    "UpdatePopupMixin"
+    "features.AutoDustMixin",
+    "features.CopyStateMixin",
+    "gamerules.DoContainerDropsMixin",
+    "telemetry.SendCommandMixin",
+    "telemetry.ShowTelemetryPopupMixin"
   ],
   "client": [
-    "ClientPlayerEntityMixinImpl",
-    "CommandDispatcherMixin",
-    "CommandSuggestorMixin",
-    "CrashTelemetryMixin",
-    "KeyBindingMixinImpl",
-    "MinecraftClientAccessor",
-    "TelemetryInitializeMixin"
+    "accessors.MinecraftClientAccessor",
+    "features.AirplaceMixin",
+    "macros.AddMacroButtonMixin",
+    "macros.InitializeMacroManagerMixin",
+    "macros.KeyBindingMixinImpl",
+    "macros.autocomplete.ClientPlayerEntityMixinImpl",
+    "macros.autocomplete.CommandDispatcherMixin",
+    "macros.autocomplete.CommandSuggestorMixin",
+    "telemetry.InitializeTelemetryClientMixin",
+    "telemetry.SendCrashReportMixin",
+    "update.CheckUpdateMixin"
   ]
 }
