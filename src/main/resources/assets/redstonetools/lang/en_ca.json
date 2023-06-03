@@ -1,0 +1,4 @@
+{
+    "gamerule.doContainerDrops": "Do container drops",
+    "gamerule.doBlockUpdatesAfterEdit": "Do block updates after edit"
+}
