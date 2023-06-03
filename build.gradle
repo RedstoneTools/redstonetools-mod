@@ -74,7 +74,7 @@ java {
 }
 
 shadowJar {
-	archiveClassifier = "unmapped"
+	archiveClassifier.set("unmapped")
 
 	configurations = [project.configurations.shadow]
 
@@ -87,7 +87,7 @@ remapJar {
 
 tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
+	it.options.release.set(17)
 }
 
 // configure the maven publication
