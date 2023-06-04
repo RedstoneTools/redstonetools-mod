@@ -1,11 +1,11 @@
 package tools.redstone.redstonetools.macros.gui.widget.macrolist;
 
-import tools.redstone.redstonetools.macros.Macro;
-import tools.redstone.redstonetools.macros.MacroManager;
-import tools.redstone.redstonetools.macros.gui.screen.MacroSelectScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import tools.redstone.redstonetools.macros.Macro;
+import tools.redstone.redstonetools.macros.MacroManager;
+import tools.redstone.redstonetools.macros.gui.screen.MacroSelectScreen;
 
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
@@ -23,7 +23,7 @@ public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
         this.client = client;
 
         for (Macro macro : macroManager.getMacros()) {
-            addEntry(new MacroEntry(macro,this));
+            addEntry(new MacroEntry(macro, this));
         }
 
 
@@ -58,8 +58,8 @@ public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        MacroEntry entry = super.getEntryAtPosition(width/2,mouseY);
-        if (entry != null) entry.mouseClickedInRow(mouseX,mouseY,button);
+        MacroEntry entry = super.getEntryAtPosition(width / 2f, mouseY);
+        if (entry != null) entry.mouseClickedInRow(mouseX, mouseY, button);
 
         return super.mouseClicked(mouseX, mouseY, button);
     }
@@ -70,7 +70,7 @@ public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
     }
 
     @Override
-    public boolean removeEntry(MacroEntry entry){
+    public boolean removeEntry(MacroEntry entry) {
         return super.removeEntry(entry);
     }
 

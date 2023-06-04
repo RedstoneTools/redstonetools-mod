@@ -1,18 +1,17 @@
 package tools.redstone.redstonetools.macros;
 
-import tools.redstone.redstonetools.macros.actions.Action;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
+import tools.redstone.redstonetools.macros.actions.Action;
 import tools.redstone.redstonetools.utils.KeyBindingUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Macro {
-
     public static Macro buildEmpty() {
         return new Macro("",true,InputUtil.UNKNOWN_KEY,new ArrayList<>());
     }
@@ -126,4 +125,14 @@ public class Macro {
         return super.equals(obj);
     }
 
+    @Override
+    public String toString() {
+        return "Macro{" +
+                "keyBinding=" + keyBinding +
+                ", name='" + name + '\'' +
+                ", key=" + key +
+                ", enabled=" + enabled +
+                ", actions=" + actions +
+                '}';
+    }
 }

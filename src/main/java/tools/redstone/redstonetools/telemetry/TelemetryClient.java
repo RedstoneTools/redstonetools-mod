@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import it.unimi.dsi.fastutil.Pair;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.telemetry.dto.TelemetryAuth;
 import tools.redstone.redstonetools.telemetry.dto.TelemetryCommand;
 import tools.redstone.redstonetools.telemetry.dto.TelemetryException;
@@ -59,13 +60,13 @@ public class TelemetryClient {
     }
 
     public void sendCommand(TelemetryCommand command) {
-        if (manager.telemetryEnabled) {
+        if (manager.getConfig().telemetryEnabled) {
             addRequest(createRequest("/command", command));
         }
     }
 
     public void sendException(TelemetryException exception) {
-        if (manager.telemetryEnabled) {
+        if (manager.getConfig().telemetryEnabled) {
             addRequest(createRequest("/exception", exception));
         }
     }
@@ -121,7 +122,7 @@ public class TelemetryClient {
 
                     var response = sendPostRequest(request);
 
-                    if (response == null || !isSuccessful(response)) {
+                    if (!isSuccessful(response)) {
                         if (response != null && responseIsUnauthorized(response)) {
                             lastAuthorization = Instant.MIN;
                         }
@@ -145,7 +146,7 @@ public class TelemetryClient {
         });
     }
 
-    private synchronized HttpResponse<String> sendPostRequest(HttpRequest.Builder request) {
+    private synchronized @Nullable HttpResponse<String> sendPostRequest(HttpRequest.Builder request) {
         LOGGER.trace("Sending telemetry request to " + request.build().uri());
 
         // this doesnt have to be async as the only place this is

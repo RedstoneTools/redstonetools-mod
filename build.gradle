@@ -35,8 +35,8 @@ dependencies {
 	include implementation("javax.inject:javax.inject:1")
 
 	// Json
-	include implementation("javax.json:javax.json-api:1.1.4")
-	include "org.glassfish:javax.json:1.1.4"
+//	include implementation("javax.json:javax.json-api:1.1.4")
+//	include "org.glassfish:javax.json:1.1.4"
 
 	// AutoService
 	annotationProcessor implementation("com.google.auto.service:auto-service:1.1.0")
@@ -63,7 +63,9 @@ processResources {
 
 java {
 	withSourcesJar()
-	withJavadocJar()
+
+// Javadoc isn't needed right now, and takes a bit of time to generate at build time.
+//	withJavadocJar()
 
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)

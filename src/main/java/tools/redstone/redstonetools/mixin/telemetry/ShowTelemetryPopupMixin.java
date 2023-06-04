@@ -24,16 +24,16 @@ public class ShowTelemetryPopupMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
         var manager = INJECTOR.getInstance(TelemetryManager.class);
+        var config = manager.getConfig();
 
-        if (!manager.showTelemetryPrompt) {
+        if (!config.showTelemetryPrompt) {
             return;
         }
 
         var parentScreen = MinecraftClient.getInstance().currentScreen;
         var popup = new ConfirmScreen(accepted -> {
-            manager.showTelemetryPrompt = false;
-            manager.telemetryEnabled = accepted;
-
+            config.showTelemetryPrompt = false;
+            config.telemetryEnabled = accepted;
             manager.saveChanges();
 
             MinecraftClient.getInstance().setScreen(parentScreen);

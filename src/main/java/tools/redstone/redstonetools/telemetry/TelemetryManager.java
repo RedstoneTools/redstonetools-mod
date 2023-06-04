@@ -1,48 +1,44 @@
 package tools.redstone.redstonetools.telemetry;
 
 import net.minecraft.client.MinecraftClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Singleton;
-import javax.json.Json;
-import javax.json.JsonObject;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Singleton
 public class TelemetryManager {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final Path telemetryFilePath;
-    public boolean telemetryEnabled = false;
-    public boolean showTelemetryPrompt = true;
+    private TelemetryConfig config;
 
     public TelemetryManager() {
-        telemetryFilePath = MinecraftClient.getInstance().runDirectory.toPath()
-                .resolve("config")
-                .resolve("redstonetools")
-                .resolve("telemetry.json");
-
-        JsonObject telemetryJson = null;
+        config = TelemetryConfig.DEFAULT;
         try {
-            Files.createDirectories(telemetryFilePath.getParent());
-            if (Files.exists(telemetryFilePath)) {
-                var reader = Json.createReader(new FileReader(telemetryFilePath.toFile()));
-                telemetryJson = reader.readObject();
-                reader.close();
+            telemetryFilePath = MinecraftClient.getInstance().runDirectory.toPath()
+                    .resolve("config")
+                    .resolve("redstonetools")
+                    .resolve("telemetry.json");
 
-                loadSettingsFromJson(telemetryJson);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            loadSettingsFromJson();
+        } catch (Throwable t) {
+            throw new RuntimeException("Coudln't load telemetry config", t);
         }
     }
 
-    private void loadSettingsFromJson(JsonObject json) {
-        telemetryEnabled = json.getBoolean("telemetryEnabled");
-        showTelemetryPrompt = json.getBoolean("showTelemetryPrompt");
+    private void loadSettingsFromJson() throws IOException {
+        Files.createDirectories(telemetryFilePath.getParent());
+        if (!Files.exists(telemetryFilePath)) {
+            saveChanges();
+            return;
+        }
 
-        saveChanges();
+        config = TelemetryConfig.from(telemetryFilePath);
+        LOGGER.trace("Loaded telemetry config: {}", config);
     }
 
     public void saveChanges() {
@@ -50,18 +46,17 @@ public class TelemetryManager {
         try {
             Files.createDirectories(telemetryFilePath.getParent());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("Failed to create RedstoneTools config directory", e);
         }
 
-        var telemetryJson = Json.createObjectBuilder()
-                .add("telemetryEnabled", telemetryEnabled)
-                .add("showTelemetryPrompt", showTelemetryPrompt)
-                .build();
-
-        try (var writer = Json.createWriter(new FileWriter(telemetryFilePath.toFile()))) {
-            writer.writeObject(telemetryJson);
-        } catch (Exception e) {
-            e.printStackTrace();
+        try {
+            config.write(telemetryFilePath);
+        } catch (IOException e) {
+            LOGGER.warn("Failed to write telemetry config", e);
         }
+    }
+
+    public TelemetryConfig getConfig() {
+        return config;
     }
 }

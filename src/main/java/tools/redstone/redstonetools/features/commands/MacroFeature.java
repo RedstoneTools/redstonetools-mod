@@ -20,7 +20,6 @@ public class MacroFeature extends CommandFeature {
     protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
         var macroObj = INJECTOR.getInstance(MacroManager.class).getMacro(macro.getValue());
 
-
         if (macroObj == null) {
             return Feedback.invalidUsage("Macro \"%s\" does not exist".formatted(macro.getValue()));
         }
