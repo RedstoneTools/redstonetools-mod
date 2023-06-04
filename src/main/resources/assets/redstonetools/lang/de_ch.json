@@ -1,6 +1,0 @@
-{
-    "gamerule.doContainerDrops": "Behälterabfälli tue",
-    "gamerule.doContainerDrops.description": "Kontrolliert Ressourcenaabfälli vo Behälter",
-    "gamerule.doBlockUpdatesAfterEdit": "Blockaktualisierige nachem Bearbeite tue",
-    "gamerule.doBlockUpdatesAfterEdit.description": "Blockaktualisierige zwingend nachem Bearbeite in WorldEdit"
-}
