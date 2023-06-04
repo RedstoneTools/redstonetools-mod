@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Realizar soltado de contenedores",
+    "gamerule.doContainerDrops.description": "Controlar la soltada de recursos desde los contenedores",
+    "gamerule.doBlockUpdatesAfterEdit": "Realizar actualizaciones de bloques después de editar",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Forzar la actualización de bloques después de editarlos en WorldEdit"
+}

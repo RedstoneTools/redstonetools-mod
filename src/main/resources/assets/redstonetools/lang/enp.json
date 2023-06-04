@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Drop cistern thing",
+    "gamerule.doContainerDrops.description": "Wields lode drops from cisterns",
+    "gamerule.doBlockUpdatesAfterEdit": "Foryield cleat updates after wrixling",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Weald cleats upfeastan after hieran wrixlingum in WorldEdit"
+}

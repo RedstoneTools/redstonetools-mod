@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Behälterabwürfe ausführen",
+    "gamerule.doContainerDrops.description": "Kontrolliert Ressourcenabwürfe von Behältern",
+    "gamerule.doBlockUpdatesAfterEdit": "Blockaktualisierungen nach der Bearbeitung ausführen",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Blockaktualisierungen erzwingen nach der Bearbeitung in WorldEdit"
+}

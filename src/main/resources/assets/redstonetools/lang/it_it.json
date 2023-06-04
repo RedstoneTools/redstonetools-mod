@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Fai i drop dei container",
+    "gamerule.doContainerDrops.description": "Controlla le risorse che escono dai container",
+    "gamerule.doBlockUpdatesAfterEdit": "Fai l'update dei blocchi dopo il edit",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Forza l'update dei blocchi dopo averli editati in WorldEdit"
+}

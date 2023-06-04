@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Drop vessel items",
+    "gamerule.doContainerDrops.description": "Controls resource drops from vessels",
+    "gamerule.doBlockUpdatesAfterEdit": "Update blocks following their amend",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Mark blocks to be updated following their amend in WorldEdit"
+}

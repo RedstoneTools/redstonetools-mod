@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Czy pojemnik wyrzuca",
+    "gamerule.doContainerDrops.description": "Kontroluje wypadanie zasobów z pojemników",
+    "gamerule.doBlockUpdatesAfterEdit": "Czy blok aktualizuje się po edycji",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Wymysza aktualizację bloków po ich edytcji w WorldEdit"
+}

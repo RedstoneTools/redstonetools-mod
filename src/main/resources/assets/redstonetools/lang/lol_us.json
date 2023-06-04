@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Drop teh containr thingz",
+    "gamerule.doContainerDrops.description": "Controlz dropz frum containerz",
+    "gamerule.doBlockUpdatesAfterEdit": "Chaenj blockz aftr edit",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Force updatez blockz aftr edet in WorldEdit"
+}

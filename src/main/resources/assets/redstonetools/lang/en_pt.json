@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Drop container loot",
+    "gamerule.doContainerDrops.description": "Allow containers t' drop thar booty",
+    "gamerule.doBlockUpdatesAfterEdit": "Be updatin' th' blocks after edit",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Force adjust th' blocks after editin' them in WorldEdit"
+}
