@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import static tools.redstone.redstonetools.features.arguments.serializers.BlockColorSerializer.blockColor;
 
 @AutoService(AbstractFeature.class)
-@Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode", modDependencies = "worldedit")
+@Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode", worldedit = true)
 public class ColorCodeFeature extends CommandFeature {
     public static final Argument<BlockColor> color = Argument
             .ofType(blockColor());

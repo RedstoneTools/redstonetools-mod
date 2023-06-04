@@ -8,6 +8,7 @@ import rip.hippo.inject.Doctor;
 import rip.hippo.inject.Injector;
 import tools.redstone.redstonetools.macros.WorldlessCommandHelper;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
+import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_ID = "redstonetools";
@@ -24,18 +25,11 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
         // Register features
         ReflectionUtils.getFeatures().forEach(feature -> {
-            LOGGER.trace("Registering feature {}", feature);
+            LOGGER.trace("Registering feature {}", feature.getClass().getName());
 
-            String[] modDependencies = feature.getModDependencies();
-            if (modDependencies.length != 0) {
-                LOGGER.trace("Checking mod dependencies for feature {}", feature);
-
-                for (String modDependency : modDependencies) {
-                    if (!FabricLoader.getInstance().isModLoaded(modDependency)) {
-                        LOGGER.warn("Mod dependency '{}' not found for feature {}, force disabling it", modDependency, feature.getClass().getName());
-                        return;
-                    }
-                }
+            if (feature.requiresWorldEdit() && !WorldEditUtils.WORLDEDIT_LOADED) {
+                LOGGER.warn("Feature {} requires WorldEdit, but WorldEdit is not loaded. Skipping registration.", feature.getName());
+                return;
             }
             feature.register();
         });

@@ -26,7 +26,7 @@ import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
 @AutoService(AbstractFeature.class)
-@Feature(name = "RStack", description = "Stacks with custom distance", command = "/rstack", modDependencies = "worldedit")
+@Feature(name = "RStack", description = "Stacks with custom distance", command = "/rstack", worldedit = true)
 public class RStackFeature extends CommandFeature {
     public static final Argument<Integer> count = Argument
             .ofType(integer())
