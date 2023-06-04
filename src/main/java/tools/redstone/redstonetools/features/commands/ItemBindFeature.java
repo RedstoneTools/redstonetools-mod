@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
 
+import com.google.auto.service.AutoService;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -9,11 +10,12 @@ import net.minecraft.nbt.NbtString;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
+import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.ItemUtils;
 
-
+@AutoService(AbstractFeature.class)
 @Feature(command = "itembind", description = "Allows you to bind command to a specific item", name = "Item Bind")
 public class ItemBindFeature extends CommandFeature{
 
