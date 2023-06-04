@@ -2,6 +2,7 @@ package tools.redstone.redstonetools.telemetry;
 
 import net.minecraft.client.MinecraftClient;
 
+import javax.inject.Singleton;
 import javax.json.Json;
 import javax.json.JsonObject;
 import java.io.FileReader;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Singleton
 public class TelemetryManager {
     private final Path telemetryFilePath;
     public boolean telemetryEnabled = false;
