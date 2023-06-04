@@ -5,18 +5,20 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import tools.redstone.redstonetools.RedstoneToolsClient;
-import tools.redstone.redstonetools.features.commands.AirPlaceFeature;
+import tools.redstone.redstonetools.features.commands.AirPlaceReachFeature;
+import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public class AirPlaceServerMixin {
 
     private final AirPlaceFeature airPlaceFeature = RedstoneToolsClient.INJECTOR.getInstance(AirPlaceFeature.class);
+    private final AirPlaceReachFeature airPlaceReachFeature = RedstoneToolsClient.INJECTOR.getInstance(AirPlaceReachFeature.class);
 
     @ModifyConstant(method = "onPlayerInteractBlock", constant = @Constant(doubleValue = 64.0) )
     private double modifyConstant(double originalValue) {
 
-        if (airPlaceFeature.enabled) {
-            return airPlaceFeature.reach * airPlaceFeature.reach;
+        if (airPlaceFeature.isEnabled()) {
+            return airPlaceReachFeature.reach * airPlaceReachFeature.reach;
         } else {
             return originalValue;
         }
