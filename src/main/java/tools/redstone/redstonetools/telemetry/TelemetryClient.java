@@ -8,6 +8,7 @@ import tools.redstone.redstonetools.telemetry.dto.TelemetryAuth;
 import tools.redstone.redstonetools.telemetry.dto.TelemetryCommand;
 import tools.redstone.redstonetools.telemetry.dto.TelemetryException;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URI;
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 import static tools.redstone.redstonetools.RedstoneToolsClient.LOGGER;
 
+@Singleton
 public class TelemetryClient {
     private static final String BASE_URL = FabricLoader.getInstance().isDevelopmentEnvironment()
             ? "https://localhost/api/telemetry/v1"
