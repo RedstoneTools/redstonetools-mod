@@ -29,9 +29,7 @@ public class AirPlaceReachFeature extends CommandFeature {
 
         AirPlaceFeature airPlaceFeature = RedstoneToolsClient.INJECTOR.getInstance(AirPlaceFeature.class);
         if (!airPlaceFeature.isEnabled()) {
-            var player = MinecraftClient.getInstance().player;
-            assert player != null;
-            player.sendChatMessage("/airplace");
+            airPlaceFeature.enable(source);
         }
 
         return Feedback.success("Air Place reach set to " + distance.getValue().toString() + " blocks.");
