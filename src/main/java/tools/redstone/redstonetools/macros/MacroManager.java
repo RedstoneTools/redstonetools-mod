@@ -3,6 +3,8 @@ package tools.redstone.redstonetools.macros;
 import com.google.common.reflect.TypeToken;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.macros.actions.Action;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
@@ -17,20 +19,27 @@ import java.util.List;
 
 @Singleton
 public class MacroManager {
+    private static final Logger LOGGER = LogManager.getLogger();
     private final Path macrosFilePath;
     private final List<Macro> macros;
 
     public MacroManager() {
         this.macros = new ArrayList<>();
-
         try {
             macrosFilePath = MinecraftClient.getInstance().runDirectory.toPath()
                     .resolve("config")
                     .resolve("redstonetools")
                     .resolve("macros.json");
+        } catch (Throwable t) {
+            LOGGER.fatal("Couldn't load macros config path", t);
+            throw new RuntimeException("Couldn't load macros config path", t);
+        }
 
+        boolean shouldAddDefault = true;
+        try {
             Files.createDirectories(macrosFilePath.getParent());
             if (Files.exists(macrosFilePath)) {
+                shouldAddDefault = false;
                 Macro[] parsedMacros = RedstoneToolsClient.GSON.fromJson(
                         Files.newBufferedReader(macrosFilePath),
                         new TypeToken<Macro[]>() {
@@ -41,10 +50,11 @@ public class MacroManager {
                 }
             }
         } catch (Throwable t) {
-            throw new RuntimeException("Couldn't load macros config", t);
+            LOGGER.warn("Couldn't load macros config", t);
+            shouldAddDefault = true;
         }
 
-        if (this.macros.isEmpty()) {
+        if (shouldAddDefault) {
             this.macros.addAll(getDefaultMacros());
             saveChanges();
         }

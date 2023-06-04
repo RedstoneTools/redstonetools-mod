@@ -23,10 +23,15 @@ public class TelemetryManager {
                     .resolve("config")
                     .resolve("redstonetools")
                     .resolve("telemetry.json");
+        } catch (Throwable t) {
+            LOGGER.fatal("Couldn't load telemetry config path", t);
+            throw new RuntimeException("Couldn't load telemetry config path", t);
+        }
 
+        try {
             loadSettingsFromJson();
         } catch (Throwable t) {
-            throw new RuntimeException("Coudln't load telemetry config", t);
+            LOGGER.warn("Couldn't load telemetry config", t);
         }
     }
 

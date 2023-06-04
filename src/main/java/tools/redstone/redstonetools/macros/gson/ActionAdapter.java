@@ -1,12 +1,16 @@
 package tools.redstone.redstonetools.macros.gson;
 
 import com.google.gson.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tools.redstone.redstonetools.macros.actions.Action;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
 
 import java.lang.reflect.Type;
 
 public class ActionAdapter implements JsonSerializer<Action>, JsonDeserializer<Action> {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @Override
     public JsonElement serialize(Action action, Type type, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
@@ -14,7 +18,7 @@ public class ActionAdapter implements JsonSerializer<Action>, JsonDeserializer<A
             object.addProperty("type", "command");
             object.addProperty("command", commandAction.command);
         } else {
-            throw new RuntimeException("Unknown action type: " + action.getClass().getName());
+            LOGGER.warn("Unknown action type: {}", action.getClass().getName());
         }
         return object;
     }
@@ -26,6 +30,7 @@ public class ActionAdapter implements JsonSerializer<Action>, JsonDeserializer<A
         if (typeStr.equals("command")) {
             return new CommandAction(object.get("command").getAsString());
         }
-        throw new RuntimeException("Unknown action type: " + typeStr);
+        LOGGER.warn("Unknown action type: {}", typeStr);
+        return null;
     }
 }
