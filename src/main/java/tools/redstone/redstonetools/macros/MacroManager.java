@@ -1,10 +1,11 @@
 package tools.redstone.redstonetools.macros;
 
-import tools.redstone.redstonetools.macros.actions.Action;
-import tools.redstone.redstonetools.macros.actions.CommandAction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
+import tools.redstone.redstonetools.macros.actions.Action;
+import tools.redstone.redstonetools.macros.actions.CommandAction;
 
+import javax.inject.Singleton;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class MacroManager {
     private final Path macrosFilePath;
     private final List<Macro> macros;

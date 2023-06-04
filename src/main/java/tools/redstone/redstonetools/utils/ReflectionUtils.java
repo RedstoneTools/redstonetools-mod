@@ -1,10 +1,10 @@
 package tools.redstone.redstonetools.utils;
 
-import com.google.inject.AbstractModule;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import rip.hippo.inject.DoctorModule;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
@@ -17,17 +17,18 @@ import java.util.stream.Collectors;
 
 public class ReflectionUtils {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static Set<? extends AbstractModule> modules;
+    private static DoctorModule[] modules;
     private static Set<? extends AbstractFeature> features;
 
     private ReflectionUtils() {
         throw new IllegalStateException("Utility class");
     }
 
-    public static Set<? extends AbstractModule> getModules() {
+    public static DoctorModule[] getModules() {
         if (modules == null) {
             try {
-                modules = serviceLoad(AbstractModule.class);
+                modules = serviceLoad(DoctorModule.class)
+                        .toArray(DoctorModule[]::new);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to load modules", e);
             }
