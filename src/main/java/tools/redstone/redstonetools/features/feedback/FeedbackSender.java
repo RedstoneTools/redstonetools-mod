@@ -3,6 +3,9 @@ package tools.redstone.redstonetools.features.feedback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class FeedbackSender extends AbstractFeedbackSender {
     @Override
     public void sendFeedback(ServerCommandSource source, Feedback feedback) {
