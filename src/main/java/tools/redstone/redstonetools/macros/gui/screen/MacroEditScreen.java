@@ -1,16 +1,7 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.util.math.MathHelper;
-import tools.redstone.redstonetools.macros.Macro;
-import tools.redstone.redstonetools.macros.MacroManager;
-import tools.redstone.redstonetools.macros.actions.Action;
-import tools.redstone.redstonetools.macros.actions.CommandAction;
-import tools.redstone.redstonetools.macros.gui.widget.commandlist.CommandEntry;
-import tools.redstone.redstonetools.macros.gui.widget.commandlist.CommandListWidget;
-import tools.redstone.redstonetools.macros.gui.widget.macrolist.MacroListWidget;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -24,6 +15,13 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import tools.redstone.redstonetools.macros.Macro;
+import tools.redstone.redstonetools.macros.MacroManager;
+import tools.redstone.redstonetools.macros.actions.Action;
+import tools.redstone.redstonetools.macros.actions.CommandAction;
+import tools.redstone.redstonetools.macros.gui.widget.commandlist.CommandEntry;
+import tools.redstone.redstonetools.macros.gui.widget.commandlist.CommandListWidget;
+import tools.redstone.redstonetools.macros.gui.widget.macrolist.MacroListWidget;
 
 import java.util.List;
 
@@ -122,7 +120,7 @@ public class MacroEditScreen extends GameOptionsScreen {
         } else {
             for (Action action : macro.actions) {
                 if (action instanceof CommandAction commandAction) {
-                    commandList.addCommand(commandAction.command);
+                    commandList.addCommand(commandAction.getCommand());
                 }
             }
         }

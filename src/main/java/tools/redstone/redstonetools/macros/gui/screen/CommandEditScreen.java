@@ -1,7 +1,5 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
-import org.lwjgl.glfw.GLFW;
-import tools.redstone.redstonetools.macros.gui.commandsuggestor.WorldlessCommandSuggestor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -10,6 +8,7 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import tools.redstone.redstonetools.macros.gui.commandsuggestor.WorldlessCommandSuggestor;
 
 
 public class CommandEditScreen extends GameOptionsScreen {
@@ -44,7 +43,6 @@ public class CommandEditScreen extends GameOptionsScreen {
         }
 
         super.render(matrices, mouseX, mouseY, delta);
-
     }
 
     @Override

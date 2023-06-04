@@ -113,7 +113,7 @@ public class MacroManager {
         if (action instanceof CommandAction commandAction) {
             return Json.createObjectBuilder()
                     .add("type", "command")
-                    .add("command", commandAction.command)
+                    .add("command", commandAction.getCommand())
                     .build();
         }
 

@@ -27,6 +27,10 @@ repositories {
 		name = "JitPack"
 		url = "https://jitpack.io"
 	}
+	maven {
+		name = "meteor-maven"
+		url = "https://maven.meteordev.org/releases"
+	}
 }
 
 dependencies {
@@ -37,6 +41,9 @@ dependencies {
 	// Json
 	include implementation("javax.json:javax.json-api:1.1.4")
 	include "org.glassfish:javax.json:1.1.4"
+
+	// Text engine
+	include implementation("meteordevelopment:starscript:0.2.2")
 
 	// AutoService
 	annotationProcessor implementation("com.google.auto.service:auto-service:1.1.0")
