@@ -1,6 +1,6 @@
 package tools.redstone.redstonetools.utils;
 
-import com.google.inject.AbstractModule;
+import rip.hippo.inject.DoctorModule;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
@@ -13,22 +13,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ReflectionUtils {
-    private static final ServiceLoader<AbstractModule> modulesLoader =
-            ServiceLoader.load(AbstractModule.class);
+    private static final ServiceLoader<DoctorModule> modulesLoader =
+            ServiceLoader.load(DoctorModule.class);
     private static final ServiceLoader<AbstractFeature> featuresLoader =
             ServiceLoader.load(AbstractFeature.class);
-    private static Set<? extends AbstractModule> modules;
+    private static DoctorModule[] modules;
     private static Set<? extends AbstractFeature> features;
 
     private ReflectionUtils() {
         throw new IllegalStateException("Utility class");
     }
 
-    public static Set<? extends AbstractModule> getModules() {
+    public static DoctorModule[] getModules() {
         if (modules == null) {
             modules = modulesLoader.stream()
                     .map(ServiceLoader.Provider::get)
-                    .collect(Collectors.toSet());
+                    .toArray(DoctorModule[]::new);
         }
         return modules;
     }
