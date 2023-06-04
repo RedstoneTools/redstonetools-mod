@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.google.auto.service.AutoService;
+import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
@@ -18,6 +20,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+@AutoService(AbstractFeature.class)
 @Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection")
 public class MinSelectionFeature extends CommandFeature {
 
