@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.google.auto.service.AutoService;
+import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.feedback.Feedback;
@@ -21,6 +23,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 import static tools.redstone.redstonetools.features.arguments.serializers.BlockColorSerializer.blockColor;
 
+@AutoService(AbstractFeature.class)
 @Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
 public class ColorCodeFeature extends CommandFeature {
     public static final Argument<BlockColor> color = Argument

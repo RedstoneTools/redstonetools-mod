@@ -1,13 +1,18 @@
 package tools.redstone.redstonetools.di;
 
-import com.google.inject.AbstractModule;
+import com.google.auto.service.AutoService;
+import rip.hippo.inject.DoctorModule;
+import rip.hippo.inject.binding.Binder;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 
-public class FeatureModule extends AbstractModule {
+@AutoService(DoctorModule.class)
+public class FeatureModule implements DoctorModule {
+    @SuppressWarnings({"rawtypes", "unchecked"}) // this is probably the only way to make it work
     @Override
-    protected void configure() {
-        for (var featureClass : ReflectionUtils.getFeatureClasses()) {
-            bind(featureClass).asEagerSingleton();
+    public void configure(Binder binder) {
+        for (var feature : ReflectionUtils.getFeatures()) {
+            Class clazz = feature.getClass();
+            binder.bind(clazz).toInstance(feature);
         }
     }
 }

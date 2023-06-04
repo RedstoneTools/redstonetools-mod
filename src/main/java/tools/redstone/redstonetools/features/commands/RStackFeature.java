@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.google.auto.service.AutoService;
+import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.feedback.Feedback;
@@ -23,7 +25,7 @@ import static tools.redstone.redstonetools.features.arguments.serializers.Intege
 import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
-
+@AutoService(AbstractFeature.class)
 @Feature(name = "RStack", description = "Stacks with custom distance", command = "/rstack")
 public class RStackFeature extends CommandFeature {
     public static final Argument<Integer> count = Argument
