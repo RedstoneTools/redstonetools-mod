@@ -12,11 +12,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import tools.redstone.redstonetools.RedstoneToolsClient;
-import tools.redstone.redstonetools.features.commands.AirPlaceFeature;
+import tools.redstone.redstonetools.features.commands.AirPlaceReachFeature;
+import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 
 @Mixin(MinecraftClient.class)
 public class AirPlaceClientMixin {
     private final AirPlaceFeature airPlaceFeature = RedstoneToolsClient.INJECTOR.getInstance(AirPlaceFeature.class);
+    private final AirPlaceReachFeature airPlaceReachFeature = RedstoneToolsClient.INJECTOR.getInstance(AirPlaceReachFeature.class);
 
     @Shadow
     public HitResult crosshairTarget;
@@ -25,7 +27,7 @@ public class AirPlaceClientMixin {
     public void doItemUse(CallbackInfo callbackInfo) {
 
         // If airplace is disabled
-        if (!airPlaceFeature.enabled) {
+        if (!airPlaceFeature.isEnabled()) {
             return;
         }
 
@@ -41,7 +43,7 @@ public class AirPlaceClientMixin {
             return;
         }
 
-        var hitResult = playerEntity.raycast(airPlaceFeature.reach, 0, false);
+        var hitResult = playerEntity.raycast(airPlaceReachFeature.reach, 0, false);
 
         crosshairTarget = new BlockHitResult(hitResult.getPos(), Direction.UP, new BlockPos(hitResult.getPos()), false);
 
