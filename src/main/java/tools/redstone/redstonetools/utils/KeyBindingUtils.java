@@ -12,11 +12,8 @@ public class KeyBindingUtils {
     }
 
     public static boolean isKeyAlreadyBound(Key key) {
-        KeyBinding[] keyBindings = MinecraftClient.getInstance().options.allKeys;
-        for (KeyBinding keyBinding : keyBindings) {
-            if (keyBinding.getDefaultKey() == key) { return true; }
-        }
-        return false;
+        KeyBinding foundKeyBinding = ( (KeyBindingMixin)MinecraftClient.getInstance().options.attackKey ).getBindingFromKey(key);
+        return foundKeyBinding != null;
     }
 
 }
