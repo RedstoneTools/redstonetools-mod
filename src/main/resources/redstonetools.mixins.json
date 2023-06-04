@@ -14,7 +14,7 @@
     "telemetry.ShowTelemetryPopupMixin"
   ],
   "client": [
-    "features.SlabSelectMixin",
+    "features.SlabKeeperMixin",
     "accessors.MinecraftClientAccessor",
     "features.AirplaceMixin",
     "macros.AddMacroButtonMixin",

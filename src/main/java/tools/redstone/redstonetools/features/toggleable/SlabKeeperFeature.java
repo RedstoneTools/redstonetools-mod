@@ -5,6 +5,6 @@ import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 
 @AutoService(AbstractFeature.class)
-@Feature(name = "Slab Select", description = "Only destroy the slab you're looking at when breaking double slabs", command = "slabselect")
-public class SlabSelectFeature extends ToggleableFeature {
+@Feature(name = "Slab Keeper", description = "Only destroy the slab you're looking at when breaking double slabs", command = "slabkeeper")
+public class SlabKeeperFeature extends ToggleableFeature {
 }
