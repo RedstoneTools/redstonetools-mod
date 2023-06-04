@@ -1,10 +1,13 @@
 package tools.redstone.redstonetools.mixin.features;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,7 +33,7 @@ public class AirplaceMixin {
 
         var hitResult = getAirplaceHitResult();
 
-        crosshairTarget = new BlockHitResult(hitResult.getPos(), Direction.UP, new BlockPos(hitResult.getPos()), false);
+        crosshairTarget = new BlockHitResult(hitResult, Direction.UP, new BlockPos(hitResult), false);
     }
 
     @Inject(method = "doAttack", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
@@ -39,11 +42,8 @@ public class AirplaceMixin {
             return;
         }
 
-        var hitResult = getAirplaceHitResult();
-        var minecraftClient = (MinecraftClient) (Object) this;
-
         //Call interactionManager directly because the block is air, with which the player cannot interact
-        minecraftClient.interactionManager.attackBlock(new BlockPos(hitResult.getPos()), Direction.UP);
+        getInteractionManager().attackBlock(new BlockPos(getAirplaceHitResult()), Direction.UP);
     }
 
     private boolean isAirplaceAllowed() {
@@ -58,26 +58,33 @@ public class AirplaceMixin {
         }
 
         // If the player or interactionManager not initialized
-        var minecraftClient = (MinecraftClient) (Object) this;
-        var player = minecraftClient.player;
-        var interactionManager = minecraftClient.interactionManager;
-        if (player == null || interactionManager == null) {
+        if (getPlayer() == null || getInteractionManager() == null) {
             return false;
         }
 
         return true;
     }
 
-    private HitResult getAirplaceHitResult() {
-        var minecraftClient = (MinecraftClient) (Object) this;
-
+    private Vec3d getAirplaceHitResult() {
         // Asserting values previously tested by isAirplaceAllowed()
-        assert minecraftClient.interactionManager != null;
-        assert minecraftClient.player != null;
+        assert getInteractionManager() != null;
+        assert getPlayer() != null;
 
-        var reach = minecraftClient.interactionManager.getReachDistance();
-        var hitResult = minecraftClient.player.raycast(reach, 0, false);
+        var reach = getInteractionManager().getReachDistance();
+        var hitResult = getPlayer().raycast(reach, 0, false);
 
-        return hitResult;
+        return hitResult.getPos();
+    }
+
+    private MinecraftClient getMinecraftClient() {
+        return (MinecraftClient) (Object) this;
+    }
+
+    private ClientPlayerEntity getPlayer() {
+        return getMinecraftClient().player;
+    }
+
+    private ClientPlayerInteractionManager getInteractionManager() {
+        return getMinecraftClient().interactionManager;
     }
 }
