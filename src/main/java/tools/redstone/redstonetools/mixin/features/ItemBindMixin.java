@@ -61,8 +61,9 @@ public abstract class ItemBindMixin {
         public void injectCommand(String message, CallbackInfo ci) {
             if (!message.startsWith("/") || !ItemBindFeature.waitingForCommand) return;
 
-            ItemBindFeature.addCommand((ClientPlayerEntity) ((Object)this),message);
-            ci.cancel();
+            if (ItemBindFeature.addCommand((ClientPlayerEntity) ((Object)this),message)) {
+                ci.cancel();
+            }
         }
     }
 

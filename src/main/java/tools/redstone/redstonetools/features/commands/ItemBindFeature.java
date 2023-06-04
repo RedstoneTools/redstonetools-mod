@@ -31,6 +31,9 @@ public class ItemBindFeature extends CommandFeature{
         if (mainHandStack == null || mainHandStack.getItem() == Items.AIR) {
             return Feedback.error("You need to be holding an item!");
         }
+        if (mainHandStack.getNbt() != null && mainHandStack.getNbt().contains("command")) {
+            return Feedback.error("This item already has a command bind to it!");
+        }
         bindStack = mainHandStack;
         waitingForCommand = true;
 
@@ -38,8 +41,13 @@ public class ItemBindFeature extends CommandFeature{
         return Feedback.success("Please run the command you want to add to this item (" + mainHandStack.getItem().toString()+")");
     }
 
-    public static void addCommand(ClientPlayerEntity player, String command) {
-        if (!waitingForCommand) return;
+    public static boolean addCommand(ClientPlayerEntity player, String command) {
+        if (!waitingForCommand) return false;
+        if (!player.getInventory().contains(bindStack)) {
+            bindStack = null;
+            waitingForCommand = false;
+            return false;
+        }
 
         bindStack.getOrCreateNbt().put("command", NbtString.of(command));
         ItemUtils.addExtraNBTText(bindStack,"Command");
@@ -48,6 +56,8 @@ public class ItemBindFeature extends CommandFeature{
 
         bindStack = null;
         waitingForCommand = false;
+
+        return true;
     }
 
 }
