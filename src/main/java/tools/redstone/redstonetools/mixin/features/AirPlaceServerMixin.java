@@ -18,7 +18,7 @@ public class AirPlaceServerMixin {
     private double modifyConstant(double originalValue) {
 
         if (airPlaceFeature.isEnabled()) {
-            return airPlaceReachFeature.reach * airPlaceReachFeature.reach;
+            return (airPlaceReachFeature.reach+5) * (airPlaceReachFeature.reach+5);
         } else {
             return originalValue;
         }
