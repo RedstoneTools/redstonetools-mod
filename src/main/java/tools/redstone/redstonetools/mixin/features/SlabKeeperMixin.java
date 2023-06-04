@@ -10,7 +10,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.WorldAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,6 +31,7 @@ public class SlabKeeperMixin {
         if (state.get(SlabBlock.TYPE) != SlabType.DOUBLE) return;
         if (MinecraftClient.getInstance().crosshairTarget != null && MinecraftClient.getInstance().crosshairTarget.getType() != HitResult.Type.BLOCK) return;
         if (MinecraftClient.getInstance().player == null) return;
+        if (MinecraftClient.getInstance().getServer() == null) return;
 
         BlockHitResult crosshairTarget = (BlockHitResult)MinecraftClient.getInstance().crosshairTarget;
 
@@ -40,31 +40,13 @@ public class SlabKeeperMixin {
         else if (crosshairTarget.getSide() == Direction.DOWN) type = SlabType.TOP;
         else type = ((crosshairTarget.getPos().getY() % 1) + (crosshairTarget.getPos().getY() < 0 ? 1 : 0) > 0.5) ? SlabType.BOTTOM : SlabType.TOP;
 
-        StringBuilder cmd = new StringBuilder("/setblock ");
-        cmd.append(pos.getX());
-        cmd.append(' ');
-        cmd.append(pos.getY());
-        cmd.append(' ');
-        cmd.append(pos.getZ());
-        cmd.append(' ');
-        cmd.append(Registry.BLOCK.getId(instance));
-        cmd.append("[waterlogged=");
-        cmd.append((boolean)state.get(SlabBlock.WATERLOGGED));
-        cmd.append(",type=");
-        cmd.append(type);
-        cmd.append(']');
-
         instance.onBroken(world, pos, state);
         world.setBlockState(pos, instance.getDefaultState().with(SlabBlock.TYPE, type), 0);
-        if (MinecraftClient.getInstance().getServer() != null) {
-            try {
-                MinecraftClient.getInstance().getServer().getWorld(MinecraftClient.getInstance().player.world.getRegistryKey())
-                        .setBlockState(pos, instance.getDefaultState().with(SlabBlock.TYPE, type), 0);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        } else {
-            MinecraftClient.getInstance().player.sendChatMessage(cmd.toString());
+        try {
+            MinecraftClient.getInstance().getServer().getWorld(MinecraftClient.getInstance().player.world.getRegistryKey())
+                    .setBlockState(pos, instance.getDefaultState().with(SlabBlock.TYPE, type), 0);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 }
