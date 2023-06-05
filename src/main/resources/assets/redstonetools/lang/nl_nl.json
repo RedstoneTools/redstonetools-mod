@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Doe containerdrops",
+    "gamerule.doContainerDrops.description": "Beheert het wegvallen van resources uit containers",
+    "gamerule.doBlockUpdatesAfterEdit": "Doe blok-updates na bewerking",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Forceer blok-updates nadat je ze hebt bewerkt in WorldEdit"
+}
