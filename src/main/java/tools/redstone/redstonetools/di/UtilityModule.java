@@ -1,14 +1,15 @@
 package tools.redstone.redstonetools.di;
 
 import com.google.auto.service.AutoService;
+import rip.hippo.inject.DoctorModule;
+import rip.hippo.inject.binding.Binder;
 import tools.redstone.redstonetools.features.feedback.AbstractFeedbackSender;
 import tools.redstone.redstonetools.features.feedback.FeedbackSender;
-import com.google.inject.AbstractModule;
 
-@AutoService(AbstractModule.class)
-public class UtilityModule extends AbstractModule {
+@AutoService(DoctorModule.class)
+public class UtilityModule implements DoctorModule {
     @Override
-    protected void configure() {
-        bind(AbstractFeedbackSender.class).to(FeedbackSender.class).asEagerSingleton();
+    public void configure(Binder binder) {
+        binder.bind(AbstractFeedbackSender.class).to(FeedbackSender.class);
     }
 }
