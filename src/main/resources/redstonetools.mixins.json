@@ -22,7 +22,6 @@
     "macros.InitializeMacroManagerMixin",
     "macros.KeyBindingMixinImpl",
     "macros.autocomplete.ClientPlayerEntityMixinImpl",
-    "macros.autocomplete.CommandDispatcherMixin",
     "macros.autocomplete.CommandSuggestorMixin",
     "telemetry.InitializeTelemetryClientMixin",
     "telemetry.SendCrashReportMixin",
