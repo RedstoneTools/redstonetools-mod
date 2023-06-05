@@ -1,0 +1,6 @@
+{
+  "gamerule.doContainerDrops": "容器掉落物品",
+  "gamerule.doContainerDrops.description": "控制容器掉落物品",
+  "gamerule.doBlockUpdatesAfterEdit": "编辑后更新",
+  "gamerule.doBlockUpdatesAfterEdit.description": "在使用Worldedit之后会强制更新附近的红石"
+}
