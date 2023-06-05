@@ -70,13 +70,15 @@ public class BinaryBlockReadFeature extends CommandFeature {
             var pos = new BlockPos(point.getBlockX(), point.getBlockY(), point.getBlockZ());
             var actualState = source.getWorld().getBlockState(pos);
 
-            var matches = true;
-            for (var property : onBlock.getValue().getProperties()) {
-                var propertyValue = onBlock.getValue().getBlockState().get(property);
+            var matches = actualState.getBlock() == onBlock.getValue().getBlockState().getBlock();
+            if (matches) {
+                for (var property : onBlock.getValue().getProperties()) {
+                    var propertyValue = onBlock.getValue().getBlockState().get(property);
 
-                if (!actualState.get(property).equals(propertyValue)) {
-                    matches = false;
-                    break;
+                    if (!actualState.get(property).equals(propertyValue)) {
+                        matches = false;
+                        break;
+                    }
                 }
             }
 
