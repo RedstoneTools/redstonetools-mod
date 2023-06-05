@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.fixes;
+package tools.redstone.redstonetools.patches;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.BlockItem;
@@ -8,7 +8,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 
-public class BlockEntityNbtFix {
+public class BlockEntityNbtPatch {
 
     public static ItemStack addBlockEntityNbt(ItemStack stack, BlockEntity blockEntity) {
         NbtCompound nbtCompound = blockEntity.createNbtWithIdentifyingData();

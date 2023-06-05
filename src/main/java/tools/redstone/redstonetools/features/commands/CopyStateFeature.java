@@ -13,6 +13,7 @@ import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.mixin.accessors.MinecraftClientAccessor;
+import tools.redstone.redstonetools.patches.BlockEntityNbtPatch;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import tools.redstone.redstonetools.utils.BlockStateNbtUtil;
 
@@ -26,7 +27,7 @@ public class CopyStateFeature extends PickBlockFeature {
         ItemStack itemStack = blockInfo.block.getPickStack(client.world, blockInfo.pos, blockInfo.state);
 
         if (blockInfo.state.hasBlockEntity()) {
-            ((MinecraftClientAccessor) client).addBlockEntityNbt(itemStack, blockInfo.entity);
+            BlockEntityNbtPatch.addBlockEntityNbt(itemStack, blockInfo.entity);
         }
 
         int i = addBlockStateNbt(itemStack, blockInfo.state);
