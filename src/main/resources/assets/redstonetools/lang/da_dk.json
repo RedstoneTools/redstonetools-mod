@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Smid beholder-indhold",
+    "gamerule.doContainerDrops.description": "Kontrollerer ressourcedrops fra beholdere",
+    "gamerule.doBlockUpdatesAfterEdit": "Opdater blokke efter redigering",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Tvangsopdater blokke efter redigering med WorldEdit"
+}
