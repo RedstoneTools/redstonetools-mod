@@ -13,6 +13,9 @@ import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.Collections;
+
 import static tools.redstone.redstonetools.features.arguments.serializers.BlockStateArgumentSerializer.blockState;
 import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
@@ -22,7 +25,9 @@ import static tools.redstone.redstonetools.features.arguments.serializers.Number
 @Feature(name = "Binary Block Read", description = "Interprets your WorldEdit selection as a binary number.", command = "/read")
 public class BinaryBlockReadFeature extends CommandFeature {
     private static final BlockStateArgument LIT_LAMP_ARG = new BlockStateArgument(
-            Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true), null, null
+            Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true),
+            Collections.singleton(RedstoneLampBlock.LIT),
+            null
     );
 
     public static final Argument<Integer> offset = Argument
@@ -70,13 +75,15 @@ public class BinaryBlockReadFeature extends CommandFeature {
             var pos = new BlockPos(point.getBlockX(), point.getBlockY(), point.getBlockZ());
             var actualState = source.getWorld().getBlockState(pos);
 
-            var matches = true;
-            for (var property : onBlock.getValue().getProperties()) {
-                var propertyValue = onBlock.getValue().getBlockState().get(property);
+            var matches = actualState.getBlock() == onBlock.getValue().getBlockState().getBlock();
+            if (matches) {
+                for (var property : onBlock.getValue().getProperties()) {
+                    var propertyValue = onBlock.getValue().getBlockState().get(property);
 
-                if (!actualState.get(property).equals(propertyValue)) {
-                    matches = false;
-                    break;
+                    if (!actualState.get(property).equals(propertyValue)) {
+                        matches = false;
+                        break;
+                    }
                 }
             }
 
