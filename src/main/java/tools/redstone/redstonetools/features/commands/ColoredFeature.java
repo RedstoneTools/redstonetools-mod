@@ -13,21 +13,20 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.registry.Registry;
-import tools.redstone.redstonetools.utils.ColoredBlockArgument;
+import tools.redstone.redstonetools.utils.ColoredBlockTypeArgument;
 
 import javax.annotation.Nullable;
 
-import static tools.redstone.redstonetools.features.arguments.ColorSwitchSerializer.material;
+import static tools.redstone.redstonetools.features.arguments.ColoredBlockTypeSerializer.coloredBlockType;
 
 @AutoService(AbstractFeature.class)
 @Feature(name = "Colored", description = "Gives the player specified variant of block being looked at, with the same color. Default is White.", command = "colored")
 public class ColoredFeature extends PickBlockFeature {
+    public static final Argument<ColoredBlockTypeArgument> blockType = Argument.ofType(coloredBlockType());
     @Override
     protected boolean requiresBlock() {
         return false;
     }
-
-    public static final Argument<ColoredBlockArgument> blockType = Argument.ofType(material());
 
     @Override
     protected Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) {
