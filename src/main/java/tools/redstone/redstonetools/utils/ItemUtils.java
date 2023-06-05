@@ -19,8 +19,9 @@ public class ItemUtils {
         } else {
             loreList = (NbtList) displayNbt.get("Lore");
         }
+        String lore = "\"(+"+text +")\"";
 
-        loreList.add(NbtString.of("\"(+"+text +")\""));
+        if (loreList != null && !loreList.contains(NbtString.of(lore))) loreList.add(NbtString.of(lore));
         displayNbt.put("Lore", loreList);
         itemStack.setSubNbt("display", displayNbt);
     }
