@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "Inventar fallen lassen aktivieren",
+    "gamerule.doContainerDrops.description": "Steuert, ob das Inventar beim zerstören des Behälters Items fallengelassen werden",
+    "gamerule.doBlockUpdatesAfterEdit": "Blöcke automatisch aktualisieren",
+    "gamerule.doBlockUpdatesAfterEdit.description": "Steuert, ob Blöcke automatisch aktualisiet werden"
+}
