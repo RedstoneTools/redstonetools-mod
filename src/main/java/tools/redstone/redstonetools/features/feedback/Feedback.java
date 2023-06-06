@@ -8,12 +8,7 @@ public abstract class Feedback {
     private final @Nullable String message;
     private final @Nullable String[] values;
 
-    protected Feedback(@Nullable String message) {
-        this.message = message;
-        this.values = new String[0];
-    }
-
-    protected Feedback(@Nullable String message, @Nullable String[] values) {
+    protected Feedback(@Nullable String message, @Nullable String... values) {
         this.message = message;
         this.values = values;
     }
@@ -63,18 +58,12 @@ public abstract class Feedback {
         }
     }
 
-    public static Success success(@Nullable String message) {
-        return new Success(message);
-    }
-    public static Success success(@Nullable String message, @Nullable String[] values) {
+    public static Success success(@Nullable String message, @Nullable String... values) {
         return new Success(message, values);
     }
 
     private static class Success extends Feedback {
-        public Success(@Nullable String message) {
-            super(message);
-        }
-        public Success(@Nullable String message, @Nullable String[] values) {
+        public Success(@Nullable String message, @Nullable String... values) {
             super(message, values);
         }
 
