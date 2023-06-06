@@ -44,7 +44,7 @@ dependencies {
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// Worldedit API
-	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10")
+	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.19.4:7.2.14")
 }
 
 processResources {
