@@ -20,7 +20,7 @@ import java.util.Random;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 
 @AutoService(AbstractFeature.class)
-@Feature(name = "Signal Strength Barrel", description = "Creates a barrel with the specified signal strength.", command = "ss")
+@Feature(name = "Signal Strength Barrel", description = "Creates a barrel with the specified signal strength.", command = "ssb")
 public class SsBarrelFeature extends CommandFeature {
     private static final int BARREL_CONTAINER_SLOTS = 27;
 
