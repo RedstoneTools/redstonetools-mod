@@ -25,7 +25,7 @@ public class SsBarrelFeature extends CommandFeature {
     private static final int BARREL_CONTAINER_SLOTS = 27;
 
     public static final Argument<Integer> signalStrength = Argument
-            .ofType(integer(0, 15))
+            .ofType(integer(0, 896))
             .withDefault(15);
 
     @Override
@@ -35,12 +35,20 @@ public class SsBarrelFeature extends CommandFeature {
         // {BlockEntityTag:{Items:[{Slot:0,id:redstone,Count:3},{Slot:1,id:redstone,Count:61}]}}
         var items = new NbtList();
 
-        for (int i = 0; i < RedstoneUtils.signalStrengthToNonStackableItemCount(signalStrength.getValue(), BARREL_CONTAINER_SLOTS); i++) {
+        int itemsRequired = RedstoneUtils.signalStrengthToNonStackableItemCount(signalStrength.getValue(), BARREL_CONTAINER_SLOTS);
+        int itemsPlaced = 0;
+
+        while (itemsPlaced < itemsRequired) {
+
+            int slot = itemsPlaced / 64;
+            int count = Math.min(itemsRequired - itemsPlaced, 64);
             var item = new NbtCompound();
-            item.putByte("Slot", (byte) i);
-            item.putString("id", Registry.ITEM.getId(Items.TOTEM_OF_UNDYING).toString());
-            item.putByte("Count", (byte) 1);
+            item.putByte("Slot", (byte) slot);
+            item.putString("id", Registry.ITEM.getId(Items.AXOLOTL_BUCKET).toString());
+            item.putByte("Count", (byte) count);
             items.add(item);
+            itemsPlaced += count;
+
         }
 
         stack.getOrCreateSubNbt("BlockEntityTag").put("Items", items);
