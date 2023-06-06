@@ -1,7 +1,6 @@
 package tools.redstone.redstonetools.mixin.gamerules;
 
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
