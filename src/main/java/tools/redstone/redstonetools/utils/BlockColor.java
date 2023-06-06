@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.utils;
 
+import net.minecraft.block.Block;
+
 import java.util.Arrays;
 
 public enum BlockColor {
@@ -31,6 +33,14 @@ public enum BlockColor {
                 .filter(color -> color.name.equals(name))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public static BlockColor fromBlock(Block block) {
+        var coloredBlock = ColoredBlock.fromBlock(block);
+
+        return coloredBlock == null
+                ? BlockColor.WHITE
+                : coloredBlock.color;
     }
 
     @Override

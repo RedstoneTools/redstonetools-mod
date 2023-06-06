@@ -104,7 +104,7 @@ public class ColorCodeFeature extends CommandFeature {
             // call remember to allow undo
             playerSession.remember(session);
 
-            return Feedback.success("Successfully colored " + blocksColored + " blocks " + color.getValue());
+            return Feedback.success("Successfully colored %s blocks " + color.getValue(), String.valueOf(blocksColored));
         } catch (Exception e) {
             return Feedback.error("An error occurred while coloring the blocks.");
         }
