@@ -20,7 +20,7 @@ import com.sk89q.worldedit.regions.Region;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 
-import static tools.redstone.redstonetools.features.arguments.DirectionSerializer.direction;
+import static tools.redstone.redstonetools.features.arguments.serializers.DirectionSerializer.direction;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
