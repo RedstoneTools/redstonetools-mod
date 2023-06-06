@@ -95,7 +95,7 @@ public class BinaryBlockReadFeature extends CommandFeature {
         }
 
         var output = Integer.toString(Integer.parseInt(bits.toString(), 2), toBase.getValue());
-        return Feedback.success(output);
+        return Feedback.success("%s", new String[] { output });
     }
 
 }

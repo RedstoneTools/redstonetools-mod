@@ -6,19 +6,32 @@ import javax.annotation.Nullable;
 
 public abstract class Feedback {
     private final @Nullable String message;
+    private final @Nullable String[] values;
 
     protected Feedback(@Nullable String message) {
         this.message = message;
+        this.values = new String[0];
+    }
+
+    protected Feedback(@Nullable String message, @Nullable String[] values) {
+        this.message = message;
+        this.values = values;
     }
 
     private String formatMessage(String message) {
-        return "[RST] " + message;
+        return String.format("%s[%sRST%s]%s ", Formatting.GRAY, Formatting.RED, Formatting.GRAY, Formatting.RESET) + message;
     }
 
     public final String getMessage() {
-        return formatMessage(message != null
-                ? message
-                : getDefaultMessage());
+        if (message != null) {
+            for (int i = 0; i < values.length; i++) {
+                values[i] = Formatting.RED + values[i] + getFormatting();
+            }
+
+            return formatMessage(String.format(message, (Object[]) values));
+        } else {
+            return formatMessage(getDefaultMessage());
+        }
     }
 
     public abstract Formatting getFormatting();
@@ -53,10 +66,16 @@ public abstract class Feedback {
     public static Success success(@Nullable String message) {
         return new Success(message);
     }
+    public static Success success(@Nullable String message, @Nullable String[] values) {
+        return new Success(message, values);
+    }
 
     private static class Success extends Feedback {
         public Success(@Nullable String message) {
             super(message);
+        }
+        public Success(@Nullable String message, @Nullable String[] values) {
+            super(message, values);
         }
 
         @Override

@@ -93,6 +93,6 @@ public class RStackFeature extends CommandFeature {
             throw new RuntimeException(e);
         }
 
-        return Feedback.success("Stacked " + count.getValue() + " time(s)");
+        return Feedback.success("Stacked %s time(s)", new String[]{ count.getValue().toString() });
     }
 }
