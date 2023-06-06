@@ -6,9 +6,9 @@ import javax.annotation.Nullable;
 
 public abstract class Feedback {
     private final @Nullable String message;
-    private final @Nullable String[] values;
+    private final @Nullable Object[] values;
 
-    protected Feedback(@Nullable String message, @Nullable String... values) {
+    protected Feedback(@Nullable String message, @Nullable Object... values) {
         this.message = message;
         this.values = values;
     }
@@ -19,11 +19,12 @@ public abstract class Feedback {
 
     public final String getMessage() {
         if (message != null) {
-            for (int i = 0; i < values.length; i++) {
-                values[i] = Formatting.RED + values[i] + getFormatting();
+            String sentMessage = message;
+            for (Object value : values) {
+                sentMessage = sentMessage.replaceFirst("\\{\\}", Formatting.RED + value.toString() + getFormatting());
             }
 
-            return formatMessage(String.format(message, (Object[]) values));
+            return formatMessage(sentMessage);
         } else {
             return formatMessage(getDefaultMessage());
         }
@@ -58,12 +59,12 @@ public abstract class Feedback {
         }
     }
 
-    public static Success success(@Nullable String message, @Nullable String... values) {
+    public static Success success(@Nullable String message, @Nullable Object... values) {
         return new Success(message, values);
     }
 
     private static class Success extends Feedback {
-        public Success(@Nullable String message, @Nullable String... values) {
+        public Success(@Nullable String message, @Nullable Object... values) {
             super(message, values);
         }
 
