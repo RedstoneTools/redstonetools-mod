@@ -1,6 +1,6 @@
 package tools.redstone.redstonetools.utils;
 
-public enum ColoredBlockTypeArgument {
+public enum ColoredBlockType {
     WOOL,
     GLASS,
     CONCRETE,
