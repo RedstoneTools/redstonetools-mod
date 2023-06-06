@@ -36,15 +36,19 @@ public class SsBarrelFeature extends CommandFeature {
         var items = new NbtList();
 
         int itemsRequired = RedstoneUtils.signalStrengthToNonStackableItemCount(signalStrength.getValue(), BARREL_CONTAINER_SLOTS);
+        int itemsPlaced = 0;
 
-        for (int itemsPlaced = 0; itemsPlaced < itemsRequired; itemsPlaced += Math.min(itemsRequired - itemsPlaced, 64)) {
+        while (itemsPlaced < itemsRequired) {
+
             int slot = itemsPlaced / 64;
             int count = Math.min(itemsRequired - itemsPlaced, 64);
             var item = new NbtCompound();
             item.putByte("Slot", (byte) slot);
-            item.putString("id", Registry.ITEM.getId(Items.TOTEM_OF_UNDYING).toString());
+            item.putString("id", Registry.ITEM.getId(Items.AXOLOTL_BUCKET).toString());
             item.putByte("Count", (byte) count);
             items.add(item);
+            itemsPlaced += count;
+
         }
 
         stack.getOrCreateSubNbt("BlockEntityTag").put("Items", items);
