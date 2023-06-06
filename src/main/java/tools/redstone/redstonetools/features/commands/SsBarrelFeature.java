@@ -25,7 +25,7 @@ public class SsBarrelFeature extends CommandFeature {
     private static final int BARREL_CONTAINER_SLOTS = 27;
 
     public static final Argument<Integer> signalStrength = Argument
-            .ofType(integer(0, 896))
+            .ofType(integer(0, 1779))
             .withDefault(15);
 
     @Override
@@ -37,9 +37,9 @@ public class SsBarrelFeature extends CommandFeature {
 
         int itemsRequired = RedstoneUtils.signalStrengthToNonStackableItemCount(signalStrength.getValue(), BARREL_CONTAINER_SLOTS);
 
-        for (int itemsPlaced = 0; itemsPlaced < itemsRequired; itemsPlaced += Math.min(itemsRequired - itemsPlaced, 64)) {
-            int slot = itemsPlaced / 64;
-            int count = Math.min(itemsRequired - itemsPlaced, 64);
+        for (int itemsPlaced = 0; itemsPlaced < itemsRequired; itemsPlaced += Math.min(itemsRequired - itemsPlaced, 127)) {
+            int slot = itemsPlaced / 127;
+            int count = Math.min(itemsRequired - itemsPlaced, 127);
             var item = new NbtCompound();
             item.putByte("Slot", (byte) slot);
             item.putString("id", Registry.ITEM.getId(Items.TOTEM_OF_UNDYING).toString());
