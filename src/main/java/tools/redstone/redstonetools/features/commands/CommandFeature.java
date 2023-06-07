@@ -70,7 +70,6 @@ public abstract class CommandFeature extends AbstractFeature {
                     var feedback = execute(context.getSource());
 
                     INJECTOR.getInstance(AbstractFeedbackSender.class)
-
                             .sendFeedback(context.getSource(), feedback);
 
                     return feedback.getType().getCode();

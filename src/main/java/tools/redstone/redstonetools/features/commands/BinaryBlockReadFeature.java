@@ -67,7 +67,7 @@ public class BinaryBlockReadFeature extends CommandFeature {
         var spacingVector = direction.multiply(offset.getValue());
 
         if (direction.getBlockX() + direction.getBlockY() + direction.getBlockZ() > 1) {
-            return Feedback.invalidUsage("The selection must have 2 axis the same");
+            return Feedback.invalidUsage("The selection must have 2 axis the same.");
         }
 
         var bits = new StringBuilder();
@@ -95,7 +95,7 @@ public class BinaryBlockReadFeature extends CommandFeature {
         }
 
         var output = Integer.toString(Integer.parseInt(bits.toString(), 2), toBase.getValue());
-        return Feedback.success(output);
+        return Feedback.success("{}.", output);
     }
 
 }
