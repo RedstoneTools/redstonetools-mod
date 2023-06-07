@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tools.redstone.redstonetools.RedstoneToolsClient;
+import tools.redstone.redstonetools.update.UpdateScreen;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,7 +25,7 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.MOD_VERSION;
 
 @Mixin(TitleScreen.class)
 public class CheckUpdateMixin extends Screen {
-    public boolean updateChecked = false;
+    private static boolean updateChecked = false;
 
     public CheckUpdateMixin(Text title) {
         super(title);
@@ -64,7 +65,8 @@ public class CheckUpdateMixin extends Screen {
                 return;
             }
 
-            if (RedstoneToolsClient.MOD_VERSION.equals(newVersion)) {
+            //TODO REMEMBER TO REMOVE THE EXCLAMATION
+            if (!RedstoneToolsClient.MOD_VERSION.equals(newVersion)) {
                 LOGGER.info("Already up to date, current version: " + MOD_VERSION);
                 return;
             }
@@ -72,13 +74,7 @@ public class CheckUpdateMixin extends Screen {
             LOGGER.info("Found newer version, current version: " + RedstoneToolsClient.MOD_VERSION + ", new version: " + newVersion);
 
             var parentScreen = MinecraftClient.getInstance().currentScreen;
-            var popup = new ConfirmScreen(confirmed -> {
-                MinecraftClient.getInstance().setScreen(parentScreen);
-
-                if (confirmed) {
-                    Util.getOperatingSystem().open(uri);
-                }
-            }, Text.of("Update Available"), Text.of("An update is available for redstone tools! You are on version " + MOD_VERSION + " but version " + newVersion + " is available."), Text.of("Go to release"), Text.of("Ignore"));
+            var popup = new UpdateScreen(parentScreen,uri,"Update Available","An update is available for redstone tools! You are on version " + MOD_VERSION + " but version " + newVersion + " is available.");
 
             MinecraftClient.getInstance().setScreen(popup);
         } catch (Exception e) {
