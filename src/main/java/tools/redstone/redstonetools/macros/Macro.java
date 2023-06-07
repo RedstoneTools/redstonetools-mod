@@ -71,6 +71,7 @@ public class Macro {
         original.enabled = enabled;
         original.setKey(key);
         original.actions = new ArrayList<>(actions);
+        original.output = output;
     }
 
     public boolean isCopy(){
@@ -98,7 +99,7 @@ public class Macro {
     }
 
     public Macro createCopy() {
-        return new Macro(name,enabled,key,new ArrayList<>(actions),true,this);
+        return new Macro(name,enabled,key,new ArrayList<>(actions),output,this);
     }
 
     public void unregisterKeyBinding(){
@@ -122,7 +123,7 @@ public class Macro {
                 if (!actions.get(i).equals(macro.actions.get(i))) return false;
             }
 
-            return macro.name.equals(name) && macro.key.equals(key) && macro.enabled == enabled;
+            return macro.name.equals(name) && macro.key.equals(key) && macro.enabled == enabled && macro.output == output;
         }
 
         return super.equals(obj);

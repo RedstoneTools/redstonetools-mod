@@ -2,14 +2,10 @@ package tools.redstone.redstonetools.macros.gui.screen;
 
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.*;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.CommandBlockExecutor;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.MacroManager;
 import tools.redstone.redstonetools.macros.actions.Action;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
-import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 import tools.redstone.redstonetools.macros.gui.widget.commandlist.CommandEntry;
 import tools.redstone.redstonetools.macros.gui.widget.commandlist.CommandListWidget;
 import tools.redstone.redstonetools.macros.gui.widget.macrolist.MacroListWidget;
@@ -41,7 +37,6 @@ public class MacroEditScreen extends GameOptionsScreen {
     private ButtonWidget doneButton;
     private ButtonWidget keyBindButton;
     private CheckboxWidget outputToggle;
-
     private boolean overlapped = false;
     private boolean detectingKeycodeKey = false;
 
@@ -131,8 +126,8 @@ public class MacroEditScreen extends GameOptionsScreen {
         commandList.setScrollAmount(scrollAmount);
 
         this.addSelectableChild(commandList);
-
-        outputToggle = new CheckboxWidget(this.width / 2 + 26, 55, 20, 20, null, macro.enabled, false);
+        outputToggle = new CheckboxWidget(this.width / 2 + 168 - 20, 55, 20, 20, null, macro.output, false);
+        this.addDrawableChild(outputToggle);
     }
 
     private boolean canClickDone() {
@@ -153,7 +148,7 @@ public class MacroEditScreen extends GameOptionsScreen {
         drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);
 
         drawCenteredText(matrices, this.textRenderer, "Key Bind", width / 2 - (168 - textRenderer.getWidth("Key Bind") / 2), 55 + textRenderer.fontHeight / 2, 16777215);
-        drawCenteredText(matrices, this.textRenderer, "Key Bind", width / 2 - (99 - textRenderer.getWidth("Key Bind") / 2),  80+ textRenderer.fontHeight / 2, 16777215);
+        drawCenteredText(matrices, this.textRenderer, "Command Output", width / 2 + (textRenderer.getWidth("Command Output") / 2) + 5,  55+ textRenderer.fontHeight / 2, 16777215);
         nameField.render(matrices, mouseX, mouseY, delta);
 
         if (nameField.getText().isEmpty() && !nameField.isFocused()) {
@@ -167,6 +162,7 @@ public class MacroEditScreen extends GameOptionsScreen {
     public void tick() {
         nameField.tick();
         commandList.tick();
+        macro.output = outputToggle.isChecked();
 
         super.tick();
     }
