@@ -18,7 +18,7 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
     protected final Feedback execute(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null) {
-            return Feedback.error("Failed to get player");
+            return Feedback.error("Failed to get player.");
         }
 
         var stackOrFeedback = getItemStack(source, blockInfo);
@@ -33,7 +33,7 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
         playerInventory.addPickBlock(stack);
 
         if (client.interactionManager == null) {
-            throw new CommandSyntaxException(null, Text.of("Failed to get interaction manager"));
+            throw new CommandSyntaxException(null, Text.of("Failed to get interaction manager."));
         }
 
         client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.selectedSlot);

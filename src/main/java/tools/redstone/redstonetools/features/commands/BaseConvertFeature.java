@@ -26,6 +26,6 @@ public class BaseConvertFeature extends CommandFeature {
     protected Feedback execute(ServerCommandSource source) {
         var output = number.getValue().toString(toBase.getValue());
 
-        return Feedback.success("{}", output);
+        return Feedback.success("{}.", output);
     }
 }

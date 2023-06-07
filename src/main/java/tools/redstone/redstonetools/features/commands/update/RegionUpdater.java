@@ -22,7 +22,7 @@ public class RegionUpdater {
                 }
             }
         }
-        return Feedback.success("Successfully forced block updates for {} blocks", blockCount);
+        return Feedback.success("Successfully forced block updates for {} block(s).", blockCount);
     }
 
 }
