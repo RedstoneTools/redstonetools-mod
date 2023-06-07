@@ -15,12 +15,12 @@ public abstract class BlockRaycastFeature extends CommandFeature {
     protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) {
-            throw new CommandSyntaxException(null, Text.of("This command is client-side only"));
+            throw new CommandSyntaxException(null, Text.of("This command is client-side only."));
         }
 
         if (client.crosshairTarget == null || client.crosshairTarget.getType() != HitResult.Type.BLOCK) {
             if (requiresBlock()) {
-                return Feedback.invalidUsage("You must be looking at a block to use this command");
+                return Feedback.invalidUsage("You must be looking at a block to use this command.");
             } else {
                 return execute(source, null);
             }
