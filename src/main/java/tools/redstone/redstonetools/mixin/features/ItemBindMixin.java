@@ -2,6 +2,7 @@ package tools.redstone.redstonetools.mixin.features;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -19,6 +20,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.features.commands.ItemBindFeature;
+import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.features.feedback.FeedbackSender;
+
+import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
 
 public abstract class ItemBindMixin {
@@ -61,7 +66,9 @@ public abstract class ItemBindMixin {
         public void injectCommand(String message, CallbackInfo ci) {
             if (!message.startsWith("/") || !ItemBindFeature.waitingForCommand) return;
 
-            if (ItemBindFeature.addCommand((ClientPlayerEntity) ((Object)this),message)) {
+            Feedback addCommandFeedback = ItemBindFeature.addCommand((ClientPlayerEntity) ((Object)this),message);
+            if (addCommandFeedback != null) {
+                INJECTOR.getInstance(FeedbackSender.class).sendFeedback(((Entity) ((Object)this)).getCommandSource(),addCommandFeedback);
                 ci.cancel();
             }
         }

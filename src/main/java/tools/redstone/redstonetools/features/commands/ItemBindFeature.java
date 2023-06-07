@@ -39,23 +39,20 @@ public class ItemBindFeature extends CommandFeature{
         return Feedback.success("Please run the command you want to bind to this item (" + mainHandStack.getItem().toString()+")");
     }
 
-    public static boolean addCommand(ClientPlayerEntity player, String command) {
-        if (!waitingForCommand) return false;
+    public static Feedback addCommand(ClientPlayerEntity player, String command) {
+        if (!waitingForCommand) return null;
         if (!player.getInventory().contains(bindStack)) {
             bindStack = null;
             waitingForCommand = false;
-            return false;
+            return null;
         }
 
         bindStack.getOrCreateNbt().put("command", NbtString.of(command));
         ItemUtils.addExtraNBTText(bindStack,"Command");
 
-        player.sendMessage(new LiteralText("[RST] Successfully added: '" + command + "' to this item (" + bindStack.getItem().toString() + ")!"),false);
-
-        bindStack = null;
         waitingForCommand = false;
 
-        return true;
+        return Feedback.success("Successfully bound command: '" + command + "' to this item (" + bindStack.getItem().toString() + ")!");
     }
 
 }
