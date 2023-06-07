@@ -22,7 +22,7 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
         this.owner = owner;
 
         command = new TextFieldWidget(client.textRenderer, 0, 0, 300, 20, Text.of(""));
-        command.setMaxLength(32500);
+        command.setMaxLength(255);
         command.setText(text);
 
         deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0, 0, 20, 20, Text.of(""), (button) -> {
