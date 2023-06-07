@@ -140,7 +140,7 @@ public class MacroManager {
             actions[i] = new CommandAction(commands[i]);
         }
 
-        return new Macro(name, true, InputUtil.UNKNOWN_KEY, List.of(actions));
+        return new Macro(name, true, InputUtil.UNKNOWN_KEY, List.of(actions), true);
     }
 
     private List<Macro> getMacrosFromJson(JsonArray macrosJson) {
@@ -159,7 +159,7 @@ public class MacroManager {
         var key = macroJson.getString("key");
         var actions = getActionsFromJson(macroJson.getJsonArray("actions"));
 
-        return new Macro(name, enabled, InputUtil.fromTranslationKey(key), actions);
+        return new Macro(name, enabled, InputUtil.fromTranslationKey(key), actions, true);
     }
 
     private List<Action> getActionsFromJson(JsonArray actionsJson) {

@@ -14,29 +14,31 @@ import java.util.List;
 public class Macro {
 
     public static Macro buildEmpty() {
-        return new Macro("",true,InputUtil.UNKNOWN_KEY,new ArrayList<>());
+        return new Macro("",true,InputUtil.UNKNOWN_KEY, new ArrayList<>(), true);
     }
 
     private KeyBinding keyBinding;
     public String name;
     private Key key;
     public boolean enabled;
+    public boolean output;
     public List<Action> actions;
 
     private final Macro original;
 
-    public Macro(String name, boolean enabled, Key key, List<Action> actions) {
-        this(name,enabled,key,actions,null);
+    public Macro(String name, boolean enabled, Key key, List<Action> actions, boolean output) {
+        this(name,enabled,key,actions,output,null);
         keyBinding = new KeyBinding("macro." + System.nanoTime(),-1,"macros");
         registerKeyBinding();
         changeKeyBindingKeyCode();
     }
 
-    public Macro(String name, boolean enabled, Key key, List<Action> actions, Macro original) {
+    public Macro(String name, boolean enabled, Key key, List<Action> actions, boolean output, Macro original) {
         this.name = name;
         this.enabled = enabled;
         this.key = key;
         this.actions = actions;
+        this.output = output;
         this.original = original;
     }
 
@@ -96,7 +98,7 @@ public class Macro {
     }
 
     public Macro createCopy() {
-        return new Macro(name,enabled,key,new ArrayList<>(actions),this);
+        return new Macro(name,enabled,key,new ArrayList<>(actions),true,this);
     }
 
     public void unregisterKeyBinding(){
