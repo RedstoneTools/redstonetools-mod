@@ -18,7 +18,7 @@ import java.util.Random;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 
 @AutoService(AbstractFeature.class)
-@Feature(name = "Signal Strength Block", description = "Creates a block with the specified signal strength.", command = "ss")
+@Feature(name = "Signal Strength Block", description = "Creates a block with the specified signal strength.", command = "ssb")
 public class SignalStrengthBlockFeature extends CommandFeature {
 
     public static final Argument<Integer> signalStrength = Argument
