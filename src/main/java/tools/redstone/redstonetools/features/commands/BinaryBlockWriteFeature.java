@@ -83,6 +83,8 @@ public class BinaryBlockWriteFeature extends CommandFeature {
             return Feedback.invalidUsage("The selection is too small to write the number");
         }
 
+        bits = "0".repeat((int) spacingVector.length() * (int) boundingBox.getVolume() - bits.length()) + bits;
+
         var stringIndex = 0;
         for (BlockVector3 point = pos1; boundingBox.contains(point); point = point.add(spacingVector)) {
             var pos = new BlockPos(point.getBlockX(), point.getBlockY(), point.getBlockZ());
