@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import rip.hippo.inject.Doctor;
 import rip.hippo.inject.Injector;
 import tools.redstone.redstonetools.macros.WorldlessCommandHelper;
+import tools.redstone.redstonetools.utils.DependencyLookup;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
-import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_ID = "redstonetools";
@@ -27,7 +27,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
         ReflectionUtils.getFeatures().forEach(feature -> {
             LOGGER.trace("Registering feature {}", feature.getClass().getName());
 
-            if (feature.requiresWorldEdit() && !WorldEditUtils.WORLDEDIT_LOADED) {
+            if (feature.requiresWorldEdit() && !DependencyLookup.WORLDEDIT_LOADED) {
                 LOGGER.warn("Feature {} requires WorldEdit, but WorldEdit is not loaded. Skipping registration.", feature.getName());
                 return;
             }
