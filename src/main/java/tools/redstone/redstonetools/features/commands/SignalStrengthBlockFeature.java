@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.features.commands;
 import com.google.auto.service.AutoService;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
@@ -18,9 +19,7 @@ import static tools.redstone.redstonetools.features.arguments.serializers.Intege
 
 @AutoService(AbstractFeature.class)
 @Feature(name = "Signal Strength Block", description = "Creates a block with the specified signal strength.", command = "ss")
-public class SsCommandFeature extends CommandFeature {
-
-    private final static SimpleCommandExceptionType INVALID_SIGNAL_STRENGTH = new SimpleCommandExceptionType(Text.of("Invalid signal strength!"));
+public class SignalStrengthBlockFeature extends CommandFeature {
 
     public static final Argument<Integer> signalStrength = Argument
             .ofType(integer(0));
@@ -32,7 +31,8 @@ public class SsCommandFeature extends CommandFeature {
     @Override
     protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
         try {
-            source.getPlayer().giveItemStack(block.getValue().getItemStack(signalStrength.getValue()));
+            ItemStack itemStack = block.getValue().getItemStack(signalStrength.getValue());
+            source.getPlayer().giveItemStack(itemStack);
         } catch (IllegalArgumentException e) {
             return Feedback.error(e.getMessage());
         }
