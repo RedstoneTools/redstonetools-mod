@@ -51,17 +51,15 @@ public class SsBarrelFeature extends CommandFeature {
         source.getPlayer().giveItemStack(stack);
 
         //funny
-        if(signalStrength.getValue() == 0)
-
+        if (signalStrength.getValue() == 0)
         {
             String[] funny = {
                     "Why would you want this??", "Wtf are you going to use this for?", "What for?",
                     "... Ok, if you're sure.", "I'm 99% sure you could just use any other block.",
                     "This seems unnecessary.", "Is that a typo?", "Do you just like the glint?",
                     "Wow, what a fancy but otherwise useless barrel.", "For decoration?"};
-            return Feedback.success(funny[new Random(
 
-            ).nextInt(funny.length)]);
+            return Feedback.success(funny[new Random().nextInt(funny.length)]);
         }
 
         return Feedback.none();

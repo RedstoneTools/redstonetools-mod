@@ -22,7 +22,7 @@ public class MacroFeature extends CommandFeature {
 
 
         if (macroObj == null) {
-            return Feedback.invalidUsage("Macro \"%s\" does not exist".formatted(macro.getValue()));
+            return Feedback.invalidUsage("Macro \"{}\" does not exist.", macro.getValue());
         }
 
         macroObj.run();

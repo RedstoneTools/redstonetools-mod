@@ -84,13 +84,13 @@ public abstract class Feedback {
         }
     }
 
-    public static Warning warning(@Nullable String message) {
-        return new Warning(message);
+    public static Warning warning(@Nullable String message, @Nullable Object... values) {
+        return new Warning(message, values);
     }
 
     private static class Warning extends Feedback {
-        public Warning(@Nullable String message) {
-            super(message);
+        public Warning(@Nullable String message, @Nullable Object... values) {
+            super(message, values);
         }
 
         @Override
@@ -109,13 +109,13 @@ public abstract class Feedback {
         }
     }
 
-    public static Error error(@Nullable String message) {
-        return new Error(message);
+    public static Error error(@Nullable String message, @Nullable Object... values) {
+        return new Error(message, values);
     }
 
     private static class Error extends Feedback {
-        public Error(@Nullable String message) {
-            super(message);
+        public Error(@Nullable String message, @Nullable Object... values) {
+            super(message, values);
         }
 
         @Override
@@ -134,13 +134,13 @@ public abstract class Feedback {
         }
     }
 
-    public static InvalidUsage invalidUsage(@Nullable String message) {
-        return new InvalidUsage(message);
+    public static InvalidUsage invalidUsage(@Nullable String message, @Nullable Object... values) {
+        return new InvalidUsage(message, values);
     }
 
     private static class InvalidUsage extends Feedback {
-        public InvalidUsage(@Nullable String message) {
-            super(message);
+        public InvalidUsage(@Nullable String message, @Nullable Object... values) {
+            super(message, values);
         }
 
         @Override
