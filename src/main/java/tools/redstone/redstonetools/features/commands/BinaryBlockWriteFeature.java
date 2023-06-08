@@ -19,22 +19,20 @@ import java.util.Collections;
 
 import static tools.redstone.redstonetools.features.arguments.serializers.BigIntegerSerializer.bigInteger;
 import static tools.redstone.redstonetools.features.arguments.serializers.BlockStateArgumentSerializer.blockState;
-import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
-import static tools.redstone.redstonetools.features.arguments.serializers.NumberBaseSerializer.numberBase;
 
 @AutoService(AbstractFeature.class)
 @Feature(name = "Binary Block Write", description = "Interprets your WorldEdit selection as a binary number.", command = "/write")
 public class BinaryBlockWriteFeature extends CommandFeature {
-    private static final BlockStateArgument LIT_LAMP_ARG = new BlockStateArgument(
-            Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true),
-            Collections.singleton(RedstoneLampBlock.LIT),
+    private static final BlockStateArgument DEFAULT_ON_ARG = new BlockStateArgument(
+            Blocks.REDSTONE_BLOCK.getDefaultState(),
+            Collections.emptySet(),
             null
     );
 
-    private static final BlockStateArgument UNLIT_LAMP_ARG = new BlockStateArgument(
-            Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, false),
-            Collections.singleton(RedstoneLampBlock.LIT),
+    private static final BlockStateArgument DEFAULT_OFF_ARG = new BlockStateArgument(
+            Blocks.AIR.getDefaultState(),
+            Collections.emptySet(),
             null
     );
 
@@ -43,11 +41,11 @@ public class BinaryBlockWriteFeature extends CommandFeature {
             .withDefault(2);
     public static final Argument<BlockStateArgument> onBlock = Argument
             .ofType(blockState())
-            .withDefault(LIT_LAMP_ARG);
+            .withDefault(DEFAULT_ON_ARG);
 
     public static final Argument<BlockStateArgument> offBlock = Argument
             .ofType(blockState())
-            .withDefault(UNLIT_LAMP_ARG);
+            .withDefault(DEFAULT_OFF_ARG);
 
     public static final Argument<BigInteger> number = Argument
             .ofType(bigInteger());
