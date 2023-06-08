@@ -20,7 +20,7 @@ import java.util.Random;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 
 @AutoService(AbstractFeature.class)
-@Feature(name = "Signal Strength Barrel", description = "Creates a barrel with the specified signal strength.", command = "ss")
+@Feature(name = "Signal Strength Barrel", description = "Creates a barrel with the specified signal strength.", command = "ssb")
 public class SsBarrelFeature extends CommandFeature {
     private static final int BARREL_CONTAINER_SLOTS = 27;
 
@@ -51,17 +51,15 @@ public class SsBarrelFeature extends CommandFeature {
         source.getPlayer().giveItemStack(stack);
 
         //funny
-        if(signalStrength.getValue() == 0)
-
+        if (signalStrength.getValue() == 0)
         {
             String[] funny = {
                     "Why would you want this??", "Wtf are you going to use this for?", "What for?",
                     "... Ok, if you're sure.", "I'm 99% sure you could just use any other block.",
                     "This seems unnecessary.", "Is that a typo?", "Do you just like the glint?",
                     "Wow, what a fancy but otherwise useless barrel.", "For decoration?"};
-            return Feedback.success(funny[new Random(
 
-            ).nextInt(funny.length)]);
+            return Feedback.success(funny[new Random().nextInt(funny.length)]);
         }
 
         return Feedback.none();
