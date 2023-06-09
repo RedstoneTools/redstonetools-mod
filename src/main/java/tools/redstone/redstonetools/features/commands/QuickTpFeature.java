@@ -8,11 +8,15 @@ import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.PositionUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+
 import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
 
@@ -29,10 +33,16 @@ public class QuickTpFeature extends CommandFeature {
     @Override
     protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
         var player = source.getPlayer();
+        World world = source.getWorld();
 
         var targetPosition = getTargetPosition(player);
 
-        player.teleport(targetPosition.x, targetPosition.y, targetPosition.z);
+        BlockPos blockPosition = new BlockPos(targetPosition.x, targetPosition.y, targetPosition.z);
+
+        player.teleport(
+            targetPosition.x,
+            world.isAir(blockPosition) ? targetPosition.y : targetPosition.y + 1.3,
+            targetPosition.z);
 
         return Feedback.none();
     }
