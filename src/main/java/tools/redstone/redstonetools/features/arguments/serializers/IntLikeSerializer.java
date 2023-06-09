@@ -61,14 +61,8 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
             var prefixedBase = serialized.substring(0, 2);
             var number = serialized.substring(2);
 
-            // TODO(Refactor): Write a NumberBase.fromCharacter method instead of this that iterates of the NumberBases (add the char to the NumberBase constructor)
-            var numberBase = switch (prefixedBase.charAt(1)) {
-                case 'b' -> NumberBase.BINARY;
-                case 'o' -> NumberBase.OCTAL;
-                case 'd' -> NumberBase.DECIMAL;
-                case 'x' -> NumberBase.HEXADECIMAL;
-                default  -> null;
-            };
+            var numberBase = (NumberBase.fromPrefix(prefixedBase).isPresent()) ?
+                    NumberBase.fromPrefix(prefixedBase).get() : null;
 
             if (numberBase != null) {
                 return tryParse(number, numberBase.toInt());
