@@ -4,15 +4,19 @@ package tools.redstone.redstonetools.features.commands;
 import com.google.auto.service.AutoService;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.collection.DefaultedList;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.mixin.accessors.PlayerInventoryAccessor;
 import tools.redstone.redstonetools.utils.ItemUtils;
 
 @AutoService(AbstractFeature.class)
@@ -41,7 +45,8 @@ public class ItemBindFeature extends CommandFeature{
 
     public static Feedback addCommand(ClientPlayerEntity player, String command) {
         if (!waitingForCommand) return null;
-        if (!player.getInventory().contains(bindStack)) {
+
+        if (!doesContainStack(player.getInventory(),bindStack)) {
             bindStack = null;
             waitingForCommand = false;
             return null;
@@ -53,6 +58,15 @@ public class ItemBindFeature extends CommandFeature{
         waitingForCommand = false;
 
         return Feedback.success("Successfully bound command: '" + command + "' to this item (" + bindStack.getItem().toString() + ")!");
+    }
+
+    private static boolean doesContainStack(PlayerInventory inventory, ItemStack itemStack) {
+        for (DefaultedList<ItemStack> list : ((PlayerInventoryAccessor) inventory).getCombinedInventory()) {
+            for (ItemStack inventoryStack : list) {
+                if (inventoryStack == itemStack) return true;
+            }
+        }
+        return false;
     }
 
 }
