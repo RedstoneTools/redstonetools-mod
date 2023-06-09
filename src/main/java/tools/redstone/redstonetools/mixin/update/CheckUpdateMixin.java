@@ -3,11 +3,9 @@ package tools.redstone.redstonetools.mixin.update;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.text.Text;
-import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -66,7 +64,7 @@ public class CheckUpdateMixin extends Screen {
             }
 
             //TODO REMEMBER TO REMOVE THE EXCLAMATION
-            if (!RedstoneToolsClient.MOD_VERSION.equals(newVersion)) {
+            if (RedstoneToolsClient.MOD_VERSION.equals(newVersion)) {
                 LOGGER.info("Already up to date, current version: " + MOD_VERSION);
                 return;
             }
