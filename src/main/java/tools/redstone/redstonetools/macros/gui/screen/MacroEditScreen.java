@@ -24,6 +24,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import tools.redstone.redstonetools.utils.KeyBindingUtils;
 
 import java.util.List;
 
@@ -92,6 +93,7 @@ public class MacroEditScreen extends GameOptionsScreen {
         Key keyCode = macro.getKey();
         Text text = keyCode.getLocalizedText();
         if (keyCode == InputUtil.UNKNOWN_KEY) text = Text.of("");
+        if ( KeyBindingUtils.isKeyAlreadyBound(keyCode) ) { text = new LiteralText(text.getString()).formatted(Formatting.RED); }
 
         keyBindButton = new ButtonWidget(this.width / 2 + 26, 55, 75, 20, text, (button) -> {
             detectingKeycodeKey = true;
@@ -244,6 +246,7 @@ public class MacroEditScreen extends GameOptionsScreen {
             detectingKeycodeKey = false;
             Text text = key.getLocalizedText();
             if (key == InputUtil.UNKNOWN_KEY) text = Text.of("");
+            if ( KeyBindingUtils.isKeyAlreadyBound(key) ) { text = new LiteralText(text.getString()).formatted(Formatting.RED); }
 
             keyBindButton.setMessage(text);
             macro.setKey(key);
