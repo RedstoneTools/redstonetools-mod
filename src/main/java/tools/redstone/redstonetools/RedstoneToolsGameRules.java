@@ -16,7 +16,7 @@ public class RedstoneToolsGameRules {
     public static void register() {
         DO_CONTAINER_DROPS = GameRuleRegistry.register("doContainerDrops", GameRules.Category.DROPS, GameRuleFactory.createBooleanRule(true));
 
-        if (DependencyLookup.WORLDEDIT_LOADED) {
+        if (DependencyLookup.WORLDEDIT_PRESENT) {
             DO_BLOCK_UPDATES_AFTER_EDIT = GameRuleRegistry.register("doBlockUpdatesAfterEdit", GameRules.Category.UPDATES, GameRuleFactory.createBooleanRule(false));
         }
     }

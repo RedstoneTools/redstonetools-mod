@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 public class DependencyLookup {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(DependencyLookup.class);
-    public static final boolean WORLDEDIT_LOADED =
+    public static final boolean WORLDEDIT_PRESENT =
             require("com.sk89q.worldedit.WorldEdit");
 
     private static boolean require(String... classNames) {

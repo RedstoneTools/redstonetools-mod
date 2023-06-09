@@ -28,7 +28,7 @@ public class WorldEditUtils {
      */
     public static void forEachBlockInRegion(Region region,
                                             Consumer<BlockVector3> consumer) {
-        if (!DependencyLookup.WORLDEDIT_LOADED) {
+        if (!DependencyLookup.WORLDEDIT_PRESENT) {
             throw new IllegalStateException("WorldEdit is not loaded.");
         }
 
@@ -48,8 +48,8 @@ public class WorldEditUtils {
     }
 
     public static Either<Region, Feedback> getSelection(ServerPlayerEntity player) {
-        if (!DependencyLookup.WORLDEDIT_LOADED) {
-            return Either.right(Feedback.invalidUsage("WorldEdit is not loaded."));
+        if (!DependencyLookup.WORLDEDIT_PRESENT) {
+            throw new IllegalStateException("WorldEdit is not loaded.");
         }
 
         var actor = FabricAdapter.adaptPlayer(player);
