@@ -10,6 +10,13 @@
     "issues": "https://github.com/RedstoneTools/redstone-tools/issues",
     "discord": "https://discord.gg/nXWmrAsJQ8"
   },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/nXWmrAsJQ8"
+      }
+    }
+  },
 
   "license": "GPL-3.0",
   "icon": "assets/redstonetools/icon.png",
