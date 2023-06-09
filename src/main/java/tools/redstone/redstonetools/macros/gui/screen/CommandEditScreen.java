@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
-import org.lwjgl.glfw.GLFW;
 import tools.redstone.redstonetools.macros.gui.commandsuggestor.WorldlessCommandSuggestor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;

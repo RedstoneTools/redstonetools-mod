@@ -2,7 +2,6 @@ package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
