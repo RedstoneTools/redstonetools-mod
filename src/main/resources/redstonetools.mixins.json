@@ -8,6 +8,7 @@
   },
   "mixins": [
     "accessors.PlayerInventoryAccessor",
+    "features.AirPlaceServerMixin",
     "features.AutoDustMixin",
     "features.CopyStateMixin",
     "features.ItemBindMixin$ItemStackMixin",
@@ -17,7 +18,7 @@
   ],
   "client": [
     "accessors.MinecraftClientAccessor",
-    "features.AirplaceMixin",
+    "features.AirPlaceClientMixin",
     "features.ItemBindMixin$PlayerMixin",
     "macros.AddMacroButtonMixin",
     "macros.InitializeMacroManagerMixin",
