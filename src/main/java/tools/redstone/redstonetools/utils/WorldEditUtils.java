@@ -55,7 +55,7 @@ public class WorldEditUtils {
         try {
             return Either.left(localSession.getSelection(selectionWorld));
         } catch (IncompleteRegionException ex) {
-            return Either.right(Feedback.invalidUsage("Please make a selection with worldedit first."));
+            return Either.right(Feedback.invalidUsage("Please make a selection with WorldEdit first"));
         }
     }
 }
