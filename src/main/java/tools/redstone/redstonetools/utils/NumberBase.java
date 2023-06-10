@@ -79,13 +79,18 @@ public enum NumberBase {
 
     /**
      * Returns a formatted String that includes the base and the number prefix together
-     * @param num Number to be formatted:
+     * @param num Number to be formatted
      * @param base Base to be paired with the number
      * @return Formatted String
      */
     public static String formatNumber(String num, int base) {
+        String negsign = "";
+        if(Integer.parseInt(num,base) < 0){
+            num = num.substring(1);
+            negsign = "-";
+        }
         num = num.toUpperCase();
-        return switch (base) {
+        return negsign + switch (base) {
             case 2 -> "0b" + num;
             case 8 -> "0o" + num;
             case 10 -> "0d" + num;

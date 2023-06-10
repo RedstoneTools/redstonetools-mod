@@ -9,7 +9,8 @@ public class NumberArg implements Comparable<NumberArg>  {
 
     public final Integer originalBase;
 
-    public NumberArg(String num, int base) {
+
+    public NumberArg(String num, int base){
         this.numValue = new BigInteger(num, base);
         this.originalBase = base;
     }
@@ -26,7 +27,7 @@ public class NumberArg implements Comparable<NumberArg>  {
      * @return Formatted String
      */
     public String toString(){
-        return this.toString(originalBase);
+        return this.toString(this.originalBase);
     }
 
     /**

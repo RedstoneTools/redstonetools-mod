@@ -53,8 +53,14 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
     }
 
     private T deserializeUnchecked(String serialized) {
+        boolean isNegative = false;
         if (serialized.length() == 1) {
             return tryParse(serialized);
+        }
+
+        if(serialized.charAt(0) == '-'){
+            isNegative = true;
+            serialized = serialized.replace("-","");
         }
 
         if (serialized.charAt(0) == '0') {
@@ -65,7 +71,7 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
                     NumberBase.fromPrefix(prefixedBase).get() : null;
 
             if (numberBase != null) {
-                return tryParse(number, numberBase.toInt());
+                return isNegative ? tryParse("-"+number, numberBase.toInt()) : tryParse(number, numberBase.toInt());
             }
         }
 
@@ -84,10 +90,10 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
                 throw new IllegalArgumentException("Invalid base '" + parts[1] + "'.");
             }
 
-            return tryParse(number, base);
+            return isNegative ? tryParse("-"+number, base) : tryParse(number, base);
         }
 
-        return tryParse(serialized);
+        return isNegative ? tryParse("-"+serialized) : tryParse(serialized);
     }
 
     private T tryParse(String string) {
