@@ -4,7 +4,6 @@ import com.google.auto.service.AutoService;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
@@ -79,26 +78,20 @@ public class BinaryBlockWriteFeature extends CommandFeature {
 
         var bits = number.getValue().toString(2);
 
-        if (spacingVector.length() * boundingBox.getVolume() < bits.length()) {
+        if (Math.ceil((double) boundingBox.getVolume() / offset.getValue()) < bits.length()) {
             return Feedback.invalidUsage("The selection is too small to write the number");
         }
 
-        bits = "0".repeat((int) spacingVector.length() * (int) boundingBox.getVolume() - bits.length()) + bits;
+        bits = "0".repeat((int) (Math.ceil((double) boundingBox.getVolume() / offset.getValue()) - bits.length())) + bits;
 
         var stringIndex = 0;
         for (BlockVector3 point = pos1; boundingBox.contains(point); point = point.add(spacingVector)) {
             var pos = new BlockPos(point.getBlockX(), point.getBlockY(), point.getBlockZ());
 
-            BlockStateArgument state;
-
-            if (stringIndex >= bits.length()) {
-                state = offBlock.getValue();
-            } else {
-                state = bits.charAt(stringIndex) == '1' ? onBlock.getValue() : offBlock.getValue();
-                stringIndex++;
-            }
+            BlockStateArgument state = bits.charAt(stringIndex) == '1' ? onBlock.getValue() : offBlock.getValue();
 
             source.getPlayer().getWorld().setBlockState(pos, state.getBlockState());
+            stringIndex++;
         }
 
         return Feedback.success("Wrote " + bits);
