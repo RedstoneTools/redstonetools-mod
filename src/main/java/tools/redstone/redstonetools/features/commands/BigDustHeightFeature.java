@@ -16,7 +16,7 @@ import static tools.redstone.redstonetools.features.arguments.serializers.Intege
 @Feature(name = "Big Dust", description = "Change the size of redstone's hitbox.", command = "bigdust")
 public class BigDustHeightFeature extends CommandFeature {
 
-    public double customHeight = 1.0f;
+    public int customHeight = 1;
 
     public static final Argument<Integer> height = Argument
             .ofType(integer(1, 16));
