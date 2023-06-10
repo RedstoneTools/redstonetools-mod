@@ -39,4 +39,9 @@ public enum SignalBlock {
 
         return supplier.get(block, signal);
     }
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 }
