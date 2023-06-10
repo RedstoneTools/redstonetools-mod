@@ -18,12 +18,12 @@ public class BigDustHeightFeature extends CommandFeature {
 
     public int customHeight = 1;
 
-    public static final Argument<Integer> height = Argument
+    public static final Argument<Integer> heightPixels = Argument
             .ofType(integer(1, 16));
 
     @Override
     protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
-        customHeight = height.getValue();
+        customHeight = heightPixels.getValue();
 
         BigDustFeature bigDustFeature = RedstoneToolsClient.INJECTOR.getInstance(BigDustFeature.class);
         if (!bigDustFeature.isEnabled()) {
@@ -32,10 +32,7 @@ public class BigDustHeightFeature extends CommandFeature {
 
         double heightInBlocks = customHeight/16.0;
 
-        if (heightInBlocks == 1) {
-            return Feedback.success("Redstone dust hitbox height set to 1 block.");
-        }
-        return Feedback.success("Redstone dust hitbox height set to " + heightInBlocks + " blocks.");
+        return Feedback.success("Redstone dust hitbox height set to {} block(s).", heightInBlocks);
     }
 
 }
