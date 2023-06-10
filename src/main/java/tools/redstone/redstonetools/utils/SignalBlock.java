@@ -19,11 +19,6 @@ public enum SignalBlock {
     COMMAND_BLOCK(Blocks.COMMAND_BLOCK, SignalBlockSupplier.command_block()),
     AUTO(null, null);
 
-    public static SignalBlock getBestBlock(int signal) {
-        if (signal < 1780) return BARREL;
-        else return COMMAND_BLOCK;
-    }
-
     private final Block block;
     private final SignalBlockSupplier supplier;
 
@@ -32,8 +27,16 @@ public enum SignalBlock {
         this.supplier = supplier;
     }
 
+    public static SignalBlock getBestBlock(int signal) {
+        return signal < 1780
+                ? BARREL
+                : COMMAND_BLOCK;
+    }
+
     public ItemStack getItemStack(int signal) {
-        if (block == null || supplier == null) return getBestBlock(signal).getItemStack(signal);
-        else return supplier.get(block, signal);
+        if (block == null || supplier == null)
+            return getBestBlock(signal).getItemStack(signal);
+
+        return supplier.get(block, signal);
     }
 }
