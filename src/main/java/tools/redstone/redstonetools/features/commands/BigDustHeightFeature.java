@@ -10,16 +10,16 @@ import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 
-import static tools.redstone.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
+import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 
 @AutoService(AbstractFeature.class)
 @Feature(name = "Big Dust", description = "Change the size of redstone's hitbox.", command = "bigdust")
 public class BigDustHeightFeature extends CommandFeature {
 
-    public float customHeight = 8.0f;
+    public double customHeight = 1.0f;
 
-    public static final Argument<Float> height = Argument
-            .ofType(floatArg(1.0f, 16.0f));
+    public static final Argument<Integer> height = Argument
+            .ofType(integer(1, 16));
 
     @Override
     protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
@@ -33,7 +33,7 @@ public class BigDustHeightFeature extends CommandFeature {
         double heightInBlocks = customHeight/16.0;
 
         if (heightInBlocks == 1) {
-            return Feedback.success("Redstone dust hitbox height set to " + heightInBlocks + " block.");
+            return Feedback.success("Redstone dust hitbox height set to 1 block.");
         }
         return Feedback.success("Redstone dust hitbox height set to " + heightInBlocks + " blocks.");
     }
