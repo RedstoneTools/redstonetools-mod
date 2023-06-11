@@ -30,33 +30,22 @@ public abstract class ToggleableFeature extends AbstractFeature {
         return enabled;
     }
 
-    public int toggle(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        return toggle(context.getSource());
-    }
+    private int toggle(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        enabled = !enabled;
 
-    public int toggle(ServerCommandSource source) throws CommandSyntaxException {
-        return !enabled ? enable(source) : disable(source);
+        return enabled ? onEnable(context.getSource()) : onDisable(context.getSource());
     }
 
     //TODO: these need to be replaced when the sendMessage util gets made.
-    public int enable(ServerCommandSource source) throws CommandSyntaxException {
-        enabled = true;
+    protected int onEnable(ServerCommandSource source) throws CommandSyntaxException {
         INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.success(info.name() + " has been enabled."));
+
         return 0;
     }
 
-    public int enable(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        return enable(context.getSource());
-    }
-
-    public int disable(ServerCommandSource source) throws CommandSyntaxException {
-        enabled = false;
+    protected int onDisable(ServerCommandSource source) throws CommandSyntaxException {
         INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.success(info.name() + " has been disabled."));
+
         return 0;
     }
-
-    public int disable(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        return disable(context.getSource());
-    }
-
 }

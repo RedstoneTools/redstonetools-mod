@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.features;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
+import tools.redstone.redstonetools.RedstoneToolsClient;
 
 public abstract class AbstractFeature {
     private final Feature feature;
@@ -31,6 +32,8 @@ public abstract class AbstractFeature {
      * Register this feature.
      */
     public void register() {
+        RedstoneToolsClient.LOGGER.info("Registering and initializing feature " + getName());
+
         CommandRegistrationCallback.EVENT.register(this::registerCommands);
     }
 

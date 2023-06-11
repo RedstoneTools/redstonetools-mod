@@ -9,6 +9,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 
 /**
  * Base class for the 'wrapped' argument type.
@@ -39,5 +40,40 @@ public abstract class TypeSerializer<T, S> implements ArgumentType<T> {
     /* Usage In Commands */
     public abstract Collection<String> getExamples();
     public abstract <R> CompletableFuture<Suggestions> listSuggestions(CommandContext<R> context, SuggestionsBuilder builder);
+
+    /* Customization */
+    @SafeVarargs
+    public final TypeSerializer<T, S> withCompleters(BiConsumer<CommandContext<?>, SuggestionsBuilder>... completers) {
+        return new TypeSerializer<>(clazz) {
+            @Override
+            public T deserialize(StringReader reader) throws CommandSyntaxException {
+                return TypeSerializer.this.deserialize(reader);
+            }
+
+            @Override
+            public T deserialize(S serialized) {
+                return TypeSerializer.this.deserialize(serialized);
+            }
+
+            @Override
+            public S serialize(T value) {
+                return TypeSerializer.this.serialize(value);
+            }
+
+            @Override
+            public Collection<String> getExamples() {
+                return TypeSerializer.this.getExamples();
+            }
+
+            @Override
+            public <R> CompletableFuture<Suggestions> listSuggestions(CommandContext<R> context, SuggestionsBuilder builder) {
+                for (var f : completers) {
+                    f.accept(context, builder);
+                }
+
+                return TypeSerializer.this.listSuggestions(context, builder);
+            }
+        };
+    }
 
 }

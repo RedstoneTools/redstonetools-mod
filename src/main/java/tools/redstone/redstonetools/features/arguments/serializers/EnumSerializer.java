@@ -14,6 +14,10 @@ import java.util.concurrent.CompletableFuture;
 public abstract class EnumSerializer<T extends Enum<T>>
         extends TypeSerializer<T, String> {
 
+    public static <T extends Enum<T>> EnumSerializer<T> of(Class<T> tClass) {
+        return new EnumSerializer<>(tClass) { };
+    }
+
     protected EnumSerializer(Class<T> clazz) {
         super(clazz);
     }

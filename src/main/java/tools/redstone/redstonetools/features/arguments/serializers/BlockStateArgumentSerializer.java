@@ -2,9 +2,13 @@ package tools.redstone.redstonetools.features.arguments.serializers;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.BlockStateArgumentType;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.registry.Registry;
+
+import java.util.HashSet;
 
 public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockStateArgument, String> {
 
@@ -16,6 +20,10 @@ public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockState
 
     public static BlockStateArgumentSerializer blockState() {
         return INSTANCE;
+    }
+
+    public static BlockStateArgument toArgument(BlockState blockState) {
+        return new BlockStateArgument(blockState, new HashSet<>(blockState.getProperties()), new NbtCompound());
     }
 
     @Override
