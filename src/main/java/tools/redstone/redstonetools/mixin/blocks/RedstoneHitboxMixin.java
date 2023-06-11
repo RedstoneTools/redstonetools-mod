@@ -33,13 +33,13 @@ public class RedstoneHitboxMixin {
         }
 
         if (bigDustFeature.isEnabled()) {
-            cir.setReturnValue(SHAPES[BigDustFeature.heightInPixels.getValue()]);
+            cir.setReturnValue(SHAPES[BigDustFeature.heightInPixels.getValue() - 1]);
         }
     }
 
     static {
         for (int i = 1; i <= 16; i++) {
-            SHAPES[i] = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, i, 16.0);
+            SHAPES[i - 1] = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, i, 16.0);
         }
     }
 
