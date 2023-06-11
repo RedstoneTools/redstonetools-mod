@@ -7,7 +7,7 @@ public class Argument<T> {
     private String name;
     private final TypeSerializer<T, ?> type;
     private boolean optional = false;
-    private T value;
+    private volatile T value;
     private T defaultValue;
 
     private Argument(TypeSerializer<T, ?> type) {
