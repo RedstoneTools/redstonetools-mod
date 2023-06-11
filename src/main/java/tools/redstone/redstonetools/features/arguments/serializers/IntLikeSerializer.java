@@ -58,7 +58,7 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
             return tryParse(serialized);
         }
 
-        if(serialized.charAt(0) == '-'){
+        if(serialized.charAt(0) == '-' && serialized.chars().filter(ch -> ch == '-').count() == 1){
             isNegative = true;
             serialized = serialized.replace("-","");
         }
@@ -67,8 +67,7 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
             var prefixedBase = serialized.substring(0, 2);
             var number = serialized.substring(2);
 
-            var numberBase = (NumberBase.fromPrefix(prefixedBase).isPresent()) ?
-                    NumberBase.fromPrefix(prefixedBase).get() : null;
+            var numberBase = NumberBase.fromPrefix(prefixedBase).orElse(null);
 
             if (numberBase != null) {
                 return isNegative ? tryParse("-"+number, numberBase.toInt()) : tryParse(number, numberBase.toInt());

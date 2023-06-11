@@ -9,7 +9,6 @@ public class NumberArg implements Comparable<NumberArg>  {
 
     public final Integer originalBase;
 
-
     public NumberArg(String num, int base){
         this.numValue = new BigInteger(num, base);
         this.originalBase = base;
