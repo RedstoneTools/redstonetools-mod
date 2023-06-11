@@ -21,6 +21,7 @@ public class Argument<T> {
     public Argument<T> withDefault(T defaultValue) {
         optional = true;
         this.defaultValue = defaultValue;
+        this.value = defaultValue; // for options, temporary
 
         return this;
     }

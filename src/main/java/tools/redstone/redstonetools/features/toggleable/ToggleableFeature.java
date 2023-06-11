@@ -1,9 +1,13 @@
 package tools.redstone.redstonetools.features.toggleable;
 
+import com.sk89q.worldedit.internal.command.CommandUtil;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
+import tools.redstone.redstonetools.features.commands.CommandFeature;
+import tools.redstone.redstonetools.features.feedback.AbstractFeedbackSender;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.features.feedback.FeedbackSender;
+import tools.redstone.redstonetools.utils.CommandUtils;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -22,8 +26,31 @@ public abstract class ToggleableFeature extends AbstractFeature {
     protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
         info = ReflectionUtils.getFeatureInfo(getClass());
 
-        dispatcher.register(literal(info.command())
-                .executes(this::toggle));
+        // get arguments and create toggle command
+        var arguments = ReflectionUtils.getArguments(getClass());
+
+        var baseCommand = CommandUtils.build(
+                info.command(),
+                arguments,
+                context -> {
+                    for (var argument : arguments) {
+                        argument.setValue(context);
+                    }
+
+                    INJECTOR.getInstance(FeedbackSender.class)
+                            .sendFeedback(context.getSource(), Feedback.success("Modified properties of " + info.name()));
+
+                    // enable if disabled
+                    if (!enabled) {
+                        enable(context);
+                    }
+
+                    return 1;
+                })
+                /* make the base command toggle */
+                .executes(this::toggle);
+
+        dispatcher.register(baseCommand);
     }
 
     public boolean isEnabled() {
