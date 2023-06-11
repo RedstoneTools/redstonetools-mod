@@ -7,6 +7,7 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "blocks.RedstoneHitboxMixin",
     "features.AirPlaceServerMixin",
     "features.AutoDustMixin",
     "features.CopyStateMixin",
