@@ -6,16 +6,16 @@ import net.minecraft.item.ItemStack;
 
 public enum SignalBlock {
     COMPOSTER(Blocks.COMPOSTER, SignalBlockSupplier.composter()),
-    BARREL(Blocks.BARREL, SignalBlockSupplier.container_27()),
-    CHEST(Blocks.CHEST, SignalBlockSupplier.container_27()),
-    SHULKER_BOX(Blocks.SHULKER_BOX, SignalBlockSupplier.container_27()),
-    DISPENSER(Blocks.DISPENSER, SignalBlockSupplier.container_9()),
-    DROPPER(Blocks.DROPPER, SignalBlockSupplier.container_9()),
-    HOPPER(Blocks.HOPPER, SignalBlockSupplier.container_5()),
-    BREWING_STAND(Blocks.BREWING_STAND, SignalBlockSupplier.container_5()),
-    FURNACE(Blocks.FURNACE, SignalBlockSupplier.container_3()),
-    SMOKER(Blocks.SMOKER, SignalBlockSupplier.container_3()),
-    BLAST_FURNACE(Blocks.BLAST_FURNACE, SignalBlockSupplier.container_3()),
+    BARREL(Blocks.BARREL, SignalBlockSupplier.container(27)),
+    CHEST(Blocks.CHEST, SignalBlockSupplier.container(27)),
+    SHULKER_BOX(Blocks.SHULKER_BOX, SignalBlockSupplier.container(27)),
+    DISPENSER(Blocks.DISPENSER, SignalBlockSupplier.container(9)),
+    DROPPER(Blocks.DROPPER, SignalBlockSupplier.container(9)),
+    HOPPER(Blocks.HOPPER, SignalBlockSupplier.container(5)),
+    BREWING_STAND(Blocks.BREWING_STAND, SignalBlockSupplier.container(5)),
+    FURNACE(Blocks.FURNACE, SignalBlockSupplier.container(3)),
+    SMOKER(Blocks.SMOKER, SignalBlockSupplier.container(3)),
+    BLAST_FURNACE(Blocks.BLAST_FURNACE, SignalBlockSupplier.container(3)),
     COMMAND_BLOCK(Blocks.COMMAND_BLOCK, SignalBlockSupplier.command_block()),
     AUTO(null, null);
 

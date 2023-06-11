@@ -61,22 +61,6 @@ public interface SignalBlockSupplier {
         };
     }
 
-    static SignalBlockSupplier container_27() {
-        return container(27);
-    }
-
-    static SignalBlockSupplier container_9() {
-        return container(9);
-    }
-
-    static SignalBlockSupplier container_5() {
-        return container(5);
-    }
-
-    static SignalBlockSupplier container_3() {
-        return container(3);
-    }
-
     static SignalBlockSupplier composter() {
         return signal -> {
             if (signal > 8 || signal == 7) throw new IllegalArgumentException("Composter signal must be 0-6 or 8");
