@@ -16,7 +16,7 @@ public enum SignalBlock {
     FURNACE(Blocks.FURNACE, SignalBlockSupplier.container(3)),
     SMOKER(Blocks.SMOKER, SignalBlockSupplier.container(3)),
     BLAST_FURNACE(Blocks.BLAST_FURNACE, SignalBlockSupplier.container(3)),
-    COMMAND_BLOCK(Blocks.COMMAND_BLOCK, SignalBlockSupplier.command_block()),
+    COMMAND_BLOCK(Blocks.COMMAND_BLOCK, SignalBlockSupplier.commandBlock()),
     AUTO(null, null);
 
     private final Block block;
@@ -37,7 +37,7 @@ public enum SignalBlock {
         if (block == null || supplier == null)
             return getBestBlock(signal).getItemStack(signal);
 
-        return supplier.get(block, signal);
+        return supplier.getItemStack(block, signal);
     }
 
     @Override
