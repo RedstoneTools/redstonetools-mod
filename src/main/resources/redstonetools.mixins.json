@@ -11,9 +11,7 @@
     "features.AirPlaceServerMixin",
     "features.AutoDustMixin",
     "features.CopyStateMixin",
-    "gamerules.DoContainerDropsMixin",
-    "telemetry.SendCommandMixin",
-    "telemetry.ShowTelemetryPopupMixin"
+    "gamerules.DoContainerDropsMixin"
   ],
   "client": [
     "accessors.MinecraftClientAccessor",
@@ -24,8 +22,6 @@
     "macros.autocomplete.ClientPlayerEntityMixinImpl",
     "macros.autocomplete.CommandDispatcherMixin",
     "macros.autocomplete.CommandSuggestorMixin",
-    "telemetry.InitializeTelemetryClientMixin",
-    "telemetry.SendCrashReportMixin",
     "update.CheckUpdateMixin"
   ]
 }
