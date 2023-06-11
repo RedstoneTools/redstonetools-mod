@@ -40,6 +40,13 @@ public interface SignalBlockSupplier {
                     : (int) Math.ceil(slots * (signalStrength - 1) / 14D * item.getMaxCount());
             String itemId = Registry.ITEM.getId(item).toString();
 
+            // Check that the calculated number of items is correct.
+            // This is to prevent problems with items that have a maximum stack size of 1 but stackSize > 1.
+            // TODO: This can be improved by removing an item and adding stackable items up to the desired signal strength.
+            // Even with the improvement, this will still fail for inventories with no available slots.
+            if (calculateComparatorOutput(itemsNeeded, slots, item.getMaxCount()) != signalStrength)
+                throw new IllegalStateException("This signal strength cannot be achieved with the selected container");
+
             for (int slot = 0, count = itemsNeeded; count > 0; slot++, count -= stackSize) {
                 NbtCompound slotTag = new NbtCompound();
                 slotTag.putByte("Slot", (byte) slot);
