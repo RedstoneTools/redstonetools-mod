@@ -7,7 +7,6 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "accessors.PlayerInventoryAccessor",
     "features.AirPlaceServerMixin",
     "features.AutoDustMixin",
     "features.CopyStateMixin",

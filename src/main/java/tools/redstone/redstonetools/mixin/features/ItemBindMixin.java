@@ -66,7 +66,7 @@ public abstract class ItemBindMixin {
         public void injectCommand(String message, CallbackInfo ci) {
             if (!message.startsWith("/") || !ItemBindFeature.waitingForCommand) return;
 
-            Feedback addCommandFeedback = ItemBindFeature.addCommand((ClientPlayerEntity) ((Object)this),message);
+            Feedback addCommandFeedback = ItemBindFeature.addCommand(message);
             if (addCommandFeedback != null) {
                 INJECTOR.getInstance(FeedbackSender.class).sendFeedback(((Entity) ((Object)this)).getCommandSource(),addCommandFeedback);
                 ci.cancel();
