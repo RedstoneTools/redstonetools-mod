@@ -35,9 +35,10 @@ public class BinaryBlockWriteFeature extends CommandFeature {
             null
     );
 
-    public static final Argument<Integer> offset = Argument
+    public static final Argument<Integer> bitCount = Argument
             .ofType(integer(1))
-            .withDefault(2);
+            .withDefault(8);
+
     public static final Argument<BlockStateArgument> onBlock = Argument
             .ofType(blockState())
             .withDefault(DEFAULT_ON_ARG);
@@ -70,19 +71,23 @@ public class BinaryBlockWriteFeature extends CommandFeature {
             direction = BlockVector3.at(0, 0, 1);
         }
 
-        var spacingVector = direction.multiply(offset.getValue());
-
         if (direction.getBlockX() + direction.getBlockY() + direction.getBlockZ() > 1) {
             return Feedback.invalidUsage("The selection must have 2 axis the same");
         }
 
-        var bits = number.getValue().toString(2);
+        if (boundingBox.getVolume() % bitCount.getValue() != 0) {
+            return Feedback.invalidUsage("The selection must be a multiple of the bit count");
+        }
 
-        if (Math.ceil((double) boundingBox.getVolume() / offset.getValue()) < bits.length()) {
+        if (boundingBox.getVolume() < bitCount.getValue()) {
             return Feedback.invalidUsage("The selection is too small to write the number");
         }
 
-        bits = "0".repeat((int) (Math.ceil((double) boundingBox.getVolume() / offset.getValue()) - bits.length())) + bits;
+        var spacingVector = direction.multiply((int) (boundingBox.getVolume() / bitCount.getValue()));
+
+        var bits = number.getValue().toString(2);
+
+        bits = "0".repeat(bitCount.getValue() - bits.length()) + bits;
 
         var stringIndex = 0;
         for (BlockVector3 point = pos1; boundingBox.contains(point); point = point.add(spacingVector)) {
