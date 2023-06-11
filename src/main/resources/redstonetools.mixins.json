@@ -8,6 +8,7 @@
   },
   "mixins": [
     "accessors.PlayerInventoryAccessor",
+    "blocks.RedstoneHitboxMixin",
     "features.AirPlaceServerMixin",
     "features.AutoDustMixin",
     "features.CopyStateMixin",
