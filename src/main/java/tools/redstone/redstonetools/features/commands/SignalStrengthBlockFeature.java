@@ -33,7 +33,7 @@ public class SignalStrengthBlockFeature extends CommandFeature {
         try {
             ItemStack itemStack = block.getValue().getItemStack(signalStrength.getValue());
             source.getPlayer().giveItemStack(itemStack);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             return Feedback.error(e.getMessage());
         }
 
