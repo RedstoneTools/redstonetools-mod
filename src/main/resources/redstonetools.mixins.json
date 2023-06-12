@@ -11,16 +11,17 @@
     "features.AirPlaceServerMixin",
     "features.AutoDustMixin",
     "features.CopyStateMixin",
-    "gamerules.DoContainerDropsMixin"
+    "features.ItemBindMixin$ItemStackMixin",
+    "gamerules.DoContainerDropsMixin",
   ],
   "client": [
     "accessors.MinecraftClientAccessor",
     "features.AirPlaceClientMixin",
+    "features.ItemBindMixin$PlayerMixin",
     "macros.AddMacroButtonMixin",
     "macros.InitializeMacroManagerMixin",
     "macros.KeyBindingMixinImpl",
     "macros.autocomplete.ClientPlayerEntityMixinImpl",
-    "macros.autocomplete.CommandDispatcherMixin",
     "macros.autocomplete.CommandSuggestorMixin",
     "update.CheckUpdateMixin"
   ]
