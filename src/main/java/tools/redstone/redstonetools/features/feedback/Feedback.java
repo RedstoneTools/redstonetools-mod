@@ -1,6 +1,9 @@
 package tools.redstone.redstonetools.features.feedback;
 
+import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Formatting;
+import tools.redstone.redstonetools.RedstoneToolsClient;
 
 import javax.annotation.Nullable;
 
@@ -30,11 +33,25 @@ public abstract class Feedback {
         }
     }
 
+    /** Returns the status code. */
+    public int send(ServerCommandSource source) {
+        RedstoneToolsClient.INJECTOR
+                .getInstance(FeedbackSender.class)
+                .sendFeedback(source, this);
+
+        return getType().getCode();
+    }
+
+    /** Returns the status code. */
+    public int send(CommandContext<ServerCommandSource> context) {
+        return send(context.getSource());
+    }
+
     public abstract Formatting getFormatting();
     public abstract String getDefaultMessage();
     public abstract FeedbackType getType();
 
-    public static None none() {
+    public static Feedback none() {
         return new None();
     }
 
@@ -59,7 +76,7 @@ public abstract class Feedback {
         }
     }
 
-    public static Success success(@Nullable String message, @Nullable Object... values) {
+    public static Feedback success(@Nullable String message, @Nullable Object... values) {
         return new Success(message, values);
     }
 
@@ -84,7 +101,7 @@ public abstract class Feedback {
         }
     }
 
-    public static Warning warning(@Nullable String message, @Nullable Object... values) {
+    public static Feedback warning(@Nullable String message, @Nullable Object... values) {
         return new Warning(message, values);
     }
 
@@ -109,7 +126,7 @@ public abstract class Feedback {
         }
     }
 
-    public static Error error(@Nullable String message, @Nullable Object... values) {
+    public static Feedback error(@Nullable String message, @Nullable Object... values) {
         return new Error(message, values);
     }
 
@@ -134,7 +151,7 @@ public abstract class Feedback {
         }
     }
 
-    public static InvalidUsage invalidUsage(@Nullable String message, @Nullable Object... values) {
+    public static Feedback invalidUsage(@Nullable String message, @Nullable Object... values) {
         return new InvalidUsage(message, values);
     }
 

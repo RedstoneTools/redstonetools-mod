@@ -7,7 +7,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
+import tools.redstone.redstonetools.utils.RaycastUtils;
 
 @Mixin(MinecraftClient.class)
 public class AirPlaceClientMixin {
@@ -27,26 +27,25 @@ public class AirPlaceClientMixin {
 
     @Inject(method = "doItemUse", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
     public void doItemUse(CallbackInfo callbackInfo) {
-        if (!isAirplaceAllowed()) {
+        if (!isAirPlaceAllowed()) {
             return;
         }
 
-        var hitResult = getAirplaceHitResult();
-
-        crosshairTarget = new BlockHitResult(hitResult, Direction.UP, new BlockPos(hitResult), false);
+        crosshairTarget = AirPlaceFeature.findAirPlaceBlockHit(getPlayer());
     }
 
     @Inject(method = "doAttack", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
     public void doAttack(CallbackInfoReturnable<Boolean> cir) {
-        if (!isAirplaceAllowed()) {
+        if (!isAirPlaceAllowed()) {
             return;
         }
 
-        //Call interactionManager directly because the block is air, with which the player cannot interact
-        getInteractionManager().attackBlock(new BlockPos(getAirplaceHitResult()), Direction.UP);
+        // Call interactionManager directly because the block is air, with which the player cannot interact
+        var hit = AirPlaceFeature.findAirPlaceBlockHit(getPlayer());
+        getInteractionManager().attackBlock(hit.getBlockPos(), hit.getSide());
     }
 
-    private boolean isAirplaceAllowed() {
+    private boolean isAirPlaceAllowed() {
         // If airplace is disabled
         if (!airPlaceFeature.isEnabled()) {
             return false;
@@ -63,14 +62,6 @@ public class AirPlaceClientMixin {
         }
 
         return true;
-    }
-
-    private Vec3d getAirplaceHitResult() {
-        // Asserting values previously tested by isAirplaceAllowed()
-        assert getInteractionManager() != null;
-        assert getPlayer() != null;
-
-        return getPlayer().raycast(AirPlaceFeature.reach.getValue(), 0, false).getPos();
     }
 
     private MinecraftClient getMinecraftClient() {

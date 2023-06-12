@@ -19,7 +19,7 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public abstract class ToggleableFeature extends AbstractFeature {
-    private boolean enabled;
+    private volatile boolean enabled; // volatile for thread safety
     private Feature info;
 
     @Override
@@ -37,8 +37,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
                         argument.setValue(context);
                     }
 
-                    INJECTOR.getInstance(FeedbackSender.class)
-                            .sendFeedback(context.getSource(), Feedback.success("Modified properties of " + info.name()));
+                    Feedback.success("Modified properties of feature {}", info.name()).send(context);
 
                     // enable if disabled
                     if (!enabled) {
@@ -68,7 +67,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
     //TODO: these need to be replaced when the sendMessage util gets made.
     public int enable(ServerCommandSource source) throws CommandSyntaxException {
         enabled = true;
-        INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.success(info.name() + " has been enabled."));
+        Feedback.success("Enabled feature {}", info.name()).send(source);
         return 0;
     }
 
@@ -78,7 +77,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
 
     public int disable(ServerCommandSource source) throws CommandSyntaxException {
         enabled = false;
-        INJECTOR.getInstance(FeedbackSender.class).sendFeedback(source, Feedback.success(info.name() + " has been disabled."));
+        Feedback.success("Disabled feature {}", info.name()).send(source);
         return 0;
     }
 

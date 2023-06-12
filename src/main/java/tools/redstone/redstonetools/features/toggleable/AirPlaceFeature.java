@@ -11,6 +11,8 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -19,6 +21,7 @@ import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer;
 import tools.redstone.redstonetools.utils.ItemUtils;
+import tools.redstone.redstonetools.utils.RaycastUtils;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 
 import java.lang.invoke.MethodHandle;
@@ -43,13 +46,18 @@ public class AirPlaceFeature extends ToggleableFeature {
         }
     }
 
-    public static HitResult getAirPlacePosition(MinecraftClient client) {
+    public static HitResult findAirPlacePosition(MinecraftClient client) {
         if (client.player == null)
             return null;
         ClientPlayerEntity player = client.player;
 
         float reach = AirPlaceFeature.reach.getValue();
         return player.raycast(reach, 0, false);
+    }
+
+    public static BlockHitResult findAirPlaceBlockHit(PlayerEntity playerEntity) {
+        var hit = RaycastUtils.rayCastFromEye(playerEntity, reach.getValue());
+        return new BlockHitResult(hit.getPos(), hit.getSide(), hit.getBlockPos(), false);
     }
 
     public static final Argument<Float> reach = Argument
@@ -74,12 +82,13 @@ public class AirPlaceFeature extends ToggleableFeature {
             if (blockOutlineContext.getType() != HitResult.Type.MISS)
                 return true;
 
-            HitResult hitResult = getAirPlacePosition(client);
+            HitResult hitResult = findAirPlacePosition(client);
             if (hitResult == null)
                 return true;
             BlockPos blockPos = new BlockPos(hitResult.getPos());
 
-            BlockState blockState = ItemUtils.getPlacementState(client.player.getMainHandStack());
+            BlockState blockState = ItemUtils.getPlacementState(client.player, client.player.getMainHandStack(),
+                    reach.getValue());
             if (blockState == null)
                 return true;
 

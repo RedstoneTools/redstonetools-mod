@@ -13,5 +13,4 @@ public class BigDustFeature extends ToggleableFeature {
     public static final Argument<Integer> heightInPixels = Argument.ofType(IntegerSerializer.integer(1, 16))
             .withDefault(1);
 
-
 }

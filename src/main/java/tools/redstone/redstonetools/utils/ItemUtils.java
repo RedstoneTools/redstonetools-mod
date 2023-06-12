@@ -1,10 +1,14 @@
 package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.BlockStateRaycastContext;
+import net.minecraft.world.RaycastContext;
 
 import java.util.HashMap;
 
@@ -24,10 +28,15 @@ public class ItemUtils {
         return ITEM_MAP.getOrDefault(itemName,null);
     }
 
-    public static BlockState getPlacementState(ItemStack stack) {
+    public static BlockState getPlacementState(ClientPlayerEntity player, ItemStack stack, float reach) {
         Item type = stack.getItem();
         if (!(type instanceof BlockItem blockItem))
             return null;
-        return blockItem.getBlock().getDefaultState(); // TODO: get actual placed block using getPlacementState()
+        return blockItem.getBlock().getPlacementState(new ItemPlacementContext(
+                player,
+                player.getActiveHand(),
+                stack,
+                RaycastUtils.rayCastFromEye(player, reach)
+        ));
     }
 }
