@@ -48,7 +48,7 @@ public class BinaryBlockWriteFeature extends CommandFeature {
             .withDefault(DEFAULT_OFF_ARG);
 
     public static final Argument<BigInteger> number = Argument
-            .ofType(bigInteger());
+            .ofType(bigInteger(BigInteger.valueOf(0)));
 
     @Override
     protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
@@ -86,6 +86,10 @@ public class BinaryBlockWriteFeature extends CommandFeature {
         var spacingVector = direction.multiply((int) (boundingBox.getVolume() / bitCount.getValue()));
 
         var bits = number.getValue().toString(2);
+
+        if (bits.length() > bitCount.getValue()) {
+            return Feedback.invalidUsage("The number is too large to fit in the selection");
+        }
 
         bits = "0".repeat(bitCount.getValue() - bits.length()) + bits;
 
