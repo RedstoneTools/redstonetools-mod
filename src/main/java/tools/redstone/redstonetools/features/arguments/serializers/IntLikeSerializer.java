@@ -64,13 +64,17 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
         }
 
         if (serialized.charAt(0) == '0') {
-            var prefixedBase = serialized.substring(0, 2);
-            var number = serialized.substring(2);
+            if(serialized.length() > 1) {
+                var prefixedBase = serialized.substring(0, 2);
+                var number = serialized.substring(2);
 
-            var numberBase = NumberBase.fromPrefix(prefixedBase).orElse(null);
+                var numberBase = NumberBase.fromPrefix(prefixedBase).orElse(null);
 
-            if (numberBase != null) {
-                return isNegative ? tryParse("-"+number, numberBase.toInt()) : tryParse(number, numberBase.toInt());
+                if (numberBase != null) {
+                    return isNegative ? tryParse("-" + number, numberBase.toInt()) : tryParse(number, numberBase.toInt());
+                }
+            } else {
+                return tryParse(serialized,10);
             }
         }
 
