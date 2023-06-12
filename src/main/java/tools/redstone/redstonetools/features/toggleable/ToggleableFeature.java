@@ -67,16 +67,13 @@ public abstract class ToggleableFeature extends AbstractFeature {
             String name = argument.getName();
             baseCommand.then(literal(name)
                     .executes(context -> {
-                        Object value = argument.getDefaultValue();
-
-                        // toggle if its a boolean
-                        if (argument.getType().getClass() == BoolSerializer.class &&
-                                argument.getValue() != null) {
-                            value = !((Boolean)argument.getValue());
-                        }
+                        Object value = argument.getValue();
+                        return Feedback.success("Option {} of feature {} is set to: {}", name, getName(), argument.getType().serialize(value)).send(context);
+                    })
+                    .then(argument("value", argument.getType()).executes(context -> {
+                        Object value = context.getArgument("value", Object.class);
 
                         argument.setValue(value);
-                        Feedback.success("Set {} to {} for feature {}", name, value, getName()).send(context);
 
                         if (!enabled) {
                             enable(context);
@@ -84,11 +81,6 @@ public abstract class ToggleableFeature extends AbstractFeature {
 
                         IO_EXECUTOR.execute(this::saveConfig);
 
-                        return 1;
-                    })
-                    .then(argument("value", argument.getType()).executes(context -> {
-                        Object value = context.getArgument("value", Object.class);
-                        argument.setValue(value);
                         return Feedback.success("Set {} to {} for feature {}", name, value, getName()).send(context);
                     }))
             );
