@@ -17,7 +17,6 @@ import tools.redstone.redstonetools.utils.ItemUtils;
 @AutoService(AbstractFeature.class)
 @Feature(command = "itembind", description = "Allows you to bind command to a specific item", name = "Item Bind")
 public class ItemBindFeature extends CommandFeature{
-
     public static boolean waitingForCommand = false;
     private static ServerPlayerEntity player;
 
@@ -49,8 +48,6 @@ public class ItemBindFeature extends CommandFeature{
 
         waitingForCommand = false;
 
-        return Feedback.success("Successfully bound command: '" + command + "' to this item (" + mainHandStack.getItem().toString() + ")!");
+        return Feedback.success("Successfully bound command: '{}' to this item ({})!", command, mainHandStack.getItem());
     }
-
-
 }
