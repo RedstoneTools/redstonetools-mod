@@ -26,6 +26,10 @@ public class Argument<T> {
         return this;
     }
 
+    public T getDefaultValue() {
+        return defaultValue;
+    }
+
     public Argument<T> named(String name) {
         this.name = name;
 
@@ -53,7 +57,7 @@ public class Argument<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public void setValue(CommandContext<?> context) {
+    public void updateValue(CommandContext<?> context) {
         try {
             value = (T) context.getArgument(name, Object.class);
         } catch (IllegalArgumentException e) {
@@ -63,6 +67,10 @@ public class Argument<T> {
 
             value = defaultValue;
         }
+    }
+
+    public void setValue(T value) {
+        this.value = value;
     }
 
     public T getValue() {

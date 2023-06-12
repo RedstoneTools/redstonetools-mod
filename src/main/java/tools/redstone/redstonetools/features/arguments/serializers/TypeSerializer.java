@@ -25,6 +25,10 @@ public abstract class TypeSerializer<T, S> implements ArgumentType<T> {
         this.clazz = clazz;
     }
 
+    public Class<T> getTypeClass() {
+        return clazz;
+    }
+
     /* ArgumentType impl */
     @Override
     public final T parse(StringReader reader) throws CommandSyntaxException {

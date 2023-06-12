@@ -1,27 +1,24 @@
 package tools.redstone.redstonetools.features.toggleable;
 
-import com.sk89q.worldedit.internal.command.CommandUtil;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.commands.CommandFeature;
-import tools.redstone.redstonetools.features.feedback.AbstractFeedbackSender;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.features.feedback.FeedbackSender;
-import tools.redstone.redstonetools.utils.CommandUtils;
-import tools.redstone.redstonetools.utils.ReflectionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
+import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.features.Feature;
+import tools.redstone.redstonetools.features.arguments.Argument;
+import tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer;
+import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.utils.ReflectionUtils;
 
-
-import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
 
 public abstract class ToggleableFeature extends AbstractFeature {
     private volatile boolean enabled; // volatile for thread safety
     private Feature info;
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
         info = ReflectionUtils.getFeatureInfo(getClass());
@@ -29,25 +26,32 @@ public abstract class ToggleableFeature extends AbstractFeature {
         // get arguments and create toggle command
         var arguments = ReflectionUtils.getArguments(getClass());
 
-        var baseCommand = CommandUtils.build(
-                info.command(),
-                arguments,
-                context -> {
-                    for (var argument : arguments) {
-                        argument.setValue(context);
-                    }
-
-                    Feedback.success("Modified properties of feature {}", info.name()).send(context);
-
-                    // enable if disabled
-                    if (!enabled) {
-                        enable(context);
-                    }
-
-                    return 1;
-                })
-                /* make the base command toggle */
+        var baseCommand = literal(info.command())
                 .executes(this::toggle);
+
+        // add option configurations
+        for (Argument argument : arguments) {
+            String name = argument.getName();
+            baseCommand.then(literal(name)
+                    .executes(context -> {
+                        Object value = argument.getDefaultValue();
+
+                        // toggle if its a boolean
+                        if (argument.getType().getClass() == BoolSerializer.class &&
+                                argument.getValue() != null) {
+                            value = !((Boolean)argument.getValue());
+                        }
+
+                        argument.setValue(value);
+                        return Feedback.success("Set {} to {} for feature {}", name, value, info.name()).send(context);
+                    })
+                    .then(argument("value", argument.getType()).executes(context -> {
+                        Object value = context.getArgument("value", Object.class);
+                        argument.setValue(value);
+                        return Feedback.success("Set {} to {} for feature {}", name, value, info.name()).send(context);
+                    }))
+            );
+        }
 
         dispatcher.register(baseCommand);
     }
