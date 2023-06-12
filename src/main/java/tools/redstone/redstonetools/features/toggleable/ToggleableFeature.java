@@ -43,7 +43,13 @@ public abstract class ToggleableFeature extends AbstractFeature {
                         }
 
                         argument.setValue(value);
-                        return Feedback.success("Set {} to {} for feature {}", name, value, info.name()).send(context);
+                        Feedback.success("Set {} to {} for feature {}", name, value, info.name()).send(context);
+
+                        if (!enabled) {
+                            enable(context);
+                        }
+
+                        return 1;
                     })
                     .then(argument("value", argument.getType()).executes(context -> {
                         Object value = context.getArgument("value", Object.class);
