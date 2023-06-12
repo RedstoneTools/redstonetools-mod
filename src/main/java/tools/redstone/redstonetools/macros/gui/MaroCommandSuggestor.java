@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.macros.gui.commandsuggestor;
+package tools.redstone.redstonetools.macros.gui;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -8,12 +8,12 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 
 import java.util.HashMap;
 
-public class WorldlessCommandSuggestor extends CommandSuggestor {
-    private static final HashMap<WorldlessCommandSuggestor,Integer> yMap =  new HashMap<>();
+public class MaroCommandSuggestor extends CommandSuggestor {
+    private static final HashMap<MaroCommandSuggestor,Integer> yMap =  new HashMap<>();
 
 
 
-    public WorldlessCommandSuggestor(MinecraftClient client, Screen owner, TextFieldWidget textField, TextRenderer textRenderer, boolean slashOptional, boolean suggestingWhenEmpty, int y, int maxSuggestionSize, int color) {
+    public MaroCommandSuggestor(MinecraftClient client, Screen owner, TextFieldWidget textField, TextRenderer textRenderer, boolean slashOptional, boolean suggestingWhenEmpty, int y, int maxSuggestionSize, int color) {
         super(client, owner, textField, textRenderer, slashOptional, suggestingWhenEmpty, 0, maxSuggestionSize, false, color);
         yMap.put(this,y);
 
@@ -24,7 +24,7 @@ public class WorldlessCommandSuggestor extends CommandSuggestor {
     }
 
     public static boolean instance(Object object) {
-        return object instanceof WorldlessCommandSuggestor;
+        return object instanceof MaroCommandSuggestor;
     }
 
     public static int getY(Object object){
@@ -33,10 +33,9 @@ public class WorldlessCommandSuggestor extends CommandSuggestor {
 
     @Override
     public void refresh() {
-        try{
-            super.refresh();
-        } catch (NullPointerException ignored) {
-        }
+        if (MinecraftClient.getInstance().player == null) return;
+        super.refresh();
+
     }
 
 
