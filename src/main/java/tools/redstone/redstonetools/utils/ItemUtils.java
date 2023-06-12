@@ -1,11 +1,9 @@
 package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockStateRaycastContext;
 import net.minecraft.world.RaycastContext;
@@ -38,5 +36,14 @@ public class ItemUtils {
                 stack,
                 RaycastUtils.rayCastFromEye(player, reach)
         ));
+    }
+
+    public static BlockState getUseState(ClientPlayerEntity player, ItemStack stack, float reach) {
+        if (stack == null || stack.getItem() == Items.AIR)
+            return null;
+        BlockState state = getPlacementState(player, stack, reach);
+        if (state == null)
+            state = Blocks.BEDROCK.getDefaultState();
+        return state;
     }
 }

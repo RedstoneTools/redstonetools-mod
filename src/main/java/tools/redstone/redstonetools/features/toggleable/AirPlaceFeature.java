@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.features.toggleable;
 import com.google.auto.service.AutoService;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
@@ -68,6 +69,8 @@ public class AirPlaceFeature extends ToggleableFeature {
             .ofType(BoolSerializer.bool())
             .withDefault(true);
 
+    private static final BlockState FULL_BLOCK_STATE = Blocks.BEDROCK.getDefaultState();
+
     {
         // register ghost block renderer
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, blockOutlineContext) -> {
@@ -87,7 +90,7 @@ public class AirPlaceFeature extends ToggleableFeature {
                 return true;
             BlockPos blockPos = new BlockPos(hitResult.getPos());
 
-            BlockState blockState = ItemUtils.getPlacementState(client.player, client.player.getMainHandStack(),
+            BlockState blockState = ItemUtils.getUseState(client.player, client.player.getMainHandStack(),
                     reach.getValue());
             if (blockState == null)
                 return true;
