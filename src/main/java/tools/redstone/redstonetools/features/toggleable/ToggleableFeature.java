@@ -160,7 +160,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
                         new InputStreamReader(Files.newInputStream(configFile), StandardCharsets.UTF_8)),
                         JsonObject.class);
 
-                enabled = object.get("enabled").getAsBoolean();
+                enabled = Boolean.parseBoolean(object.get("enabled").getAsString());
 
                 // read options
                 for (Argument argument : arguments) {
@@ -195,7 +195,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
 
             // serialize configuration
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("enabled", enabled);
+            jsonObject.addProperty("enabled", Boolean.toString(enabled));
             for (Argument argument : arguments) {
                 Object value = argument.getValue();
                 String valueSerialized = (String) argument.getType().serialize(value);
