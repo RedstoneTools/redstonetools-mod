@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rip.hippo.inject.Doctor;
 import rip.hippo.inject.Injector;
-import tools.redstone.redstonetools.macros.WorldlessCommandHelper;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 
 import java.nio.file.Path;
@@ -33,9 +32,6 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
             feature.register();
         });
-
-        // should call the "static" block
-        WorldlessCommandHelper.dummyNetworkHandler.getCommandDispatcher();
     }
 
 }
