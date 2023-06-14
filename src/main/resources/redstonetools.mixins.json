@@ -13,8 +13,6 @@
     "features.CopyStateMixin",
     "features.ItemBindMixin$ItemStackMixin",
     "gamerules.DoContainerDropsMixin",
-    "telemetry.SendCommandMixin",
-    "telemetry.ShowTelemetryPopupMixin"
   ],
   "client": [
     "accessors.MinecraftClientAccessor",
@@ -25,8 +23,6 @@
     "macros.KeyBindingMixinImpl",
     "macros.autocomplete.ClientPlayerEntityMixinImpl",
     "macros.autocomplete.CommandSuggestorMixin",
-    "telemetry.InitializeTelemetryClientMixin",
-    "telemetry.SendCrashReportMixin",
     "update.CheckUpdateMixin"
   ]
 }
