@@ -3,9 +3,9 @@ package tools.redstone.redstonetools.features;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
-import tools.redstone.redstonetools.utils.DebugUtils;
 
 public abstract class AbstractFeature {
+
     private final Feature featureInfo;
     private final String id;
 
@@ -52,4 +52,5 @@ public abstract class AbstractFeature {
     }
 
     protected abstract void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated);
+
 }
