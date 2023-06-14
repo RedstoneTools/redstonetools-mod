@@ -11,9 +11,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer;
 import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.DebugUtils;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 
 import java.io.BufferedReader;

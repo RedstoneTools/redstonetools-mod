@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockStateRaycastContext;
@@ -24,6 +25,15 @@ public class ItemUtils {
 
     public static Item getItemByName(String itemName) {
         return ITEM_MAP.getOrDefault(itemName,null);
+    }
+
+    public static boolean isEmpty(ItemStack itemStack) {
+        return itemStack == null || itemStack.getItem() == Items.AIR || itemStack.getCount() == 0;
+    }
+
+    public static ItemStack getMainItem(PlayerEntity player) {
+        ItemStack stack = player.getMainHandStack();
+        return isEmpty(stack) ? player.getOffHandStack() : stack;
     }
 
     public static BlockState getPlacementState(ClientPlayerEntity player, ItemStack stack, float reach) {

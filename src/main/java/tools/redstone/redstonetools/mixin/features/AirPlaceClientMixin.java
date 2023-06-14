@@ -46,7 +46,7 @@ public class AirPlaceClientMixin {
     }
 
     private boolean isAirPlaceAllowed() {
-        // If airplace is disabled
+        // If air place is disabled
         if (!airPlaceFeature.isEnabled()) {
             return false;
         }
@@ -58,6 +58,12 @@ public class AirPlaceClientMixin {
 
         // If the player or interactionManager not initialized
         if (getPlayer() == null || getInteractionManager() == null) {
+            return false;
+        }
+
+        // If air place isn't possible with the current
+        // player equipment and state
+        if (!AirPlaceFeature.canAirPlace(getPlayer())) {
             return false;
         }
 

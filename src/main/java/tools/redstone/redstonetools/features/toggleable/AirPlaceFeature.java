@@ -12,7 +12,10 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -45,6 +48,22 @@ public class AirPlaceFeature extends ToggleableFeature {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean canAirPlace(PlayerEntity player) {
+        ItemStack itemStack = ItemUtils.getMainItem(player);
+
+        // empty slot
+        if (itemStack == null || itemStack.getItem() == Items.AIR)
+            return false;
+
+        // rocket boost for elytra
+        if (itemStack.getItem() == Items.FIREWORK_ROCKET &&
+                player.getEquippedStack(EquipmentSlot.CHEST).getItem() == Items.ELYTRA &&
+                player.isFallFlying())
+            return false;
+
+        return true;
     }
 
     public static HitResult findAirPlacePosition(MinecraftClient client) {
@@ -85,12 +104,16 @@ public class AirPlaceFeature extends ToggleableFeature {
             if (blockOutlineContext.getType() != HitResult.Type.MISS)
                 return true;
 
+            if (!canAirPlace(client.player))
+                return true;
+
             HitResult hitResult = findAirPlacePosition(client);
             if (hitResult == null)
                 return true;
             BlockPos blockPos = new BlockPos(hitResult.getPos());
 
-            BlockState blockState = ItemUtils.getUseState(client.player, client.player.getMainHandStack(),
+            BlockState blockState = ItemUtils.getUseState(client.player,
+                    ItemUtils.getMainItem(client.player),
                     reach.getValue());
             if (blockState == null)
                 return true;
