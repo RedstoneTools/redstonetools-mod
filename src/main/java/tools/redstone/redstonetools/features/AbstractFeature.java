@@ -17,7 +17,7 @@ public abstract class AbstractFeature {
         }
 
         String id = featureInfo.id();
-        if (id.equals("<compute>")) {
+        if (id.isEmpty()) {
             // derive id from name
             // Air Place -> airplace
             id = featureInfo.name()

@@ -69,7 +69,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
                         return Feedback.success("Option {} of feature {} is set to: {}", name, getName(), argument.getType().serialize(value)).send(context);
                     })
                     .then(argument("value", argument.getType()).executes(context -> {
-                        Object value = context.getArgument("value", Object.class);
+                        Object value = context.getArgument("value", argument.getType().getTypeClass());
 
                         argument.setValue(value);
 
@@ -99,7 +99,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
         return !enabled ? enable(source) : disable(source);
     }
 
-    public void toggle(boolean status) {
+    public void setEnabled(boolean status) {
         if (status == enabled)
             return; // no work to do
 
@@ -172,7 +172,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
                 }
             }
 
-            toggle(enabled);
+            setEnabled(enabled);
 
             RedstoneToolsClient.LOGGER.info("Loaded configuration for feature " + getID() + " file(" + configFile + ")");
         } catch (Exception e) {
