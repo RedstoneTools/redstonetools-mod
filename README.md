@@ -1,5 +1,6 @@
-[![License: GPL-3.0](https://badgen.net/badge/license/GPL-3.0/blue)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![Discord](https://badgen.net/badge/discord/invite/blue?icon=discord)](https://discord.gg/wAu9k2fGyK)
+[![Discord](https://badgen.net/badge/Discord/Invite/blue?icon=discord)](https://discord.gg/redstone-tools-1071119659346169907)
+[![Patreon](https://badgen.net/badge/Patreon/Support%20us/orange?icon=patreon)](https://patreon.com/RedstoneTools)
+[![License: GPL-3.0](https://badgen.net/badge/License/GPL-3.0/blue)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 # Redstone Tools
 
