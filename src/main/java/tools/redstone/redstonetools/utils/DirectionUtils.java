@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.utils;
 
+
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.util.Direction;
 import net.minecraft.command.CommandException;
@@ -34,6 +35,18 @@ public class DirectionUtils {
             };
             case LEFT -> switch (firstOrdinal(playerFacing)) {
                 case UP, DOWN -> throw new CommandException(Text.of("Can't determine direction"));
+                case NORTH -> DirectionArgument.WEST;
+                case EAST -> DirectionArgument.NORTH;
+                case SOUTH -> DirectionArgument.EAST;
+                case WEST -> DirectionArgument.SOUTH;
+                case NORTHWEST -> DirectionArgument.SOUTHWEST;
+                case NORTHEAST -> DirectionArgument.NORTHWEST;
+                case SOUTHEAST -> DirectionArgument.NORTHEAST;
+                case SOUTHWEST -> DirectionArgument.SOUTHEAST;
+                default -> null;
+            };
+            case RIGHT -> switch (firstOrdinal(playerFacing)) {
+                case UP, DOWN -> throw new CommandException(Text.of("Can't determine direction"));
                 case NORTH -> DirectionArgument.EAST;
                 case EAST -> DirectionArgument.SOUTH;
                 case SOUTH -> DirectionArgument.WEST;
@@ -42,18 +55,6 @@ public class DirectionUtils {
                 case NORTHWEST -> DirectionArgument.NORTHEAST;
                 case SOUTHWEST -> DirectionArgument.NORTHWEST;
                 case SOUTHEAST -> DirectionArgument.SOUTHWEST;
-                default -> null;
-            };
-            case RIGHT -> switch (firstOrdinal(playerFacing)) {
-                case UP, DOWN -> throw new CommandException(Text.of("Can't determine direction"));
-                case NORTH -> DirectionArgument.WEST;
-                case EAST -> DirectionArgument.SOUTH;
-                case SOUTH -> DirectionArgument.EAST;
-                case WEST -> DirectionArgument.NORTH;
-                case NORTHWEST -> DirectionArgument.NORTHEAST;
-                case NORTHEAST -> DirectionArgument.SOUTHEAST;
-                case SOUTHEAST -> DirectionArgument.SOUTHWEST;
-                case SOUTHWEST -> DirectionArgument.NORTHWEST;
                 default -> null;
             };
             case BACK -> switch (firstOrdinal(playerFacing)) {
