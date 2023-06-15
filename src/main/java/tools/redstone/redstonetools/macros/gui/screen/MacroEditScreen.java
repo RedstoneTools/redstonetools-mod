@@ -32,7 +32,6 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
 
 public class MacroEditScreen extends GameOptionsScreen {
-
     private final MacroListWidget macroListWidget;
     private final Macro macro;
 

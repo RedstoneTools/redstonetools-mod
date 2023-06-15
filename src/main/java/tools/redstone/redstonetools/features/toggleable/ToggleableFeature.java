@@ -1,5 +1,9 @@
 package tools.redstone.redstonetools.features.toggleable;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
@@ -11,12 +15,45 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public abstract class ToggleableFeature extends AbstractFeature {
     private boolean enabled;
     private Feature info;
+
+    private static final List<KeyBinding> keyBindings = new ArrayList<>();
+
+    @Override
+    public void register() {
+        super.register();
+
+        var containsRequiredArguments = ReflectionUtils.getArguments(getClass()).stream()
+                .anyMatch(a -> !a.isOptional());
+        if (containsRequiredArguments) {
+            return;
+        }
+
+        var info = ReflectionUtils.getFeatureInfo(getClass());
+        var keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                info.name(),
+                InputUtil.Type.KEYSYM,
+                -1,
+                "Redstone Tools"
+        ));
+
+        keyBindings.add(keyBinding);
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (keyBinding.wasPressed()) {
+                assert client.player != null;
+                client.player.sendChatMessage("/" + info.command());
+            }
+        });
+    }
 
     @Override
     protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {

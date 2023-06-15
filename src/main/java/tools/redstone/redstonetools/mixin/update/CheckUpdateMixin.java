@@ -2,16 +2,16 @@ package tools.redstone.redstonetools.mixin.update;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.widget.PressableTextWidget;
+import net.minecraft.text.*;
+import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tools.redstone.redstonetools.RedstoneToolsClient;
-import tools.redstone.redstonetools.update.UpdateScreen;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -25,12 +25,14 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.MOD_VERSION;
 public class CheckUpdateMixin extends Screen {
     private static boolean updateChecked = false;
 
-    public CheckUpdateMixin(Text title) {
-        super(title);
+    private static MutableText updateStatus = (MutableText) Text.of("Redstone Tools Version: " + MOD_VERSION + "(Bug found, report on Github)");
+    private static URI uri;
+    public CheckUpdateMixin() {
+        super(Text.of("UpdateText(Bug found, report on Github)"));
     }
 
     @Inject(method = "init", at = @At("TAIL"))
-    public void init(CallbackInfo ci) {
+    public void checkUpdate(CallbackInfo ci) {
         if (updateChecked)
             return;
 
@@ -54,7 +56,7 @@ public class CheckUpdateMixin extends Screen {
 
             Gson gson = new Gson();
             JsonObject release = gson.fromJson(responseBody, JsonObject.class);
-            URI uri = new URI(release.get("html_url").getAsString());
+            uri = new URI(release.get("html_url").getAsString());
             String newVersion = release.get("tag_name").getAsString();
 
             LOGGER.info("Found latest version: " + newVersion);
@@ -63,23 +65,27 @@ public class CheckUpdateMixin extends Screen {
                 return;
             }
 
-            //TODO REMEMBER TO REMOVE THE EXCLAMATION
+            Style underline = Style.EMPTY;
             if (RedstoneToolsClient.MOD_VERSION.equals(newVersion)) {
                 LOGGER.info("Already up to date, current version: " + MOD_VERSION);
-                return;
+                updateStatus = (MutableText) Text.of("Redstone Tools " + MOD_VERSION);
+            } else {
+                LOGGER.info("Found newer version, current version: " + RedstoneToolsClient.MOD_VERSION + ", new version: " + newVersion);
+                updateStatus = (MutableText) Text.of("Redstone Tools " + MOD_VERSION + " (");
+                updateStatus.append(Text.of("Click to Update").getWithStyle(underline.withUnderline(true)).get(0));
+                updateStatus.append(")");
             }
 
-            LOGGER.info("Found newer version, current version: " + RedstoneToolsClient.MOD_VERSION + ", new version: " + newVersion);
-
-            var parentScreen = MinecraftClient.getInstance().currentScreen;
-            var popup = new UpdateScreen(parentScreen,uri,"Update Available","An update is available for redstone tools! You are on version " + MOD_VERSION + " but version " + newVersion + " is available.");
-
-            MinecraftClient.getInstance().setScreen(popup);
         } catch (Exception e) {
             LOGGER.warn("Failed to check for RedstoneTools updates");
             e.printStackTrace();
         } finally {
             updateChecked = true;
         }
+    }
+
+    @Inject(method="init", at = @At("HEAD"))
+    public void updateTextInjection(CallbackInfo ci){
+        this.addDrawableChild(new PressableTextWidget(4,4, textRenderer.getWidth(updateStatus), textRenderer.fontHeight,updateStatus,button -> {Util.getOperatingSystem().open(uri);},textRenderer));
     }
 }
