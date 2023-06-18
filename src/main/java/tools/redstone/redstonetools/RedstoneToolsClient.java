@@ -33,8 +33,5 @@ public class RedstoneToolsClient implements ClientModInitializer {
             }
             feature.register();
         });
-
-        // should call the "static" block
-        WorldlessCommandHelper.dummyNetworkHandler.getCommandDispatcher();
     }
 }
