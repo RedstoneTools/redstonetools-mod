@@ -75,8 +75,11 @@ public class BinaryBlockWriteFeature extends CommandFeature {
             return Feedback.invalidUsage("The selection must have 2 axis the same");
         }
 
-        if (boundingBox.getVolume() % bitCount.getValue() != 0) {
-            return Feedback.invalidUsage("The selection must be a multiple of the bit count");
+        // if the selection ends on a bit and not the air, so it isn't a multiple of the bit count, this is true
+        boolean edge = ((boundingBox.getVolume() - 1) / (bitCount.getValue() - 1) - 1 + boundingBox.getVolume()) % bitCount.getValue() == 0;
+
+        if (boundingBox.getVolume() % bitCount.getValue() != 0 && !edge) {
+            return Feedback.invalidUsage("The selection must be a multiple of the bit count or end on a bit");
         }
 
         if (boundingBox.getVolume() < bitCount.getValue()) {
@@ -84,6 +87,10 @@ public class BinaryBlockWriteFeature extends CommandFeature {
         }
 
         var spacingVector = direction.multiply((int) (boundingBox.getVolume() / bitCount.getValue()));
+
+        if (edge) {
+            spacingVector = direction.multiply((int) ((boundingBox.getVolume() - 1) / (bitCount.getValue() - 1)));
+        }
 
         var bits = number.getValue().toString(2);
 
