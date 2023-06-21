@@ -1,5 +1,9 @@
 package tools.redstone.redstonetools.utils;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import rip.hippo.inject.DoctorModule;
 import sun.misc.Unsafe;
 import tools.redstone.redstonetools.features.AbstractFeature;
@@ -8,18 +12,14 @@ import tools.redstone.redstonetools.features.arguments.Argument;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.net.URL;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReflectionUtils {
-    private static final ServiceLoader<DoctorModule> modulesLoader =
-            ServiceLoader.load(DoctorModule.class);
-    private static final ServiceLoader<AbstractFeature> featuresLoader =
-            ServiceLoader.load(AbstractFeature.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static DoctorModule[] modules;
     private static Set<? extends AbstractFeature> features;
 
@@ -61,20 +61,63 @@ public class ReflectionUtils {
 
     public static DoctorModule[] getModules() {
         if (modules == null) {
-            modules = modulesLoader.stream()
-                    .map(ServiceLoader.Provider::get)
-                    .toArray(DoctorModule[]::new);
+            try {
+                modules = serviceLoad(DoctorModule.class)
+                        .toArray(DoctorModule[]::new);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to load modules", e);
+            }
         }
         return modules;
     }
 
     public static Set<? extends AbstractFeature> getFeatures() {
         if (features == null) {
-            features = featuresLoader.stream()
-                    .map(ServiceLoader.Provider::get)
-                    .collect(Collectors.toSet());
+            try {
+                features = serviceLoad(AbstractFeature.class);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to load features", e);
+            }
         }
         return features;
+    }
+
+    private static <T> Set<? extends T> serviceLoad(Class<T> clazz) throws IOException {
+        ClassLoader cl = ReflectionUtils.class.getClassLoader();
+        Enumeration<URL> serviceFiles = cl.getResources("META-INF/services/" + clazz.getName());
+        Set<String> classNames = new HashSet<>();
+        while (serviceFiles.hasMoreElements()) {
+            URL serviceFile = serviceFiles.nextElement();
+            try (var reader = serviceFile.openStream()) {
+                classNames.addAll(IOUtils.readLines(reader, "UTF-8"));
+            }
+        }
+        return classNames.stream()
+                .filter(it -> !it.isEmpty() && !it.isBlank())
+                .map(ReflectionUtils::loadClass)
+                .filter(Objects::nonNull)
+                .filter(clazz::isAssignableFrom)
+                .map(it -> {
+                    try {
+                        return it.getDeclaredConstructor().newInstance();
+                    } catch (ReflectiveOperationException e) {
+                        throw new RuntimeException("Failed to instantiate " + it, e);
+                    }
+                })
+                .map(clazz::cast)
+                .collect(Collectors.toSet());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> @Nullable Class<? extends T> loadClass(String className) {
+        try {
+            return (Class<? extends T>) Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Failed to load class " + className, e);
+        } catch (NoClassDefFoundError e) {
+            LOGGER.warn("Failed to load class {}, required {}", className, e.getMessage());
+        }
+        return null;
     }
 
     public static List<Argument<?>> getArguments(Class<? extends AbstractFeature> featureClass) {

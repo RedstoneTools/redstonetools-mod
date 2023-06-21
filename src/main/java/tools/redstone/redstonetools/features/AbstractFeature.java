@@ -44,6 +44,10 @@ public abstract class AbstractFeature {
         return featureInfo.command();
     }
 
+    public boolean requiresWorldEdit() {
+        return featureInfo.worldedit();
+    }
+
     /**
      * Register this feature.
      */

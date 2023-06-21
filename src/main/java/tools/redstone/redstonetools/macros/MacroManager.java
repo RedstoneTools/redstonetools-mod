@@ -130,6 +130,7 @@ public class MacroManager {
                         "/gamerule doMobSpawning false",
                         "/gamerule doContainerDrops false",
                         "/time set noon",
+                        "/weather clear"
                 })
         );
     }
