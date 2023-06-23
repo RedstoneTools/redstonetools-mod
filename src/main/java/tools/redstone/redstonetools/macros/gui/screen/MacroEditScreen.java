@@ -2,6 +2,7 @@ package tools.redstone.redstonetools.macros.gui.screen;
 
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.loot.function.EnchantRandomlyLootFunction;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.MacroManager;
 import tools.redstone.redstonetools.macros.actions.Action;

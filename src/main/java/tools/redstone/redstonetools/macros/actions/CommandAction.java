@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.macros.actions;
 
 import net.minecraft.client.MinecraftClient;
+import net.royawesome.jlibnoise.module.combiner.Min;
 import tools.redstone.redstonetools.utils.CommandSourceUtils;
 
 public class CommandAction extends Action {
@@ -20,6 +21,11 @@ public class CommandAction extends Action {
 
     @Override
     public void runSilent(){
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (!client.isIntegratedServerRunning()){
+            run();
+            return;
+        }
         var player = MinecraftClient.getInstance().player;
         assert player != null;
 
