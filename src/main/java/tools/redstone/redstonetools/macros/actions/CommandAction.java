@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.macros.actions;
 
 import net.minecraft.client.MinecraftClient;
+import tools.redstone.redstonetools.utils.CommandSourceUtils;
 
 public class CommandAction extends Action {
     public String command;
@@ -15,6 +16,17 @@ public class CommandAction extends Action {
         assert player != null;
 
         player.sendChatMessage(command.startsWith("/") ? command : "/" + command);
+    }
+
+    @Override
+    public void runSilent(){
+        var player = MinecraftClient.getInstance().player;
+        assert player != null;
+
+        if (command.startsWith("/")){
+            command = command.replace("/", "");
+        }
+        player.sendChatMessage("/" + "silent " + command);
     }
 
     @Override

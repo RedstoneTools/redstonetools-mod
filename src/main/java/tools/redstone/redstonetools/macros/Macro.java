@@ -60,7 +60,13 @@ public class Macro {
         }
 
         for (Action action : actions) {
-            action.run();
+            if (output){
+                action.run();
+            }
+            else{
+                action.runSilent();
+            }
+
         }
     }
 
