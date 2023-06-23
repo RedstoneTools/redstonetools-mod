@@ -11,7 +11,6 @@ public class IconButtonWidget extends ButtonWidget {
 
     public static Identifier CROSS_ICON = new Identifier("redstonetools","gui/cross.png");
     public static Identifier PENCIL_ICON = new Identifier("redstonetools","gui/pencil.png");
-    //public static Identifier CHECK_ICON = new Identifier("redstonetools","gui/check_mark.png");
 
     private final Identifier texture;
     public IconButtonWidget(Identifier texture ,int x, int y, int width, int height, Text message, PressAction onPress) {
