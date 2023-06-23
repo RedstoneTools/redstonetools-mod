@@ -1,6 +1,9 @@
 package tools.redstone.redstonetools.features.feedback;
 
+import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Formatting;
+import tools.redstone.redstonetools.RedstoneToolsClient;
 
 import javax.annotation.Nullable;
 
@@ -30,6 +33,20 @@ public abstract class Feedback {
         }
     }
 
+    /** Returns the status code. */
+    public int send(ServerCommandSource source) {
+        RedstoneToolsClient.INJECTOR
+                .getInstance(FeedbackSender.class)
+                .sendFeedback(source, this);
+
+        return getType().getCode();
+    }
+
+    /** Returns the status code. */
+    public int send(CommandContext<ServerCommandSource> context) {
+        return send(context.getSource());
+    }
+
     public abstract Formatting getFormatting();
     public abstract String getDefaultMessage();
     public abstract FeedbackType getType();
@@ -38,7 +55,7 @@ public abstract class Feedback {
         return new None();
     }
 
-    private static class None extends Feedback {
+    public static class None extends Feedback {
         public None() {
             super(null);
         }
@@ -63,7 +80,7 @@ public abstract class Feedback {
         return new Success(message, values);
     }
 
-    private static class Success extends Feedback {
+    public static class Success extends Feedback {
         public Success(@Nullable String message, @Nullable Object... values) {
             super(message, values);
         }
@@ -88,7 +105,7 @@ public abstract class Feedback {
         return new Warning(message, values);
     }
 
-    private static class Warning extends Feedback {
+    public static class Warning extends Feedback {
         public Warning(@Nullable String message, @Nullable Object... values) {
             super(message, values);
         }
@@ -113,7 +130,7 @@ public abstract class Feedback {
         return new Error(message, values);
     }
 
-    private static class Error extends Feedback {
+    public static class Error extends Feedback {
         public Error(@Nullable String message, @Nullable Object... values) {
             super(message, values);
         }
@@ -138,7 +155,7 @@ public abstract class Feedback {
         return new InvalidUsage(message, values);
     }
 
-    private static class InvalidUsage extends Feedback {
+    public static class InvalidUsage extends Feedback {
         public InvalidUsage(@Nullable String message, @Nullable Object... values) {
             super(message, values);
         }

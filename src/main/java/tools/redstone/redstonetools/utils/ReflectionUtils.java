@@ -5,10 +5,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import rip.hippo.inject.DoctorModule;
+import sun.misc.Unsafe;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -22,6 +25,38 @@ public class ReflectionUtils {
 
     private ReflectionUtils() {
         throw new IllegalStateException("Utility class");
+    }
+
+    private static final MethodHandles.Lookup INTERNAL_LOOKUP;
+    private static final Unsafe unsafe;
+
+    static {
+        try {
+            Field f = Unsafe.class.getDeclaredField("theUnsafe");
+            f.setAccessible(true);
+            unsafe = (Unsafe) f.get(null);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new ExceptionInInitializerError(t);
+        }
+
+        try {
+            // get lookup
+            Field field = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
+            MethodHandles.publicLookup();
+            INTERNAL_LOOKUP = (MethodHandles.Lookup)
+                    unsafe.getObject(
+                            unsafe.staticFieldBase(field),
+                            unsafe.staticFieldOffset(field)
+                    );
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    public static MethodHandles.Lookup getInternalLookup() {
+        return INTERNAL_LOOKUP;
     }
 
     public static DoctorModule[] getModules() {
