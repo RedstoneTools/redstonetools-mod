@@ -1,5 +1,14 @@
 package tools.redstone.redstonetools.features.toggleable;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.features.Feature;
+import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.features.feedback.FeedbackSender;
+import tools.redstone.redstonetools.utils.ReflectionUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -24,10 +33,52 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
+
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public abstract class ToggleableFeature extends AbstractFeature {
+
+    private static final List<KeyBinding> keyBindings = new ArrayList<>();
+
+    @Override
+    public void register() {
+        super.register();
+        
+        // load user settings
+        // and register save hook
+        loadConfig();
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            saveConfig();
+        });
+      
+        var containsRequiredArguments = ReflectionUtils.getArguments(getClass()).stream()
+                .anyMatch(a -> !a.isOptional());
+        if (containsRequiredArguments) {
+            return;
+        }
+
+        var info = ReflectionUtils.getFeatureInfo(getClass());
+        var keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                info.name(),
+                InputUtil.Type.KEYSYM,
+                -1,
+                "Redstone Tools"
+        ));
+
+        keyBindings.add(keyBinding);
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (keyBinding.wasPressed()) {
+                assert client.player != null;
+                client.player.sendChatMessage("/" + info.command());
+            }
+        });
+    }
 
     private static final Executor IO_EXECUTOR = Executors.newSingleThreadExecutor();
 
@@ -42,19 +93,8 @@ public abstract class ToggleableFeature extends AbstractFeature {
     private final Path configFile = RedstoneToolsClient.CONFIG_DIR
             .resolve("features").resolve(getID() + ".json");
 
-    @Override
-    public void register() {
-        super.register();
-
-        // load user settings
-        // and register save hook
-        loadConfig();
-        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
-            saveConfig();
-        });
-    }
-
     @SuppressWarnings({ "rawtypes", "unchecked" })
+
     @Override
     protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
         var baseCommand = literal(getCommand())
