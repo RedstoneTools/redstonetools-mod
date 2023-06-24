@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @AutoService(AbstractFeature.class)
-@Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection")
+@Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection", worldedit = true)
 public class MinSelectionFeature extends CommandFeature {
 
     @Override
@@ -50,7 +50,7 @@ public class MinSelectionFeature extends CommandFeature {
         }
 
         if (isEmpty) {
-            return Feedback.invalidUsage("could not minimize the selection because the selection is empty.");
+            return Feedback.invalidUsage("Cannot minimize empty selections.");
         }
             
 

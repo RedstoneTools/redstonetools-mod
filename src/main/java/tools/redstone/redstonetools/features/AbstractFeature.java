@@ -5,26 +5,47 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 
 public abstract class AbstractFeature {
-    private final Feature feature;
+
+    private final Feature featureInfo;
+    private final String id;
 
     {
-        feature = getClass().getAnnotation(Feature.class);
+        featureInfo = getClass().getAnnotation(Feature.class);
 
-        if (feature == null) {
+        if (featureInfo == null) {
             throw new IllegalStateException("Feature " + getClass() + " is not annotated with @Feature");
         }
+
+        String id = featureInfo.id();
+        if (id.isEmpty()) {
+            // derive id from name
+            // Air Place -> airplace
+            id = featureInfo.name()
+                    .toLowerCase()
+                    .replace(" ", "");
+        }
+
+        this.id = id;
+    }
+
+    public String getID() {
+        return id;
     }
 
     public String getName() {
-        return feature.name();
+        return featureInfo.name();
     }
 
     public String getDescription() {
-        return feature.description();
+        return featureInfo.description();
     }
 
     public String getCommand() {
-        return feature.command();
+        return featureInfo.command();
+    }
+
+    public boolean requiresWorldEdit() {
+        return featureInfo.worldedit();
     }
 
     /**
@@ -35,4 +56,5 @@ public abstract class AbstractFeature {
     }
 
     protected abstract void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated);
+
 }

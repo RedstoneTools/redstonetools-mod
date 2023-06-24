@@ -53,25 +53,28 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
     }
 
     private T deserializeUnchecked(String serialized) {
+        boolean isNegative = false;
         if (serialized.length() == 1) {
             return tryParse(serialized);
         }
 
+        if(serialized.charAt(0) == '-' && serialized.chars().filter(ch -> ch == '-').count() == 1){
+            isNegative = true;
+            serialized = serialized.replace("-","");
+        }
+
         if (serialized.charAt(0) == '0') {
-            var prefixedBase = serialized.substring(0, 2);
-            var number = serialized.substring(2);
+            if(serialized.length() > 1) {
+                var prefixedBase = serialized.substring(0, 2);
+                var number = serialized.substring(2);
 
-            // TODO(Refactor): Write a NumberBase.fromCharacter method instead of this that iterates of the NumberBases (add the char to the NumberBase constructor)
-            var numberBase = switch (prefixedBase.charAt(1)) {
-                case 'b' -> NumberBase.BINARY;
-                case 'o' -> NumberBase.OCTAL;
-                case 'd' -> NumberBase.DECIMAL;
-                case 'x' -> NumberBase.HEXADECIMAL;
-                default  -> null;
-            };
+                var numberBase = NumberBase.fromPrefix(prefixedBase).orElse(null);
 
-            if (numberBase != null) {
-                return tryParse(number, numberBase.toInt());
+                if (numberBase != null) {
+                    return isNegative ? tryParse("-" + number, numberBase.toInt()) : tryParse(number, numberBase.toInt());
+                }
+            } else {
+                return tryParse(serialized,10);
             }
         }
 
@@ -90,10 +93,10 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
                 throw new IllegalArgumentException("Invalid base '" + parts[1] + "'.");
             }
 
-            return tryParse(number, base);
+            return isNegative ? tryParse("-"+number, base) : tryParse(number, base);
         }
 
-        return tryParse(serialized);
+        return isNegative ? tryParse("-"+serialized) : tryParse(serialized);
     }
 
     private T tryParse(String string) {

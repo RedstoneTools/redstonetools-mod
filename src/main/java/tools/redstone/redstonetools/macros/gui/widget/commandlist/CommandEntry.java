@@ -1,6 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.widget.commandlist;
 
-import tools.redstone.redstonetools.macros.gui.commandsuggestor.WorldlessCommandSuggestor;
+import tools.redstone.redstonetools.macros.gui.MaroCommandSuggestor;
 import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -22,17 +22,17 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
         this.owner = owner;
 
         command = new TextFieldWidget(client.textRenderer, 0, 0, 300, 20, Text.of(""));
-        command.setMaxLength(32500);
+        command.setMaxLength(255);
         command.setText(text);
 
         deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0, 0, 20, 20, Text.of(""), (button) -> {
             this.owner.removeCommand(this);
         });
 
-        WorldlessCommandSuggestor commandWorldlessCommandSuggestor = new WorldlessCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
-        commandWorldlessCommandSuggestor.setWindowActive(false);
-        commandWorldlessCommandSuggestor.refresh();
-        commandWorldlessCommandSuggestor.close();
+        MaroCommandSuggestor commandMaroCommandSuggestor = new MaroCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
+        commandMaroCommandSuggestor.setWindowActive(false);
+        commandMaroCommandSuggestor.refresh();
+        commandMaroCommandSuggestor.close();
     }
 
 

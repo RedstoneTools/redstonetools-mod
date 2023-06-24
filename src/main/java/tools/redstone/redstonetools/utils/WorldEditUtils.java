@@ -28,6 +28,10 @@ public class WorldEditUtils {
      */
     public static void forEachBlockInRegion(Region region,
                                             Consumer<BlockVector3> consumer) {
+        if (!DependencyLookup.WORLDEDIT_PRESENT) {
+            throw new IllegalStateException("WorldEdit is not loaded.");
+        }
+
         CuboidRegion bb = region.getBoundingBox();
         BlockVector3 min = bb.getMinimumPoint();
         BlockVector3 max = bb.getMaximumPoint();
@@ -44,6 +48,10 @@ public class WorldEditUtils {
     }
 
     public static Either<Region, Feedback> getSelection(ServerPlayerEntity player) {
+        if (!DependencyLookup.WORLDEDIT_PRESENT) {
+            throw new IllegalStateException("WorldEdit is not loaded.");
+        }
+
         var actor = FabricAdapter.adaptPlayer(player);
 
         var localSession = WorldEdit.getInstance()
@@ -55,7 +63,7 @@ public class WorldEditUtils {
         try {
             return Either.left(localSession.getSelection(selectionWorld));
         } catch (IncompleteRegionException ex) {
-            return Either.right(Feedback.invalidUsage("Please make a selection with worldedit first."));
+            return Either.right(Feedback.invalidUsage("Please make a selection with WorldEdit first"));
         }
     }
 }
