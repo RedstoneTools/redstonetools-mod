@@ -16,6 +16,7 @@
   ],
   "client": [
     "accessors.MinecraftClientAccessor",
+    "accessors.WorldRendererAccessor",
     "features.AirPlaceClientMixin",
     "features.ItemBindMixin$PlayerMixin",
     "macros.AddMacroButtonMixin",
