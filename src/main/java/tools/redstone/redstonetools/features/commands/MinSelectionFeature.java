@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @AutoService(AbstractFeature.class)
-@Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection")
+@Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection", worldedit = true)
 public class MinSelectionFeature extends CommandFeature {
 
     @Override
