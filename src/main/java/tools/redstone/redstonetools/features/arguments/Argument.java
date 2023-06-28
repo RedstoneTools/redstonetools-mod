@@ -7,7 +7,7 @@ public class Argument<T> {
     private String name;
     private final TypeSerializer<T, ?> type;
     private boolean optional = false;
-    private T value;
+    private volatile T value;
     private T defaultValue;
 
     private Argument(TypeSerializer<T, ?> type) {
@@ -21,8 +21,13 @@ public class Argument<T> {
     public Argument<T> withDefault(T defaultValue) {
         optional = true;
         this.defaultValue = defaultValue;
+        this.value = defaultValue; // for options, temporary
 
         return this;
+    }
+
+    public T getDefaultValue() {
+        return defaultValue;
     }
 
     public Argument<T> named(String name) {
@@ -52,7 +57,7 @@ public class Argument<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public void setValue(CommandContext<?> context) {
+    public void updateValue(CommandContext<?> context) {
         try {
             value = (T) context.getArgument(name, Object.class);
         } catch (IllegalArgumentException e) {
@@ -62,6 +67,10 @@ public class Argument<T> {
 
             value = defaultValue;
         }
+    }
+
+    public void setValue(T value) {
+        this.value = value;
     }
 
     public T getValue() {
