@@ -7,8 +7,11 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "blocks.RedstoneHitboxMixin",
+    "features.AirPlaceServerMixin",
     "features.AutoDustMixin",
     "features.CopyStateMixin",
+    "features.ItemBindMixin$ItemStackMixin",
     "gamerules.DoContainerDropsMixin",
     "macros.DisableCommandOutputMixin",
     "telemetry.SendCommandMixin",
@@ -16,15 +19,14 @@
   ],
   "client": [
     "accessors.MinecraftClientAccessor",
-    "features.AirplaceMixin",
+    "accessors.WorldRendererAccessor",
+    "features.AirPlaceClientMixin",
+    "features.ItemBindMixin$PlayerMixin",
     "macros.AddMacroButtonMixin",
     "macros.InitializeMacroManagerMixin",
     "macros.KeyBindingMixinImpl",
     "macros.autocomplete.ClientPlayerEntityMixinImpl",
-    "macros.autocomplete.CommandDispatcherMixin",
     "macros.autocomplete.CommandSuggestorMixin",
-    "telemetry.InitializeTelemetryClientMixin",
-    "telemetry.SendCrashReportMixin",
     "update.CheckUpdateMixin"
   ]
 }

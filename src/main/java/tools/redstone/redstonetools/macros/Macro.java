@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.macros;
 
+import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import tools.redstone.redstonetools.macros.actions.Action;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
@@ -94,10 +95,12 @@ public class Macro {
     }
 
     public void changeKeyBindingKeyCode() {
+
         if (this.keyBinding != null) {
             MinecraftClient.getInstance().options.setKeyCode(keyBinding,key);
             KeyBinding.updateKeysByCode();
         }
+
     }
 
     public Key getKey(){

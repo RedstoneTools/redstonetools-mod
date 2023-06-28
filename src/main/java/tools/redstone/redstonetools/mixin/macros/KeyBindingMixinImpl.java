@@ -22,4 +22,9 @@ public class KeyBindingMixinImpl implements KeyBindingMixin {
         KEY_TO_BINDINGS.entrySet().removeIf(entry -> entry.getValue().equals(this));
     }
 
+    @Override
+    public KeyBinding getBindingFromKey(InputUtil.Key key) {
+        return KEY_TO_BINDINGS.get(key);
+    }
+
 }

@@ -1,7 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
-import org.lwjgl.glfw.GLFW;
-import tools.redstone.redstonetools.macros.gui.commandsuggestor.WorldlessCommandSuggestor;
+import tools.redstone.redstonetools.macros.gui.MaroCommandSuggestor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -15,18 +14,18 @@ import net.minecraft.text.Text;
 public class CommandEditScreen extends GameOptionsScreen {
 
     private final TextFieldWidget commandField;
-    private final WorldlessCommandSuggestor commandWorldlessCommandSuggestor;
+    private final MaroCommandSuggestor commandMaroCommandSuggestor;
     private boolean changed = false;
 
     public CommandEditScreen(Screen parent, GameOptions gameOptions, TextFieldWidget commandField) {
         super(parent, gameOptions, Text.of(""));
         this.commandField = commandField;
         client = MinecraftClient.getInstance();
-        this.commandWorldlessCommandSuggestor = new WorldlessCommandSuggestor(client, parent, commandField,client.textRenderer,true,false, commandField.y -20,5,-805306368);
+        this.commandMaroCommandSuggestor = new MaroCommandSuggestor(client, parent, commandField,client.textRenderer,true,false, commandField.y -20,5,-805306368);
 
         commandField.setChangedListener((s) -> changed = true);
-        commandWorldlessCommandSuggestor.setWindowActive(true);
-        commandWorldlessCommandSuggestor.refresh();
+        commandMaroCommandSuggestor.setWindowActive(true);
+        commandMaroCommandSuggestor.refresh();
     }
 
     @Override
@@ -37,9 +36,9 @@ public class CommandEditScreen extends GameOptionsScreen {
 
         commandField.render(matrices, mouseX, mouseY, delta);
 
-        commandWorldlessCommandSuggestor.render(matrices, mouseX, mouseY);
+        commandMaroCommandSuggestor.render(matrices, mouseX, mouseY);
         if (changed) {
-            commandWorldlessCommandSuggestor.refresh();
+            commandMaroCommandSuggestor.refresh();
             changed = false;
         }
 
@@ -63,15 +62,15 @@ public class CommandEditScreen extends GameOptionsScreen {
         super.close();
         commandField.setTextFieldFocused(false);
         commandField.setChangedListener(null);
-        commandWorldlessCommandSuggestor.setWindowActive(false);
-        commandWorldlessCommandSuggestor.refresh();
-        commandWorldlessCommandSuggestor.close();
+        commandMaroCommandSuggestor.setWindowActive(false);
+        commandMaroCommandSuggestor.refresh();
+        commandMaroCommandSuggestor.close();
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!commandField.mouseClicked(mouseX, mouseY, button)) {
-            if (!commandWorldlessCommandSuggestor.mouseClicked(mouseX, mouseY, button)) {
+            if (!commandMaroCommandSuggestor.mouseClicked(mouseX, mouseY, button)) {
                 close();
             } else {
                 commandField.setTextFieldFocused(true);
@@ -83,7 +82,7 @@ public class CommandEditScreen extends GameOptionsScreen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        return commandWorldlessCommandSuggestor.mouseScrolled(amount);
+        return commandMaroCommandSuggestor.mouseScrolled(amount);
     }
 
     @Override
@@ -97,7 +96,7 @@ public class CommandEditScreen extends GameOptionsScreen {
             close();
             return true;
         }
-        commandWorldlessCommandSuggestor.keyPressed(keyCode, scanCode, modifiers);
+        commandMaroCommandSuggestor.keyPressed(keyCode, scanCode, modifiers);
 
         return commandField.keyPressed(keyCode, scanCode, modifiers);
     }
