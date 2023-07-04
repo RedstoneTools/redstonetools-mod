@@ -1,0 +1,6 @@
+{
+    "gamerule.doContainerDrops": "容器是否會掉落物品",
+    "gamerule.doContainerDrops.description": "控制從容器中掉落的物品",
+    "gamerule.doBlockUpdatesAfterEdit": "方塊是否會在編輯後更新",
+    "gamerule.doBlockUpdatesAfterEdit.description": "是否要在使用 WorldEdit 編輯後強制更新方塊"
+}
