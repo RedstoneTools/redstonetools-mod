@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
@@ -72,6 +73,43 @@ public interface SignalBlockSupplier {
             NbtCompound tag = new NbtCompound();
             tag.putInt("level", signalStrength);
             tags.put("BlockStateTag", tag);
+            return tags;
+        };
+    }
+
+    static SignalBlockSupplier lectern() {
+        return signalStrength -> {
+            if (isInvalidSignalStrength(signalStrength, 15))
+                throw new IllegalStateException("This signal strength cannot be achieved with the selected container");
+            NbtCompound page = new NbtCompound();
+            NbtList pages = new NbtList();
+            NbtCompound bookTag = new NbtCompound();
+            NbtCompound book = new NbtCompound();
+
+            NbtCompound tag = new NbtCompound();
+            NbtCompound tags = new NbtCompound();
+
+            page.putString("text", "text");
+            for (int i = 0; i <= 14; i++) {
+                pages.add(i,  NbtString.of("text"));
+            }
+
+
+            bookTag.putString("filtered_title", "SSBook");
+            bookTag.put("pages", pages);
+            bookTag.putString("title", "SSBook");
+            bookTag.putString("author", "RedstoneTools");
+
+            book.putString("id", "minecraft:written_book");
+            book.putInt("Count", 1);
+            book.put("tag", bookTag);
+
+
+            tag.put("Book", book);
+            tag.putInt("Page", signalStrength-1);
+
+            if(signalStrength != 0)
+                tags.put("BlockEntityTag", tag);
             return tags;
         };
     }

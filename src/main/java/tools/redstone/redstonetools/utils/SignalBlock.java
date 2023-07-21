@@ -17,6 +17,7 @@ public enum SignalBlock {
     SMOKER(Blocks.SMOKER, SignalBlockSupplier.container(3)),
     BLAST_FURNACE(Blocks.BLAST_FURNACE, SignalBlockSupplier.container(3)),
     COMMAND_BLOCK(Blocks.COMMAND_BLOCK, SignalBlockSupplier.commandBlock()),
+    LECTERN(Blocks.LECTERN, SignalBlockSupplier.lectern()),
     AUTO(null, null);
 
     private final Block block;
