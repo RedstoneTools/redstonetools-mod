@@ -12,7 +12,7 @@
     "features.AutoDustMixin",
     "features.CopyStateMixin",
     "features.ItemBindMixin$ItemStackMixin",
-    "gamerules.DoContainerDropsMixin",
+    "gamerules.DoContainerDropsMixin"
   ],
   "client": [
     "accessors.MinecraftClientAccessor",
