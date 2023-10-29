@@ -15,6 +15,7 @@
     "gamerules.DoContainerDropsMixin",
   ],
   "client": [
+    "features.SlabKeeperMixin",
     "accessors.MinecraftClientAccessor",
     "accessors.WorldRendererAccessor",
     "features.AirPlaceClientMixin",
