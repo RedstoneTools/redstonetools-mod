@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.utils;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import tools.redstone.redstonetools.features.arguments.Argument;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -14,7 +15,7 @@ import java.util.List;
 public class CommandUtils {
     private CommandUtils() { }
 
-    public static void register(String name, List<Argument<?>> arguments, Command<ServerCommandSource> executor, CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+    public static LiteralArgumentBuilder<ServerCommandSource> build(String name, List<Argument<?>> arguments, Command<ServerCommandSource> executor) {
         var base = CommandManager.literal(name);
 
         if (arguments.stream().allMatch(Argument::isOptional)) {
@@ -27,6 +28,11 @@ public class CommandUtils {
                     .toList(), executor));
         }
 
+        return base;
+    }
+
+    public static void register(String name, List<Argument<?>> arguments, Command<ServerCommandSource> executor, CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+        var base = build(name, arguments, executor);
         dispatcher.register(base);
     }
 

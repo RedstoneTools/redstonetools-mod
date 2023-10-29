@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import static tools.redstone.redstonetools.features.arguments.serializers.BlockColorSerializer.blockColor;
 
 @AutoService(AbstractFeature.class)
-@Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode")
+@Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode", worldedit = true)
 public class ColorCodeFeature extends CommandFeature {
     public static final Argument<BlockColor> color = Argument
             .ofType(blockColor());
@@ -104,9 +104,9 @@ public class ColorCodeFeature extends CommandFeature {
             // call remember to allow undo
             playerSession.remember(session);
 
-            return Feedback.success("Successfully colored %s blocks " + color.getValue(), String.valueOf(blocksColored));
+            return Feedback.success("Successfully colored {} block(s) {}.", blocksColored, color.getValue());
         } catch (Exception e) {
-            return Feedback.error("An error occurred while coloring the blocks.");
+            return Feedback.error("An error occurred while coloring the block(s).");
         }
     }
 
