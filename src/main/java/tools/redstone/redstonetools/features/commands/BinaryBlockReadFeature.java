@@ -7,11 +7,16 @@ import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.util.Either;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Collections;
@@ -20,6 +25,8 @@ import static tools.redstone.redstonetools.features.arguments.serializers.BlockS
 import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 import static tools.redstone.redstonetools.features.arguments.serializers.NumberBaseSerializer.numberBase;
+
+import Z;
 
 @AutoService(AbstractFeature.class)
 @Feature(name = "Binary Block Read", description = "Interprets your WorldEdit selection as a binary number.", command = "/read", worldedit = true)
@@ -45,7 +52,7 @@ public class BinaryBlockReadFeature extends CommandFeature {
 
     @Override
     protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
-        var selectionOrFeedback = WorldEditUtils.getSelection(source.getPlayer());
+        var selectionOrFeedback = WorldEditUtils.getSelection(source.getPlayerOrThrow());
 
         if (selectionOrFeedback.right().isPresent()) {
             return selectionOrFeedback.right().get();

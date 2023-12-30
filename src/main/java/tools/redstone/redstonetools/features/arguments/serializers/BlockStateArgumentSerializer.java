@@ -1,10 +1,14 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import Z;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.BlockStateArgumentType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registry;
+import net.minecraft.state.property.Property;
 
 public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockStateArgument, String> {
 

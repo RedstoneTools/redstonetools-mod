@@ -13,6 +13,7 @@ import tools.redstone.redstonetools.features.arguments.Argument;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.*;

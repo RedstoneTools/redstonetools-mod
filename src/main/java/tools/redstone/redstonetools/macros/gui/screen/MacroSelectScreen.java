@@ -3,11 +3,11 @@ package tools.redstone.redstonetools.macros.gui.screen;
 import tools.redstone.redstonetools.macros.gui.widget.macrolist.MacroEntry;
 import tools.redstone.redstonetools.macros.gui.widget.macrolist.MacroListWidget;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
 public class MacroSelectScreen extends GameOptionsScreen {
@@ -40,7 +40,7 @@ public class MacroSelectScreen extends GameOptionsScreen {
         this.renderBackgroundTexture(0);
         macroList.render(matrices, mouseX, mouseY, delta);
 
-        drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);
+        drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);
         super.render(matrices, mouseX, mouseY, delta);
 
     }

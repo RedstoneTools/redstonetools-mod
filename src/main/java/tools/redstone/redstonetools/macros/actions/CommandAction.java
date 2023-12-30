@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.macros.actions;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 
 public class CommandAction extends Action {
     public String command;
