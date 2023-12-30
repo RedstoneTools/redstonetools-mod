@@ -1,6 +1,0 @@
-{
-    "gamerule.doContainerDrops": "Do container drops",
-    "gamerule.doContainerDrops.description": "Controls resource drops from containers",
-    "gamerule.doBlockUpdatesAfterEdit": "Do block updates after edit",
-    "gamerule.doBlockUpdatesAfterEdit.description": "Force update blocks after editing them in WorldEdit"
-}
