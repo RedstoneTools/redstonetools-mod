@@ -2,6 +2,8 @@ package tools.redstone.redstonetools.utils;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.RaycastContext;
 
 public class RaycastUtils {
@@ -17,7 +19,7 @@ public class RaycastUtils {
     }
 
     public static BlockHitResult rayCastFromEye(PlayerEntity player, float reach) {
-        return player.getWorld().raycast(new RaycastContext(
+        return player.method_48926().raycast(new RaycastContext(
                 player.getEyePos(),
                 player.getEyePos().add(player.getRotationVector().multiply(reach)),
                 RaycastContext.ShapeType.COLLIDER,

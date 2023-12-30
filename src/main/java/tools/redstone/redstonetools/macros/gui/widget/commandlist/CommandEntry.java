@@ -1,6 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.widget.commandlist;
 
-import tools.redstone.redstonetools.macros.gui.MaroCommandSuggestor;
+import tools.redstone.redstonetools.macros.gui.MacroCommandSuggestor;
 import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -29,10 +29,10 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
             this.owner.removeCommand(this);
         });
 
-        MaroCommandSuggestor commandMaroCommandSuggestor = new MaroCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
-        commandMaroCommandSuggestor.setWindowActive(false);
-        commandMaroCommandSuggestor.refresh();
-        commandMaroCommandSuggestor.close();
+        MacroCommandSuggestor commandMacroCommandSuggestor = new MacroCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
+        commandMacroCommandSuggestor.setWindowActive(false);
+        commandMacroCommandSuggestor.refresh();
+        commandMacroCommandSuggestor.close();
     }
 
 

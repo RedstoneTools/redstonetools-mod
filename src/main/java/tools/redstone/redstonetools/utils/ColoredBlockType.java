@@ -1,8 +1,8 @@
 package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.Block;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public enum ColoredBlockType {
     // TODO: Merge some things with the ColoredBlock class so we dont have to repeat the formats and stuff

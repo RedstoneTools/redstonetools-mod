@@ -12,7 +12,6 @@ import tools.redstone.redstonetools.macros.gui.widget.commandlist.CommandListWid
 import tools.redstone.redstonetools.macros.gui.widget.macrolist.MacroListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -21,6 +20,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 import net.minecraft.client.util.InputUtil.Type;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -96,7 +96,7 @@ public class MacroEditScreen extends GameOptionsScreen {
 
         keyBindButton = new ButtonWidget(this.width / 2 + 26, 55, 75, 20, text, (button) -> {
             detectingKeycodeKey = true;
-            keyBindButton.setMessage((new LiteralText("> ")).append(keyBindButton.getMessage().shallowCopy().formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW));
+            keyBindButton.setMessage((new LiteralText("> ")).append(keyBindButton.getMessage().copy().formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW));
         });
         if (detectingKeycodeKey) keyBindButton.onPress();
 
@@ -147,9 +147,9 @@ public class MacroEditScreen extends GameOptionsScreen {
         commandList.render(matrices, mouseX, mouseY, delta);
         super.render(matrices, mouseX, mouseY, delta);
 
-        drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);
+        drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);
 
-        drawCenteredText(matrices, this.textRenderer, "Key Bind", width / 2 - (99 - textRenderer.getWidth("Key Bind") / 2), 55 + textRenderer.fontHeight / 2, 16777215);
+        drawCenteredTextWithShadow(matrices, this.textRenderer, "Key Bind", width / 2 - (99 - textRenderer.getWidth("Key Bind") / 2), 55 + textRenderer.fontHeight / 2, 16777215);
         nameField.render(matrices, mouseX, mouseY, delta);
 
         if (nameField.getText().isEmpty() && !nameField.isFocused()) {

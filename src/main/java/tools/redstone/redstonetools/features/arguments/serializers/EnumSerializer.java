@@ -9,6 +9,8 @@ import net.minecraft.text.Text;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class EnumSerializer<T extends Enum<T>>

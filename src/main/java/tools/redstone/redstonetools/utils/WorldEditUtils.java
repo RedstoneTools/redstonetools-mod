@@ -3,11 +3,14 @@ package tools.redstone.redstonetools.utils;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import com.mojang.datafixers.util.Either;
 import com.sk89q.worldedit.IncompleteRegionException;
+import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.fabric.FabricAdapter;
+import com.sk89q.worldedit.fabric.FabricPlayer;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.world.World;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.function.Consumer;

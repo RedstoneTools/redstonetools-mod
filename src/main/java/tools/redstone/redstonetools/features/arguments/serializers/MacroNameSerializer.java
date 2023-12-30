@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.MacroManager;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
