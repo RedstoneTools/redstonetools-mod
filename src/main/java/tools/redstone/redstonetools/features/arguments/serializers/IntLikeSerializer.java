@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
-import ;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -59,23 +58,24 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
             return tryParse(serialized);
         }
 
-        if(serialized.charAt(0) == '-' && serialized.chars().filter(ch -> ch == '-').count() == 1){
+        if (serialized.charAt(0) == '-' && serialized.chars().filter(ch -> ch == '-').count() == 1) {
             isNegative = true;
-            serialized = serialized.replace("-","");
+            serialized = serialized.replace("-", "");
         }
 
         if (serialized.charAt(0) == '0') {
-            if(serialized.length() > 1) {
+            if (serialized.length() > 1) {
                 var prefixedBase = serialized.substring(0, 2);
                 var number = serialized.substring(2);
 
                 var numberBase = NumberBase.fromPrefix(prefixedBase).orElse(null);
 
                 if (numberBase != null) {
-                    return isNegative ? tryParse("-" + number, numberBase.toInt()) : tryParse(number, numberBase.toInt());
+                    return isNegative ? tryParse("-" + number, numberBase.toInt())
+                            : tryParse(number, numberBase.toInt());
                 }
             } else {
-                return tryParse(serialized,10);
+                return tryParse(serialized, 10);
             }
         }
 
@@ -94,10 +94,10 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
                 throw new IllegalArgumentException("Invalid base '" + parts[1] + "'.");
             }
 
-            return isNegative ? tryParse("-"+number, base) : tryParse(number, base);
+            return isNegative ? tryParse("-" + number, base) : tryParse(number, base);
         }
 
-        return isNegative ? tryParse("-"+serialized) : tryParse(serialized);
+        return isNegative ? tryParse("-" + serialized) : tryParse(serialized);
     }
 
     private T tryParse(String string) {
@@ -107,8 +107,8 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
     private T tryParse(String string, int radix) {
         return tryParseOptional(string, radix)
                 .orElseThrow(() -> new IllegalArgumentException(radix == 10
-                    ? "Invalid number '" + string + "'."
-                    : "Invalid base " + radix + " number '" + string + "'."));
+                        ? "Invalid number '" + string + "'."
+                        : "Invalid base " + radix + " number '" + string + "'."));
     }
 
     protected abstract Optional<T> tryParseOptional(String string, int radix);
