@@ -76,15 +76,13 @@ public class RStackFeature extends CommandFeature {
 
         var stackVector = directionToBlock(stackDirection);
 
-
         try (var editSession = localSession.createEditSession(actor)) {
             for (var i = 1; i <= count.getValue(); i++) {
                 var copy = new ForwardExtentCopy(
                         editSession,
                         selection,
                         editSession,
-                        selection.getMinimumPoint().add(stackVector.multiply(i * offset.getValue()))
-                );
+                        selection.getMinimumPoint().add(stackVector.multiply(i * offset.getValue())));
                 copy.setSourceMask(airFilter);
                 Operations.complete(copy);
             }

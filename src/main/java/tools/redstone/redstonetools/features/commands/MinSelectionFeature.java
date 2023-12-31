@@ -58,7 +58,6 @@ public class MinSelectionFeature extends CommandFeature {
         if (isEmpty) {
             return Feedback.invalidUsage("Cannot minimize empty selections.");
         }
-            
 
         minimiseSelection(selectionWorld, selection);
 

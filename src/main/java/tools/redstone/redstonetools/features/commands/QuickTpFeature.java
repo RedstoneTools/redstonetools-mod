@@ -19,7 +19,6 @@ import static tools.redstone.redstonetools.features.arguments.serializers.BoolSe
 import static tools.redstone.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
 
 
-
 @AutoService(AbstractFeature.class)
 @Feature(name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
 public class QuickTpFeature extends CommandFeature {
