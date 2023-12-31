@@ -12,8 +12,6 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonWriter;
-import ;
-import Z;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,7 +30,6 @@ public class MacroManager {
                 .resolve("config")
                 .resolve("redstonetools")
                 .resolve("macros.json");
-
 
         JsonArray macrosJson = null;
         try {
@@ -136,8 +133,7 @@ public class MacroManager {
                         "/gamerule doContainerDrops false",
                         "/time set noon",
                         "/weather clear"
-                })
-        );
+                }));
     }
 
     private Macro createCommandMacro(String name, String[] commands) {
