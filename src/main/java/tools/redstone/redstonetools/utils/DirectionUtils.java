@@ -3,8 +3,6 @@ package tools.redstone.redstonetools.utils;
 
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.util.Direction;
-import net.minecraft.command.CommandException;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 public class DirectionUtils {
@@ -34,7 +32,7 @@ public class DirectionUtils {
                 default -> null;
             };
             case LEFT -> switch (firstOrdinal(playerFacing)) {
-                case UP, DOWN -> throw new CommandException(Text.of("Can't determine direction"));
+                //case UP, DOWN -> throw new CommandException(Text.of("Can't determine direction"));
                 case NORTH -> DirectionArgument.WEST;
                 case EAST -> DirectionArgument.NORTH;
                 case SOUTH -> DirectionArgument.EAST;
@@ -46,7 +44,7 @@ public class DirectionUtils {
                 default -> null;
             };
             case RIGHT -> switch (firstOrdinal(playerFacing)) {
-                case UP, DOWN -> throw new CommandException(Text.of("Can't determine direction"));
+                //case UP, DOWN -> throw new CommandException(Text.of("Can't determine direction"));
                 case NORTH -> DirectionArgument.EAST;
                 case EAST -> DirectionArgument.SOUTH;
                 case SOUTH -> DirectionArgument.WEST;
@@ -76,7 +74,7 @@ public class DirectionUtils {
 
     // big evil match direction function, there might be a better way to do this but i don't know how
     @NotNull
-    public static Direction matchDirection(DirectionArgument direction, Direction playerFacing) throws CommandException {
+    public static Direction matchDirection(DirectionArgument direction, Direction playerFacing) {
         var absoluteDirection = relativeToAbsolute(direction, playerFacing);
         return switch (absoluteDirection) {
             case NORTH -> Direction.NORTH;

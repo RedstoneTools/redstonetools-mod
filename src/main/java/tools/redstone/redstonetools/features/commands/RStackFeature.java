@@ -1,36 +1,29 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.DirectionArgument;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.IncompleteRegionException;
-import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.fabric.FabricAdapter;
-import com.sk89q.worldedit.fabric.FabricPlayer;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.Mask2D;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldedit.util.Direction;
-import com.sk89q.worldedit.world.World;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
+import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.features.Feature;
+import tools.redstone.redstonetools.features.arguments.Argument;
+import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.utils.DirectionArgument;
 
 import static tools.redstone.redstonetools.features.arguments.serializers.DirectionSerializer.direction;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
-
-import I;
 
 @AutoService(AbstractFeature.class)
 @Feature(name = "RStack", description = "Stacks with custom distance", command = "/rstack", worldedit = true)

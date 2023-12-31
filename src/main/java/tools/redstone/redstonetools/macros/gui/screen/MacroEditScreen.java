@@ -21,7 +21,6 @@ import net.minecraft.client.util.InputUtil.Key;
 import net.minecraft.client.util.InputUtil.Type;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import tools.redstone.redstonetools.utils.KeyBindingUtils;
@@ -92,11 +91,11 @@ public class MacroEditScreen extends GameOptionsScreen {
         Key keyCode = macro.getKey();
         Text text = keyCode.getLocalizedText();
         if (keyCode == InputUtil.UNKNOWN_KEY) text = Text.of("");
-        if ( KeyBindingUtils.isKeyAlreadyBound(keyCode) ) { text = new LiteralText(text.getString()).formatted(Formatting.RED); }
+        if ( KeyBindingUtils.isKeyAlreadyBound(keyCode) ) { text = Text.literal(text.getString()).formatted(Formatting.RED); }
 
         keyBindButton = new ButtonWidget(this.width / 2 + 26, 55, 75, 20, text, (button) -> {
             detectingKeycodeKey = true;
-            keyBindButton.setMessage((new LiteralText("> ")).append(keyBindButton.getMessage().copy().formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW));
+            keyBindButton.setMessage((Text.literal("> ")).append(keyBindButton.getMessage().copy().formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW));
         });
         if (detectingKeycodeKey) keyBindButton.onPress();
 

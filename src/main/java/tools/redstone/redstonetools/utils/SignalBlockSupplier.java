@@ -8,8 +8,9 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registry;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 
@@ -123,7 +124,7 @@ public interface SignalBlockSupplier {
     }
 
     private static void setItemName(ItemStack item, int signalStrength) {
-        MutableText text = new LiteralText(String.valueOf(signalStrength));
+        MutableText text = Text.literal(String.valueOf(signalStrength));
         text.setStyle(text.getStyle().withColor(Formatting.RED));
         item.setCustomName(text);
     }

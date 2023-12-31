@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.widget.commandlist;
 
+import net.minecraft.client.gui.DrawContext;
 import tools.redstone.redstonetools.macros.gui.MacroCommandSuggestor;
 import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 import net.minecraft.client.MinecraftClient;
@@ -65,6 +66,11 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
             edit = true;
         }
         owner.focusOn(this);
+    }
+
+    @Override
+    public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        return;
     }
 
     protected String getText() {

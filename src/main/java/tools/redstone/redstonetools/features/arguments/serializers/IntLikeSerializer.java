@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
-import ;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
