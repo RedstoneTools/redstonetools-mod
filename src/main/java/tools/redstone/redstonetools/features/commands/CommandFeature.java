@@ -4,6 +4,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.server.command.CommandManager;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
@@ -19,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
-
-import Z;
 
 
 public abstract class CommandFeature extends AbstractFeature {
@@ -55,7 +55,7 @@ public abstract class CommandFeature extends AbstractFeature {
     }
 
     @Override
-    protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+    protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         var info = ReflectionUtils.getFeatureInfo(getClass());
         var arguments = ReflectionUtils.getArguments(getClass());
 
@@ -75,7 +75,8 @@ public abstract class CommandFeature extends AbstractFeature {
                     return feedback.getType().getCode();
                 },
                 dispatcher,
-                dedicated);
+                registryAccess,
+                environment);
     }
 
     protected abstract Feedback execute(ServerCommandSource source) throws CommandSyntaxException;

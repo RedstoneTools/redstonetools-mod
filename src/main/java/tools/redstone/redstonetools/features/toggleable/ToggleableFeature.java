@@ -4,6 +4,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
@@ -99,7 +101,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
     @SuppressWarnings({ "rawtypes", "unchecked" })
 
     @Override
-    protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+    protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, RegistrationEnvironment environment) {
         var baseCommand = literal(getCommand())
                 .executes(this::toggle);
 
