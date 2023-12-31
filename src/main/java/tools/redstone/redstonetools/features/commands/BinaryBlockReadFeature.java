@@ -26,6 +26,7 @@ import static tools.redstone.redstonetools.features.arguments.serializers.BoolSe
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 import static tools.redstone.redstonetools.features.arguments.serializers.NumberBaseSerializer.numberBase;
 
+
 @AutoService(AbstractFeature.class)
 @Feature(name = "Binary Block Read", description = "Interprets your WorldEdit selection as a binary number.", command = "/read", worldedit = true)
 public class BinaryBlockReadFeature extends CommandFeature {
