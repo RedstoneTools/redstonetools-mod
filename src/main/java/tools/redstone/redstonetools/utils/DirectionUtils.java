@@ -1,9 +1,8 @@
 package tools.redstone.redstonetools.utils;
 
-
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.util.Direction;
-import net.minecraft.command.CommandException;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +16,7 @@ public class DirectionUtils {
             default -> playerFacing;
         };
     }
-    
+
     public static DirectionArgument relativeToAbsolute(DirectionArgument direction, Direction playerFacing) {
         return switch (direction) {
             case ME, FORWARD -> switch (firstOrdinal(playerFacing)) {
@@ -74,9 +73,11 @@ public class DirectionUtils {
         };
     }
 
-    // big evil match direction function, there might be a better way to do this but i don't know how
+    // big evil match direction function, there might be a better way to do this but
+    // i don't know how
     @NotNull
-    public static Direction matchDirection(DirectionArgument direction, Direction playerFacing) throws CommandException {
+    public static Direction matchDirection(DirectionArgument direction, Direction playerFacing)
+            throws CommandException {
         var absoluteDirection = relativeToAbsolute(direction, playerFacing);
         return switch (absoluteDirection) {
             case NORTH -> Direction.NORTH;
