@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.server.command.CommandManager;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
@@ -22,9 +23,10 @@ import java.util.List;
 
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
-
 public abstract class CommandFeature extends AbstractFeature {
     private static final List<KeyBinding> keyBindings = new ArrayList<>();
+    protected static final CommandRegistryAccess REGISTRY_ACCESS = CommandManager
+            .createRegistryAccess(BuiltinRegistries.createWrapperLookup());
 
     @Override
     public void register() {
@@ -41,8 +43,7 @@ public abstract class CommandFeature extends AbstractFeature {
                 info.name(),
                 InputUtil.Type.KEYSYM,
                 -1,
-                "Redstone Tools"
-        ));
+                "Redstone Tools"));
 
         keyBindings.add(keyBinding);
 
@@ -55,7 +56,8 @@ public abstract class CommandFeature extends AbstractFeature {
     }
 
     @Override
-    protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
+    protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher,
+            CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         var info = ReflectionUtils.getFeatureInfo(getClass());
         var arguments = ReflectionUtils.getArguments(getClass());
 

@@ -1,24 +1,25 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
-import Z;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.BlockStateArgumentType;
-import net.minecraft.registry.Registry;
-import net.minecraft.state.property.Property;
+import net.minecraft.registry.Registries;
 
 public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockStateArgument, String> {
 
-    private static final BlockStateArgumentSerializer INSTANCE = new BlockStateArgumentSerializer();
+    private static BlockStateArgumentSerializer INSTANCE;
 
-    private BlockStateArgumentSerializer() {
-        super(BlockStateArgument.class, BlockStateArgumentType.blockState());
+    private BlockStateArgumentSerializer(CommandRegistryAccess registryAccess) {
+        super(BlockStateArgument.class, BlockStateArgumentType.blockState(registryAccess));
     }
 
-    public static BlockStateArgumentSerializer blockState() {
+    public static BlockStateArgumentSerializer blockState(CommandRegistryAccess registryAccess) {
+        if (INSTANCE == null) {
+            INSTANCE = new BlockStateArgumentSerializer(registryAccess);
+        }
+
         return INSTANCE;
     }
 
@@ -37,7 +38,7 @@ public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockState
         var block = state.getBlock();
 
         var builder = new StringBuilder()
-                .append(Registry.BLOCK.getId(block));
+                .append(Registries.BLOCK.getId(block));
 
         if (state.getProperties().size() == 0) {
             return builder.toString();

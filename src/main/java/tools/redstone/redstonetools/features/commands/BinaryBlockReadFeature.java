@@ -26,22 +26,19 @@ import static tools.redstone.redstonetools.features.arguments.serializers.BoolSe
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
 import static tools.redstone.redstonetools.features.arguments.serializers.NumberBaseSerializer.numberBase;
 
-import Z;
-
 @AutoService(AbstractFeature.class)
 @Feature(name = "Binary Block Read", description = "Interprets your WorldEdit selection as a binary number.", command = "/read", worldedit = true)
 public class BinaryBlockReadFeature extends CommandFeature {
     private static final BlockStateArgument LIT_LAMP_ARG = new BlockStateArgument(
             Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true),
             Collections.singleton(RedstoneLampBlock.LIT),
-            null
-    );
+            null);
 
     public static final Argument<Integer> offset = Argument
             .ofType(integer(1))
             .withDefault(2);
     public static final Argument<BlockStateArgument> onBlock = Argument
-            .ofType(blockState())
+            .ofType(blockState(REGISTRY_ACCESS))
             .withDefault(LIT_LAMP_ARG);
     public static final Argument<Integer> toBase = Argument
             .ofType(numberBase())
