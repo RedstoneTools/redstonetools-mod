@@ -17,6 +17,7 @@ import tools.redstone.redstonetools.utils.ReflectionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public abstract class CommandFeature extends AbstractFeature {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyBinding.wasPressed()) {
                 assert client.player != null;
-                client.player.sendChatMessage("/" + info.command());
+                client.player.sendMessage(Text.literal("/" + info.command()));
             }
         });
     }
