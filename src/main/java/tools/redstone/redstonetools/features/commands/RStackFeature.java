@@ -30,8 +30,6 @@ import static tools.redstone.redstonetools.features.arguments.serializers.Intege
 import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
-import I;
-
 @AutoService(AbstractFeature.class)
 @Feature(name = "RStack", description = "Stacks with custom distance", command = "/rstack", worldedit = true)
 public class RStackFeature extends CommandFeature {
@@ -83,15 +81,13 @@ public class RStackFeature extends CommandFeature {
 
         var stackVector = directionToBlock(stackDirection);
 
-
         try (var editSession = localSession.createEditSession(actor)) {
             for (var i = 1; i <= count.getValue(); i++) {
                 var copy = new ForwardExtentCopy(
                         editSession,
                         selection,
                         editSession,
-                        selection.getMinimumPoint().add(stackVector.multiply(i * offset.getValue()))
-                );
+                        selection.getMinimumPoint().add(stackVector.multiply(i * offset.getValue())));
                 copy.setSourceMask(airFilter);
                 Operations.complete(copy);
             }

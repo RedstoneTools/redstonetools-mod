@@ -18,8 +18,6 @@ import net.minecraft.util.math.Vec3d;
 import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
 
-import D;
-
 @AutoService(AbstractFeature.class)
 @Feature(name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
 public class QuickTpFeature extends CommandFeature {
