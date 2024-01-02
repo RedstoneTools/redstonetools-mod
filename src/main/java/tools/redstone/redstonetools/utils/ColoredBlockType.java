@@ -1,7 +1,7 @@
 package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.Block;
-import net.minecraft.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 public enum ColoredBlockType {
@@ -34,6 +34,6 @@ public enum ColoredBlockType {
     }
 
     public Block toBlock() {
-        return Registry.BLOCK.get(Identifier.tryParse(toBlockId()));
+        return Registries.BLOCK.get(Identifier.tryParse(toBlockId()));
     }
 }

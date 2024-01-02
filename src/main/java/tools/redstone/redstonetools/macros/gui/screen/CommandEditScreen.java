@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
+import net.minecraft.client.gui.DrawContext;
 import tools.redstone.redstonetools.macros.gui.MacroCommandSuggestor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -21,28 +22,27 @@ public class CommandEditScreen extends GameOptionsScreen {
         super(parent, gameOptions, Text.of(""));
         this.commandField = commandField;
         client = MinecraftClient.getInstance();
-        this.commandMacroCommandSuggestor = new MacroCommandSuggestor(client, parent, commandField,client.textRenderer,true,false, commandField.y -20,5,-805306368);
+        this.commandMacroCommandSuggestor = new MacroCommandSuggestor(client, parent, commandField,client.textRenderer,true,false, commandField.getY() -20,5,-805306368);
 
         commandField.setChangedListener((s) -> changed = true);
         commandMacroCommandSuggestor.setWindowActive(true);
         commandMacroCommandSuggestor.refresh();
     }
 
-    @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        parent.render(matrices, mouseX, mouseY, delta);
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        parent.render(context, mouseX, mouseY, delta);
 
-        this.fillGradient(matrices, 0, 0, this.width, this.height, -1072689136, -804253680);
+        this.fillGradient(context, 0, 0, this.width, this.height, -1072689136, -804253680);
 
-        commandField.render(matrices, mouseX, mouseY, delta);
+        commandField.render(context, mouseX, mouseY, delta);
 
-        commandMacroCommandSuggestor.render(matrices, mouseX, mouseY);
+        commandMacroCommandSuggestor.render(context, mouseX, mouseY);
         if (changed) {
             commandMacroCommandSuggestor.refresh();
             changed = false;
         }
 
-        super.render(matrices, mouseX, mouseY, delta);
+        super.render(context, mouseX, mouseY, delta);
 
     }
 
@@ -60,7 +60,7 @@ public class CommandEditScreen extends GameOptionsScreen {
     @Override
     public void close() {
         super.close();
-        commandField.setTextFieldFocused(false);
+        commandField.setFocused(false);
         commandField.setChangedListener(null);
         commandMacroCommandSuggestor.setWindowActive(false);
         commandMacroCommandSuggestor.refresh();
@@ -73,14 +73,13 @@ public class CommandEditScreen extends GameOptionsScreen {
             if (!commandMacroCommandSuggestor.mouseClicked(mouseX, mouseY, button)) {
                 close();
             } else {
-                commandField.setTextFieldFocused(true);
+                commandField.setFocused(true);
             }
             return false;
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         return commandMacroCommandSuggestor.mouseScrolled(amount);
     }

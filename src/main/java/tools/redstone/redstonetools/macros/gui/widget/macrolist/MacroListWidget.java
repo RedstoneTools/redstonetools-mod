@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.widget.macrolist;
 
+import net.minecraft.client.gui.DrawContext;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.MacroManager;
 import tools.redstone.redstonetools.macros.gui.screen.MacroSelectScreen;
@@ -48,11 +49,11 @@ public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
     }
 
 
-    protected void renderBackground(MatrixStack matrices) {
-        parent.renderBackground(matrices);
+    protected void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+        parent.renderBackground(context, mouseX, mouseY, delta);
     }
 
-    protected boolean isFocused() {
+    public boolean isFocused() {
         return parent.getFocused() == this;
     }
 
