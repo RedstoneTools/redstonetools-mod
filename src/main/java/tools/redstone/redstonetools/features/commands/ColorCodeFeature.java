@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
+import com.sk89q.worldedit.function.pattern.Pattern;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
@@ -81,8 +82,8 @@ public class ColorCodeFeature extends CommandFeature {
         var playerSession = worldEdit.getSessionManager().get(wePlayer);
 
         // for each block in the selection
-        final World world = FabricAdapter.adapt(player.method_48926());
-        try (EditSession session = worldEdit.newEditSession(FabricAdapter.adapt(player.method_48926()))) {
+        final World world = FabricAdapter.adapt(player.getWorld());
+        try (EditSession session = worldEdit.newEditSession(FabricAdapter.adapt(player.getWorld()))) {
             // create mask and pattern and execute block set
             int blocksColored = session.replaceBlocks(selection,
                     new Mask() {
@@ -97,7 +98,7 @@ public class ColorCodeFeature extends CommandFeature {
                             return null;
                         }
                     },
-                    new com.sk89q.worldedit.function.pattern.Pattern() {
+                    new Pattern() {
                         @Override
                         public BaseBlock applyBlock(BlockVector3 position) {
                             return getColoredBlock(world, position, color.getValue());
