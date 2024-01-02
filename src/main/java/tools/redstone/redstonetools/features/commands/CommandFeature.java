@@ -51,7 +51,7 @@ public abstract class CommandFeature extends AbstractFeature {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyBinding.wasPressed()) {
                 assert client.player != null;
-                client.player.sendMessage(Text.literal("/" + info.command()));
+                client.player.networkHandler.sendChatCommand(info.command());
             }
         });
     }
