@@ -18,7 +18,7 @@
     "accessors.MinecraftClientAccessor",
     "accessors.WorldRendererAccessor",
     "features.AirPlaceClientMixin",
-    "features.ItemBindMixin$PlayerMixin",
+    "features.ItemBindMixin$NetworkHandlerMixin",
     "macros.AddMacroButtonMixin",
     "macros.InitializeMacroManagerMixin",
     "macros.KeyBindingMixinImpl",

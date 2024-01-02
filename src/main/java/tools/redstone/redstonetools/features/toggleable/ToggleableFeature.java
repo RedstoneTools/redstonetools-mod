@@ -77,7 +77,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyBinding.wasPressed()) {
                 assert client.player != null;
-                client.player.sendChatMessage("/" + info.command());
+                client.player.networkHandler.sendChatCommand(info.command());
             }
         });
     }

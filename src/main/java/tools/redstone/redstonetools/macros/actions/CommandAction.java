@@ -15,7 +15,7 @@ public class CommandAction extends Action {
         var player = MinecraftClient.getInstance().player;
         assert player != null;
 
-        player.sendChatMessage(command.startsWith("/") ? command : "/" + command);
+        player.networkHandler.sendChatCommand(command.startsWith("/") ? command.substring(1) : command);
     }
 
     @Override
