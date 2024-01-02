@@ -1,13 +1,11 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.util.math.MathHelper;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.MacroManager;
 import tools.redstone.redstonetools.macros.actions.Action;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
-import tools.redstone.redstonetools.macros.gui.widget.commandlist.CommandEntry;
 import tools.redstone.redstonetools.macros.gui.widget.commandlist.CommandListWidget;
 import tools.redstone.redstonetools.macros.gui.widget.macrolist.MacroListWidget;
 import net.minecraft.client.MinecraftClient;
@@ -19,7 +17,6 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 import net.minecraft.client.util.InputUtil.Type;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -102,7 +99,7 @@ public class MacroEditScreen extends GameOptionsScreen {
         this.addDrawableChild(keyBindButton);
 
         int widgetWidth = 339;
-        List<CommandEntry> entries = null;
+        List<CommandListWidget.CommandEntry> entries = null;
         double scrollAmount = 0;
         if (commandList != null) {
             entries = commandList.children();
@@ -115,7 +112,7 @@ public class MacroEditScreen extends GameOptionsScreen {
 
         if (entries != null) {
             commandList.children().clear();
-            for (CommandEntry entry : entries) {
+            for (CommandListWidget.CommandEntry entry : entries) {
                 entry.setOwner(commandList);
                 commandList.children().add(entry);
             }
@@ -136,20 +133,20 @@ public class MacroEditScreen extends GameOptionsScreen {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (overlapped) {
             mouseX = -1;
             mouseY = -1;
         }
 
         this.renderBackgroundTexture(0);
-        commandList.render(matrices, mouseX, mouseY, delta);
-        super.render(matrices, mouseX, mouseY, delta);
+        commandList.render(context, mouseX, mouseY, delta);
+        super.render(context, mouseX, mouseY, delta);
 
-        drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);
+        drawCenteredTextWithShadow(context, this.textRenderer, this.title, this.width / 2, 8, 16777215);
 
-        drawCenteredTextWithShadow(matrices, this.textRenderer, "Key Bind", width / 2 - (99 - textRenderer.getWidth("Key Bind") / 2), 55 + textRenderer.fontHeight / 2, 16777215);
-        nameField.render(matrices, mouseX, mouseY, delta);
+        drawCenteredTextWithShadow(context, this.textRenderer, "Key Bind", width / 2 - (99 - textRenderer.getWidth("Key Bind") / 2), 55 + textRenderer.fontHeight / 2, 16777215);
+        nameField.render(context, mouseX, mouseY, delta);
 
         if (nameField.getText().isEmpty() && !nameField.isFocused()) {
             nameField.setSuggestion("Name");
@@ -244,7 +241,7 @@ public class MacroEditScreen extends GameOptionsScreen {
             detectingKeycodeKey = false;
             Text text = key.getLocalizedText();
             if (key == InputUtil.UNKNOWN_KEY) text = Text.of("");
-            if ( KeyBindingUtils.isKeyAlreadyBound(key) ) { text = new LiteralText(text.getString()).formatted(Formatting.RED); }
+            if ( KeyBindingUtils.isKeyAlreadyBound(key) ) { text = Text.literal(text.getString()).formatted(Formatting.RED); }
 
             keyBindButton.setMessage(text);
             macro.setKey(key);
