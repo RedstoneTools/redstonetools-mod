@@ -2,6 +2,7 @@ package tools.redstone.redstonetools.features.commands;
 
 
 import com.google.auto.service.AutoService;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
@@ -99,7 +100,7 @@ public class MinSelectionFeature extends CommandFeature {
         try {
             selection.contract(changes.toArray(new BlockVector3[changes.size()]));
         } catch (RegionOperationException e) {
-            throw new net.minecraft.command.CommandException(Text.of("There was an error modifying the region."));
+            throw new SimpleCommandExceptionType(Text.of("There was an error modifying the region.")).create();
         }
 
         if (!finished)

@@ -53,7 +53,7 @@ public abstract class ItemBindMixin {
             NbtCompound nbt = getNbt();
             if (nbt == null || !nbt.contains("command")) return false;
             NbtString command = (NbtString) nbt.get("command");
-            MinecraftClient.getInstance().getNetworkHandler().sendChatMessage(command.asString());
+            MinecraftClient.getInstance().getNetworkHandler().sendChatCommand(command.asString());
 
             return true;
         }
@@ -61,11 +61,11 @@ public abstract class ItemBindMixin {
 
 
     @Mixin(ClientPlayNetworkHandler.class)
-    private abstract static class PlayerMixin {
+    private abstract static class NetworkHandlerMixin {
 
-        @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
+        @Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
         public void injectCommand(String message, CallbackInfo ci) {
-            if (!message.startsWith("/") || !ItemBindFeature.waitingForCommand) return;
+            if (!ItemBindFeature.waitingForCommand) return;
 
             Feedback addCommandFeedback = ItemBindFeature.addCommand(message);
             if (addCommandFeedback != null) {
