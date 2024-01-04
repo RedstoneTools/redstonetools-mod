@@ -24,11 +24,11 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
         addEntry(new CommandEntryPlaceHolder(client,this,""));
     }
 
-    public void tick() {
-        for (CommandEntry entry : children()) {
-            entry.tick();
-        }
-    }
+//    public void tick() {
+//        for (CommandEntry entry : children()) {
+//            entry.tick();
+//        }
+//    }
 
 
 
@@ -148,9 +148,10 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
             command.setMaxLength(255);
             command.setText(text);
 
-            deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0, 0, 20, 20, Text.of(""), (button) -> {
+
+            deleteButton = IconButtonWidget.builder(Text.of(""), (button) -> {
                 this.owner.removeCommand(this);
-            });
+            }).dimensions(0, 0, 20, 20).build();
 
             MacroCommandSuggestor commandMacroCommandSuggestor = new MacroCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
             commandMacroCommandSuggestor.setWindowActive(false);
@@ -176,9 +177,9 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
             }
         }
 
-        public void tick() {
-            command.tick();
-        }
+//        public void tick() {
+//            command.tick();
+//        }
         private boolean edit = false;
 
         public void setFocused(boolean focused){

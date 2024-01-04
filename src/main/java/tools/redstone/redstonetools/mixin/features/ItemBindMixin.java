@@ -2,7 +2,6 @@ package tools.redstone.redstonetools.mixin.features;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -26,6 +25,7 @@ import tools.redstone.redstonetools.features.feedback.FeedbackSender;
 
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
+
 public abstract class ItemBindMixin {
 
     @Mixin(ItemStack.class)
@@ -35,8 +35,7 @@ public abstract class ItemBindMixin {
         public abstract @Nullable NbtCompound getNbt();
 
         @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-        public void checkCommandNBT(World world, PlayerEntity user, Hand hand,
-                CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
+        public void checkCommandNBT(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
             if (tryToExecuteNBTCommand(hand, world)) {
                 cir.setReturnValue(TypedActionResult.pass((ItemStack) ((Object) this)));
             }
@@ -50,33 +49,31 @@ public abstract class ItemBindMixin {
         }
 
         private boolean tryToExecuteNBTCommand(Hand hand, World world) {
-            if (hand == Hand.OFF_HAND || world.isClient)
-                return false;
+            if (hand == Hand.OFF_HAND || world.isClient) return false;
             NbtCompound nbt = getNbt();
-            if (nbt == null || !nbt.contains("command"))
-                return false;
+            if (nbt == null || !nbt.contains("command")) return false;
             NbtString command = (NbtString) nbt.get("command");
-            MinecraftClient.getInstance().player.networkHandler.sendChatCommand(command.asString());
+            MinecraftClient.getInstance().getNetworkHandler().sendChatMessage(command.asString());
 
             return true;
         }
     }
 
-    @Mixin(ClientPlayNetworkHandler.class)
-    private abstract static class NetworkHandlerMixin {
 
-        @Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
+    @Mixin(ClientPlayNetworkHandler.class)
+    private abstract static class PlayerMixin {
+
+        @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
         public void injectCommand(String message, CallbackInfo ci) {
-            if (!ItemBindFeature.waitingForCommand)
-                return;
+            if (!message.startsWith("/") || !ItemBindFeature.waitingForCommand) return;
 
             Feedback addCommandFeedback = ItemBindFeature.addCommand(message);
             if (addCommandFeedback != null) {
-                INJECTOR.getInstance(FeedbackSender.class).sendFeedback(((Entity) ((Object) this)).getCommandSource(),
-                        addCommandFeedback);
+                INJECTOR.getInstance(FeedbackSender.class).sendFeedback(((Entity) ((Object)this)).getCommandSource(),addCommandFeedback);
                 ci.cancel();
             }
         }
     }
+
 
 }

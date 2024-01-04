@@ -1,15 +1,14 @@
 package tools.redstone.redstonetools.macros.gui.screen;
 
-import net.minecraft.client.gui.DrawContext;
-import tools.redstone.redstonetools.macros.gui.MacroCommandSuggestor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import tools.redstone.redstonetools.macros.gui.MacroCommandSuggestor;
 
 
 public class CommandEditScreen extends GameOptionsScreen {
@@ -32,7 +31,7 @@ public class CommandEditScreen extends GameOptionsScreen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         parent.render(context, mouseX, mouseY, delta);
 
-        this.fillGradient(context, 0, 0, this.width, this.height, -1072689136, -804253680);
+        //this.fillGradient(context, 0, 0, this.width, this.height, -1072689136, -804253680);
 
         commandField.render(context, mouseX, mouseY, delta);
 
@@ -49,7 +48,6 @@ public class CommandEditScreen extends GameOptionsScreen {
     @Override
     public void tick() {
         super.tick();
-        commandField.tick();
     }
 
     @Override
