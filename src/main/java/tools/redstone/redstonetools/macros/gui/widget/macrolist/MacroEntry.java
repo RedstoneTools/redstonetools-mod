@@ -1,15 +1,13 @@
 package tools.redstone.redstonetools.macros.gui.widget.macrolist;
 
 import net.minecraft.client.gui.DrawContext;
-import tools.redstone.redstonetools.macros.Macro;
-import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
+import tools.redstone.redstonetools.macros.Macro;
+import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 
 public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
 
@@ -25,13 +23,14 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
         this.macro = macro;
         this.owner = owner;
 
-        buttonWidget = new CheckboxWidget(0, 0, 20, 20, null, macro.enabled, false);
-        deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0, 0, 20, 20 ,Text.of(""), (button) -> {
+        buttonWidget = CheckboxWidget.builder(null, null).build();
+        buttonWidget.setDimensionsAndPosition(20,20,0,0);
+        deleteButton = IconButtonWidget.builder(Text.of(""), (button) -> {
             deleteIfConfirmed();
-        });
-        editButton = new IconButtonWidget(IconButtonWidget.PENCIL_ICON,0, 0, 20, 20, Text.of(""), (button) -> {
+        }).dimensions(0, 0, 20, 20).build();
+        editButton = IconButtonWidget.builder(Text.of(""), (button) -> {
             owner.parent.openEditScreen(this);
-        });
+        }).dimensions(0, 0, 20, 20).build();
     }
 
 
@@ -50,8 +49,7 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
             text += "...";
         }
 
-
-        owner.client.textRenderer.drawWithShadow(context, text, x, y+3,macro.enabled?16777215:8355711, true);
+        context.drawTextWithShadow(owner.client.textRenderer,text,x,y+3,macro.enabled?16777215:8355711);
     }
 
     private void renderWidget(PressableWidget widget, DrawContext context, int mouseX, int mouseY, float tickDelta, int x, int y) {
@@ -95,7 +93,7 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
     }
 
     public Text getNarration() {
-        return new TranslatableTextContent("narrator.select");
+        return Text.translatable("narrator.select");
     }
 
 

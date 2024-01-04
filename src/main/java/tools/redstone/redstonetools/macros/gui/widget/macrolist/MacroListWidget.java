@@ -1,12 +1,11 @@
 package tools.redstone.redstonetools.macros.gui.widget.macrolist;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.MacroManager;
 import tools.redstone.redstonetools.macros.gui.screen.MacroSelectScreen;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
@@ -19,7 +18,7 @@ public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
 
 
     public MacroListWidget(MacroSelectScreen parent, MinecraftClient client) {
-        super(client, parent.width, parent.height, 20, parent.height - 42, 20);
+        super(client, parent.width, parent.height, 20, 20);
         this.parent = parent;
         this.client = client;
 
