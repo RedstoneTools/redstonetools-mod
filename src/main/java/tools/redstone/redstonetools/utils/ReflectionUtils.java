@@ -1,23 +1,31 @@
 package tools.redstone.redstonetools.utils;
 
+import static tools.redstone.redstonetools.RedstoneToolsClient.REFLECTIONS;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+
 import rip.hippo.inject.DoctorModule;
 import sun.misc.Unsafe;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
-
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
+import tools.redstone.redstonetools.features.arguments.serializers.TypeSerializer;
 
 public class ReflectionUtils {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -45,11 +53,9 @@ public class ReflectionUtils {
             // get lookup
             Field field = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
             MethodHandles.publicLookup();
-            INTERNAL_LOOKUP = (MethodHandles.Lookup)
-                    unsafe.getObject(
-                            unsafe.staticFieldBase(field),
-                            unsafe.staticFieldOffset(field)
-                    );
+            INTERNAL_LOOKUP = (MethodHandles.Lookup) unsafe.getObject(
+                    unsafe.staticFieldBase(field),
+                    unsafe.staticFieldOffset(field));
         } catch (Exception e) {
             e.printStackTrace();
             throw new ExceptionInInitializerError(e);
@@ -70,6 +76,10 @@ public class ReflectionUtils {
             }
         }
         return modules;
+    }
+
+    public static Set<Class<? extends TypeSerializer>> getAllArguments() {
+        return REFLECTIONS.getSubTypesOf(TypeSerializer.class);
     }
 
     public static Set<? extends AbstractFeature> getFeatures() {
@@ -128,7 +138,8 @@ public class ReflectionUtils {
                     if (!Modifier.isPublic(field.getModifiers())
                             || !Modifier.isStatic(field.getModifiers())
                             || !Modifier.isFinal(field.getModifiers())) {
-                        throw new RuntimeException("Field " + field.getName() + " of feature " + featureClass.getName() + " is not public static final");
+                        throw new RuntimeException("Field " + field.getName() + " of feature " + featureClass.getName()
+                                + " is not public static final");
                     }
 
                     try {

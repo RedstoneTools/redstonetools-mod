@@ -7,8 +7,17 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
+import net.minecraft.command.argument.serialize.ArgumentSerializer;
+import net.minecraft.command.argument.serialize.ArgumentSerializer.ArgumentTypeProperties;
+import net.minecraft.network.PacketByteBuf;
+
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+
+import com.google.common.reflect.TypeToken;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.Gson;
 
 /**
  * Base class for the 'wrapped' argument type.
@@ -20,7 +29,8 @@ public abstract class TypeSerializer<T, S> implements ArgumentType<T> {
 
     protected final Class<T> clazz;
 
-    // TODO: Consider moving this constructor to enum serializer as it's the only class that uses the clazz field
+    // TODO: Consider moving this constructor to enum serializer as it's the only
+    // class that uses the clazz field
     protected TypeSerializer(Class<T> clazz) {
         this.clazz = clazz;
     }
@@ -37,11 +47,41 @@ public abstract class TypeSerializer<T, S> implements ArgumentType<T> {
 
     /* String Serialization */
     public abstract T deserialize(StringReader reader) throws CommandSyntaxException;
+
     public abstract T deserialize(S serialized);
+
     public abstract S serialize(T value);
 
     /* Usage In Commands */
     public abstract Collection<String> getExamples();
-    public abstract <R> CompletableFuture<Suggestions> listSuggestions(CommandContext<R> context, SuggestionsBuilder builder);
+
+    public abstract <R> CompletableFuture<Suggestions> listSuggestions(CommandContext<R> context,
+            SuggestionsBuilder builder);
+
+    public abstract Serializer<?, ?> getSerializer();
+
+    public static abstract class Serializer<A extends ArgumentType<?>, T extends ArgumentTypeProperties<A>>
+            implements ArgumentSerializer<A, T> {
+
+        public void writePacket(T properties, PacketByteBuf packetByteBuf) {
+            var jsonObject = new JsonObject();
+            writeJson(properties, jsonObject);
+            packetByteBuf.writeString(jsonObject.toString());
+        }
+
+        public T fromPacket(PacketByteBuf packetByteBuf) {
+            String json = packetByteBuf.readString();
+            TypeToken<T> typeToken = new TypeToken<>() {
+            };
+            var jsonReader = new JsonReader(new java.io.StringReader(json));
+            return new Gson().fromJson(jsonReader, typeToken.getType());
+        }
+
+        public void writeJson(T var1, JsonObject var2) {
+            var gson = new Gson();
+            var newObject = gson.fromJson(gson.toJson(var1), JsonObject.class);
+            newObject.entrySet().forEach(entry -> var2.addProperty(entry.getKey(), entry.getValue().toString()));
+        }
+    }
 
 }
