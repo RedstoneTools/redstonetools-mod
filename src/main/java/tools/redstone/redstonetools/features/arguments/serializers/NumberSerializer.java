@@ -4,7 +4,7 @@ import tools.redstone.redstonetools.utils.NumberArg;
 
 import java.util.Optional;
 
-public class NumberSerializer extends IntLikeSerializer<NumberArg> {
+public class NumberSerializer extends IntLikeArgumentType<NumberArg> {
     private static final NumberSerializer INSTANCE = new NumberSerializer(null,null);
 
     public static NumberSerializer numberArg(){

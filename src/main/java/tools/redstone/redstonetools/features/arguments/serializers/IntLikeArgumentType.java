@@ -5,6 +5,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.NumberBase;
 
@@ -13,13 +15,13 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSerializer<T, String> {
-    private final T min;
+public abstract class IntLikeArgumentType<T extends Comparable<T>> extends GenericArgumentType<T, String> {
+    final T min;
     private final boolean hasMin;
-    private final T max;
+    final T max;
     private final boolean hasMax;
 
-    protected IntLikeSerializer(Class<T> clazz, T min, T max) {
+    protected IntLikeArgumentType(Class<T> clazz, T min, T max) {
         super(clazz);
 
         this.min = min;
@@ -127,4 +129,30 @@ public abstract class IntLikeSerializer<T extends Comparable<T>> extends TypeSer
     public <R> CompletableFuture<Suggestions> listSuggestions(CommandContext<R> context, SuggestionsBuilder builder) {
         return builder.buildFuture();
     }
+
+//    public static abstract class IntLikeSerializer extends Serializer<IntLikeArgumentType<T>, ArgumentSerializer.ArgumentTypeProperties<IntLikeArgumentType<T>>>{
+//
+//        @Override
+//        public ArgumentTypeProperties<IntLikeArgumentType<T>> getArgumentTypeProperties(IntLikeArgumentType<T> argumentType) {
+//            return new Properties(argumentType.max,argumentType.min);
+//        }
+//
+//        public abstract class Properties implements ArgumentTypeProperties<IntLikeArgumentType<T>>{
+//
+//            final T max, min;
+//
+//            public Properties(T max, T min) {
+//                this.max = max;
+//                this.min = min;
+//            }
+//
+//            @Override
+//            public abstract IntLikeArgumentType<T> createType(CommandRegistryAccess commandRegistryAccess);
+//
+//            @Override
+//            public ArgumentSerializer<IntLikeArgumentType<T>, ?> getSerializer() {
+//                return IntLikeSerializer.this;
+//            }
+//        }
+//    }
 }

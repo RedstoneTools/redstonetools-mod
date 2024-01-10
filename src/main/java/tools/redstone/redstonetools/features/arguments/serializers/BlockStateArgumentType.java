@@ -4,20 +4,20 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.BlockStateArgument;
-import net.minecraft.command.argument.BlockStateArgumentType;
+import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.registry.Registries;
 
-public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockStateArgument, String> {
+public class BlockStateArgumentType extends BrigadierArgumentType<BlockStateArgument, String> {
 
-    private static BlockStateArgumentSerializer INSTANCE;
+    private static BlockStateArgumentType INSTANCE;
 
-    private BlockStateArgumentSerializer(CommandRegistryAccess registryAccess) {
-        super(BlockStateArgument.class, BlockStateArgumentType.blockState(registryAccess));
+    private BlockStateArgumentType(CommandRegistryAccess registryAccess) {
+        super(BlockStateArgument.class, net.minecraft.command.argument.BlockStateArgumentType.blockState(registryAccess));
     }
 
-    public static BlockStateArgumentSerializer blockState(CommandRegistryAccess registryAccess) {
+    public static BlockStateArgumentType blockState(CommandRegistryAccess registryAccess) {
         if (INSTANCE == null) {
-            INSTANCE = new BlockStateArgumentSerializer(registryAccess);
+            INSTANCE = new BlockStateArgumentType(registryAccess);
         }
 
         return INSTANCE;
@@ -60,6 +60,28 @@ public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockState
         builder.append(']');
 
         return builder.toString();
+    }
+
+    public static class BlockStateArgumentSerializer extends Serializer<BlockStateArgumentType, ArgumentSerializer.ArgumentTypeProperties<BlockStateArgumentType>>{
+
+        @Override
+        public ArgumentTypeProperties<BlockStateArgumentType> getArgumentTypeProperties(BlockStateArgumentType argumentType) {
+            return new Properties();
+        }
+
+        public final class Properties
+                implements ArgumentSerializer.ArgumentTypeProperties<BlockStateArgumentType>{
+
+            @Override
+            public BlockStateArgumentType createType(CommandRegistryAccess commandRegistryAccess) {
+                return new BlockStateArgumentType(commandRegistryAccess);
+            }
+
+            @Override
+            public ArgumentSerializer<BlockStateArgumentType, ?> getSerializer() {
+                return BlockStateArgumentSerializer.this;
+            }
+        }
     }
 
 }

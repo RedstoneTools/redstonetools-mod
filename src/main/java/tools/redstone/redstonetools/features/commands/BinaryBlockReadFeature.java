@@ -7,24 +7,19 @@ import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.datafixers.util.Either;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Collections;
 
-import static tools.redstone.redstonetools.features.arguments.serializers.BlockStateArgumentSerializer.blockState;
+import static tools.redstone.redstonetools.features.arguments.serializers.BlockStateArgumentType.blockState;
 import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
-import static tools.redstone.redstonetools.features.arguments.serializers.NumberBaseSerializer.numberBase;
+import static tools.redstone.redstonetools.features.arguments.serializers.NumberBaseArgumentType.numberBase;
 
 
 @AutoService(AbstractFeature.class)
