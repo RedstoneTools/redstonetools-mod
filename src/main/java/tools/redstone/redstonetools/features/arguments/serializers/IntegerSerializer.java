@@ -2,7 +2,7 @@ package tools.redstone.redstonetools.features.arguments.serializers;
 
 import java.util.Optional;
 
-public class IntegerSerializer extends IntLikeSerializer<Integer> {
+public class IntegerSerializer extends IntLikeArgumentType<Integer> {
     private static final IntegerSerializer INSTANCE = new IntegerSerializer(Integer.MIN_VALUE, Integer.MAX_VALUE);
 
     public static IntegerSerializer integer() {

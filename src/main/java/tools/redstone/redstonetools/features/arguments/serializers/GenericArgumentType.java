@@ -1,12 +1,15 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.command.argument.serialize.ArgumentSerializer.ArgumentTypeProperties;
 import net.minecraft.network.PacketByteBuf;
@@ -14,24 +17,19 @@ import net.minecraft.network.PacketByteBuf;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.Gson;
-
 /**
  * Base class for the 'wrapped' argument type.
  *
  * @param <T> The value type.
  * @param <S> The serialized type.
  */
-public abstract class TypeSerializer<T, S> implements ArgumentType<T> {
+public abstract class GenericArgumentType<T, S> implements ArgumentType<T> {
 
     protected final Class<T> clazz;
 
     // TODO: Consider moving this constructor to enum serializer as it's the only
     // class that uses the clazz field
-    protected TypeSerializer(Class<T> clazz) {
+    protected GenericArgumentType(Class<T> clazz) {
         this.clazz = clazz;
     }
 
@@ -58,7 +56,6 @@ public abstract class TypeSerializer<T, S> implements ArgumentType<T> {
     public abstract <R> CompletableFuture<Suggestions> listSuggestions(CommandContext<R> context,
             SuggestionsBuilder builder);
 
-    public abstract Serializer<?, ?> getSerializer();
 
     public static abstract class Serializer<A extends ArgumentType<?>, T extends ArgumentTypeProperties<A>>
             implements ArgumentSerializer<A, T> {

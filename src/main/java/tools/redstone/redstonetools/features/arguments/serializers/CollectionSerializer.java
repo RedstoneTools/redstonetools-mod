@@ -18,18 +18,18 @@ import java.util.function.Function;
  * @param <C> The collection type.
  */
 public class CollectionSerializer<E, C extends Collection<E>>
-        extends TypeSerializer<C, List<Object>>
+        extends GenericArgumentType<C, List<Object>>
 {
 
-    public static <E> CollectionSerializer<E, List<E>> listOf(TypeSerializer<E, ?> element) {
+    public static <E> CollectionSerializer<E, List<E>> listOf(GenericArgumentType<E, ?> element) {
         return new CollectionSerializer<>(List.class, element, ArrayList::new);
     }
 
-    public static <E> CollectionSerializer<E, Set<E>> setOf(TypeSerializer<E, ?> element) {
+    public static <E> CollectionSerializer<E, Set<E>> setOf(GenericArgumentType<E, ?> element) {
         return new CollectionSerializer<>(Set.class, element, HashSet::new);
     }
 
-    final TypeSerializer<E, Object> elementType;
+    final GenericArgumentType<E, Object> elementType;
     final Function<Collection<E>, C> collectionFactory;
 
     // cache example because
@@ -39,10 +39,10 @@ public class CollectionSerializer<E, C extends Collection<E>>
 
     @SuppressWarnings("unchecked")
     protected CollectionSerializer(Class<?> clazz,
-                                   TypeSerializer<E, ?> elementType,
+                                   GenericArgumentType<E, ?> elementType,
                                    Function<Collection<E>, C> collectionFactory) {
         super((Class<C>) clazz);
-        this.elementType = (TypeSerializer<E, Object>) elementType;
+        this.elementType = (GenericArgumentType<E, Object>) elementType;
         this.collectionFactory = collectionFactory;
 
         // build example
@@ -55,7 +55,7 @@ public class CollectionSerializer<E, C extends Collection<E>>
         this.example = b.delete(b.length() - 3, b.length()).append("]").toString();
     }
 
-    public TypeSerializer<E, ?> getElementType() {
+    public GenericArgumentType<E, ?> getElementType() {
         return elementType;
     }
 

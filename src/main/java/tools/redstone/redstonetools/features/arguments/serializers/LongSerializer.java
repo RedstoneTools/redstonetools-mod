@@ -2,7 +2,7 @@ package tools.redstone.redstonetools.features.arguments.serializers;
 
 import java.util.Optional;
 
-public class LongSerializer extends IntLikeSerializer<Long> {
+public class LongSerializer extends IntLikeArgumentType<Long> {
     private static final LongSerializer INSTANCE = new LongSerializer(Long.MIN_VALUE, Long.MAX_VALUE);
 
     public static LongSerializer longArg() {

@@ -25,7 +25,7 @@ import sun.misc.Unsafe;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.arguments.serializers.TypeSerializer;
+import tools.redstone.redstonetools.features.arguments.serializers.GenericArgumentType;
 
 public class ReflectionUtils {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -78,8 +78,8 @@ public class ReflectionUtils {
         return modules;
     }
 
-    public static Set<Class<? extends TypeSerializer>> getAllArguments() {
-        return REFLECTIONS.getSubTypesOf(TypeSerializer.class);
+    public static Set<Class<? extends GenericArgumentType>> getAllArguments() {
+        return REFLECTIONS.getSubTypesOf(GenericArgumentType.class);
     }
 
     public static Set<? extends AbstractFeature> getFeatures() {
