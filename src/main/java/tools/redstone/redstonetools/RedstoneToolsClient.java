@@ -1,7 +1,10 @@
 package tools.redstone.redstonetools;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.command.argument.serialize.ArgumentSerializer;
+import net.minecraft.util.Identifier;
 
 import org.reflections.Reflections;
 import org.slf4j.Logger;
@@ -9,9 +12,11 @@ import org.slf4j.LoggerFactory;
 
 import rip.hippo.inject.Doctor;
 import rip.hippo.inject.Injector;
+import tools.redstone.redstonetools.features.arguments.serializers.GenericArgumentType;
 import tools.redstone.redstonetools.utils.DependencyLookup;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 
 public class RedstoneToolsClient implements ClientModInitializer {
@@ -30,6 +35,32 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
         // Register game rules
         RedstoneToolsGameRules.register();
+
+        // Register arguments
+        ReflectionUtils.getAllArguments().forEach(argument -> {
+            var nestedClasses = (Class<ArgumentSerializer>[]) argument
+                    .getDeclaredClasses();
+
+            if (nestedClasses.length == 0) {
+                LOGGER.error("Failed to register {} because no serializer nested class was found",
+                        argument.getSimpleName());
+                return;
+            }
+
+            Identifier id = new Identifier(MOD_ID, argument.getSimpleName().toLowerCase());
+
+            try {
+                var serializer = nestedClasses[0].getDeclaredConstructor().newInstance();
+
+                ArgumentTypeRegistry.registerArgumentType(
+                        id,
+                        argument, serializer);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                LOGGER.error("Failed to register argument type {}. Skipping registration.",
+                        argument.getName());
+            }
+        });
 
         // Register features
         ReflectionUtils.getFeatures().forEach(feature ->

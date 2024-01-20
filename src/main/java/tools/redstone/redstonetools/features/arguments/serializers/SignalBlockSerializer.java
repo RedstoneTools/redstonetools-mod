@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import tools.redstone.redstonetools.utils.SignalBlock;
 
 public class SignalBlockSerializer extends EnumSerializer<SignalBlock> {
@@ -11,5 +13,28 @@ public class SignalBlockSerializer extends EnumSerializer<SignalBlock> {
 
     public static SignalBlockSerializer signalBlock() {
         return INSTANCE;
+    }
+
+    public static class Serializer
+            extends GenericArgumentType.Serializer<SignalBlockSerializer, Serializer.Properties> {
+
+        public final class Properties
+                implements ArgumentSerializer.ArgumentTypeProperties<SignalBlockSerializer> {
+
+            @Override
+            public SignalBlockSerializer createType(CommandRegistryAccess var1) {
+                return signalBlock();
+            }
+
+            @Override
+            public ArgumentSerializer<SignalBlockSerializer, ?> getSerializer() {
+                return new Serializer();
+            }
+        }
+
+        @Override
+        public Properties getArgumentTypeProperties(SignalBlockSerializer serializer) {
+            return new Properties();
+        }
     }
 }

@@ -31,6 +31,7 @@ public class ReflectionUtils {
     private static final Logger LOGGER = LogManager.getLogger();
     private static DoctorModule[] modules;
     private static Set<? extends AbstractFeature> features;
+    private static Set<Class<? extends GenericArgumentType>> arguments;
 
     private ReflectionUtils() {
         throw new IllegalStateException("Utility class");
@@ -79,7 +80,12 @@ public class ReflectionUtils {
     }
 
     public static Set<Class<? extends GenericArgumentType>> getAllArguments() {
-        return REFLECTIONS.getSubTypesOf(GenericArgumentType.class);
+        if (arguments == null) {
+            arguments = REFLECTIONS.getSubTypesOf(GenericArgumentType.class).stream()
+                    .filter(argument -> !Modifier.isAbstract(argument.getModifiers())).collect(Collectors.toSet());
+        }
+
+        return arguments;
     }
 
     public static Set<? extends AbstractFeature> getFeatures() {

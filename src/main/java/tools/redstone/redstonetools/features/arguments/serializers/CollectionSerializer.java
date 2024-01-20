@@ -6,6 +6,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.serialize.ArgumentSerializer;
+
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -18,8 +21,7 @@ import java.util.function.Function;
  * @param <C> The collection type.
  */
 public class CollectionSerializer<E, C extends Collection<E>>
-        extends GenericArgumentType<C, List<Object>>
-{
+        extends GenericArgumentType<C, List<Object>> {
 
     public static <E> CollectionSerializer<E, List<E>> listOf(GenericArgumentType<E, ?> element) {
         return new CollectionSerializer<>(List.class, element, ArrayList::new);
@@ -39,8 +41,8 @@ public class CollectionSerializer<E, C extends Collection<E>>
 
     @SuppressWarnings("unchecked")
     protected CollectionSerializer(Class<?> clazz,
-                                   GenericArgumentType<E, ?> elementType,
-                                   Function<Collection<E>, C> collectionFactory) {
+            GenericArgumentType<E, ?> elementType,
+            Function<Collection<E>, C> collectionFactory) {
         super((Class<C>) clazz);
         this.elementType = (GenericArgumentType<E, Object>) elementType;
         this.collectionFactory = collectionFactory;
@@ -116,7 +118,8 @@ public class CollectionSerializer<E, C extends Collection<E>>
                     int oldCursor = inputParser.getCursor();
                     try {
                         elementType.deserialize(inputParser);
-                    } catch (CommandSyntaxException ignored) { }
+                    } catch (CommandSyntaxException ignored) {
+                    }
                     if (oldCursor == inputParser.getCursor())
                         break;
                     inputParser.skipWhitespace();
@@ -173,4 +176,28 @@ public class CollectionSerializer<E, C extends Collection<E>>
                 .toList();
     }
 
+    public static class Serializer
+            extends GenericArgumentType.Serializer<CollectionSerializer<?, ?>, Serializer.Properties> {
+
+        public final class Properties
+                implements ArgumentSerializer.ArgumentTypeProperties<CollectionSerializer<?, ?>> {
+
+            @Override
+            public CollectionSerializer<?, ?> createType(CommandRegistryAccess var1) {
+                // TODO: Actually make this work, this is currently a work around to get it to
+                // compile
+                return listOf(IntegerSerializer.integer());
+            }
+
+            @Override
+            public ArgumentSerializer<CollectionSerializer<?, ?>, ?> getSerializer() {
+                return new Serializer();
+            }
+        }
+
+        @Override
+        public Properties getArgumentTypeProperties(CollectionSerializer<?, ?> serializer) {
+            return new Properties();
+        }
+    }
 }
