@@ -3,6 +3,9 @@ package tools.redstone.redstonetools.features.arguments.serializers;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.serialize.ArgumentSerializer;
+
 public class FloatSerializer extends StringBrigadierSerializer<Float> {
 
     private static final FloatSerializer INSTANCE = new FloatSerializer(FloatArgumentType.floatArg());
@@ -28,4 +31,26 @@ public class FloatSerializer extends StringBrigadierSerializer<Float> {
         return String.valueOf(value);
     }
 
+    public static class Serializer
+            extends GenericArgumentType.Serializer<FloatSerializer, Serializer.Properties> {
+
+        public final class Properties
+                implements ArgumentSerializer.ArgumentTypeProperties<FloatSerializer> {
+
+            @Override
+            public FloatSerializer createType(CommandRegistryAccess var1) {
+                return floatArg();
+            }
+
+            @Override
+            public ArgumentSerializer<FloatSerializer, ?> getSerializer() {
+                return new Serializer();
+            }
+        }
+
+        @Override
+        public Properties getArgumentTypeProperties(FloatSerializer serializer) {
+            return new Properties();
+        }
+    }
 }
