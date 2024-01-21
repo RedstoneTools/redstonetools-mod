@@ -2,7 +2,6 @@ package tools.redstone.redstonetools.mixin.features;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -69,7 +68,8 @@ public abstract class ItemBindMixin {
 
             Feedback addCommandFeedback = ItemBindFeature.addCommand(message);
             if (addCommandFeedback != null) {
-                INJECTOR.getInstance(FeedbackSender.class).sendFeedback(((Entity) ((Object)this)).getCommandSource(),addCommandFeedback);
+                INJECTOR.getInstance(FeedbackSender.class).sendFeedback(
+                        MinecraftClient.getInstance().getServer().getCommandSource(), addCommandFeedback);
                 ci.cancel();
             }
         }
