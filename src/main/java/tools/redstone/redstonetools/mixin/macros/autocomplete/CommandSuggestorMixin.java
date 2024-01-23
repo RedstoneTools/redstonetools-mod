@@ -3,7 +3,7 @@ package tools.redstone.redstonetools.mixin.macros.autocomplete;
 import com.mojang.brigadier.suggestion.Suggestions;
 import net.minecraft.client.gui.screen.ChatInputSuggestor;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,7 +27,7 @@ public class CommandSuggestorMixin{
     int maxSuggestionSize;
 
 
-    @ModifyVariable(method = "showSuggestions", at = @At("STORE"), ordinal = 1)
+    @ModifyVariable(method = "show", at = @At("STORE"), ordinal = 1)
     public int suggestionWindXPos(int j){
         if (MacroCommandSuggestor.instance(this)) {
             Suggestions suggestions = this.pendingSuggestions.join();
@@ -36,7 +36,7 @@ public class CommandSuggestorMixin{
         return j;
     }
 
-    @ModifyVariable(method = "showSuggestions", at = @At("STORE"), ordinal = 2)
+    @ModifyVariable(method = "show", at = @At("STORE"), ordinal = 2)
     public int suggestionWindYPos(int k){
         if (MacroCommandSuggestor.instance(this)) {
             Suggestions suggestions = this.pendingSuggestions.join();
@@ -51,11 +51,11 @@ public class CommandSuggestorMixin{
     private int i = 0;
 
     @Inject(method = "render", at = @At("HEAD"))
-    public void render(MatrixStack matrices, int mouseX, int mouseY, CallbackInfo ci){
+    public void render(DrawContext ctx, int mouseX, int mouseY, CallbackInfo ci){
         i = 0;
     }
 
-    @ModifyVariable(method = "render", at = @At("STORE"), ordinal = 3)
+    @ModifyVariable(method = "render", at = @At("LOAD"), ordinal = 0)
     public int messageYPos(int j) {
         if (MacroCommandSuggestor.instance(this)) {
             int y = MacroCommandSuggestor.getY(this);
