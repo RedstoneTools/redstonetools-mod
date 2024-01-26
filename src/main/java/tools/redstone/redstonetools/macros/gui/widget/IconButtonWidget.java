@@ -18,9 +18,8 @@ public class IconButtonWidget extends ButtonWidget {
         this.texture = texture;
     }
 
-    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         super.renderWidget(context, mouseX, mouseY, delta);
-
 
         RenderSystem.setShaderTexture(0, texture);
         RenderSystem.enableDepthTest();
@@ -29,7 +28,7 @@ public class IconButtonWidget extends ButtonWidget {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-        context.drawGuiTexture(this.texture,this.getX(), this.getY(), 0,0, 20, this.height, 20, 20);
+        context.drawTexture(this.texture,this.getX(), this.getY(), 0,0, 20, this.height, 20, 20);
     }
 
 }

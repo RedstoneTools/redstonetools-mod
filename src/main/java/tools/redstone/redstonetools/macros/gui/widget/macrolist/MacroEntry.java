@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.widget.macrolist;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.*;
@@ -23,14 +24,18 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
         this.macro = macro;
         this.owner = owner;
 
-        buttonWidget = CheckboxWidget.builder(null, null).build();
-        buttonWidget.setDimensionsAndPosition(20,20,0,0);
-        deleteButton = IconButtonWidget.builder(Text.of(""), (button) -> {
+        buttonWidget =  CheckboxWidget.builder(Text.empty(), MinecraftClient.getInstance().textRenderer).build();
+
+        if (buttonWidget.isChecked() != macro.enabled) {
+            buttonWidget.onPress();
+        }
+
+        deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0, 0, 20, 20 ,Text.of(""), (button) -> {
             deleteIfConfirmed();
-        }).dimensions(0, 0, 20, 20).build();
-        editButton = IconButtonWidget.builder(Text.of(""), (button) -> {
+        },null);
+        editButton = new IconButtonWidget(IconButtonWidget.PENCIL_ICON,0, 0, 20, 20, Text.of(""), (button) -> {
             owner.parent.openEditScreen(this);
-        }).dimensions(0, 0, 20, 20).build();
+        },null);
     }
 
 

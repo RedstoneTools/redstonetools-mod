@@ -4,6 +4,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.macros.gui.MacroCommandSuggestor;
 import tools.redstone.redstonetools.macros.gui.screen.MacroEditScreen;
 import net.minecraft.client.MinecraftClient;
@@ -24,13 +25,11 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
         addEntry(new CommandEntryPlaceHolder(client,this,""));
     }
 
-//    public void tick() {
-//        for (CommandEntry entry : children()) {
-//            entry.tick();
-//        }
-//    }
 
 
+    @Override
+    public void setSelected(@Nullable CommandListWidget.CommandEntry entry) {
+    }
 
     public CommandEntry addCommand(String command) {
         CommandEntry entry = new CommandEntry(client, this, command);
@@ -148,10 +147,9 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
             command.setMaxLength(255);
             command.setText(text);
 
-
-            deleteButton = IconButtonWidget.builder(Text.of(""), (button) -> {
+            deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0,0,20,20,Text.empty(),(button) -> {
                 this.owner.removeCommand(this);
-            }).dimensions(0, 0, 20, 20).build();
+            },null);
 
             MacroCommandSuggestor commandMacroCommandSuggestor = new MacroCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
             commandMacroCommandSuggestor.setWindowActive(false);
@@ -177,9 +175,6 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
             }
         }
 
-//        public void tick() {
-//            command.tick();
-//        }
         private boolean edit = false;
 
         public void setFocused(boolean focused){
@@ -188,7 +183,6 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
                 owner.centerScrollOn(this);
                 edit = true;
             }
-            owner.focusOn(this);
         }
 
         protected String getText() {

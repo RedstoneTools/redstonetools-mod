@@ -44,11 +44,13 @@ public class MacroSelectScreen extends GameOptionsScreen {
 
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 16777215);
         super.render(context, mouseX, mouseY, delta);
-
     }
 
     public void openEditScreen(MacroEntry entry) {
         client.setScreen(new MacroEditScreen(this,gameOptions,Text.of("Edit Macro"), macroList, entry.macro));
     }
 
+    @Override
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+    }
 }
