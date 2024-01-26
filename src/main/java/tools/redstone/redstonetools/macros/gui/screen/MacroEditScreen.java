@@ -106,8 +106,8 @@ public class MacroEditScreen extends GameOptionsScreen {
             scrollAmount = commandList.getScrollAmount();
         }
 
-        commandList = new CommandListWidget(client, this, widgetWidth, height, 85, 24);
-        //commandList.setLeftPos(width / 2 - widgetWidth / 2);
+        commandList = new CommandListWidget(client, this, widgetWidth, this.height / 4 + 144 + 5 - 10-85, 85, 24);
+        commandList.setX(width / 2 - widgetWidth / 2);
 
 
         if (entries != null) {
@@ -126,6 +126,10 @@ public class MacroEditScreen extends GameOptionsScreen {
         commandList.setScrollAmount(scrollAmount);
 
         this.addSelectableChild(commandList);
+    }
+
+    @Override
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
     }
 
     private boolean canClickDone() {
@@ -153,14 +157,6 @@ public class MacroEditScreen extends GameOptionsScreen {
         } else {
             nameField.setSuggestion("");
         }
-    }
-
-    @Override
-    public void tick() {
-        //nameField.tick();
-        //commandList.tick();
-
-        super.tick();
     }
 
     @Override

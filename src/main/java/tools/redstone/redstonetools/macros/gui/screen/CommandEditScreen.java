@@ -28,14 +28,21 @@ public class CommandEditScreen extends GameOptionsScreen {
         commandMacroCommandSuggestor.refresh();
     }
 
+    @Override
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+    }
+
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         parent.render(context, mouseX, mouseY, delta);
+        context.getMatrices().translate(0,0,0.03F);
 
-        //this.fillGradient(context, 0, 0, this.width, this.height, -1072689136, -804253680);
+        context.fillGradient( 0, 0, this.width, this.height, -1072689136, -804253680);
 
         commandField.render(context, mouseX, mouseY, delta);
 
         commandMacroCommandSuggestor.render(context, mouseX, mouseY);
+        commandMacroCommandSuggestor.tryRenderWindow(context,mouseX,mouseY);
+
         if (changed) {
             commandMacroCommandSuggestor.refresh();
             changed = false;
@@ -43,11 +50,6 @@ public class CommandEditScreen extends GameOptionsScreen {
 
         super.render(context, mouseX, mouseY, delta);
 
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
     }
 
     @Override
@@ -78,8 +80,8 @@ public class CommandEditScreen extends GameOptionsScreen {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        return commandMacroCommandSuggestor.mouseScrolled(amount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        return commandMacroCommandSuggestor.mouseScrolled(verticalAmount);
     }
 
     @Override
