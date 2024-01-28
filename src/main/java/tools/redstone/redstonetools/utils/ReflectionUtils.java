@@ -1,31 +1,23 @@
 package tools.redstone.redstonetools.utils;
 
-import static tools.redstone.redstonetools.RedstoneToolsClient.REFLECTIONS;
-
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
-
 import rip.hippo.inject.DoctorModule;
 import sun.misc.Unsafe;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.arguments.serializers.GenericArgumentType;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReflectionUtils {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -81,8 +73,14 @@ public class ReflectionUtils {
 
     public static Set<Class<? extends GenericArgumentType>> getAllArguments() {
         if (arguments == null) {
-            arguments = REFLECTIONS.getSubTypesOf(GenericArgumentType.class).stream()
-                    .filter(argument -> !Modifier.isAbstract(argument.getModifiers())).collect(Collectors.toSet());
+            try {
+                arguments = findClasses(GenericArgumentType.class)
+                        .stream()
+                        .filter(argument -> !Modifier.isAbstract(argument.getModifiers()))
+                        .collect(Collectors.toSet());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return arguments;
@@ -99,7 +97,7 @@ public class ReflectionUtils {
         return features;
     }
 
-    private static <T> Set<? extends T> serviceLoad(Class<T> clazz) throws IOException {
+    public static <T> Set<Class<? extends T>> findClasses(Class<T> clazz) throws IOException {
         ClassLoader cl = ReflectionUtils.class.getClassLoader();
         Enumeration<URL> serviceFiles = cl.getResources("META-INF/services/" + clazz.getName());
         Set<String> classNames = new HashSet<>();
@@ -109,11 +107,19 @@ public class ReflectionUtils {
                 classNames.addAll(IOUtils.readLines(reader, "UTF-8"));
             }
         }
-        return classNames.stream()
+        //noinspection unchecked
+        return (Set<Class<? extends T>>) classNames.stream()
                 .filter(it -> !it.isEmpty() && !it.isBlank())
                 .map(ReflectionUtils::loadClass)
                 .filter(Objects::nonNull)
                 .filter(clazz::isAssignableFrom)
+                .map(clazz::cast)
+                .collect(Collectors.toSet());
+    }
+
+    private static <T> Set<? extends T> serviceLoad(Class<T> clazz) throws IOException {
+        return findClasses(clazz)
+                .stream()
                 .map(it -> {
                     try {
                         return it.getDeclaredConstructor().newInstance();

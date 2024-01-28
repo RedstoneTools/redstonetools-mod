@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import com.google.auto.service.AutoService;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+@AutoService(GenericArgumentType.class)
 public class NumberBaseArgumentType extends GenericArgumentType<Integer, String> {
     private static final IntegerSerializer INT_SERIALIZER = IntegerSerializer.integer(2, 36);
     private static final NumberBaseArgumentType INSTANCE = new NumberBaseArgumentType();

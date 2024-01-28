@@ -2,9 +2,11 @@ package tools.redstone.redstonetools.features.arguments.serializers;
 
 import java.util.Optional;
 
+import com.google.auto.service.AutoService;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 
+@AutoService(GenericArgumentType.class)
 public class LongSerializer extends IntLikeArgumentType<Long> {
     private static final LongSerializer INSTANCE = new LongSerializer(Long.MIN_VALUE, Long.MAX_VALUE);
 

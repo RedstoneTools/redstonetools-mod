@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import com.google.auto.service.AutoService;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -20,6 +21,7 @@ import java.util.function.Function;
  * @param <E> The element type.
  * @param <C> The collection type.
  */
+@AutoService(GenericArgumentType.class)
 public class CollectionSerializer<E, C extends Collection<E>>
         extends GenericArgumentType<C, List<Object>> {
 

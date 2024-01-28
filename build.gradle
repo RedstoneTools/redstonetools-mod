@@ -34,9 +34,6 @@ dependencies {
 	include implementation("rip.hippo:Doctor:1.0.1")
 	include implementation("javax.inject:javax.inject:1")
 
-	include implementation("org.reflections:reflections:0.10.2")
-	include implementation("org.javassist:javassist:3.30.2-GA")
-
 	// Json
 	include implementation("javax.json:javax.json-api:1.1.4")
 	include "org.glassfish:javax.json:1.1.4"

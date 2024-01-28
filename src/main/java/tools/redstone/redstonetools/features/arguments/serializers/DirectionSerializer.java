@@ -1,9 +1,11 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import com.google.auto.service.AutoService;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import tools.redstone.redstonetools.utils.DirectionArgument;
 
+@AutoService(GenericArgumentType.class)
 public class DirectionSerializer extends EnumSerializer<DirectionArgument> {
     private static final DirectionSerializer INSTANCE = new DirectionSerializer();
 

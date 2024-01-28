@@ -1,11 +1,13 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import com.google.auto.service.AutoService;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 
+@AutoService(GenericArgumentType.class)
 public class FloatSerializer extends StringBrigadierSerializer<Float> {
 
     private static final FloatSerializer INSTANCE = new FloatSerializer(FloatArgumentType.floatArg());

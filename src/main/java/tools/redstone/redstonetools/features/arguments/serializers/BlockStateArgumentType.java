@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import com.google.auto.service.AutoService;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandRegistryAccess;
@@ -7,6 +8,7 @@ import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.registry.Registries;
 
+@AutoService(GenericArgumentType.class)
 public class BlockStateArgumentType extends BrigadierArgumentType<BlockStateArgument, String> {
 
     private static BlockStateArgumentType INSTANCE;

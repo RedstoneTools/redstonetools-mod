@@ -1,18 +1,18 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
-import tools.redstone.redstonetools.macros.Macro;
-import tools.redstone.redstonetools.macros.MacroManager;
+import com.google.auto.service.AutoService;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
+import tools.redstone.redstonetools.macros.MacroManager;
 
 import java.util.concurrent.CompletableFuture;
 
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
+@AutoService(GenericArgumentType.class)
 public class MacroNameSerializer extends StringSerializer {
     private static final MacroNameSerializer INSTANCE = new MacroNameSerializer();
 

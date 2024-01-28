@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import com.google.auto.service.AutoService;
 import tools.redstone.redstonetools.utils.NumberArg;
 
 import java.util.Optional;
@@ -7,6 +8,7 @@ import java.util.Optional;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 
+@AutoService(GenericArgumentType.class)
 public class NumberSerializer extends IntLikeArgumentType<NumberArg> {
     private static final NumberSerializer INSTANCE = new NumberSerializer(null, null);
 
