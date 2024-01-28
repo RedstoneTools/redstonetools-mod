@@ -5,14 +5,10 @@ import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.util.Identifier;
-
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import rip.hippo.inject.Doctor;
 import rip.hippo.inject.Injector;
-import tools.redstone.redstonetools.features.arguments.serializers.GenericArgumentType;
 import tools.redstone.redstonetools.utils.DependencyLookup;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 
@@ -27,7 +23,6 @@ public class RedstoneToolsClient implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("redstonetools");
     public static final Injector INJECTOR = Doctor.createInjector(ReflectionUtils.getModules());
-    public static final Reflections REFLECTIONS = new Reflections("tools.redstone.redstonetools");
 
     @Override
     public void onInitializeClient() {

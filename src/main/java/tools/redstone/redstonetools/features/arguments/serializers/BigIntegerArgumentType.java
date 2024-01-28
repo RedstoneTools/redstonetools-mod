@@ -1,11 +1,13 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import com.google.auto.service.AutoService;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 
 import java.math.BigInteger;
 import java.util.Optional;
 
+@AutoService(GenericArgumentType.class)
 public class BigIntegerArgumentType extends IntLikeArgumentType<BigInteger> {
     private static final BigIntegerArgumentType INSTANCE = new BigIntegerArgumentType(null, null);
 

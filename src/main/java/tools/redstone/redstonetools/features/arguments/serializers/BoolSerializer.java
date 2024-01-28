@@ -1,11 +1,13 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
+import com.google.auto.service.AutoService;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 
+@AutoService(GenericArgumentType.class)
 public class BoolSerializer extends StringBrigadierSerializer<Boolean> {
 
     private static final BoolSerializer INSTANCE = new BoolSerializer(BoolArgumentType.bool());
