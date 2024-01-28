@@ -108,12 +108,12 @@ public class ReflectionUtils {
             }
         }
         //noinspection unchecked
-        return (Set<Class<? extends T>>) classNames.stream()
+        return classNames.stream()
                 .filter(it -> !it.isEmpty() && !it.isBlank())
                 .map(ReflectionUtils::loadClass)
                 .filter(Objects::nonNull)
                 .filter(clazz::isAssignableFrom)
-                .map(clazz::cast)
+				.map(it -> (Class<? extends T>) it)
                 .collect(Collectors.toSet());
     }
 
