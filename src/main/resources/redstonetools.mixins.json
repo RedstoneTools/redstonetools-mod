@@ -5,25 +5,5 @@
   "compatibilityLevel": "JAVA_17",
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "blocks.RedstoneHitboxMixin",
-    "features.AirPlaceServerMixin",
-    "features.AutoDustMixin",
-    "features.CopyStateMixin",
-    "features.ItemBindMixin$ItemStackMixin",
-    "gamerules.DoContainerDropsMixin"
-  ],
-  "client": [
-    "accessors.MinecraftClientAccessor",
-    "accessors.WorldRendererAccessor",
-    "features.AirPlaceClientMixin",
-    "features.ItemBindMixin$NetworkHandlerMixin",
-    "macros.AddMacroButtonMixin",
-    "macros.InitializeMacroManagerMixin",
-    "macros.KeyBindingMixinImpl",
-    "macros.autocomplete.ClientPlayerEntityMixinImpl",
-    "macros.autocomplete.CommandSuggestorMixin",
-    "update.CheckUpdateMixin"
-  ]
+  }
 }

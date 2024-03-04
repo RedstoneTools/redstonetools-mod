@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.mixin.features;
 
+import io.shcm.shsupercm.fabric.fletchingtable.api.MixinEnvironment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +27,7 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
 
 public abstract class ItemBindMixin {
-
+    @MixinEnvironment()
     @Mixin(ItemStack.class)
     private abstract static class ItemStackMixin {
 
@@ -58,7 +59,7 @@ public abstract class ItemBindMixin {
         }
     }
 
-
+    @MixinEnvironment()
     @Mixin(ClientPlayNetworkHandler.class)
     private abstract static class NetworkHandlerMixin {
 

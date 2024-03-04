@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.mixin.accessors;
 
+import io.shcm.shsupercm.fabric.fletchingtable.api.MixinEnvironment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
