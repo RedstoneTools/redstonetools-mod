@@ -4,6 +4,8 @@ plugins {
 	id 'fabric-loom' version '1.4-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.github.johnrengelman.shadow' version '8.+'
+	id "io.shcm.shsupercm.fabric.fletchingtable" version "1.6"
+
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -102,4 +104,8 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+
+fletchingTable {
+	defaultMixinEnvironment = "auto" //default, can be either "none", "auto", "mixins", "client", "server"
 }
