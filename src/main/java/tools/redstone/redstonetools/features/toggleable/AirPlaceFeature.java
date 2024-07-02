@@ -88,11 +88,10 @@ public class AirPlaceFeature extends ToggleableFeature {
             if (!canAirPlace(client.player))
                 return true;
 
-            HitResult hitResult = findAirPlacePosition(client);
+            BlockHitResult hitResult = findAirPlaceBlockHit(client.player);
             if (hitResult == null)
                 return true;
-            Vec3d pos = hitResult.getPos();
-            BlockPos blockPos = new BlockPos((int) pos.x, (int) pos.y, (int) pos.z);
+            BlockPos blockPos = hitResult.getBlockPos();
 
             BlockState blockState = ItemUtils.getUseState(client.player,
                     ItemUtils.getMainItem(client.player),
