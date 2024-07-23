@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tools.redstone.redstonetools.macros.gui.screen.MacroSelectScreen;
 
 @Mixin(ControlsOptionsScreen.class)
-public class AddMacroButtonMixin extends GameOptionsScreen {
+public abstract class AddMacroButtonMixin extends GameOptionsScreen {
     public AddMacroButtonMixin(Screen parent, GameOptions gameOptions, Text title) {
         super(parent, gameOptions, title);
     }

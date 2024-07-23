@@ -38,8 +38,13 @@ public class MacroSelectScreen extends GameOptionsScreen {
         this.addDrawableChild(buttonWidget);
     }
 
+    @Override
+    protected void addOptions() {
+
+    }
+
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackgroundTexture(context);
+        renderBackgroundTexture(context, Screen.MENU_BACKGROUND_TEXTURE, 0, 0, 0.0F, 0.0F, this.width, this.height);
         macroList.render(context, mouseX, mouseY, delta);
 
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 16777215);

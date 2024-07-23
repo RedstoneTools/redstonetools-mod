@@ -129,6 +129,11 @@ public class MacroEditScreen extends GameOptionsScreen {
     }
 
     @Override
+    protected void addOptions() {
+
+    }
+
+    @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
     }
 
@@ -143,7 +148,7 @@ public class MacroEditScreen extends GameOptionsScreen {
             mouseY = -1;
         }
 
-        this.renderBackgroundTexture(context);
+        renderBackgroundTexture(context, MENU_BACKGROUND_TEXTURE, 0, 0, 0.0F, 0.0F, this.width, this.height);
         commandList.render(context, mouseX, mouseY, delta);
         super.render(context, mouseX, mouseY, delta);
 
