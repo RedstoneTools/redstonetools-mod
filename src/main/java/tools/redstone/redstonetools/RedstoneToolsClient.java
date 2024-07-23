@@ -60,14 +60,14 @@ public class RedstoneToolsClient implements ClientModInitializer {
         ReflectionUtils.getFeatures().forEach(feature ->
 
         {
-            LOGGER.info("Registering feature {}", feature.getClass().getName());
+            LOGGER.trace("Registering feature {}", feature.getClass().getName());
 
             if (feature.requiresWorldEdit() && !DependencyLookup.WORLDEDIT_PRESENT) {
                 LOGGER.warn("Feature {} requires WorldEdit, but WorldEdit is not loaded. Skipping registration.",
                         feature.getName());
                 return;
             }
-            feature.register();
+//            feature.register();
         });
     }
 
