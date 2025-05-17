@@ -58,7 +58,7 @@ public abstract class EnumSerializer<T extends Enum<T>>
             throw new IllegalArgumentException("Ambiguous option '" + input + "'");
         }
 
-        return matches.get(0);
+        return matches.getFirst();
     }
 
     @Override

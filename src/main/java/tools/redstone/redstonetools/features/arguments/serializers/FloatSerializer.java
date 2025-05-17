@@ -4,9 +4,6 @@ import com.google.auto.service.AutoService;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.serialize.ArgumentSerializer;
-
 @AutoService(GenericArgumentType.class)
 public class FloatSerializer extends StringBrigadierSerializer<Float> {
 
@@ -31,28 +28,5 @@ public class FloatSerializer extends StringBrigadierSerializer<Float> {
     @Override
     public String serialize(Float value) {
         return String.valueOf(value);
-    }
-
-    public static class Serializer
-            extends GenericArgumentType.Serializer<FloatSerializer, Serializer.Properties> {
-
-        public final class Properties
-                implements ArgumentSerializer.ArgumentTypeProperties<FloatSerializer> {
-
-            @Override
-            public FloatSerializer createType(CommandRegistryAccess var1) {
-                return floatArg();
-            }
-
-            @Override
-            public ArgumentSerializer<FloatSerializer, ?> getSerializer() {
-                return new Serializer();
-            }
-        }
-
-        @Override
-        public Properties getArgumentTypeProperties(FloatSerializer serializer) {
-            return new Properties();
-        }
     }
 }

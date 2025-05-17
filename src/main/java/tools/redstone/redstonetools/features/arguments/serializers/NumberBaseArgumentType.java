@@ -6,8 +6,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.NumberBase;
 
@@ -76,29 +74,4 @@ public class NumberBaseArgumentType extends GenericArgumentType<Integer, String>
 
         return builder.buildFuture();
     }
-
-    public static class NumberBaseSerializer extends Serializer<NumberBaseArgumentType, ArgumentSerializer.ArgumentTypeProperties<NumberBaseArgumentType>>{
-
-        @Override
-        public ArgumentTypeProperties<NumberBaseArgumentType> getArgumentTypeProperties(NumberBaseArgumentType argumentType) {
-            return new Properties();
-        }
-
-        public final class Properties
-                implements ArgumentSerializer.ArgumentTypeProperties<NumberBaseArgumentType>{
-
-            @Override
-            public NumberBaseArgumentType createType(CommandRegistryAccess commandRegistryAccess) {
-                return new NumberBaseArgumentType();
-            }
-
-            @Override
-            public ArgumentSerializer<NumberBaseArgumentType, ?> getSerializer() {
-                return NumberBaseSerializer.this;
-            }
-        }
-
-    }
-
-
 }

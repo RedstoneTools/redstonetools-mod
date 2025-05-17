@@ -34,6 +34,6 @@ public enum ColoredBlockType {
     }
 
     public Block toBlock() {
-        return Registries.BLOCK.get(Identifier.tryParse(toBlockId()));
+        return Registries.BLOCK.getEntry(Identifier.tryParse(toBlockId())).get().value();
     }
 }

@@ -1,11 +1,6 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.minecraft.block.Blocks;
@@ -13,6 +8,11 @@ import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
+import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.features.Feature;
+import tools.redstone.redstonetools.features.arguments.Argument;
+import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 import java.util.Collections;
 
@@ -66,13 +66,13 @@ public class BinaryBlockReadFeature extends CommandFeature {
 
         var spacingVector = direction.multiply(offset.getValue());
 
-        if (direction.getBlockX() + direction.getBlockY() + direction.getBlockZ() > 1) {
+        if (direction.x() + direction.y() + direction.z() > 1) {
             return Feedback.invalidUsage("The selection must have 2 axis the same.");
         }
 
         var bits = new StringBuilder();
         for (BlockVector3 point = pos1; boundingBox.contains(point); point = point.add(spacingVector)) {
-            var pos = new BlockPos(point.getBlockX(), point.getBlockY(), point.getBlockZ());
+            var pos = new BlockPos(point.x(), point.y(), point.z());
             var actualState = source.getWorld().getBlockState(pos);
 
             var matches = actualState.getBlock() == onBlock.getValue().getBlockState().getBlock();

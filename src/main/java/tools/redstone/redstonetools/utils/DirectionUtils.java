@@ -1,9 +1,7 @@
 package tools.redstone.redstonetools.utils;
 
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.util.Direction;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 public class DirectionUtils {

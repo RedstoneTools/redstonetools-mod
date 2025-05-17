@@ -1,18 +1,11 @@
 package tools.redstone.redstonetools.features.arguments.serializers;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.argument.serialize.ArgumentSerializer;
-import net.minecraft.command.argument.serialize.ArgumentSerializer.ArgumentTypeProperties;
-import net.minecraft.network.PacketByteBuf;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
@@ -55,30 +48,5 @@ public abstract class GenericArgumentType<T, S> implements ArgumentType<T> {
 
     public abstract <R> CompletableFuture<Suggestions> listSuggestions(CommandContext<R> context,
             SuggestionsBuilder builder);
-
-
-    public static abstract class Serializer<A extends ArgumentType<?>, T extends ArgumentTypeProperties<A>>
-            implements ArgumentSerializer<A, T> {
-
-        public void writePacket(T properties, PacketByteBuf packetByteBuf) {
-            var jsonObject = new JsonObject();
-            writeJson(properties, jsonObject);
-            packetByteBuf.writeString(jsonObject.toString());
-        }
-
-        public T fromPacket(PacketByteBuf packetByteBuf) {
-            String json = packetByteBuf.readString();
-            TypeToken<T> typeToken = new TypeToken<>() {
-            };
-            var jsonReader = new JsonReader(new java.io.StringReader(json));
-            return new Gson().fromJson(jsonReader, typeToken.getType());
-        }
-
-        public void writeJson(T var1, JsonObject var2) {
-            var gson = new Gson();
-            var newObject = gson.fromJson(gson.toJson(var1), JsonObject.class);
-            newObject.entrySet().forEach(entry -> var2.addProperty(entry.getKey(), entry.getValue().toString()));
-        }
-    }
 
 }

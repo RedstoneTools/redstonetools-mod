@@ -1,13 +1,13 @@
 //file:noinspection GroovyAssignabilityCheck
 
 plugins {
-	id 'fabric-loom' version '1.4-SNAPSHOT'
+	id 'fabric-loom' version '1.10-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.github.johnrengelman.shadow' version '8.+'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -36,10 +36,10 @@ dependencies {
 
 	// Json
 	include implementation("javax.json:javax.json-api:1.1.4")
-	include "org.glassfish:javax.json:1.1.4"
+	include implementation("org.glassfish:javax.json:1.1.4")
 
 	// AutoService
-	annotationProcessor implementation("com.google.auto.service:auto-service:1.1.0")
+	annotationProcessor implementation("com.google.auto.service:auto-service:1.1.1")
 
 	// To change the versions see the gradle.properties file
 	minecraft("com.mojang:minecraft:${project.minecraft_version}")
@@ -50,7 +50,7 @@ dependencies {
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// Worldedit API
-	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.20.4:7.2.18-SNAPSHOT")
+	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.21.5:7.4.0-SNAPSHOT")
 }
 
 processResources {
@@ -66,7 +66,7 @@ java {
 	withJavadocJar()
 
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -84,7 +84,7 @@ remapJar {
 
 tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release.set(17)
+	it.options.release.set(21)
 }
 
 // configure the maven publication

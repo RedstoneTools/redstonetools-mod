@@ -3,13 +3,11 @@ package tools.redstone.redstonetools.utils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.world.BlockStateRaycastContext;
-import net.minecraft.world.RaycastContext;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
+import net.minecraft.text.Text;
 
 public class ItemUtils {
   
@@ -17,19 +15,18 @@ public class ItemUtils {
     }
 
     public static void addExtraNBTText(ItemStack itemStack, String text) {
-        NbtCompound displayNbt = itemStack.getSubNbt("display");
-        NbtList loreList = new NbtList();
+        LoreComponent lore = itemStack.get(DataComponentTypes.LORE);
+        Text newLore = Text.of("(+" + text + ")");
 
-        if (displayNbt == null) {
-            displayNbt = new NbtCompound();
-        } else {
-            loreList = (NbtList) displayNbt.get("Lore");
+        if (lore == null) {
+            lore = LoreComponent.DEFAULT;
         }
-        String lore = "\"(+"+text +")\"";
 
-        if (loreList != null && !loreList.contains(NbtString.of(lore))) loreList.add(NbtString.of(lore));
-        displayNbt.put("Lore", loreList);
-        itemStack.setSubNbt("display", displayNbt);
+        if (!lore.lines().contains(newLore)) {
+            lore = lore.with(newLore);
+        }
+
+        itemStack.set(DataComponentTypes.LORE, lore);
     }
 
     public static boolean isEmpty(ItemStack itemStack) {

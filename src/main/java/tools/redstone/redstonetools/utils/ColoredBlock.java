@@ -6,7 +6,6 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ColoredBlock {
@@ -82,7 +81,7 @@ public class ColoredBlock {
     }
 
     public Block toBlock() {
-        return Registries.BLOCK.get(Identifier.tryParse(toBlockId()));
+        return Registries.BLOCK.getEntry(Identifier.tryParse(toBlockId())).get().value();
     }
 
     @Override

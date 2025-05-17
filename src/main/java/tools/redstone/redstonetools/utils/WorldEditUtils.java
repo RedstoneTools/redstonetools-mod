@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.utils;
 
-import tools.redstone.redstonetools.features.feedback.Feedback;
 import com.mojang.datafixers.util.Either;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.WorldEdit;
@@ -9,6 +8,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import net.minecraft.server.network.ServerPlayerEntity;
+import tools.redstone.redstonetools.features.feedback.Feedback;
 
 import java.util.function.Consumer;
 
@@ -16,11 +16,9 @@ public class WorldEditUtils {
     /**
      * Execute a function for each block in
      * the provided region.
-     *
      * Iterates the bounding box of the region
      * and checks if the position is contained
      * for each block.
-     *
      * TODO: maybe make an async version of this somehow
      *
      * @param region   The region.
@@ -35,9 +33,9 @@ public class WorldEditUtils {
         CuboidRegion bb = region.getBoundingBox();
         BlockVector3 min = bb.getMinimumPoint();
         BlockVector3 max = bb.getMaximumPoint();
-        for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
-            for (int y = min.getBlockY(); y <= max.getBlockY(); y++) {
-                for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
+        for (int x = min.x(); x <= max.x(); x++) {
+            for (int y = min.y(); y <= max.y(); y++) {
+                for (int z = min.z(); z <= max.z(); z++) {
                     BlockVector3 vec = BlockVector3.at(x, y, z);
                     if (!region.contains(vec))
                         continue;

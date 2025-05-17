@@ -1,10 +1,9 @@
 package tools.redstone.redstonetools.utils;
 
-import org.joml.Vector3f;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.RaycastContext;
+import org.joml.Vector3f;
 
 public class RaycastUtils {
     private RaycastUtils() {

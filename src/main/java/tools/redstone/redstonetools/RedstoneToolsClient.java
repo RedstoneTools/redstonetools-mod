@@ -1,9 +1,11 @@
 package tools.redstone.redstonetools;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.command.argument.serialize.ArgumentSerializer;
+import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +14,10 @@ import rip.hippo.inject.Injector;
 import tools.redstone.redstonetools.utils.DependencyLookup;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 
-public class RedstoneToolsClient implements ClientModInitializer {
+public class RedstoneToolsClient implements ClientModInitializer, DedicatedServerModInitializer {
 
     public static final String MOD_ID = "redstonetools";
     public static final String MOD_VERSION = "v" + FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow()
@@ -33,25 +35,19 @@ public class RedstoneToolsClient implements ClientModInitializer {
 
         // Register arguments
         ReflectionUtils.getAllArguments().forEach(argument -> {
-            var nestedClasses = (Class<ArgumentSerializer>[]) argument
-                    .getDeclaredClasses();
-
-            if (nestedClasses.length == 0) {
-                LOGGER.error("Failed to register {} because no serializer nested class was found",
-                        argument.getSimpleName());
-                return;
-            }
-
-            Identifier id = new Identifier(MOD_ID, argument.getSimpleName().toLowerCase());
+            Identifier id = Identifier.of(MOD_ID, argument.getSimpleName().toLowerCase());
 
             try {
-                var serializer = nestedClasses[0].getDeclaredConstructor().newInstance();
-
+                Field instanceField = argument.getDeclaredField("INSTANCE");
+                instanceField.setAccessible(true);
+                ArgumentType<?> instance = (ArgumentType<?>) instanceField.get(argument);
                 ArgumentTypeRegistry.registerArgumentType(
                         id,
-                        argument, serializer);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                        argument,
+                        ConstantArgumentSerializer.of(v -> instance));
+            } catch (IllegalAccessException | IllegalArgumentException | SecurityException | NoSuchFieldException |
+                     ClassCastException e) {
+                e.printStackTrace();
                 LOGGER.error("Failed to register argument type {}. Skipping registration.",
                         argument.getName());
             }
@@ -72,4 +68,8 @@ public class RedstoneToolsClient implements ClientModInitializer {
         });
     }
 
+    @Override
+    public void onInitializeServer() {
+        onInitializeClient();
+    }
 }

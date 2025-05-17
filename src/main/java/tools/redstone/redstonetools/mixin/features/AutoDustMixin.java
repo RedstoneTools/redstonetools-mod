@@ -15,6 +15,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,8 +25,10 @@ import tools.redstone.redstonetools.utils.ColoredBlock;
 
 @Mixin(Block.class)
 public abstract class AutoDustMixin {
+    @Unique
     private AutoDustFeature autoDustFeature;
 
+    @Unique
     private AutoDustFeature getAutoDustFeature() {
         if (autoDustFeature == null) {
             autoDustFeature = RedstoneToolsClient.INJECTOR.getInstance(AutoDustFeature.class);

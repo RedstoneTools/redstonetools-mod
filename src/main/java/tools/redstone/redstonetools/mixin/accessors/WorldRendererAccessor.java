@@ -13,6 +13,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface WorldRendererAccessor {
 
     @Invoker
-    void invokeDrawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos pos, BlockState state);
+    void invokeDrawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos pos, BlockState state, int color);
 
 }
