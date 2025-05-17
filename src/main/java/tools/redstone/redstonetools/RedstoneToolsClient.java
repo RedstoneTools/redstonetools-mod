@@ -2,7 +2,6 @@ package tools.redstone.redstonetools;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
@@ -17,7 +16,7 @@ import tools.redstone.redstonetools.utils.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 
-public class RedstoneToolsClient implements ClientModInitializer, DedicatedServerModInitializer {
+public class RedstoneToolsClient implements ClientModInitializer {
 
     public static final String MOD_ID = "redstonetools";
     public static final String MOD_VERSION = "v" + FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow()
@@ -66,10 +65,5 @@ public class RedstoneToolsClient implements ClientModInitializer, DedicatedServe
             }
             feature.register();
         });
-    }
-
-    @Override
-    public void onInitializeServer() {
-        onInitializeClient();
     }
 }

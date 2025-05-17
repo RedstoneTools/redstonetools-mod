@@ -25,9 +25,6 @@
   "entrypoints": {
     "client": [
       "tools.redstone.redstonetools.RedstoneToolsClient"
-    ],
-    "server": [
-      "tools.redstone.redstonetools.RedstoneToolsClient"
     ]
   },
   "mixins": [
