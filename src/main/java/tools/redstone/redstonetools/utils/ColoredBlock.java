@@ -1,8 +1,8 @@
 package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.Block;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -59,7 +59,7 @@ public class ColoredBlock {
     }
 
     public static ColoredBlock fromBlock(@NotNull Block block) {
-        var blockId = Registry.BLOCK.getId(block).toString();
+        var blockId = Registries.BLOCK.getId(block).toString();
         if (COLORED_BLOCK_CACHE.containsKey(blockId)) {
             return COLORED_BLOCK_CACHE.get(blockId);
         }
@@ -75,7 +75,7 @@ public class ColoredBlock {
     }
 
     public Block toBlock() {
-        return Registry.BLOCK.get(Identifier.tryParse(toBlockId()));
+        return Registries.BLOCK.get(Identifier.tryParse(toBlockId()));
     }
 
     @Override

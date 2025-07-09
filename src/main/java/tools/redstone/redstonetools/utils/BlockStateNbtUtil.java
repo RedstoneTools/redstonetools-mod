@@ -7,10 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.Objects;
 
@@ -35,7 +34,7 @@ public final class BlockStateNbtUtil {
         }
 
         NbtCompound root = new NbtCompound();
-        root.putString("Id", Registry.BLOCK.getId(state.getBlock()).toString());
+        root.putString("Id", Registries.BLOCK.getId(state.getBlock()).toString());
 
         // serialize properties
         if (!state.getProperties().isEmpty()) {
@@ -69,23 +68,24 @@ public final class BlockStateNbtUtil {
         // find the block
         // we use new Identifier(...) here to allow it to throw exceptions
         // instead of getting a cryptic NPE
-        Identifier identifier = new Identifier(compound.getString("Id"));
-        Block block = Registry.BLOCK.get(identifier);
+        Identifier identifier = Identifier.tryParse(compound.getString("Id", ""));
+        Block block = Registries.BLOCK.get(identifier);
 
         // deserialize properties
         BlockState state = block.getDefaultState();
-        NbtList propertiesTag = compound.getList("Properties", NbtElement.COMPOUND_TYPE);
+        NbtList propertiesTag = compound.getListOrEmpty("Properties");
+//        NbtList propertiesTag = compound.getList("Properties", NbtElement.COMPOUND_TYPE);
         if (propertiesTag != null) {
             for (NbtElement element : propertiesTag) {
                 // this cast is checked, as we require the COMPOUND type
                 // when getting the list
                 NbtCompound propertyTag = (NbtCompound) element;
 
-                Property property = block.getStateManager().getProperty(propertyTag.getString("K"));
+                Property property = block.getStateManager().getProperty(propertyTag.getString("K", ""));
                 if (property == null)
                     continue;
 
-                state = state.with(property, (Comparable) property.parse(propertyTag.getString("V")).get());
+                state = state.with(property, (Comparable) property.parse(propertyTag.getString("V", "")).get());
             }
         }
 
@@ -152,7 +152,7 @@ public final class BlockStateNbtUtil {
             return null;
         }
 
-        return fromNBT(nbt.getCompound(EXACT_STATE_KEY));
+        return fromNBT(nbt.getCompoundOrEmpty(EXACT_STATE_KEY));
     }
 
     /**
@@ -175,7 +175,7 @@ public final class BlockStateNbtUtil {
         BlockState def = stack.getItem() instanceof BlockItem blockItem ?
                 blockItem.getBlock().getDefaultState() :
                 null;
-        return fromNBT(nbt.getCompound(EXACT_STATE_KEY), def);
+        return fromNBT(nbt.getCompoundOrEmpty(EXACT_STATE_KEY), def);
     }
 
 }

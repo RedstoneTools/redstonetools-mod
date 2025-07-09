@@ -4,15 +4,19 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.BlockStateArgumentType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockStateArgument, String> {
 
     private static final BlockStateArgumentSerializer INSTANCE = new BlockStateArgumentSerializer();
 
     private BlockStateArgumentSerializer() {
-        super(BlockStateArgument.class, BlockStateArgumentType.blockState());
+        super(BlockStateArgument.class, BlockStateArgumentType.blockState()); // what is this for?
     }
+
+//    private BlockStateArgumentSerializer() {
+//        super(BlockStateArgument.class, BlockStateArgumentType.blockState());
+//    }
 
     public static BlockStateArgumentSerializer blockState() {
         return INSTANCE;
@@ -33,7 +37,7 @@ public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockState
         var block = state.getBlock();
 
         var builder = new StringBuilder()
-                .append(Registry.BLOCK.getId(block));
+                .append(Registries.BLOCK.getId(block));
 
         if (state.getProperties().size() == 0) {
             return builder.toString();
