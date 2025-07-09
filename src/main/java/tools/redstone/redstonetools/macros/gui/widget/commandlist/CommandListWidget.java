@@ -39,8 +39,8 @@ public class CommandListWidget extends EntryListWidget<CommandEntry> {
         CommandEntry entry = addCommand(command);
         placeHolder.setFocused(false);
 
-        entry.command.x = placeHolder.command.x;
-        entry.command.y = placeHolder.command.y;
+        entry.command.setX(placeHolder.command.getX());
+        entry.command.setY(placeHolder.command.getY());
         entry.setFocused(true);
     }
 
@@ -52,7 +52,7 @@ public class CommandListWidget extends EntryListWidget<CommandEntry> {
 
     protected void removeCommand(CommandEntry command) {
         removeEntry(command);
-        setScrollAmount(getScrollAmount());
+        setScrollY(getScrollY()); // tf?
     }
 
     protected int getScrollbarPositionX() {

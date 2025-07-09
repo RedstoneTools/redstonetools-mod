@@ -1,6 +1,9 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
+import com.mojang.brigadier.context.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.worldedit.util.Direction;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
@@ -72,9 +75,14 @@ public class RStackFeature extends CommandFeature {
         };
 
         var playerFacing = actor.getLocation().getDirectionEnum();
-        var stackDirection = matchDirection(direction.getValue(), playerFacing);
+	    Direction stackDirection = null;
+	    try {
+		    stackDirection = matchDirection(direction.getValue(), playerFacing);
+	    } catch (CommandException e) {
 
-        var stackVector = directionToBlock(stackDirection);
+	    }
+
+	    var stackVector = directionToBlock(stackDirection);
 
 
         try (var editSession = localSession.createEditSession(actor)) {

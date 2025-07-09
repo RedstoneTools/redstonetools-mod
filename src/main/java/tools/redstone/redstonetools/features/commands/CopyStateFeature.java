@@ -24,7 +24,7 @@ public class CopyStateFeature extends PickBlockFeature {
     protected Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, BlockInfo blockInfo) {
         MinecraftClient client = MinecraftClient.getInstance();
 
-        ItemStack itemStack = blockInfo.block.getPickStack(client.world, blockInfo.pos, blockInfo.state);
+        ItemStack itemStack = blockInfo.block.getDefaultState().getPickStack(client.world, blockInfo.pos, false);
 
         if (blockInfo.state.hasBlockEntity()) {
             ((MinecraftClientAccessor) client).invokeAddBlockEntityNbt(itemStack, blockInfo.entity);

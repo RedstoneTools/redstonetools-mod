@@ -7,11 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.text.LiteralText;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
 
 @FunctionalInterface
 public interface SignalBlockSupplier {
@@ -38,7 +38,7 @@ public interface SignalBlockSupplier {
             int itemsNeeded = Math.max(0, signalStrength == 1
                     ? 1
                     : (int) Math.ceil(slots * (signalStrength - 1) / 14D * item.getMaxCount()));
-            String itemId = Registry.ITEM.getId(item).toString();
+            String itemId = Registries.ITEM.getId(item).toString();
 
             // Check that the calculated number of items is correct.
             // This is to prevent problems with items that have a maximum stack size of 1 but stackSize > 1.
@@ -123,7 +123,7 @@ public interface SignalBlockSupplier {
     }
 
     private static void setItemName(ItemStack item, int signalStrength) {
-        MutableText text = new LiteralText(String.valueOf(signalStrength));
+        MutableText text = Text.literal(String.valueOf(signalStrength));
         text.setStyle(text.getStyle().withColor(Formatting.RED));
         item.setCustomName(text);
     }

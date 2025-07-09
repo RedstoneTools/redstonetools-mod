@@ -41,7 +41,7 @@ public class AirPlaceFeature extends ToggleableFeature {
         // rocket boost for elytra
         if (itemStack.getItem() == Items.FIREWORK_ROCKET &&
                 player.getEquippedStack(EquipmentSlot.CHEST).getItem() == Items.ELYTRA &&
-                player.isFallFlying())
+                player.isGliding())
             return false;
 
         return true;
@@ -91,7 +91,7 @@ public class AirPlaceFeature extends ToggleableFeature {
             HitResult hitResult = findAirPlacePosition(client);
             if (hitResult == null)
                 return true;
-            BlockPos blockPos = new BlockPos(hitResult.getPos());
+            BlockPos blockPos = new BlockPos((int)hitResult.getPos().x, (int)hitResult.getPos().y, (int)hitResult.getPos().z);
 
             BlockState blockState = ItemUtils.getUseState(client.player,
                     ItemUtils.getMainItem(client.player),

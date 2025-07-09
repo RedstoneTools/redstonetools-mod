@@ -5,7 +5,6 @@ import tools.redstone.redstonetools.macros.MacroManager;
 import tools.redstone.redstonetools.macros.gui.screen.MacroSelectScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
@@ -43,22 +42,9 @@ public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
         return macroFromName == null || macro.isCopyOf(macroFromName);
     }
 
-    protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 20;
-    }
-
-
-    protected void renderBackground(MatrixStack matrices) {
-        parent.renderBackground(matrices);
-    }
-
-    protected boolean isFocused() {
-        return parent.getFocused() == this;
-    }
-
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        MacroEntry entry = super.getEntryAtPosition(width/2,mouseY);
+        MacroEntry entry = super.getEntryAtPosition(width/2.0f,mouseY);
         if (entry != null) entry.mouseClickedInRow(mouseX,mouseY,button);
 
         return super.mouseClicked(mouseX, mouseY, button);

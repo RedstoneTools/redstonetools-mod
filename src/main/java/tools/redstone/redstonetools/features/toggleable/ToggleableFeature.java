@@ -4,10 +4,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.features.feedback.FeedbackSender;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,10 +17,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.RedstoneToolsClient;
-import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.ReflectionUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -34,9 +30,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -75,7 +68,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyBinding.wasPressed()) {
                 assert client.player != null;
-                client.player.sendChatMessage("/" + info.command());
+                client.player.networkHandler.sendChatCommand("/" + info.command());
             }
         });
     }

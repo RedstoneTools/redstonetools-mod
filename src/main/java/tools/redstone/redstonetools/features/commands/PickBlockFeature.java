@@ -30,15 +30,33 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
         var stack = stackOrFeedback.left().get();
 
         PlayerInventory playerInventory = client.player.getInventory();
-        playerInventory.addPickBlock(stack);
-
+        addPickBlock(playerInventory, stack);
         if (client.interactionManager == null) {
             throw new CommandSyntaxException(null, Text.of("Failed to get interaction manager."));
         }
 
-        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.selectedSlot);
+        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.getSelectedSlot());
 
         return Feedback.none();
+    }
+
+    // reimplementation from 1.18.2
+    public void addPickBlock(PlayerInventory pi, ItemStack stack) {
+        int i = pi.getSlotWithStack(stack);
+        if (PlayerInventory.isValidHotbarIndex(i)) {
+            pi.setSelectedSlot(i);
+            return;
+        }
+        if (i == -1) {
+            int j;
+            pi.setSelectedSlot(pi.getSwappableHotbarSlot());
+            if (!pi.getMainStacks().get(pi.getSelectedSlot()).isEmpty() && (j = pi.getEmptySlot()) != -1) {
+                pi.getMainStacks().set(j, pi.getMainStacks().get(pi.getSelectedSlot()));
+            }
+            pi.getMainStacks().set(pi.getSelectedSlot(), stack);
+        } else {
+            pi.swapSlotWithHotbar(i);
+        }
     }
 
     protected abstract Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;

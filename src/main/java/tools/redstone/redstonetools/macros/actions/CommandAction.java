@@ -1,6 +1,8 @@
 package tools.redstone.redstonetools.macros.actions;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
+import net.minecraft.text.Text;
 
 public class CommandAction extends Action {
     public String command;
@@ -13,8 +15,7 @@ public class CommandAction extends Action {
     public void run() {
         var player = MinecraftClient.getInstance().player;
         assert player != null;
-
-        player.sendChatMessage(command.startsWith("/") ? command : "/" + command);
+        player.networkHandler.sendChatCommand(command.startsWith("/") ? command : "/" + command);
     }
 
     @Override

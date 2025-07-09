@@ -11,7 +11,7 @@ public class RaycastUtils {
     public static BlockHitResult getBlockHitNeighbor(BlockHitResult hit) {
         var sideOffset = hit.getSide().getUnitVector();
 
-        var newBlockPos = hit.getBlockPos().add(sideOffset.getX(), sideOffset.getY(), sideOffset.getZ());
+        var newBlockPos = hit.getBlockPos().add(sideOffset.x, sideOffset.y, sideOffset.z);
 
         return hit.withBlockPos(newBlockPos);
     }

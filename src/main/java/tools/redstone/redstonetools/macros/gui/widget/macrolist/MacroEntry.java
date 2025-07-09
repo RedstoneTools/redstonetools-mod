@@ -1,14 +1,15 @@
 package tools.redstone.redstonetools.macros.gui.widget.macrolist;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
 
@@ -24,7 +25,16 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
         this.macro = macro;
         this.owner = owner;
 
-        buttonWidget = new CheckboxWidget(0, 0, 20, 20, null, macro.enabled, false);
+        buttonWidget = CheckboxWidget.builder(Text.literal(""), MinecraftClient.getInstance().textRenderer)
+                .pos(0, 0)                                    // x, y
+                .checked(macro.enabled)                       // initial checked state
+                .callback((cb, isChecked) -> {
+                    macro.enabled = isChecked;                // update your flag on change
+                })
+                // (optional) .tooltip(Tooltip.of(Text.of("…")))  // if you want a hover-tooltip
+                .build();                                     // finally produce the CheckboxWidget
+
+//        buttonWidget = new CheckboxWidget(0, 0, 20, 20, null, macro.enabled, false);
         deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0, 0, 20, 20 ,Text.of(""), (button) -> {
             deleteIfConfirmed();
         });
@@ -34,29 +44,33 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
     }
 
 
-    public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-        renderWidget(buttonWidget,matrices,mouseX,mouseY,tickDelta,x-30,y-2);
-        renderWidget(editButton,matrices,mouseX,mouseY,tickDelta,x+entryWidth,y-2);
-        renderWidget(deleteButton,matrices,mouseX,mouseY,tickDelta,x+entryWidth+22,y-2);
+    @Override
+    public void render(DrawContext context,
+                       int index,
+                       int y,
+                       int x,
+                       int entryWidth,
+                       int entryHeight,
+                       int mouseX,
+                       int mouseY,
+                       boolean hovered,
+                       float tickDelta) {
+        // 1) render each child widget
+        buttonWidget .render(context, mouseX, mouseY, tickDelta);
+        editButton   .render(context, mouseX, mouseY, tickDelta);
+        deleteButton .render(context, mouseX, mouseY, tickDelta);
 
+        TextRenderer tr = owner.client.textRenderer;
         String text = macro.name;
-
-        if (owner.client.textRenderer.getWidth(text) > owner.getRowWidth()-2) {
-            while (owner.client.textRenderer.getWidth(text + "...") > owner.getRowWidth()-2) {
-                text = text.substring(0,text.length()-1);
+        int maxWidth = owner.getRowWidth() - 2;
+        if (tr.getWidth(text) > maxWidth) {
+            while (tr.getWidth(text + "...") > maxWidth) {
+                text = text.substring(0, text.length() - 1);
             }
-
             text += "...";
         }
 
-
-        owner.client.textRenderer.drawWithShadow(matrices, text, x, y+3,macro.enabled?16777215:8355711, true);
-    }
-
-    private void renderWidget(PressableWidget widget, MatrixStack matrices, int mouseX, int mouseY, float tickDelta, int x, int y) {
-        widget.x = x;
-        widget.y = y;
-        widget.render(matrices,mouseX,mouseY,tickDelta);
+        context.drawText(tr, text, x, y + 3, macro.enabled ? 0xFFFFFE : 0x7F7F7F, true);
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
@@ -94,7 +108,7 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
     }
 
     public Text getNarration() {
-        return new TranslatableText("narrator.select");
+        return Text.translatable("narrator.select");
     }
 
 

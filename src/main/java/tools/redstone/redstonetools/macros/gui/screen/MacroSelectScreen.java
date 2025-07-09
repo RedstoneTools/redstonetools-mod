@@ -3,7 +3,6 @@ package tools.redstone.redstonetools.macros.gui.screen;
 import tools.redstone.redstonetools.macros.gui.widget.macrolist.MacroEntry;
 import tools.redstone.redstonetools.macros.gui.widget.macrolist.MacroListWidget;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.GameOptions;
@@ -34,6 +33,9 @@ public class MacroSelectScreen extends GameOptionsScreen {
             this.client.setScreen(this.parent);
         }));
     }
+
+    @Override
+    protected void addOptions() {}
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {

@@ -6,7 +6,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import tools.redstone.redstonetools.features.AbstractFeature;
@@ -43,7 +45,14 @@ public class ItemBindFeature extends CommandFeature{
             return Feedback.error("You need to be holding an item!");
         }
 
-        mainHandStack.getOrCreateNbt().put("command", NbtString.of(command));
+        MinecraftClient client = MinecraftClient.getInstance();
+        RegistryWrapper.WrapperLookup registries = client.world.getRegistryManager();
+        NbtCompound tag = (NbtCompound) mainHandStack.toNbt(registries);
+
+        tag.putString("command", command);
+
+        mainHandStack = ItemStack.fromNbt(registries, tag).orElse(mainHandStack);
+//        mainHandStack.getOrCreateNbt().put("command", NbtString.of(command));
         ItemUtils.addExtraNBTText(mainHandStack,"Command");
 
         waitingForCommand = false;

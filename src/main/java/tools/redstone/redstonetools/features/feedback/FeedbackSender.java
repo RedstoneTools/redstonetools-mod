@@ -1,7 +1,8 @@
 package tools.redstone.redstonetools.features.feedback;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import javax.inject.Singleton;
 
@@ -13,7 +14,6 @@ public class FeedbackSender extends AbstractFeedbackSender {
             return;
         }
 
-        source.sendFeedback(new LiteralText(feedback.getMessage())
-                .formatted(feedback.getFormatting()), false);
+        MinecraftClient.getInstance().player.networkHandler.sendChatCommand(feedback.getMessage().formatted(feedback.getFormatting()));
     }
 }
