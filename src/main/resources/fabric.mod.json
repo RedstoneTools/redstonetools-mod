@@ -32,10 +32,9 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.13.0",
+    "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "~1.18.2",
-    "java": ">=17"
+    "minecraft": ">=${minecraft_version}"
   },
   "recommends": {
     "worldedit": "*"
