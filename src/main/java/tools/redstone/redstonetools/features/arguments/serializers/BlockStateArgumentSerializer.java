@@ -2,16 +2,39 @@ package tools.redstone.redstonetools.features.arguments.serializers;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.resource.featuretoggle.FeatureSet;
+
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class BlockStateArgumentSerializer extends BrigadierSerializer<BlockStateArgument, String> {
 
     private static final BlockStateArgumentSerializer INSTANCE = new BlockStateArgumentSerializer();
 
     private BlockStateArgumentSerializer() {
-        super(BlockStateArgument.class, BlockStateArgumentType.blockState()); // what is this for?
+        super(BlockStateArgument.class, BlockStateArgumentType.blockState(new CommandRegistryAccess() {
+            @Override
+            public FeatureSet getEnabledFeatures() {
+                return null;
+            }
+
+            @Override
+            public Stream<RegistryKey<? extends Registry<?>>> streamAllRegistryKeys() {
+                return Stream.empty();
+            }
+
+            @Override
+            public <T> Optional<? extends RegistryWrapper.Impl<T>> getOptional(RegistryKey<? extends Registry<? extends T>> registryRef) {
+                return Optional.empty();
+            }
+        })); // what is this for?
     }
 
 //    private BlockStateArgumentSerializer() {

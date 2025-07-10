@@ -3,12 +3,10 @@ package tools.redstone.redstonetools.mixin.features;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -16,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
-import tools.redstone.redstonetools.utils.RaycastUtils;
 
 @Mixin(MinecraftClient.class)
 public class AirPlaceClientMixin {
+    @Unique
     private final AirPlaceFeature airPlaceFeature = RedstoneToolsClient.INJECTOR.getInstance(AirPlaceFeature.class);
 
     @Shadow
@@ -45,6 +43,7 @@ public class AirPlaceClientMixin {
         getInteractionManager().attackBlock(hit.getBlockPos(), hit.getSide());
     }
 
+    @Unique
     private boolean isAirPlaceAllowed() {
         // If air place is disabled
         if (!airPlaceFeature.isEnabled()) {
@@ -70,14 +69,17 @@ public class AirPlaceClientMixin {
         return true;
     }
 
+    @Unique
     private MinecraftClient getMinecraftClient() {
         return (MinecraftClient) (Object) this;
     }
 
+    @Unique
     private ClientPlayerEntity getPlayer() {
         return getMinecraftClient().player;
     }
 
+    @Unique
     private ClientPlayerInteractionManager getInteractionManager() {
         return getMinecraftClient().interactionManager;
     }

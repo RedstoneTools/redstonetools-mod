@@ -31,9 +31,8 @@ public class ItemUtils {
 
         if (loreList != null && !loreList.contains(NbtString.of(lore))) loreList.add(NbtString.of(lore));
         displayNbt.put("Lore", loreList);
-        itemStack.from
         itemStack.toNbt(MinecraftClient.getInstance().getNetworkHandler().getRegistryManager()).asCompound().get().get("display").asCompound().get();
-        itemStack.setSubNbt("display", displayNbt);
+        itemStack.setSubNbt("display", displayNbt); // idk
     }
 
     public static boolean isEmpty(ItemStack itemStack) {

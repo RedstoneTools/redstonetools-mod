@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.macros.gui.widget.commandlist;
 
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import tools.redstone.redstonetools.macros.gui.MaroCommandSuggestor;
 import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 import net.minecraft.client.MinecraftClient;
@@ -9,7 +10,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
-public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
+public class CommandEntry extends EntryListWidget<CommandEntry> {
 
 
     protected CommandListWidget owner;
@@ -65,6 +66,11 @@ public class CommandEntry extends EntryListWidget.Entry<CommandEntry> {
             edit = true;
         }
         owner.focusOn(this);
+    }
+
+    @Override
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+
     }
 
     protected String getText() {

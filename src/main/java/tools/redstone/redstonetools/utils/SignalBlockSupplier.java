@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.Block;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -125,7 +126,7 @@ public interface SignalBlockSupplier {
     private static void setItemName(ItemStack item, int signalStrength) {
         MutableText text = Text.literal(String.valueOf(signalStrength));
         text.setStyle(text.getStyle().withColor(Formatting.RED));
-        item.setCustomName(text);
+        item.set(DataComponentTypes.CUSTOM_NAME, text);
     }
 
 }
