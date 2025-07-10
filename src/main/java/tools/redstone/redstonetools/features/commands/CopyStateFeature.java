@@ -30,18 +30,13 @@ public class CopyStateFeature extends PickBlockFeature {
             ((MinecraftClientAccessor) client).invokeAddBlockEntityNbt(itemStack, blockInfo.entity);
         }
 
-        int i = addBlockStateNbt(itemStack, blockInfo.state);
-        if (i == -1) {
-            return Either.right(Feedback.invalidUsage("This block doesn't have any BlockState!"));
-        }
-
+        itemStack = addBlockStateNbt(itemStack, blockInfo.state);
         return Either.left(itemStack);
     }
 
-    private int addBlockStateNbt(ItemStack itemStack, BlockState blockState) {
+    private ItemStack addBlockStateNbt(ItemStack itemStack, BlockState blockState) {
         addExtraNBTText(itemStack, "BlockState");
-        BlockStateNbtUtil.putPlacement(itemStack, blockState);
-        return 1;
+        return BlockStateNbtUtil.putPlacement(itemStack, blockState);
     }
 
 

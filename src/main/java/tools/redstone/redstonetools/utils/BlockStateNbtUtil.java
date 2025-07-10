@@ -2,14 +2,17 @@ package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
+import net.royawesome.jlibnoise.module.combiner.Min;
 
 import java.util.Objects;
 
@@ -118,10 +121,19 @@ public final class BlockStateNbtUtil {
      * @param stack The input stack.
      * @param state The block state to assign.
      */
-    public static void putPlacement(ItemStack stack, BlockState state) {
+    public static ItemStack putPlacement(ItemStack stack, BlockState state) {
         Objects.requireNonNull(stack);
-        stack.getOrCreateNbt().put(EXACT_STATE_KEY, toNBT(state));
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        RegistryWrapper.WrapperLookup registries = client.world.getRegistryManager();
+        NbtCompound tag = (NbtCompound) stack.toNbt(registries);
+
+        tag.put(EXACT_STATE_KEY, toNBT(state));
+
+        return ItemStack.fromNbt(registries, tag).orElse(stack);
+//        stack.getOrCreateNbt().put(EXACT_STATE_KEY, toNBT(state));
     }
+
 
     /**
      * Creates an item stack which should place the exact given
@@ -134,8 +146,7 @@ public final class BlockStateNbtUtil {
      */
     public static ItemStack createPlacementStack(BlockState state) {
         ItemStack stack = new ItemStack(state.getBlock());
-        putPlacement(stack, state);
-        return stack;
+        return putPlacement(stack, state);
     }
 
     /**
@@ -147,7 +158,7 @@ public final class BlockStateNbtUtil {
      * @return The block state or null.
      */
     public static BlockState getPlacementStateOrNull(ItemStack stack) {
-        NbtCompound nbt = stack.getNbt();
+        NbtCompound nbt = stack.toNbt(MinecraftClient.getInstance().getNetworkHandler().getRegistryManager()).asCompound().get();
         if (nbt == null || !nbt.contains(EXACT_STATE_KEY)) {
             return null;
         }
@@ -165,7 +176,7 @@ public final class BlockStateNbtUtil {
      * @return The block state or null.
      */
     public static BlockState getPlacementState(ItemStack stack) {
-        NbtCompound nbt = stack.getNbt();
+        NbtCompound nbt = stack.toNbt(MinecraftClient.getInstance().getNetworkHandler().getRegistryManager()).asCompound().get();
         if (nbt == null || !nbt.contains(EXACT_STATE_KEY)) {
             if (stack.getItem() instanceof BlockItem blockItem)
                 return blockItem.getBlock().getDefaultState();

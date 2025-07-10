@@ -1,7 +1,7 @@
 package tools.redstone.redstonetools.mixin.macros.autocomplete;
 
 import com.mojang.brigadier.suggestion.Suggestions;
-import net.minecraft.client.gui.screen.CommandSuggestor;
+import net.minecraft.client.gui.screen.ChatInputSuggestor;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +17,7 @@ import tools.redstone.redstonetools.macros.gui.MaroCommandSuggestor;
 import java.util.concurrent.CompletableFuture;
 
 
-@Mixin(CommandSuggestor.class)
+@Mixin(ChatInputSuggestor.class)
 public class CommandSuggestorMixin{
 
     @Shadow @Final
@@ -27,7 +27,7 @@ public class CommandSuggestorMixin{
     int maxSuggestionSize;
 
 
-    @ModifyVariable(method = "showSuggestions", at = @At("STORE"), ordinal = 1)
+    @ModifyVariable(method = "showCommandSuggestions", at = @At("STORE"), ordinal = 1)
     public int suggestionWindXPos(int j){
         if (MaroCommandSuggestor.instance(this)) {
             Suggestions suggestions = this.pendingSuggestions.join();
@@ -36,7 +36,7 @@ public class CommandSuggestorMixin{
         return j;
     }
 
-    @ModifyVariable(method = "showSuggestions", at = @At("STORE"), ordinal = 2)
+    @ModifyVariable(method = "showCommandSuggestions", at = @At("STORE"), ordinal = 2)
     public int suggestionWindYPos(int k){
         if (MaroCommandSuggestor.instance(this)) {
             Suggestions suggestions = this.pendingSuggestions.join();
@@ -56,7 +56,7 @@ public class CommandSuggestorMixin{
     }
 
     @ModifyVariable(method = "render", at = @At("STORE"), ordinal = 3)
-    public int messageYPos(int j) {
+    public int messageYPosa(int j) {
         if (MaroCommandSuggestor.instance(this)) {
             int y = MaroCommandSuggestor.getY(this);
             i++;
@@ -64,8 +64,4 @@ public class CommandSuggestorMixin{
         }
         return j;
     }
-
-
-
-
 }

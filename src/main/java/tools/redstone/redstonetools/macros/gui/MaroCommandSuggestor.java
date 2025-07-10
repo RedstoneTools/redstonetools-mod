@@ -2,13 +2,13 @@ package tools.redstone.redstonetools.macros.gui;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.CommandSuggestor;
+import net.minecraft.client.gui.screen.ChatInputSuggestor;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 
 import java.util.HashMap;
 
-public class MaroCommandSuggestor extends CommandSuggestor {
+public class MaroCommandSuggestor extends ChatInputSuggestor {
     private static final HashMap<MaroCommandSuggestor,Integer> yMap =  new HashMap<>();
 
 

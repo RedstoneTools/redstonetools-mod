@@ -2,6 +2,7 @@ package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -17,7 +18,8 @@ public class ItemUtils {
     }
 
     public static void addExtraNBTText(ItemStack itemStack, String text) {
-        NbtCompound displayNbt = itemStack.getSubNbt("display");
+
+        NbtCompound displayNbt = itemStack.toNbt(MinecraftClient.getInstance().getNetworkHandler().getRegistryManager()).asCompound().get().get("display").asCompound().get();
         NbtList loreList = new NbtList();
 
         if (displayNbt == null) {
@@ -29,6 +31,8 @@ public class ItemUtils {
 
         if (loreList != null && !loreList.contains(NbtString.of(lore))) loreList.add(NbtString.of(lore));
         displayNbt.put("Lore", loreList);
+        itemStack.from
+        itemStack.toNbt(MinecraftClient.getInstance().getNetworkHandler().getRegistryManager()).asCompound().get().get("display").asCompound().get();
         itemStack.setSubNbt("display", displayNbt);
     }
 

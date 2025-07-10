@@ -94,7 +94,7 @@ public class MinSelectionFeature extends CommandFeature {
         try {
             selection.contract(changes.toArray(new BlockVector3[changes.size()]));
         } catch (RegionOperationException e) {
-            throw new net.minecraft.command.CommandException(Text.of("There was an error modifying the region."));
+            throw new CommandSyntaxException(null, Text.literal("There was an error modifying the region."));
         }
 
         if (!finished)
