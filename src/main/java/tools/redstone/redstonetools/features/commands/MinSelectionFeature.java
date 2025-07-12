@@ -1,9 +1,11 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.WorldEdit;
@@ -20,22 +22,25 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-@AutoService(AbstractFeature.class)
-@Feature(command = "/minsel", description = "Removes all air-only layers from a selection", name = "Minimize Selection", worldedit = true)
-public class MinSelectionFeature extends CommandFeature {
+import static net.minecraft.server.command.CommandManager.literal;
 
-    @Override
-    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
-        var selectionOrFeedback = WorldEditUtils.getSelection(source.getPlayer());
+public class MinSelectionFeature {
+    public static void registerCommand() {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("minsel")
+                .executes(context -> new MinSelectionFeature().execute(context))));
+    }
+
+    protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        var selectionOrFeedback = WorldEditUtils.getSelection(context.getSource().getPlayer());
         if (selectionOrFeedback.right().isPresent()) {
-            return selectionOrFeedback.right().get();
+            throw new SimpleCommandExceptionType(Text.literal("An error has occurred.")).create();
         }
 
         assert selectionOrFeedback.left().isPresent();
         var selection = selectionOrFeedback.left().get();
         var selectionWorld = selection.getWorld();
 
-        var actor = FabricAdapter.adaptPlayer(source.getPlayer());
+        var actor = FabricAdapter.adaptPlayer(context.getSource().getPlayer());
 
         var localSession = WorldEdit.getInstance()
                 .getSessionManager()
@@ -45,12 +50,14 @@ public class MinSelectionFeature extends CommandFeature {
 
         boolean isEmpty = true;
         for (BlockVector3 point : selection) {
-            if (!selectionWorld.getBlock(point).equals(BlockTypes.AIR.getDefaultState()))
+	        assert selectionWorld != null;
+	        assert BlockTypes.AIR != null;
+	        if (!selectionWorld.getBlock(point).equals(BlockTypes.AIR.getDefaultState()))
                 isEmpty = false;
         }
 
         if (isEmpty) {
-            return Feedback.invalidUsage("Cannot minimize empty selections.");
+            throw new SimpleCommandExceptionType(Text.of("Cannot minimize empty selections.")).create();
         }
             
 
@@ -59,7 +66,8 @@ public class MinSelectionFeature extends CommandFeature {
         selector.learnChanges();
         selector.explainRegionAdjust(actor, localSession);
 
-        return Feedback.success("Minimized selection.");
+        context.getSource().sendMessage(Text.literal("Minimized selection."));
+        return 1;
     }
 
     private void minimiseSelection(World selectionWorld, Region selection)
@@ -72,7 +80,8 @@ public class MinSelectionFeature extends CommandFeature {
             var isOnlyAir = true;
 
             for (BlockVector3 point : face) {
-                if (selectionWorld.getBlock(point).getBlockType().getDefaultState() != BlockTypes.AIR
+	            assert BlockTypes.AIR != null;
+	            if (selectionWorld.getBlock(point).getBlockType().getDefaultState() != BlockTypes.AIR
                         .getDefaultState()) {
                     isOnlyAir = false;
                     break;

@@ -30,15 +30,15 @@ public class RedstoneToolsClient implements ClientModInitializer {
         RedstoneToolsGameRules.register();
 
         // Register features
-        ReflectionUtils.getFeatures().forEach(feature -> {
-            LOGGER.trace("Registering feature {}", feature.getClass().getName());
-
-            if (feature.requiresWorldEdit() && !DependencyLookup.WORLDEDIT_PRESENT) {
-                LOGGER.warn("Feature {} requires WorldEdit, but WorldEdit is not loaded. Skipping registration.", feature.getName());
-                return;
-            }
-            feature.register();
-        });
+//        ReflectionUtils.getFeatures().forEach(feature -> {
+//            LOGGER.trace("Registering feature {}", feature.getClass().getName());
+//
+//            if (feature.requiresWorldEdit() && !DependencyLookup.WORLDEDIT_PRESENT) {
+//                LOGGER.warn("Feature {} requires WorldEdit, but WorldEdit is not loaded. Skipping registration.", feature.getName());
+//                return;
+//            }
+//            feature.register();
+//        });
 
         // Register commands
         InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());

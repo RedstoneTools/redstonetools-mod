@@ -1,6 +1,6 @@
 package tools.redstone.redstonetools.features.commands.update;
 
-import tools.redstone.redstonetools.features.feedback.Feedback;
+import net.minecraft.text.Text;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 public class RegionUpdater {
 
 
-    public static Feedback updateRegion(World world, BlockVector3 minPos, BlockVector3 maxPos) {
+    public static Text updateRegion(World world, BlockVector3 minPos, BlockVector3 maxPos) {
         long blockCount = 0;
 
         for (int x = minPos.x() - 1; x <= maxPos.x() + 1; x++) {
@@ -22,7 +22,6 @@ public class RegionUpdater {
                 }
             }
         }
-        return Feedback.success("Successfully forced block updates for {} block(s).", blockCount);
+        return Text.literal(String.format("Successfully forced block updates for %s block(s).", blockCount));
     }
-
 }

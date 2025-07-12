@@ -1,32 +1,42 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
-import net.minecraft.server.command.ServerCommandSource;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.NumberArg;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.text.Text;
 
+import java.math.BigInteger;
 
-import static tools.redstone.redstonetools.features.arguments.serializers.NumberBaseSerializer.numberBase;
-import static tools.redstone.redstonetools.features.arguments.serializers.NumberSerializer.numberArg;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
-@AutoService(AbstractFeature.class)
-@Feature(name = "Base Convert", description = "Converts a number from one base to another.", command = "base")
-public class BaseConvertFeature extends CommandFeature {
+public class BaseConvertFeature {
 
-    public static final Argument<NumberArg> inputNum = Argument
-            .ofType(numberArg());
-    public static final Argument<Integer> toBase = Argument
-            .ofType(numberBase())
-            .withDefault(10);
+	private static final SimpleCommandExceptionType INVALID_NUMBER =
+			new SimpleCommandExceptionType(Text.literal("Invalid number"));
 
-    @Override
-    protected Feedback execute(ServerCommandSource source) {
-        var input = inputNum.getValue().toPrefixedString();
-        var output = inputNum.getValue().toPrefixedString(toBase.getValue());
+	public static void registerCommand() {
+		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("base")
+				.then(ClientCommandManager.argument("inputNum", IntegerArgumentType.integer())
+				.then(ClientCommandManager.argument("toBase",   IntegerArgumentType.integer())
+				.executes(BaseConvertFeature::execute)))));
+	}
 
-        return Feedback.success("{} = {}", input, output);
+    protected static int execute(CommandContext<FabricClientCommandSource> context)
+        throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+	    int inputNum = IntegerArgumentType.getInteger(context, "inputNum");
+	    int toBase = IntegerArgumentType.getInteger(context, "toBase");
+
+	    BigInteger value;
+	    try {
+		    value = new BigInteger(Integer.toString(inputNum));
+	    } catch (NumberFormatException e) {
+		    throw INVALID_NUMBER.create();
+	    }
+	    String output = value.toString(toBase).toUpperCase();
+	    context.getSource().sendFeedback(Text.literal("%s = %s in base %s".formatted(inputNum, output, toBase)));
+	    return 1;
     }
 }

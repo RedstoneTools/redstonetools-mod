@@ -1,28 +1,34 @@
 package tools.redstone.redstonetools.features.commands.update;
 
-import com.google.auto.service.AutoService;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.commands.CommandFeature;
-import tools.redstone.redstonetools.features.feedback.Feedback;
+import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
-@AutoService(AbstractFeature.class)
-@Feature(name = "Update", description = "Forces block updates in the selected area.", command = "/update")
-public class UpdateFeature extends CommandFeature {
-    @Override
-    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
-        var selectionOrFeedback = WorldEditUtils.getSelection(source.getPlayer());
-        if (selectionOrFeedback.right().isPresent()) {
-            return selectionOrFeedback.right().get();
-        }
+import java.util.Objects;
 
-        assert selectionOrFeedback.left().isPresent();
-        var selection = selectionOrFeedback.left().get();
+import static net.minecraft.server.command.CommandManager.literal;
 
+public class UpdateFeature {
+	public static void registerCommand() {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("update")
+				.executes(context -> new UpdateFeature().execute(context))));
+	}
 
-        return RegionUpdater.updateRegion(source.getWorld(), selection.getMinimumPoint(), selection.getMaximumPoint());
+	protected int execute(CommandContext<ServerCommandSource> context)
+			throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+		var selectionOrFeedback = WorldEditUtils.getSelection(context.getSource().getPlayer());
+		if (selectionOrFeedback.right().isPresent()) {
+			throw new SimpleCommandExceptionType(Text.literal("No selection!")).create();
+		}
+
+		assert selectionOrFeedback.left().isPresent();
+		var selection = selectionOrFeedback.left().get();
+
+		assert Objects.requireNonNull(context.getSource().getPlayer()).getWorld() != null;
+		context.getSource().sendMessage(RegionUpdater.updateRegion(context.getSource().getPlayer().getWorld(), selection.getMinimumPoint(), selection.getMaximumPoint()));
+		return 1;
     }
 }

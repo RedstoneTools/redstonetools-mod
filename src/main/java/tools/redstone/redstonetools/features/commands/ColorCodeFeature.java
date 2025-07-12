@@ -1,10 +1,14 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.ColoredBlock;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
@@ -21,18 +25,25 @@ import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockType;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
+
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 import static tools.redstone.redstonetools.features.arguments.serializers.BlockColorSerializer.blockColor;
 
-@AutoService(AbstractFeature.class)
-@Feature(name = "Color Code", description = "Color codes all color-able blocks in your WorldEdit selection.", command = "/colorcode", worldedit = true)
-public class ColorCodeFeature extends CommandFeature {
+public class ColorCodeFeature {
+    public static void registerCommand() {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("colorcode")
+                .then(argument("color", StringArgumentType.string())
+                .then(argument("onlyColor", StringArgumentType.string()))
+                .executes(ColorCodeFeature::execute))));
+    }
     public static final Argument<BlockColor> color = Argument
             .ofType(blockColor());
     public static final Argument<BlockColor> onlyColor = Argument
             .ofType(blockColor())
             .withDefault(null);
 
-    private boolean shouldBeColored(World world, BlockVector3 pos, BlockColor onlyColor) {
+    private static boolean shouldBeColored(World world, BlockVector3 pos, BlockColor onlyColor) {
         var state = world.getBlock(pos);
         var blockId = state.getBlockType().id();
 
@@ -45,7 +56,7 @@ public class ColorCodeFeature extends CommandFeature {
         return blockColor == onlyColor;
     }
 
-    private BaseBlock getColoredBlock(World world, BlockVector3 pos, BlockColor color) {
+    private static BaseBlock getColoredBlock(World world, BlockVector3 pos, BlockColor color) {
         var state = world.getBlock(pos);
         var blockId = state.getBlockType().id();
 
@@ -58,20 +69,20 @@ public class ColorCodeFeature extends CommandFeature {
         return blockType.getDefaultState().toBaseBlock();
     }
 
-    @Override
-    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
-        var player = source.getPlayer();
+    protected static int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayer();
 
         var selectionOrFeedback = WorldEditUtils.getSelection(player);
         if (selectionOrFeedback.right().isPresent()) {
-            return selectionOrFeedback.right().get();
+            throw new SimpleCommandExceptionType(Text.literal("No selection!")).create();
         }
 
         assert selectionOrFeedback.left().isPresent();
         var selection = selectionOrFeedback.left().get();
 
         var worldEdit = WorldEdit.getInstance();
-        var wePlayer = FabricAdapter.adaptPlayer(player);
+	    assert player != null;
+	    var wePlayer = FabricAdapter.adaptPlayer(player);
         var playerSession = worldEdit.getSessionManager().get(wePlayer);
 
         // for each block in the selection
@@ -104,10 +115,11 @@ public class ColorCodeFeature extends CommandFeature {
             // call remember to allow undo
             playerSession.remember(session);
 
-            return Feedback.success("Successfully colored {} block(s) {}.", blocksColored, color.getValue());
-        } catch (Exception e) {
-            return Feedback.error("An error occurred while coloring the block(s).");
-        }
-    }
 
+            context.getSource().sendMessage(Text.literal("Successfully colored %s block(s) %s.".formatted(blocksColored, color.getValue())));
+        } catch (Exception e) {
+            throw new SimpleCommandExceptionType(Text.literal("An error occurred while coloring the block(s).")).create();
+        }
+        return 1;
+    }
 }

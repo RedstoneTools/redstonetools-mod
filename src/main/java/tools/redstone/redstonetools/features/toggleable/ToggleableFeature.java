@@ -1,10 +1,10 @@
 package tools.redstone.redstonetools.features.toggleable;
 
+import com.mojang.brigadier.StringReader;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
@@ -34,26 +34,23 @@ import java.util.ArrayList;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public abstract class ToggleableFeature extends AbstractFeature {
+public abstract class ToggleableFeature {
 
     private static final List<KeyBinding> keyBindings = new ArrayList<>();
 
-    @Override
     public void register() {
-        super.register();
-        
         // load user settings
         // and register save hook
         loadConfig();
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
             saveConfig();
         });
-      
-        var containsRequiredArguments = ReflectionUtils.getArguments(getClass()).stream()
-                .anyMatch(a -> !a.isOptional());
-        if (containsRequiredArguments) {
-            return;
-        }
+
+//        var containsRequiredArguments = ReflectionUtils.getArguments(getClass()).stream()
+//                .anyMatch(a -> !a.isOptional());
+//        if (containsRequiredArguments) {
+//            return;
+//        }
 
         var info = ReflectionUtils.getFeatureInfo(getClass());
         var keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -88,37 +85,36 @@ public abstract class ToggleableFeature extends AbstractFeature {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
 
-    @Override
-    protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
-        var baseCommand = literal(getCommand())
-                .executes(this::toggle);
-
-        // add option configurations
-        for (Argument argument : arguments) {
-            String name = argument.getName();
-            baseCommand.then(literal(name)
-                    .executes(context -> {
-                        Object value = argument.getValue();
-                        return Feedback.success("Option {} of feature {} is set to: {}", name, getName(), argument.getType().serialize(value)).send(context);
-                    })
-                    .then(argument("value", argument.getType()).executes(context -> {
-                        Object value = context.getArgument("value", argument.getType().getTypeClass());
-
-                        argument.setValue(value);
-
-                        if (!enabled) {
-                            enable(context);
-                        }
-
-                        IO_EXECUTOR.execute(this::saveConfig);
-
-                        return Feedback.success("Set {} to {} for feature {}", name, value, getName()).send(context);
-                    }))
-            );
-        }
-
-        dispatcher.register(baseCommand);
-    }
+//    protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
+//        var baseCommand = literal(getCommand())
+//                .executes(this::toggle);
+//
+//        // add option configurations
+//        for (Argument argument : arguments) {
+//            String name = argument.getName();
+//            baseCommand.then(literal(name)
+//                    .executes(context -> {
+//                        Object value = argument.getValue();
+//                        return Feedback.success("Option {} of feature {} is set to: {}", name, getName(), String.valueOf(value)).send(context);
+//                    })
+//                    .then(argument("value", argument.getType()).executes(context -> {
+//                        Object value = context.getArgument("value", argument.getType().getClass());
+//
+//                        argument.setValue(value);
+//
+//                        if (!enabled) {
+//                            enable(context);
+//                        }
+//
+//                        IO_EXECUTOR.execute(this::saveConfig);
+//
+//                        return Feedback.success("Set {} to {} for feature {}", name, value, getName()).send(context);
+//                    }))
+//            );
+//        }
+//
+//        dispatcher.register(baseCommand);
+//    }
 
     public boolean isEnabled() {
         return enabled;
@@ -199,7 +195,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
                         continue;
 
                     String valueString = object.get(argument.getName()).getAsString();
-                    Object value = argument.getType().deserialize(valueString);
+                    Object value = argument.getType().parse(new StringReader(valueString));
 
                     argument.setValue(value);
                 }
@@ -229,7 +225,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
             jsonObject.addProperty("enabled", Boolean.toString(enabled));
             for (Argument argument : arguments) {
                 Object value = argument.getValue();
-                String valueSerialized = (String) argument.getType().serialize(value);
+                String valueSerialized = String.valueOf(value);
 
                 jsonObject.addProperty(argument.getName(), valueSerialized);
             }

@@ -1,20 +1,20 @@
 package tools.redstone.redstonetools.features.arguments;
 
-import tools.redstone.redstonetools.features.arguments.serializers.TypeSerializer;
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 public class Argument<T> {
     private String name;
-    private final TypeSerializer<T, ?> type;
+    private final ArgumentType<T> type;
     private boolean optional = false;
     private volatile T value;
     private T defaultValue;
 
-    private Argument(TypeSerializer<T, ?> type) {
+    private Argument(ArgumentType<T> type) {
         this.type = type;
     }
 
-    public static <T> Argument<T> ofType(TypeSerializer<T, ?> type) {
+    public static <T> Argument<T> ofType(ArgumentType<T> type) {
         return new Argument<>(type);
     }
 
@@ -48,7 +48,7 @@ public class Argument<T> {
         return name;
     }
 
-    public TypeSerializer<T, ?> getType() {
+    public ArgumentType<T> getType() {
         return type;
     }
 

@@ -1,5 +1,8 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -7,23 +10,21 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
 import javax.annotation.Nullable;
 
 public abstract class PickBlockFeature extends BlockRaycastFeature {
-    @Override
-    protected final Feedback execute(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
+    protected int execute(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null) {
-            return Feedback.error("Failed to get player.");
+            throw new SimpleCommandExceptionType(Text.literal("Failed to get player.")).create();
         }
 
-        var stackOrFeedback = getItemStack(source, blockInfo);
+        var stackOrFeedback = getItemStack(context, blockInfo);
         if (stackOrFeedback.right().isPresent()) {
-            return stackOrFeedback.right().get();
+            throw new SimpleCommandExceptionType(Text.literal("An error has occurred.")).create();
         }
 
         assert stackOrFeedback.left().isPresent();
@@ -32,12 +33,12 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
         PlayerInventory playerInventory = client.player.getInventory();
         addPickBlock(playerInventory, stack);
         if (client.interactionManager == null) {
-            throw new CommandSyntaxException(null, Text.of("Failed to get interaction manager."));
+            throw new SimpleCommandExceptionType(Text.literal("Failed to get interaction manager.")).create();
         }
 
         client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.getSelectedSlot());
 
-        return Feedback.none();
+        return 1;
     }
 
     // reimplementation from 1.18.2
@@ -59,5 +60,7 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
         }
     }
 
-    protected abstract Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
+	protected Either<ItemStack, Feedback> getItemStack(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
+		return null;
+	}
 }

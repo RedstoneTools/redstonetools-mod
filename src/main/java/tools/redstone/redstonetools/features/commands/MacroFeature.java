@@ -1,31 +1,36 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.macros.MacroManager;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.server.command.ServerCommandSource;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
-import static tools.redstone.redstonetools.features.arguments.serializers.MacroNameSerializer.macroName;
 
-@AutoService(AbstractFeature.class)
-@Feature(command = "macro", description = "Allows you to execute a macro", name = "Macro")
-public class MacroFeature extends CommandFeature {
-    public static final Argument<String> macro = Argument.ofType(macroName());
-
-    @Override
-    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
-        var macroObj = INJECTOR.getInstance(MacroManager.class).getMacro(macro.getValue());
+public class MacroFeature {
+    public static void registerCommand() {
+        EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("macro")
+                .then(ClientCommandManager.argument("macro", StringArgumentType.string())
+                .executes(context -> new MacroFeature().execute(context)))));
+    }
+    protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
+        String macro = StringArgumentType.getString(context, "macro");
+        var macroObj = INJECTOR.getInstance(MacroManager.class).getMacro(macro);
 
 
         if (macroObj == null) {
-            return Feedback.invalidUsage("Macro \"{}\" does not exist.", macro.getValue());
+            throw new SimpleCommandExceptionType(Text.literal("Macro \"%s\" does not exist.".formatted(macro))).create();
         }
 
         macroObj.run();
-        return Feedback.none();
+        return 1;
     }
 }

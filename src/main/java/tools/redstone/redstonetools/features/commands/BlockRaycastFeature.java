@@ -1,18 +1,19 @@
 package tools.redstone.redstonetools.features.commands;
 
-import tools.redstone.redstonetools.features.feedback.Feedback;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 
 import javax.annotation.Nullable;
 
-public abstract class BlockRaycastFeature extends CommandFeature {
-    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
+public abstract class BlockRaycastFeature {
+    protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) {
             throw new CommandSyntaxException(null, Text.of("This command is client-side only."));
@@ -20,9 +21,9 @@ public abstract class BlockRaycastFeature extends CommandFeature {
 
         if (client.crosshairTarget == null || client.crosshairTarget.getType() != HitResult.Type.BLOCK) {
             if (requiresBlock()) {
-                return Feedback.invalidUsage("You must be looking at a block to use this command.");
+                throw new SimpleCommandExceptionType(Text.literal("You must be looking at a block to use this command.")).create();
             } else {
-                return execute(source, null);
+                return execute(context, null);
             }
         }
 
@@ -31,12 +32,14 @@ public abstract class BlockRaycastFeature extends CommandFeature {
         var blockEntity = client.world.getBlockEntity(blockPos);
         var block = blockState.getBlock();
 
-        return execute(source, new BlockInfo(block, blockPos, blockState, blockEntity));
+        return execute(context, new BlockInfo(block, blockPos, blockState, blockEntity));
     }
 
     protected boolean requiresBlock() {
         return true;
     }
 
-    protected abstract Feedback execute(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
+	protected int execute(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
+		return 0;
+	}
 }
