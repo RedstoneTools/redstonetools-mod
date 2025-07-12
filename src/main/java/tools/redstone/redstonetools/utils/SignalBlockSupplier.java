@@ -119,8 +119,10 @@ public interface SignalBlockSupplier {
 
     private static void setCompoundNbt(ItemStack item, NbtCompound nbt) {
         nbt.putBoolean("HideFlags", true);
-        item.setNbt(nbt);
-        item.addEnchantment(Enchantment.byRawId(0), 0);
+
+        // FIXME
+//        item.setNbt(nbt);
+//        item.addEnchantment(Enchantment.byRawId(0), 0);
     }
 
     private static void setItemName(ItemStack item, int signalStrength) {

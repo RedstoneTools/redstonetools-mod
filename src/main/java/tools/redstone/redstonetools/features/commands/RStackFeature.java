@@ -63,7 +63,7 @@ public class RStackFeature extends CommandFeature {
         final Mask airFilter = new Mask() {
             @Override
             public boolean test(BlockVector3 vector) {
-                return !"minecraft:air".equals(selectionWorld.getBlock(vector).getBlockType().getId());
+                return !"minecraft:air".equals(selectionWorld.getBlock(vector).getBlockType().id());
             }
 
             @Nullable

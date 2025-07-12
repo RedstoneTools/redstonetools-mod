@@ -17,6 +17,19 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+
+	maven { url 'https://masa.dy.fi/maven' }
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
 	maven {
 		name = "WorldEdit Maven"
 		url = "https://maven.enginehub.org/repo/"
@@ -44,22 +57,29 @@ dependencies {
 	mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
 	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
 
+	// MaLiLib
+	modImplementation "maven.modrinth:malilib:0.24.2"
+
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// Worldedit API
-	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10")
+	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.21.5:7.3.14")
 }
 
 processResources {
 	inputs.property "version", project.version
 	inputs.property "minecraft_version", project.minecraft_version
+	inputs.property "minecraft_version_out", project.minecraft_version_out
+	inputs.property "malilib_version", project.minecraft_version_out
 	inputs.property "loader_version", project.loader_version
 	filteringCharset "UTF-8"
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version,
+		expand  "version": project.version,
 				"minecraft_version": project.minecraft_version,
+				"minecraft_version_out": project.minecraft_version_out,
+				"malilib_version": project.minecraft_version_out,
 				"loader_version": project.loader_version
 	}
 }

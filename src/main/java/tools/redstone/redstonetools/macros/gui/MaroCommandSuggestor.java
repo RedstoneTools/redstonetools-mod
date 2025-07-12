@@ -11,8 +11,6 @@ import java.util.HashMap;
 public class MaroCommandSuggestor extends ChatInputSuggestor {
     private static final HashMap<MaroCommandSuggestor,Integer> yMap =  new HashMap<>();
 
-
-
     public MaroCommandSuggestor(MinecraftClient client, Screen owner, TextFieldWidget textField, TextRenderer textRenderer, boolean slashOptional, boolean suggestingWhenEmpty, int y, int maxSuggestionSize, int color) {
         super(client, owner, textField, textRenderer, slashOptional, suggestingWhenEmpty, 0, maxSuggestionSize, false, color);
         yMap.put(this,y);

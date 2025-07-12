@@ -111,14 +111,14 @@ public class MinSelectionFeature extends CommandFeature {
         var min = selection.getMinimumPoint();
         var max = selection.getMaximumPoint();
 
-        faces.add(new CuboidRegion(pos1.withX(min.getX()), pos2.withX(min.getX())));
-        faces.add(new CuboidRegion(pos1.withX(max.getX()), pos2.withX(max.getX())));
+        faces.add(new CuboidRegion(pos1.withX(min.x()), pos2.withX(min.x())));
+        faces.add(new CuboidRegion(pos1.withX(max.x()), pos2.withX(max.x())));
 
-        faces.add(new CuboidRegion(pos1.withZ(min.getZ()), pos2.withZ(min.getZ())));
-        faces.add(new CuboidRegion(pos1.withZ(max.getZ()), pos2.withZ(max.getZ())));
+        faces.add(new CuboidRegion(pos1.withZ(min.z()), pos2.withZ(min.z())));
+        faces.add(new CuboidRegion(pos1.withZ(max.z()), pos2.withZ(max.z())));
 
-        faces.add(new CuboidRegion(pos1.withY(min.getY()), pos2.withY(min.getY())));
-        faces.add(new CuboidRegion(pos1.withY(max.getY()), pos2.withY(max.getY())));
+        faces.add(new CuboidRegion(pos1.withY(min.y()), pos2.withY(min.y())));
+        faces.add(new CuboidRegion(pos1.withY(max.y()), pos2.withY(max.y())));
 
         return faces;
     }

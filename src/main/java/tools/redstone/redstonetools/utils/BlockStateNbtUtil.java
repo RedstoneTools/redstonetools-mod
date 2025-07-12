@@ -12,7 +12,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
-import net.royawesome.jlibnoise.module.combiner.Min;
 
 import java.util.Objects;
 

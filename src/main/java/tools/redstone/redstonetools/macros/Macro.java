@@ -88,7 +88,9 @@ public class Macro {
     public void changeKeyBindingKeyCode() {
 
         if (this.keyBinding != null) {
-            MinecraftClient.getInstance().options.setKeyCode(keyBinding,key);
+
+            // FIXME
+//            MinecraftClient.getInstance().options.setKeyCode(keyBinding,key);
             KeyBinding.updateKeysByCode();
         }
 

@@ -1,12 +1,14 @@
 package tools.redstone.redstonetools;
 
+import fi.dy.masa.malilib.event.InitializationHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rip.hippo.inject.Doctor;
 import rip.hippo.inject.Injector;
+import tools.redstone.redstonetools.macros.Commands;
+import tools.redstone.redstonetools.macros.gui.malilib.InitHandler;
 import tools.redstone.redstonetools.utils.DependencyLookup;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 
@@ -37,6 +39,10 @@ public class RedstoneToolsClient implements ClientModInitializer {
             }
             feature.register();
         });
+
+        // Register commands
+        InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
+        Commands.registerCommands();
     }
 
 }

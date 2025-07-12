@@ -106,14 +106,15 @@ public class AirPlaceFeature extends ToggleableFeature {
             try {
                 VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.getLines());
 
-                ((WorldRendererAccessor)context.worldRenderer()).invokeDrawBlockOutline(
-                        context.matrixStack(),
-                        consumer,
-                        client.player,
-                        camPos.x, camPos.y, camPos.z,
-                        blockPos,
-                        blockState
-                );
+                // FIXME
+//                ((WorldRendererAccessor)context.worldRenderer()).invokeDrawBlockOutline(
+//                        context.matrixStack(),
+//                        consumer,
+//                        client.player,
+//                        camPos.x, camPos.y, camPos.z,
+//                        blockPos,
+//                        blockState
+//                );
             } catch (Throwable t) {
                 throw new IllegalStateException(t);
             }

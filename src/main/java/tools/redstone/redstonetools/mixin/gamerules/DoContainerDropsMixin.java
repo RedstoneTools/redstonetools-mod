@@ -15,6 +15,7 @@ import static tools.redstone.redstonetools.RedstoneToolsGameRules.DO_CONTAINER_D
 public class DoContainerDropsMixin {
     @Inject(method = "spawn(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/inventory/Inventory;)V", at = @At("HEAD"), cancellable = true)
     private static void spawn(World world, BlockPos pos, Inventory inventory, CallbackInfo ci) {
-        if (!world.getGameRules().getBoolean(DO_CONTAINER_DROPS)) ci.cancel();
+        // FIXME
+//        if (!world.getGameRules().getBoolean(DO_CONTAINER_DROPS)) ci.cancel();
     }
 }

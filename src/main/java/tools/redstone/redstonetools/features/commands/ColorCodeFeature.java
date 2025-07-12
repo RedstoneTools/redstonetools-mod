@@ -34,7 +34,7 @@ public class ColorCodeFeature extends CommandFeature {
 
     private boolean shouldBeColored(World world, BlockVector3 pos, BlockColor onlyColor) {
         var state = world.getBlock(pos);
-        var blockId = state.getBlockType().getId();
+        var blockId = state.getBlockType().id();
 
         var coloredBlock = ColoredBlock.fromBlockId(blockId);
         if (coloredBlock == null) return false;
@@ -47,7 +47,7 @@ public class ColorCodeFeature extends CommandFeature {
 
     private BaseBlock getColoredBlock(World world, BlockVector3 pos, BlockColor color) {
         var state = world.getBlock(pos);
-        var blockId = state.getBlockType().getId();
+        var blockId = state.getBlockType().id();
 
         var coloredBlock = ColoredBlock.fromBlockId(blockId);
         if (coloredBlock == null) return state.toBaseBlock();
