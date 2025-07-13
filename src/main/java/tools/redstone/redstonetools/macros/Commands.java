@@ -2,10 +2,11 @@ package tools.redstone.redstonetools.macros;
 
 import fi.dy.masa.malilib.gui.GuiBase;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
-import tools.redstone.redstonetools.macros.gui.malilib.GuiMacroManager;
+import tools.redstone.redstonetools.macros.gui.malilib.MacrosScreen;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.*;
 
@@ -13,7 +14,7 @@ public class Commands {
 	public static void registerCommands() {
 		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("edit-macros")
 				.executes(commandContext -> {
-					GuiBase.openGui(new GuiMacroManager());
+					GuiBase.openGui(new MacrosScreen(MinecraftClient.getInstance().currentScreen, MacroManager.getMacros()));
 					return 1;
 				})));
 

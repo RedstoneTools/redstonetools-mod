@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools;
 
+import fi.dy.masa.malilib.config.options.ConfigStringList;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -7,19 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rip.hippo.inject.Doctor;
 import rip.hippo.inject.Injector;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.commands.*;
-import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
-import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
-import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
-import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 import tools.redstone.redstonetools.macros.Commands;
 import tools.redstone.redstonetools.macros.gui.malilib.InitHandler;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
 
 public class RedstoneToolsClient implements ClientModInitializer {
 

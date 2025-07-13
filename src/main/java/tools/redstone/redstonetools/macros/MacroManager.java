@@ -98,7 +98,7 @@ public class MacroManager extends AbstractFeature {
 
     private static JsonObject getMacroJson(Macro macro) {
         var actionsJson = Json.createArrayBuilder();
-        for (Action action : macro.actions) {
+        for (CommandAction action : macro.actions) {
             actionsJson.add(getActionJson(action));
         }
 
@@ -110,7 +110,7 @@ public class MacroManager extends AbstractFeature {
                 .build();
     }
 
-    private static JsonObject getActionJson(Action action) {
+    private static JsonObject getActionJson(CommandAction action) {
         if (action instanceof CommandAction commandAction) {
             return Json.createObjectBuilder()
                     .add("type", "command")
@@ -137,7 +137,7 @@ public class MacroManager extends AbstractFeature {
     }
 
     private static Macro createCommandMacro(String name, String[] commands) {
-        var actions = new Action[commands.length];
+        var actions = new CommandAction[commands.length];
         for (int i = 0; i < commands.length; i++) {
             actions[i] = new CommandAction(commands[i]);
         }
@@ -164,8 +164,8 @@ public class MacroManager extends AbstractFeature {
         return new Macro(name, enabled, InputUtil.fromTranslationKey(key), actions);
     }
 
-    private static List<Action> getActionsFromJson(JsonArray actionsJson) {
-        List<Action> actions = new ArrayList<>();
+    private static List<CommandAction> getActionsFromJson(JsonArray actionsJson) {
+        List<CommandAction> actions = new ArrayList<>();
 
         for (int i = 0; i < actionsJson.size(); i++) {
             actions.add(getActionFromJson(actionsJson.getJsonObject(i)));
@@ -174,7 +174,7 @@ public class MacroManager extends AbstractFeature {
         return actions;
     }
 
-    private static Action getActionFromJson(JsonObject actionJson) {
+    private static CommandAction getActionFromJson(JsonObject actionJson) {
         var type = actionJson.getString("type");
 
         if ("command".equals(type)) {

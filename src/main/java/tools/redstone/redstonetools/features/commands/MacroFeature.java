@@ -22,7 +22,6 @@ public class MacroFeature extends AbstractFeature {
         String macro = StringArgumentType.getString(context, "macro");
         var macroObj = MacroManager.getMacro(macro);
 
-
         if (macroObj == null) {
             throw new SimpleCommandExceptionType(Text.literal("Macro \"%s\" does not exist.".formatted(macro))).create();
         }

@@ -1,12 +1,11 @@
 package tools.redstone.redstonetools.macros;
 
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import tools.redstone.redstonetools.macros.actions.Action;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
+import tools.redstone.redstonetools.macros.actions.CommandAction;
 import tools.redstone.redstonetools.utils.KeyBindingUtils;
 
 import java.util.ArrayList;
@@ -22,18 +21,34 @@ public class Macro {
     public String name;
     private Key key;
     public boolean enabled;
-    public List<Action> actions;
+    public List<CommandAction> actions;
 
     private final Macro original;
 
-    public Macro(String name, boolean enabled, Key key, List<Action> actions) {
+    public List<String> toStringList() {
+        ArrayList<String> stringList = new ArrayList<>();
+        for (int i = 0; i < actions.size(); i++) {
+            stringList.add(actions.get(i).command);
+        }
+        return stringList;
+    }
+
+    public List<String> fromStringList(ArrayList<String> stringList) {
+        List<CommandAction> newActions = new ArrayList<CommandAction>();
+        for (int i = 0; i < stringList.size(); i++) {
+            newActions.add(new CommandAction(stringList.get(i)));
+        }
+        return stringList;
+    }
+
+    public Macro(String name, boolean enabled, Key key, List<CommandAction> actions) {
         this(name,enabled,key,actions,null);
         keyBinding = new KeyBinding("macro." + System.nanoTime(),-1,"macros");
         registerKeyBinding();
         changeKeyBindingKeyCode();
     }
 
-    public Macro(String name, boolean enabled, Key key, List<Action> actions, Macro original) {
+    public Macro(String name, boolean enabled, Key key, List<CommandAction> actions, Macro original) {
         this.name = name;
         this.enabled = enabled;
         this.key = key;
