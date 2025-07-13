@@ -1,16 +1,13 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.google.auto.service.AutoService;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.sk89q.worldedit.util.Direction;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.serializers.DirectionSerializer;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
@@ -23,17 +20,19 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
+import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.features.commands.argumenthelpers.DirectionArgumentHelper;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
-public class RStackFeature {
+public class RStackFeature extends AbstractFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("rstack")
                 .then(argument("count", IntegerArgumentType.integer())
-                .then(argument("direction", DirectionSerializer.direction())
+                .then(argument("direction", StringArgumentType.string())
                 .then(argument("offset", IntegerArgumentType.integer())
                 .executes(context -> new RStackFeature().execute(context)))))));
 
@@ -41,7 +40,7 @@ public class RStackFeature {
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         int count = IntegerArgumentType.getInteger(context, "count");
-        var direction = DirectionSerializer.getDirection(context, "direction");
+        var direction = DirectionArgumentHelper.getDirection(context, "direction");
         int offset = IntegerArgumentType.getInteger(context, "offset");
         var actor = FabricAdapter.adaptPlayer(context.getSource().getPlayer());
 

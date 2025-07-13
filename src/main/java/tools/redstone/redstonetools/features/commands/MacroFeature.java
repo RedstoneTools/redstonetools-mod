@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.google.auto.service.AutoService;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -8,14 +7,12 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.macros.MacroManager;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
-import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
-public class MacroFeature {
+public class MacroFeature extends AbstractFeature {
     public static void registerCommand() {
         EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("macro")
                 .then(ClientCommandManager.argument("macro", StringArgumentType.string())
@@ -23,7 +20,7 @@ public class MacroFeature {
     }
     protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
         String macro = StringArgumentType.getString(context, "macro");
-        var macroObj = INJECTOR.getInstance(MacroManager.class).getMacro(macro);
+        var macroObj = MacroManager.getMacro(macro);
 
 
         if (macroObj == null) {

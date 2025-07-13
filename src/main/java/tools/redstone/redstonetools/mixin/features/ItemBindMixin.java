@@ -1,13 +1,14 @@
 package tools.redstone.redstonetools.mixin.features;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
@@ -17,10 +18,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.features.commands.ItemBindFeature;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.features.feedback.FeedbackSender;
-
-import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
 
 public abstract class ItemBindMixin {
@@ -64,16 +61,16 @@ public abstract class ItemBindMixin {
 
     @Mixin(ClientPlayNetworkHandler.class)
     private abstract static class PlayerMixin {
-
         @Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
         public void injectCommand(String message, CallbackInfo ci) {
             if (!message.startsWith("/") || !ItemBindFeature.waitingForCommand) return;
 
-            Feedback addCommandFeedback = ItemBindFeature.addCommand(message);
-            if (addCommandFeedback != null) {
-                INJECTOR.getInstance(FeedbackSender.class).sendFeedback(((Entity) ((Object) this)).getCommandSource(MinecraftClient.getInstance().getServer().getWorld(MinecraftClient.getInstance().world.getRegistryKey())),addCommandFeedback);
+	        try {
+		        ItemBindFeature.addCommand(message);
+	        } catch (CommandSyntaxException e) {
+                MinecraftClient.getInstance().player.sendMessage(Text.literal(e.getMessage()), false);
                 ci.cancel();
-            }
+	        }
         }
     }
 }

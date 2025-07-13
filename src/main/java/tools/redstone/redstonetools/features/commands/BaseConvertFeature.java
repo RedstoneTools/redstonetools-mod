@@ -1,18 +1,18 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.google.auto.service.AutoService;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
+import tools.redstone.redstonetools.features.AbstractFeature;
 
 import java.math.BigInteger;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
-public class BaseConvertFeature {
+public class BaseConvertFeature extends AbstractFeature {
 
 	private static final SimpleCommandExceptionType INVALID_NUMBER =
 			new SimpleCommandExceptionType(Text.literal("Invalid number"));

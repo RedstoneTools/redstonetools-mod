@@ -1,26 +1,22 @@
 package tools.redstone.redstonetools.features.toggleable;
 
-import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.arguments.ArgumentType;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.ReflectionUtils;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.RedstoneToolsClient;
-import tools.redstone.redstonetools.features.arguments.Argument;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -31,10 +27,7 @@ import java.util.concurrent.Executors;
 
 import java.util.ArrayList;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
-
-public abstract class ToggleableFeature {
+public abstract class ToggleableFeature extends AbstractFeature {
 
     private static final List<KeyBinding> keyBindings = new ArrayList<>();
 
@@ -46,13 +39,14 @@ public abstract class ToggleableFeature {
             saveConfig();
         });
 
-//        var containsRequiredArguments = ReflectionUtils.getArguments(getClass()).stream()
+        // todo: help
+//        var containsRequiredArguments = FeatureUtils.getArguments(getClass()).stream()
 //                .anyMatch(a -> !a.isOptional());
 //        if (containsRequiredArguments) {
 //            return;
 //        }
 
-        var info = ReflectionUtils.getFeatureInfo(getClass());
+        var info = FeatureUtils.getFeatureInfo(getClass());
         var keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 info.name(),
                 InputUtil.Type.KEYSYM,
@@ -78,43 +72,10 @@ public abstract class ToggleableFeature {
 
     private volatile boolean enabled; // volatile for thread safety
 
-    private final List<Argument<?>> arguments = ReflectionUtils.getArguments(getClass());
+    private final List<ArgumentType<?>> arguments = FeatureUtils.getArguments(getClass());
 
     private final Path configFile = RedstoneToolsClient.CONFIG_DIR
-            .resolve("features").resolve(getID() + ".json");
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-
-//    protected void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
-//        var baseCommand = literal(getCommand())
-//                .executes(this::toggle);
-//
-//        // add option configurations
-//        for (Argument argument : arguments) {
-//            String name = argument.getName();
-//            baseCommand.then(literal(name)
-//                    .executes(context -> {
-//                        Object value = argument.getValue();
-//                        return Feedback.success("Option {} of feature {} is set to: {}", name, getName(), String.valueOf(value)).send(context);
-//                    })
-//                    .then(argument("value", argument.getType()).executes(context -> {
-//                        Object value = context.getArgument("value", argument.getType().getClass());
-//
-//                        argument.setValue(value);
-//
-//                        if (!enabled) {
-//                            enable(context);
-//                        }
-//
-//                        IO_EXECUTOR.execute(this::saveConfig);
-//
-//                        return Feedback.success("Set {} to {} for feature {}", name, value, getName()).send(context);
-//                    }))
-//            );
-//        }
-//
-//        dispatcher.register(baseCommand);
-//    }
+            .resolve("features").resolve(getClass().getName() + ".json");
 
     public boolean isEnabled() {
         return enabled;
@@ -146,7 +107,7 @@ public abstract class ToggleableFeature {
 
     public int enable(ServerCommandSource source) throws CommandSyntaxException {
         enable();
-        Feedback.success("Enabled feature {}", getName()).send(source);
+        source.sendMessage(Text.literal("Enabled feature %s".formatted(getClass().getName())));
         return 0;
     }
 
@@ -161,7 +122,7 @@ public abstract class ToggleableFeature {
 
     public int disable(ServerCommandSource source) throws CommandSyntaxException {
         disable();
-        Feedback.success("Disabled feature {}", getName()).send(source);
+        source.sendMessage(Text.literal("Disabled feature %s".formatted(getClass().getName())));
         return 0;
     }
 
@@ -182,30 +143,32 @@ public abstract class ToggleableFeature {
     public void loadConfig() {
         try {
             boolean enabled = false;
-            if (Files.exists(configFile)) {
-                JsonObject object = GSON.fromJson(new BufferedReader(
-                        new InputStreamReader(Files.newInputStream(configFile), StandardCharsets.UTF_8)),
-                        JsonObject.class);
-
-                enabled = Boolean.parseBoolean(object.get("enabled").getAsString());
-
-                // read options
-                for (Argument argument : arguments) {
-                    if (!object.has(argument.getName()))
-                        continue;
-
-                    String valueString = object.get(argument.getName()).getAsString();
-                    Object value = argument.getType().parse(new StringReader(valueString));
-
-                    argument.setValue(value);
-                }
-            }
-
+//            if (Files.exists(configFile)) {
+//                JsonObject object = GSON.fromJson(new BufferedReader(
+//                        new InputStreamReader(Files.newInputStream(configFile), StandardCharsets.UTF_8)),
+//                        JsonObject.class);
+//
+//                enabled = Boolean.parseBoolean(object.get("enabled").getAsString());
+//
+//                // read options
+//                for (ArgumentType argument : arguments) {
+//                    if (!object.has(argument.getClass().getName()))
+//                        continue;
+//
+//                    String valueString = object.get(argument.getClass().getName()).getAsString();
+//                    Object value = argument.getType().parse(new StringReader(valueString));
+//
+//                    argument.setValue(value);
+//                }
+//            }
+            // todo: maybe later reimplement this. cant right now, i dont know
+            //       what argument.getType() should return and what its used for
             setEnabled(enabled);
 
-            RedstoneToolsClient.LOGGER.info("Loaded configuration for feature " + getID() + " file(" + configFile + ")");
+            // why not just use getClass().getName() instead of getId()??
+            RedstoneToolsClient.LOGGER.info("Loaded configuration for feature " + getClass().getName() + " file(" + configFile + ")");
         } catch (Exception e) {
-            RedstoneToolsClient.LOGGER.error("Failed to load configuration for feature " + getID() + " file(" + configFile + ")");
+            RedstoneToolsClient.LOGGER.error("Failed to load configuration for feature " + getClass().getName() + " file(" + configFile + ")");
             e.printStackTrace();
         }
     }
@@ -223,11 +186,10 @@ public abstract class ToggleableFeature {
             // serialize configuration
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("enabled", Boolean.toString(enabled));
-            for (Argument argument : arguments) {
-                Object value = argument.getValue();
-                String valueSerialized = String.valueOf(value);
+            for (ArgumentType argument : arguments) {
+	            String valueSerialized = String.valueOf(argument);
 
-                jsonObject.addProperty(argument.getName(), valueSerialized);
+                jsonObject.addProperty(argument.getClass().getName(), valueSerialized);
             }
 
             // write json document
@@ -236,9 +198,9 @@ public abstract class ToggleableFeature {
             outputStream.write(json.getBytes(StandardCharsets.UTF_8));
             outputStream.close();
 
-            RedstoneToolsClient.LOGGER.info("Saved configuration for feature " + getID() + " file(" + configFile + ")");
+            RedstoneToolsClient.LOGGER.info("Saved configuration for feature " + getClass().getName() + " file(" + configFile + ")");
         } catch (Exception e) {
-            RedstoneToolsClient.LOGGER.error("Failed to save configuration for feature " + getID() + " file(" + configFile + ")");
+            RedstoneToolsClient.LOGGER.error("Failed to save configuration for feature " + getClass().getName() + " file(" + configFile + ")");
             e.printStackTrace();
         }
     }

@@ -7,12 +7,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rip.hippo.inject.Doctor;
 import rip.hippo.inject.Injector;
+import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.features.commands.*;
+import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
+import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
+import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
+import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 import tools.redstone.redstonetools.macros.Commands;
 import tools.redstone.redstonetools.macros.gui.malilib.InitHandler;
-import tools.redstone.redstonetools.utils.DependencyLookup;
-import tools.redstone.redstonetools.utils.ReflectionUtils;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RedstoneToolsClient implements ClientModInitializer {
 
@@ -20,7 +27,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_VERSION = "v" + FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString();
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("redstonetools");
-    public static final Injector INJECTOR = Doctor.createInjector(ReflectionUtils.getModules());
+    public static final Injector INJECTOR = Doctor.createInjector(FeatureUtils.getModules());
 
     @Override
     public void onInitializeClient() {
@@ -30,7 +37,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
         RedstoneToolsGameRules.register();
 
         // Register features
-//        ReflectionUtils.getFeatures().forEach(feature -> {
+//        FeatureUtils.getFeatures().forEach(feature -> {
 //            LOGGER.trace("Registering feature {}", feature.getClass().getName());
 //
 //            if (feature.requiresWorldEdit() && !DependencyLookup.WORLDEDIT_PRESENT) {
@@ -44,5 +51,4 @@ public class RedstoneToolsClient implements ClientModInitializer {
         InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
         Commands.registerCommands();
     }
-
 }

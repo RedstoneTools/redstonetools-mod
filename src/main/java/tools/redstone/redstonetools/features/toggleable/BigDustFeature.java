@@ -1,16 +1,25 @@
 package tools.redstone.redstonetools.features.toggleable;
 
-import com.google.auto.service.AutoService;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.server.command.ServerCommandSource;
 
-@AutoService(AbstractFeature.class)
-@Feature(name = "Big Dust", description = "Change the size of redstone's hitbox.", command = "bigdust")
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
+
 public class BigDustFeature extends ToggleableFeature {
+    public static void registerCommand() {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("bigdust")
+                        .then(argument("heightInPixels", IntegerArgumentType.integer(1, 16)))
+                .executes(context -> new BigDustFeature().toggle(context))));
+    }
+    public static int heightInPixels;
+    @Override
 
-    public static final Argument<Integer> heightInPixels = Argument.ofType(IntegerArgumentType.integer(1, 16))
-            .withDefault(1);
-
+    public int toggle(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        heightInPixels = IntegerArgumentType.getInteger(context, "heightInPixels");
+        return super.toggle(context);
+    }
 }

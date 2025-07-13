@@ -1,14 +1,12 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.google.auto.service.AutoService;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
+import tools.redstone.redstonetools.features.commands.argumenthelpers.BlockColorArgumentHelper;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.ColoredBlock;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
@@ -28,20 +26,16 @@ import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
-import static tools.redstone.redstonetools.features.arguments.serializers.BlockColorSerializer.blockColor;
 
-public class ColorCodeFeature {
+public class ColorCodeFeature extends AbstractFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("colorcode")
                 .then(argument("color", StringArgumentType.string())
                 .then(argument("onlyColor", StringArgumentType.string()))
                 .executes(ColorCodeFeature::execute))));
     }
-    public static final Argument<BlockColor> color = Argument
-            .ofType(blockColor());
-    public static final Argument<BlockColor> onlyColor = Argument
-            .ofType(blockColor())
-            .withDefault(null);
+    public static BlockColor color;
+    public static BlockColor onlyColor;
 
     private static boolean shouldBeColored(World world, BlockVector3 pos, BlockColor onlyColor) {
         var state = world.getBlock(pos);
@@ -70,15 +64,10 @@ public class ColorCodeFeature {
     }
 
     protected static int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ColorCodeFeature.color = BlockColorArgumentHelper.getBlockColor(context, "color");
         var player = context.getSource().getPlayer();
 
-        var selectionOrFeedback = WorldEditUtils.getSelection(player);
-        if (selectionOrFeedback.right().isPresent()) {
-            throw new SimpleCommandExceptionType(Text.literal("No selection!")).create();
-        }
-
-        assert selectionOrFeedback.left().isPresent();
-        var selection = selectionOrFeedback.left().get();
+        var selection = WorldEditUtils.getSelection(player);
 
         var worldEdit = WorldEdit.getInstance();
 	    assert player != null;
@@ -93,7 +82,7 @@ public class ColorCodeFeature {
                     new Mask() {
                         @Override
                         public boolean test(BlockVector3 vector) {
-                            return shouldBeColored(world, vector, onlyColor.getValue());
+                            return shouldBeColored(world, vector, onlyColor);
                         }
 
                         @Nullable
@@ -105,7 +94,7 @@ public class ColorCodeFeature {
                     new com.sk89q.worldedit.function.pattern.Pattern() {
                         @Override
                         public BaseBlock applyBlock(BlockVector3 position) {
-                            return getColoredBlock(world, position, color.getValue());
+                            return getColoredBlock(world, position, color);
                         }
                     }
             );
@@ -116,7 +105,7 @@ public class ColorCodeFeature {
             playerSession.remember(session);
 
 
-            context.getSource().sendMessage(Text.literal("Successfully colored %s block(s) %s.".formatted(blocksColored, color.getValue())));
+            context.getSource().sendMessage(Text.literal("Successfully colored %s block(s) %s.".formatted(blocksColored, color)));
         } catch (Exception e) {
             throw new SimpleCommandExceptionType(Text.literal("An error occurred while coloring the block(s).")).create();
         }

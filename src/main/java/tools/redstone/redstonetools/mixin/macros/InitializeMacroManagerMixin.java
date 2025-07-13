@@ -8,11 +8,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.macros.MacroManager;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 
 @Mixin(MinecraftClient.class)
 public class InitializeMacroManagerMixin {
     @Inject(method = "<init>", at = @At("TAIL"))
     public void registerMacros(RunArgs args, CallbackInfo ci){
-        RedstoneToolsClient.INJECTOR.getInstance(MacroManager.class);// should register macro keybinds
+        FeatureUtils.getFeature(MacroManager.class);// should register macro keybinds
     }
 }

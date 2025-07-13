@@ -1,35 +1,39 @@
 package tools.redstone.redstonetools.features.toggleable;
 
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.utils.ItemUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 
-import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
+import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class AirPlaceFeature extends ToggleableFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("airplace")
-                .executes(context -> new AirPlaceFeature().toggle(context))));
+                .then(argument("reach", FloatArgumentType.floatArg(3.0f))
+                .executes(context -> new AirPlaceFeature().toggle(context)))));
     }
+
+    @Override
+    public int toggle(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        AirPlaceFeature.reach = FloatArgumentType.getFloat(context, "reach");
+        return toggle(context.getSource());
+    }
+
+
+    public static float reach;
 
     public static boolean canAirPlace(PlayerEntity player) {
         ItemStack itemStack = ItemUtils.getMainItem(player);
@@ -53,75 +57,12 @@ public class AirPlaceFeature extends ToggleableFeature {
             return null;
         ClientPlayerEntity player = client.player;
 
-        float reach = AirPlaceFeature.reach.getValue();
+        float reach = AirPlaceFeature.reach;
         return player.raycast(reach, 0, false);
     }
 
     public static BlockHitResult findAirPlaceBlockHit(PlayerEntity playerEntity) {
-        var hit = RaycastUtils.rayCastFromEye(playerEntity, reach.getValue());
+        var hit = RaycastUtils.rayCastFromEye(playerEntity, reach);
         return new BlockHitResult(hit.getPos(), hit.getSide(), hit.getBlockPos(), false);
     }
-
-    public static final Argument<Float> reach = Argument
-            .ofType(floatArg(3.0f))
-            .withDefault(5.0f);
-
-    public static final Argument<Boolean> showOutline = Argument
-            .ofType(BoolArgumentType.bool())
-            .withDefault(true);
-
-    private static final BlockState FULL_BLOCK_STATE = Blocks.BEDROCK.getDefaultState();
-
-    {
-        // register ghost block renderer
-        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, blockOutlineContext) -> {
-            if (!isEnabled())
-                return true;
-            if (showOutline.getValue() != Boolean.TRUE)
-                return true;
-
-            MinecraftClient client = MinecraftClient.getInstance();
-            if (client.player == null || client.interactionManager == null)
-                return true;
-            if (blockOutlineContext.getType() != HitResult.Type.MISS)
-                return true;
-
-            if (!canAirPlace(client.player))
-                return true;
-
-            HitResult hitResult = findAirPlacePosition(client);
-            if (hitResult == null)
-                return true;
-            BlockPos blockPos = new BlockPos((int)hitResult.getPos().x, (int)hitResult.getPos().y, (int)hitResult.getPos().z);
-
-            BlockState blockState = ItemUtils.getUseState(client.player,
-                    ItemUtils.getMainItem(client.player),
-                    reach.getValue());
-            if (blockState == null)
-                return true;
-
-            /* render block outline */
-            Camera camera = client.gameRenderer.getCamera();
-            Vec3d camPos = camera.getPos();
-
-            try {
-                VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.getLines());
-
-                // FIXME
-//                ((WorldRendererAccessor)context.worldRenderer()).invokeDrawBlockOutline(
-//                        context.matrixStack(),
-//                        consumer,
-//                        client.player,
-//                        camPos.x, camPos.y, camPos.z,
-//                        blockPos,
-//                        blockState
-//                );
-            } catch (Throwable t) {
-                throw new IllegalStateException(t);
-            }
-
-            return true;
-        });
-    }
-
 }

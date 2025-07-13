@@ -1,7 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.google.auto.service.AutoService;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -10,8 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.serializers.SignalBlockSerializer;
+import tools.redstone.redstonetools.features.commands.argumenthelpers.SignalBlockArgumentHelper;
 import tools.redstone.redstonetools.utils.SignalBlock;
 
 import java.util.Random;
@@ -19,17 +18,17 @@ import java.util.Random;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class SignalStrengthBlockFeature {
+public class SignalStrengthBlockFeature extends AbstractFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("ssb")
                 .then(argument("signalStrength", IntegerArgumentType.integer())
-                .then(argument("block", SignalBlockSerializer.signalBlock())
+                .then(argument("block", StringArgumentType.string())
                 .executes(context -> new SignalStrengthBlockFeature().execute(context))))));
     }
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         int signalStrength = IntegerArgumentType.getInteger(context, "signalStrength");
-        SignalBlock block = SignalBlockSerializer.getSignalBlock(context, "block");
+        SignalBlock block = SignalBlockArgumentHelper.getSignalBlock(context, "block");
         try {
             ItemStack itemStack = block.getItemStack(signalStrength);
             context.getSource().getPlayer().giveItemStack(itemStack);

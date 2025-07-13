@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
@@ -12,7 +13,7 @@ import net.minecraft.util.hit.HitResult;
 
 import javax.annotation.Nullable;
 
-public abstract class BlockRaycastFeature {
+public abstract class BlockRaycastFeature extends AbstractFeature {
     protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) {
@@ -39,7 +40,5 @@ public abstract class BlockRaycastFeature {
         return true;
     }
 
-	protected int execute(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
-		return 0;
-	}
+	protected abstract int execute(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
 }

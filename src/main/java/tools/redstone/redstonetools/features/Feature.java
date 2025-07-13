@@ -8,9 +8,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Feature {
-    String id() default "";
     String name();
-    String description();
     String command();
     boolean worldedit() default false;
 }

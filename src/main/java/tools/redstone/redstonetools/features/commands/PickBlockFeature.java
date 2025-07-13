@@ -3,10 +3,8 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.datafixers.util.Either;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -22,13 +20,7 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
             throw new SimpleCommandExceptionType(Text.literal("Failed to get player.")).create();
         }
 
-        var stackOrFeedback = getItemStack(context, blockInfo);
-        if (stackOrFeedback.right().isPresent()) {
-            throw new SimpleCommandExceptionType(Text.literal("An error has occurred.")).create();
-        }
-
-        assert stackOrFeedback.left().isPresent();
-        var stack = stackOrFeedback.left().get();
+        var stack = getItemStack(context, blockInfo);
 
         PlayerInventory playerInventory = client.player.getInventory();
         addPickBlock(playerInventory, stack);
@@ -60,7 +52,5 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
         }
     }
 
-	protected Either<ItemStack, Feedback> getItemStack(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
-		return null;
-	}
+	protected abstract ItemStack getItemStack(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
 }

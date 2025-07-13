@@ -1,11 +1,9 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.google.auto.service.AutoService;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.WorldEdit;
@@ -24,20 +22,14 @@ import java.util.List;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class MinSelectionFeature {
+public class MinSelectionFeature extends AbstractFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("minsel")
                 .executes(context -> new MinSelectionFeature().execute(context))));
     }
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var selectionOrFeedback = WorldEditUtils.getSelection(context.getSource().getPlayer());
-        if (selectionOrFeedback.right().isPresent()) {
-            throw new SimpleCommandExceptionType(Text.literal("An error has occurred.")).create();
-        }
-
-        assert selectionOrFeedback.left().isPresent();
-        var selection = selectionOrFeedback.left().get();
+        var selection = WorldEditUtils.getSelection(context.getSource().getPlayer());
         var selectionWorld = selection.getWorld();
 
         var actor = FabricAdapter.adaptPlayer(context.getSource().getPlayer());

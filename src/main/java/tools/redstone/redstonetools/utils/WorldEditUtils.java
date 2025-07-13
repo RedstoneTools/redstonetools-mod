@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.utils;
 
-import tools.redstone.redstonetools.features.feedback.Feedback;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.datafixers.util.Either;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.WorldEdit;
@@ -9,6 +10,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 
 import java.util.function.Consumer;
 
@@ -47,7 +49,7 @@ public class WorldEditUtils {
         }
     }
 
-    public static Either<Region, Feedback> getSelection(ServerPlayerEntity player) {
+    public static Region getSelection(ServerPlayerEntity player) throws CommandSyntaxException {
         if (!DependencyLookup.WORLDEDIT_PRESENT) {
             throw new IllegalStateException("WorldEdit is not loaded.");
         }
@@ -61,9 +63,9 @@ public class WorldEditUtils {
         var selectionWorld = localSession.getSelectionWorld();
 
         try {
-            return Either.left(localSession.getSelection(selectionWorld));
+            return localSession.getSelection(selectionWorld);
         } catch (IncompleteRegionException ex) {
-            return Either.right(Feedback.invalidUsage("Please make a selection with WorldEdit first"));
+            throw new SimpleCommandExceptionType(Text.literal("Please make a selection with WorldEdit first")).create();
         }
     }
 }

@@ -1,11 +1,12 @@
 package tools.redstone.redstonetools.features.toggleable;
 
-import com.google.auto.service.AutoService;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-@AutoService(AbstractFeature.class)
-@Feature(name = "Auto Dust", description = "Automatically places redstone on top of colored blocks.", command = "autodust")
+import static net.minecraft.server.command.CommandManager.literal;
+
 public class AutoDustFeature extends ToggleableFeature {
-
+	public static void registerCommand() {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("autodust")
+				.executes(context -> new AutoDustFeature().toggle(context))));
+	}
 }

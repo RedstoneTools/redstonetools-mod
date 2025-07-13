@@ -2,6 +2,7 @@ package tools.redstone.redstonetools.macros;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
+import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.macros.actions.Action;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
 
@@ -18,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
-public class MacroManager {
-    private final Path macrosFilePath;
-    private final List<Macro> macros;
+public class MacroManager extends AbstractFeature {
+    private static Path macrosFilePath;
+    private static List<Macro> macros;
 
     public MacroManager() {
         macrosFilePath = MinecraftClient.getInstance().runDirectory.toPath()
@@ -49,11 +50,11 @@ public class MacroManager {
         }
     }
 
-    public List<Macro> getMacros() {
+    public static List<Macro> getMacros() {
         return macros;
     }
 
-    public Macro getMacro(String name) {
+    public static Macro getMacro(String name) {
         for (Macro macro : macros) {
             if (macro.name.equals(name)) {
                 return macro;
@@ -63,19 +64,19 @@ public class MacroManager {
         return null;
     }
 
-    public void addMacro(Macro macro) {
+    public static void addMacro(Macro macro) {
         macros.add(macro);
 
         saveChanges();
     }
 
-    public void removeMacro(Macro macro) {
+    public static void removeMacro(Macro macro) {
         macros.remove(macro);
 
         saveChanges();
     }
 
-    public void saveChanges() {
+    public static void saveChanges() {
         // Write %appdata%/.minecraft/config/redstonetools/macros.json
         try {
             Files.createDirectories(macrosFilePath.getParent());
@@ -95,7 +96,7 @@ public class MacroManager {
         }
     }
 
-    private JsonObject getMacroJson(Macro macro) {
+    private static JsonObject getMacroJson(Macro macro) {
         var actionsJson = Json.createArrayBuilder();
         for (Action action : macro.actions) {
             actionsJson.add(getActionJson(action));
@@ -109,7 +110,7 @@ public class MacroManager {
                 .build();
     }
 
-    private JsonObject getActionJson(Action action) {
+    private static JsonObject getActionJson(Action action) {
         if (action instanceof CommandAction commandAction) {
             return Json.createObjectBuilder()
                     .add("type", "command")
@@ -120,22 +121,22 @@ public class MacroManager {
         throw new RuntimeException("Unknown action type: " + action.getClass().getName());
     }
 
-    private List<Macro> getDefaultMacros() {
+    private static List<Macro> getDefaultMacros() {
         return List.of(
                 createCommandMacro("redstoner", new String[] {
-                        "/gamerule doTileDrops false",
-                        "/gamerule doTraderSpawning false",
-                        "/gamerule doWeatherCycle false",
-                        "/gamerule doDaylightCycle false",
-                        "/gamerule doMobSpawning false",
-                        "/gamerule doContainerDrops false",
-                        "/time set noon",
-                        "/weather clear"
+                        "gamerule doTileDrops false",
+                        "gamerule doTraderSpawning false",
+                        "gamerule doWeatherCycle false",
+                        "gamerule doDaylightCycle false",
+                        "gamerule doMobSpawning false",
+                        "gamerule doContainerDrops false",
+                        "time set noon",
+                        "weather clear"
                 })
         );
     }
 
-    private Macro createCommandMacro(String name, String[] commands) {
+    private static Macro createCommandMacro(String name, String[] commands) {
         var actions = new Action[commands.length];
         for (int i = 0; i < commands.length; i++) {
             actions[i] = new CommandAction(commands[i]);
@@ -144,7 +145,7 @@ public class MacroManager {
         return new Macro(name, true, InputUtil.UNKNOWN_KEY, List.of(actions));
     }
 
-    private List<Macro> getMacrosFromJson(JsonArray macrosJson) {
+    private static List<Macro> getMacrosFromJson(JsonArray macrosJson) {
         List<Macro> macros = new ArrayList<>();
 
         for (int i = 0; i < macrosJson.size(); i++) {
@@ -154,7 +155,7 @@ public class MacroManager {
         return macros;
     }
 
-    private Macro getMacroFromJson(JsonObject macroJson) {
+    private static Macro getMacroFromJson(JsonObject macroJson) {
         var name = macroJson.getString("name");
         var enabled = macroJson.getBoolean("enabled");
         var key = macroJson.getString("key");
@@ -163,7 +164,7 @@ public class MacroManager {
         return new Macro(name, enabled, InputUtil.fromTranslationKey(key), actions);
     }
 
-    private List<Action> getActionsFromJson(JsonArray actionsJson) {
+    private static List<Action> getActionsFromJson(JsonArray actionsJson) {
         List<Action> actions = new ArrayList<>();
 
         for (int i = 0; i < actionsJson.size(); i++) {
@@ -173,7 +174,7 @@ public class MacroManager {
         return actions;
     }
 
-    private Action getActionFromJson(JsonObject actionJson) {
+    private static Action getActionFromJson(JsonObject actionJson) {
         var type = actionJson.getString("type");
 
         if ("command".equals(type)) {
@@ -183,7 +184,7 @@ public class MacroManager {
         throw new RuntimeException("Unknown action type: " + type);
     }
 
-    public void updateMacroKeys() {
+    public static void updateMacroKeys() {
         for (Macro macro : macros) {
             macro.changeKeyBindingKeyCode();
         }

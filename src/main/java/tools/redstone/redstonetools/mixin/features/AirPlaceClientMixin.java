@@ -12,14 +12,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 
 @Mixin(MinecraftClient.class)
 public class AirPlaceClientMixin {
-    @Unique
-    private final AirPlaceFeature airPlaceFeature = RedstoneToolsClient.INJECTOR.getInstance(AirPlaceFeature.class);
-
+    private final AirPlaceFeature airPlaceFeature = FeatureUtils.getFeature(AirPlaceFeature.class);
     @Shadow
     public HitResult crosshairTarget;
 
@@ -29,7 +27,7 @@ public class AirPlaceClientMixin {
             return;
         }
 
-        crosshairTarget = AirPlaceFeature.findAirPlaceBlockHit(getPlayer());
+        crosshairTarget = airPlaceFeature.findAirPlaceBlockHit(getPlayer());
     }
 
     @Inject(method = "doAttack", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
@@ -39,7 +37,7 @@ public class AirPlaceClientMixin {
         }
 
         // Call interactionManager directly because the block is air, with which the player cannot interact
-        var hit = AirPlaceFeature.findAirPlaceBlockHit(getPlayer());
+        var hit = airPlaceFeature.findAirPlaceBlockHit(getPlayer());
         getInteractionManager().attackBlock(hit.getBlockPos(), hit.getSide());
     }
 

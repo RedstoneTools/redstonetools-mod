@@ -1,64 +1,67 @@
 package tools.redstone.redstonetools.utils;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import rip.hippo.inject.DoctorModule;
-import sun.misc.Unsafe;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
+import tools.redstone.redstonetools.features.commands.*;
+import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
+import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
+import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
+import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
+import tools.redstone.redstonetools.macros.MacroManager;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ReflectionUtils {
+public class FeatureUtils {
     private static final Logger LOGGER = LogManager.getLogger();
     private static DoctorModule[] modules;
-    private static Set<? extends AbstractFeature> features;
+    private static Set<AbstractFeature> features;
 
-    private ReflectionUtils() {
+    private FeatureUtils() {
         throw new IllegalStateException("Utility class");
     }
 
-    private static final MethodHandles.Lookup INTERNAL_LOOKUP;
-    private static final Unsafe unsafe;
-
-    static {
-        try {
-            Field f = Unsafe.class.getDeclaredField("theUnsafe");
-            f.setAccessible(true);
-            unsafe = (Unsafe) f.get(null);
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw new ExceptionInInitializerError(t);
+    public static <T> T getFeature(Class<T> clazz) {
+        if (features == null) {
+            Set<AbstractFeature> FEATURES = new HashSet<>();
+            FEATURES.add(new BigDustFeature());
+            FEATURES.add(new AutoDustFeature());
+            FEATURES.add(new AirPlaceFeature());
+            FEATURES.add(new SignalStrengthBlockFeature());
+            FEATURES.add(new RStackFeature());
+            FEATURES.add(new QuickTpFeature());
+            FEATURES.add(new MinSelectionFeature());
+            FEATURES.add(new MacroFeature());
+            FEATURES.add(new ItemBindFeature());
+            FEATURES.add(new CopyStateFeature());
+            FEATURES.add(new ColoredFeature());
+            FEATURES.add(new ColorCodeFeature());
+            FEATURES.add(new BaseConvertFeature());
+            FEATURES.add(new UpdateFeature());
+            if (clazz == MacroManager.class) FEATURES.add(new MacroManager());
+            features = FEATURES;
         }
+        if (clazz == MacroManager.class) features.add(new MacroManager());
+        Optional<T> found = features.stream()
+                .filter(clazz::isInstance)
+                .map(clazz::cast)
+                .findFirst();
 
-        try {
-            // get lookup
-            Field field = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
-            MethodHandles.publicLookup();
-            INTERNAL_LOOKUP = (MethodHandles.Lookup)
-                    unsafe.getObject(
-                            unsafe.staticFieldBase(field),
-                            unsafe.staticFieldOffset(field)
-                    );
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ExceptionInInitializerError(e);
+        if (found.isEmpty()) {
+            System.out.println("Add this one: " + clazz.getName());
+            throw new RuntimeException();
         }
+        return found.orElseThrow();
     }
-
-    public static MethodHandles.Lookup getInternalLookup() {
-        return INTERNAL_LOOKUP;
-    }
-
     public static DoctorModule[] getModules() {
         if (modules == null) {
             try {
@@ -71,19 +74,8 @@ public class ReflectionUtils {
         return modules;
     }
 
-    public static Set<? extends AbstractFeature> getFeatures() {
-        if (features == null) {
-            try {
-                features = serviceLoad(AbstractFeature.class);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to load features", e);
-            }
-        }
-        return features;
-    }
-
     private static <T> Set<? extends T> serviceLoad(Class<T> clazz) throws IOException {
-        ClassLoader cl = ReflectionUtils.class.getClassLoader();
+        ClassLoader cl = FeatureUtils.class.getClassLoader();
         Enumeration<URL> serviceFiles = cl.getResources("META-INF/services/" + clazz.getName());
         Set<String> classNames = new HashSet<>();
         while (serviceFiles.hasMoreElements()) {
@@ -94,7 +86,7 @@ public class ReflectionUtils {
         }
         return classNames.stream()
                 .filter(it -> !it.isEmpty() && !it.isBlank())
-                .map(ReflectionUtils::loadClass)
+                .map(FeatureUtils::loadClass)
                 .filter(Objects::nonNull)
                 .filter(clazz::isAssignableFrom)
                 .map(it -> {
@@ -120,9 +112,9 @@ public class ReflectionUtils {
         return null;
     }
 
-    public static List<Argument<?>> getArguments(Class<? extends AbstractFeature> featureClass) {
+    public static List<ArgumentType<?>> getArguments(Class<? extends AbstractFeature> featureClass) {
         return Arrays.stream(featureClass.getFields())
-                .filter(field -> Argument.class.isAssignableFrom(field.getType()))
+                .filter(field -> ArgumentType.class.isAssignableFrom(field.getType()))
                 .map(field -> {
                     if (!Modifier.isPublic(field.getModifiers())
                             || !Modifier.isStatic(field.getModifiers())
@@ -131,9 +123,7 @@ public class ReflectionUtils {
                     }
 
                     try {
-                        var argument = (Argument<?>) field.get(null);
-
-                        return argument.ensureNamed(field.getName());
+	                    return (ArgumentType<?>) field.get(null);
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException("Failed to get value of field " + field.getName(), e);
                     }

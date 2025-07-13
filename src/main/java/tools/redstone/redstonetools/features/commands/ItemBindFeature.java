@@ -1,9 +1,9 @@
 package tools.redstone.redstonetools.features.commands;
 
 
-import com.google.auto.service.AutoService;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -13,17 +13,14 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
-import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.ItemUtils;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-@Feature(command = "itembind", description = "Allows you to bind command to a specific item", name = "Item Bind")
-public class ItemBindFeature {
+public class ItemBindFeature extends AbstractFeature {
 	public static void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("update")
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("itembind")
 				.executes(context -> new ItemBindFeature().execute(context))));
 	}
     public static boolean waitingForCommand = false;
@@ -38,17 +35,17 @@ public class ItemBindFeature {
         return 1;
     }
 
-    public static Feedback addCommand(String command) {
-        if (!waitingForCommand || MinecraftClient.getInstance().getServer() == null) return null;
+    public static void addCommand(String command) throws CommandSyntaxException {
+        if (!waitingForCommand || MinecraftClient.getInstance().getServer() == null) return;
 
         if (player == null || MinecraftClient.getInstance().getServer().getPlayerManager().getPlayer(player.getUuid()) != player) {
             waitingForCommand = false;
-            return null;
+            return;
         }
 
         ItemStack mainHandStack = player.getMainHandStack();
         if (mainHandStack == null || mainHandStack.getItem() == Items.AIR) {
-            return Feedback.error("You need to be holding an item!");
+            throw new SimpleCommandExceptionType(Text.literal("You need to be holding an item!")).create();
         }
 
         MinecraftClient client = MinecraftClient.getInstance();
@@ -64,6 +61,7 @@ public class ItemBindFeature {
 
         waitingForCommand = false;
 
-        return Feedback.success("Successfully bound command: '{}' to this item ({})!", command, mainHandStack.getItem());
+		player.sendMessage(Text.literal("Successfully bound command: '%s' to this item (%s)!".formatted(command, mainHandStack.getItem())));
+
     }
 }
