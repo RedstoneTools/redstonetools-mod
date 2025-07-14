@@ -9,10 +9,13 @@ import org.slf4j.LoggerFactory;
 import rip.hippo.inject.Doctor;
 import rip.hippo.inject.Injector;
 import tools.redstone.redstonetools.macros.Commands;
+import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.gui.malilib.InitHandler;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RedstoneToolsClient implements ClientModInitializer {
 
@@ -20,7 +23,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
     public static final String MOD_VERSION = "v" + FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString();
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("redstonetools");
-    public static final Injector INJECTOR = Doctor.createInjector(FeatureUtils.getModules());
+    public static final List<Macro> MACRO_CONFIGS = new ArrayList<Macro>();
 
     @Override
     public void onInitializeClient() {

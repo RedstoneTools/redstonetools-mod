@@ -1,5 +1,8 @@
 package tools.redstone.redstonetools.macros;
 
+import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.gui.GuiModConfigs;
+import fi.dy.masa.malilib.config.options.ConfigStringList;
 import tools.redstone.redstonetools.macros.actions.Action;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.option.KeyBinding;
@@ -8,11 +11,11 @@ import net.minecraft.client.util.InputUtil.Key;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
 import tools.redstone.redstonetools.utils.KeyBindingUtils;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Macro {
-
     public static Macro buildEmpty() {
         return new Macro("",true,InputUtil.UNKNOWN_KEY,new ArrayList<>());
     }
@@ -22,23 +25,45 @@ public class Macro {
     private Key key;
     public boolean enabled;
     public List<CommandAction> actions;
+    List<String> actionsAsStringList = new AbstractList<String>() {
+        @Override
+        public String get(int index) {
+            return actions.get(index).command;
+        }
+        @Override
+        public String set(int index, String element) {
+            CommandAction action = actions.get(index);
+            String old = action.command;
+            action.command = element;
+            return old;
+        }
+        @Override
+        public int size() {
+            return actions.size();
+        }
+        @Override
+        public void add(int index, String element) {
+            actions.add(index, new CommandAction(element));
+        }
+        @Override
+        public String remove(int index) {
+            String old = actions.get(index).command;
+            actions.remove(index);
+            return old;
+        }
+    };
+
+    public final ConfigStringList config;
+    public final GuiModConfigs configGui;
 
     private final Macro original;
 
-    public List<String> toStringList() {
-        ArrayList<String> stringList = new ArrayList<>();
-        for (int i = 0; i < actions.size(); i++) {
-            stringList.add(actions.get(i).command);
-        }
-        return stringList;
-    }
-
-    public List<String> fromStringList(ArrayList<String> stringList) {
+    public void fromStringList(List<String> stringList) {
         List<CommandAction> newActions = new ArrayList<CommandAction>();
-        for (int i = 0; i < stringList.size(); i++) {
-            newActions.add(new CommandAction(stringList.get(i)));
-        }
-        return stringList;
+	    for (String s : stringList) {
+		    newActions.add(new CommandAction(s));
+	    }
+        actions = newActions;
     }
 
     public Macro(String name, boolean enabled, Key key, List<CommandAction> actions) {
@@ -54,6 +79,8 @@ public class Macro {
         this.key = key;
         this.actions = actions;
         this.original = original;
+	    this.config = new ConfigStringList(this.name, ImmutableList.copyOf(actionsAsStringList));
+        this.configGui = new GuiModConfigs("redstonetools", null, false, this.name);
     }
 
     public void registerKeyBinding() {
@@ -69,6 +96,7 @@ public class Macro {
     }
 
     public void run() {
+        this.fromStringList(config.getStrings());
         if (!enabled) {
             return;
         }
@@ -145,5 +173,4 @@ public class Macro {
 
         return super.equals(obj);
     }
-
 }
