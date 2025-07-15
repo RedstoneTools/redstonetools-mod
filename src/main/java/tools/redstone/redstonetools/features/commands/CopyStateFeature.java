@@ -41,8 +41,7 @@ public class CopyStateFeature extends PickBlockFeature {
             );
         }
 
-        itemStack = addBlockStateNbt(itemStack, blockInfo.state);
-        return itemStack;
+        return addBlockStateNbt(itemStack, blockInfo.state);
     }
 
     private ItemStack addBlockStateNbt(ItemStack itemStack, BlockState blockState) {
