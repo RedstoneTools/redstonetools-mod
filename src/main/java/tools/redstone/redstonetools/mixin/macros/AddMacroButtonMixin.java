@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.mixin.macros;
 
-import fi.dy.masa.malilib.gui.GuiBase;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.ControlsOptionsScreen;
@@ -24,15 +23,7 @@ public abstract class AddMacroButtonMixin extends GameOptionsScreen {
     @Inject(method = "<init>", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
         this.addDrawableChild(new ButtonWidget.Builder(Text.of("Macros..."), button -> {
-            GuiBase.openGui(new MacrosScreen(MinecraftClient.getInstance().currentScreen, MacroManager.getMacros()));
+            MinecraftClient.getInstance().setScreen(new MacrosScreen(MinecraftClient.getInstance().currentScreen, MacroManager.getMacros()));
         }).dimensions(this.width / 2 + 5, this.height / 6 + 36, 150, 20).build());
     }
-    /*
-    @Inject(method = "init", at = @At("TAIL"))
-    public void init(CallbackInfo ci) {
-        this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height / 6 + 36, 150, 20, Text.of("Macros..."), (button) -> {
-            this.client.setScreen(new MacroSelectScreen(this,super.gameOptions,Text.of("Macros")));
-        }));
-    }
-     */
 }

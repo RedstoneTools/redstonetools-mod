@@ -1,113 +1,109 @@
 package tools.redstone.redstonetools.macros.gui.malilib;
 
-import fi.dy.masa.malilib.gui.GuiStringListEdit;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.EditBoxWidget;
+import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.macros.Macro;
+import tools.redstone.redstonetools.macros.MacroManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MacrosScreen extends Screen {
-	private final Screen parent;
-	private final List<Macro> macros;
-	private List<EditBoxWidget> editBoxWidgets = new ArrayList<>();
+    private final Screen parent;
+    private final List<Macro> macros;
 
-	public MacrosScreen(Screen parent, List<Macro> macros) {
-		super(Text.literal("Macros"));
-		this.parent = parent;
-		this.macros = macros;
-	}
+    private MacroListWidget listWidget;
+    private ButtonWidget addButton;
 
-	@Override
-	protected void init() {
-		this.editBoxWidgets = new ArrayList<>();
-		super.init();
-		this.clearChildren();
+    public MacrosScreen(Screen parent, List<Macro> macros) {
+        super(Text.literal("Macros"));
+        this.parent = parent;
+        this.macros = macros;
+    }
 
-		int y = 20;
-		for (int i = 0; i < macros.size(); i++) {
-			final int idx = i;
-			this.editBoxWidgets.add(new EditBoxWidget(this.textRenderer, 140, y, 120, 20, Text.literal("."), Text.literal(macros.get(idx).name)));
-			this.addDrawableChild(
-					ButtonWidget.builder(Text.literal(macros.get(idx).name), btn -> openMacroEditor(macros.get(idx)))
-							.dimensions(10, y, 120, 20)
-							.build()
-			);
-			this.addDrawableChild(editBoxWidgets.get(idx)
-			);
-			this.addDrawableChild(
-					ButtonWidget.builder(Text.literal("–"), btn -> {
-								macros.remove(idx);
-								this.init();
-							})
-							.dimensions(270, y, 20, 20)
-							.build()
-			);
-			y += 24;
-		}
+    @Override
+    protected void init() {
+        super.init();
 
-		this.addDrawableChild(
-				ButtonWidget.builder(Text.literal("+ New Macro"), btn -> {
-							macros.add(Macro.buildEmpty());
-							this.init();
-						})
-						.dimensions(10, y, 120, 20)
-						.build()
-		);
+        int topMargin = 60;
+        int bottomMargin = 30;
+        int rowHeight = 20;
 
-		this.addDrawableChild(
-				ButtonWidget.builder(Text.literal("Done"), btn -> {
-							for (Macro macro: macros) {
-								if (macro.name.isEmpty()) {
-									// i wanna show a notification idk how though
-									return;
-								}
-							}
-							MinecraftClient.getInstance().setScreen(parent);
-						})
-						.dimensions(10, this.height - 30, 100, 20)
-						.build()
-		);
-	}
-	private void openMacroEditor(Macro macro) {
-		MinecraftClient.getInstance().setScreen(
-				new GuiStringListEdit(
-						macro.config, macro.configGui, null, this
-				)
-		);
-	}
+        int listWidth = this.width - 20;
+        int listHeight = this.height - topMargin - bottomMargin;
 
-	@Override
-	public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-		int idx = 0;
-		for (Macro macro : macros) {
-			if (!macro.name.equals(editBoxWidgets.get(idx).getText())) {
-				if (editBoxWidgets.get(idx).getText().isEmpty()) {
-//					editBoxWidgets.get(idx).setText(macro.name);
-					// TODO: something is horribly wrong. its hard to explain
-					continue;
-				}
-				String stripped = editBoxWidgets.get(idx).getText();
-				stripped.replace("\n", "");
-				macro.name = stripped;
-				this.init();
-			}
-			idx++;
-		}
-		this.renderBackground(drawContext, mouseX, mouseY, delta);
-		super.render(drawContext, mouseX, mouseY, delta);
-		drawContext.drawText(
-				this.textRenderer,
-				this.title,
-				this.width / 2,
-				6,
-				2147483647,
-				false
-		);
-	}
+        listWidget = new MacroListWidget(this.client, listWidth, listHeight, topMargin, rowHeight);
+        listWidget.setPosition(10, topMargin);
+
+        macros.forEach(macro -> listWidget.addMacro(new MacroEntry(this, macro)));
+        this.addSelectableChild(listWidget);
+
+        int btnWidth = 120;
+        int btnY = 25; // near top
+        addButton = ButtonWidget.builder(Text.literal("Add Macro"), btn -> {
+            Macro m = Macro.buildEmpty();
+            macros.add(m);
+            listWidget.addMacro(new MacroEntry(this, m));
+            openEditor(m, true);
+        }).dimensions(this.width / 2 - btnWidth / 2, btnY, btnWidth, 20).build();
+        this.addDrawableChild(addButton);
+        this.addSelectableChild(addButton);
+
+        ButtonWidget backButton = ButtonWidget.builder(Text.literal("Back"), btn -> {
+            this.close();
+        }).dimensions(10, btnY, 60, 20).build();
+        this.addDrawableChild(backButton);
+        this.addSelectableChild(backButton);
+    }
+
+    public void openEditor(Macro macro, boolean isNew) {
+        this.client.setScreen(new MacroEditScreen(this, macro, isNew));
+    }
+
+    public void deleteMacro(Macro macro, MacroEntry entry) {
+        macro.unregisterKeyBinding();
+        macros.remove(macro);
+        if (entry != null) {
+            listWidget.removeMacro(entry);
+        }
+        MacroManager.saveChanges();
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        MacroManager.saveChanges();
+        MacroManager.updateMacroKeys();
+        this.client.setScreen(parent);
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        this.renderBackground(context, mouseX, mouseY, delta);
+        listWidget.render(context, mouseX, mouseY, delta);
+        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 12, 0xffffff);
+        super.render(context, mouseX, mouseY, delta);
+    }
+
+    private static class MacroListWidget extends ElementListWidget<MacroEntry> {
+        public MacroListWidget(MinecraftClient mc, int width, int height, int y, int itemHeight) {
+            super(mc, width, height, y, itemHeight);
+        }
+
+        @Override
+        public int getRowWidth() {
+            return this.width - 20;
+        }
+
+        public void addMacro(MacroEntry entry) {
+            this.addEntry(entry);
+        }
+
+        public void removeMacro(MacroEntry entry) {
+            this.removeEntry(entry);
+        }
+    }
 }

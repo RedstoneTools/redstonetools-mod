@@ -2,8 +2,8 @@ package tools.redstone.redstonetools.macros;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.macros.actions.Action;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
 
 import javax.inject.Singleton;
@@ -64,6 +64,14 @@ public class MacroManager extends AbstractFeature {
         return null;
     }
 
+    public static boolean nameExists(String name, Macro exclude) {
+        for (Macro macro : macros) {
+            if (macro == exclude) continue;
+            if (macro.name.equals(name)) return true;
+        }
+        return false;
+    }
+
     public static void addMacro(Macro macro) {
         macros.add(macro);
 
@@ -77,7 +85,6 @@ public class MacroManager extends AbstractFeature {
     }
 
     public static void saveChanges() {
-        // Write %appdata%/.minecraft/config/redstonetools/macros.json
         try {
             Files.createDirectories(macrosFilePath.getParent());
         } catch (IOException e) {
@@ -121,7 +128,7 @@ public class MacroManager extends AbstractFeature {
         throw new RuntimeException("Unknown action type: " + action.getClass().getName());
     }
 
-    private static List<Macro> getDefaultMacros() {
+    public static List<Macro> getDefaultMacros() {
         return List.of(
                 createCommandMacro("redstoner", new String[] {
                         "gamerule doTileDrops false",
@@ -190,4 +197,19 @@ public class MacroManager extends AbstractFeature {
         }
     }
 
+    static {
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.currentScreen != null) return;
+            for (Macro macro : macros) {
+                if (!macro.enabled) continue;
+                if (macro.getKey() == InputUtil.UNKNOWN_KEY) continue;
+                long window = MinecraftClient.getInstance().getWindow().getHandle();
+                boolean pressed = InputUtil.isKeyPressed(window, macro.getKey().getCode());
+                if (pressed && !macro._wasPressed) {
+                    macro.run();
+                }
+                macro._wasPressed = pressed;
+            }
+        });
+    }
 }

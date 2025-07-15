@@ -18,6 +18,8 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 
+	maven { url "https://maven.shedaniel.me/" }
+	maven { url "https://maven.terraformersmc.com/releases/" }
 	maven { url 'https://masa.dy.fi/maven' }
 	exclusiveContent {
 		forRepository {
@@ -47,7 +49,7 @@ dependencies {
 
 	// Json
 	include implementation("javax.json:javax.json-api:1.1.4")
-	include "org.glassfish:javax.json:1.1.4"
+	include implementation("org.glassfish:javax.json:1.1.4")
 
 	// AutoService
 	annotationProcessor implementation("com.google.auto.service:auto-service:1.1.0")
@@ -57,14 +59,13 @@ dependencies {
 	mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
 	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
 
-	// MaLiLib
-	modImplementation "maven.modrinth:malilib:0.24.2"
-
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// Worldedit API
 	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.21.5:7.3.14")
+	// MaLiLib
+	modApi "maven.modrinth:malilib:${project.malilib_version}"
 }
 
 processResources {

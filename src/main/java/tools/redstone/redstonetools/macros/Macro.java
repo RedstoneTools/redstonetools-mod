@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Macro {
+    public void setName(String nname) {
+        this.name = nname;
+    }
     public static Macro buildEmpty() {
         return new Macro("",true,InputUtil.UNKNOWN_KEY,new ArrayList<>());
     }
@@ -25,7 +28,8 @@ public class Macro {
     private Key key;
     public boolean enabled;
     public List<CommandAction> actions;
-    List<String> actionsAsStringList = new AbstractList<String>() {
+    transient boolean _wasPressed = false;
+    public List<String> actionsAsStringList = new AbstractList<String>() {
         @Override
         public String get(int index) {
             return actions.get(index).command;
@@ -68,8 +72,6 @@ public class Macro {
 
     public Macro(String name, boolean enabled, Key key, List<CommandAction> actions) {
         this(name,enabled,key,actions,null);
-        keyBinding = new KeyBinding("macro." + System.nanoTime(),-1,"macros");
-        registerKeyBinding();
         changeKeyBindingKeyCode();
     }
 
@@ -96,7 +98,6 @@ public class Macro {
     }
 
     public void run() {
-        this.fromStringList(config.getStrings());
         if (!enabled) {
             return;
         }
@@ -132,8 +133,7 @@ public class Macro {
 
         if (this.keyBinding != null) {
 
-            // FIXME
-//            MinecraftClient.getInstance().options.setKeyCode(keyBinding,key);
+            keyBinding.setBoundKey(key);
             KeyBinding.updateKeysByCode();
         }
 
@@ -172,5 +172,9 @@ public class Macro {
         }
 
         return super.equals(obj);
+    }
+
+    public List<CommandAction> getActions() {
+        return actions;
     }
 }

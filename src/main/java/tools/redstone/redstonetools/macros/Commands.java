@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.macros;
 
-import fi.dy.masa.malilib.gui.GuiBase;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.features.commands.*;
@@ -14,7 +13,7 @@ public class Commands {
 	public static void registerCommands() {
 		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("edit-macros")
 				.executes(commandContext -> {
-					GuiBase.openGui(new MacrosScreen(MinecraftClient.getInstance().currentScreen, MacroManager.getMacros()));
+					MinecraftClient.getInstance().setScreen(new MacrosScreen(MinecraftClient.getInstance().currentScreen, MacroManager.getMacros()));
 					return 1;
 				})));
 
