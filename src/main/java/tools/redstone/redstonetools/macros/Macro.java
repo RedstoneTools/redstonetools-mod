@@ -148,6 +148,7 @@ public class Macro {
     }
 
     public void unregisterKeyBinding(){
+        if (keyBinding == null) return;
         KeyBindingUtils.removeKeyBinding(keyBinding);
     }
 
