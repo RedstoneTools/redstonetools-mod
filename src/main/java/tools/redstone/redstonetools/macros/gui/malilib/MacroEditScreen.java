@@ -58,9 +58,7 @@ public class MacroEditScreen extends Screen {
 
         int btnY = this.height - 40;
 
-        ButtonWidget addCmdButton = ButtonWidget.builder(Text.literal("Add Command"), btn -> {
-            commandsWidget.addEmptyRow();
-        }).dimensions(margin, btnY, 110, 18).build();
+        ButtonWidget addCmdButton = ButtonWidget.builder(Text.literal("Add Command"), btn -> commandsWidget.addEmptyRow()).dimensions(margin, btnY, 110, 18).build();
         this.addDrawableChild(addCmdButton);
         this.addSelectableChild(addCmdButton);
 
@@ -90,7 +88,8 @@ public class MacroEditScreen extends Screen {
         macro.fromStringList(macro.actionsAsStringList);
         MacroManager.saveChanges();
         MacroManager.updateMacroKeys();
-        this.close();
+        assert this.client != null;
+        this.client.setScreen(parent);
     }
 
     private void cancel() {
@@ -102,7 +101,7 @@ public class MacroEditScreen extends Screen {
 
     @Override
     public void close() {
-        this.client.setScreen(parent);
+        saveAndClose();
     }
 
     @Override
@@ -111,7 +110,7 @@ public class MacroEditScreen extends Screen {
             capturingKey = false;
             InputUtil.Key key = InputUtil.fromKeyCode(keyCode, scanCode);
             macro.setKey(key);
-            keyButton.setMessage(Text.literal("Key: " + key.getTranslationKey()));
+            keyButton.setMessage(Text.literal("Key: " + macro.getKey().getTranslationKey().replace("key.keyboard.", "")));
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);

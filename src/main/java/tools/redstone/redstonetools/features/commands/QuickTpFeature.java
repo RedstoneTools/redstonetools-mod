@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.world.TeleportTarget;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.PositionUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
@@ -22,27 +23,26 @@ public class QuickTpFeature extends AbstractFeature {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("quicktp")
                 .then(argument("distance", DoubleArgumentType.doubleArg())
                 .then(argument("includeFluids", BoolArgumentType.bool())
-                .executes(context -> new QuickTpFeature().execute(context))))));
+                .then(argument("resetVelocity", BoolArgumentType.bool())
+                .executes(context -> new QuickTpFeature().execute(context)))))));
     }
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayer();
+        var player = context.getSource().getEntity();
 
-	    assert player != null;
-	    var targetPosition = getTargetPosition(player, context);
-
-        player.teleport(targetPosition.x, targetPosition.y, targetPosition.z, false);
-
-        return 0;
-    }
-
-    private Vec3d getTargetPosition(PlayerEntity player, CommandContext<ServerCommandSource> context) {
         double distance = DoubleArgumentType.getDouble(context, "distance");
         boolean includeFluids = BoolArgumentType.getBool(context, "includeFluids");
-        // 8 chunks default, 16 blocks per chunk
-        var renderDistanceBlocks = PlayerEntity.getRenderDistanceMultiplier() * 8 * 16;
-        var hit = player.raycast(Math.min(distance, renderDistanceBlocks), 0, includeFluids);
+        boolean resetVelocity = BoolArgumentType.getBool(context, "resetVelocity");
 
-        return clampHitPosition(hit).subtract(0, 1.12, 0);
+	    assert player != null;
+
+        var hit = player.raycast(distance, 0, includeFluids);
+
+        var targetPosition = clampHitPosition(hit).subtract(0, 0, 0); // 1.12 makes you fall through the block sometimes.
+
+        player.requestTeleport(targetPosition.x, targetPosition.y, targetPosition.z);
+        if (resetVelocity) player.setVelocity(Vec3d.ZERO); player.fallDistance = 0; player.velocityModified = true; // guh
+
+        return 0;
     }
 
     private Vec3d clampHitPosition(HitResult hit) {
