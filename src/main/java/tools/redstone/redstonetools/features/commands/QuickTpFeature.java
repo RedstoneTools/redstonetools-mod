@@ -4,12 +4,10 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.world.TeleportTarget;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.PositionUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -37,7 +35,7 @@ public class QuickTpFeature extends AbstractFeature {
 
         var hit = player.raycast(distance, 0, includeFluids);
 
-        var targetPosition = clampHitPosition(hit).subtract(0, 0, 0); // 1.12 makes you fall through the block sometimes.
+        var targetPosition = clampHitPosition(hit);
 
         player.requestTeleport(targetPosition.x, targetPosition.y, targetPosition.z);
         if (resetVelocity) player.setVelocity(Vec3d.ZERO); player.fallDistance = 0; player.velocityModified = true; // guh
