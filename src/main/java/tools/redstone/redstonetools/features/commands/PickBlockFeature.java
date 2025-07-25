@@ -14,7 +14,7 @@ import net.minecraft.util.Hand;
 import javax.annotation.Nullable;
 
 public abstract class PickBlockFeature extends BlockRaycastFeature {
-    protected int execute(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
+    protected int execute(CommandContext<FabricClientCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null) {
             throw new SimpleCommandExceptionType(Text.literal("Failed to get player.")).create();
