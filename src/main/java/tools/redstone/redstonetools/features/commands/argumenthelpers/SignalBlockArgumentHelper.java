@@ -11,7 +11,6 @@ public class SignalBlockArgumentHelper {
 	public static SignalBlock getSignalBlock(CommandContext<ServerCommandSource> context, String block) throws CommandSyntaxException {
 		String signalBlockAsString = context.getArgument(block, String.class);
 		return switch (signalBlockAsString.toUpperCase()) {
-			case ("COMPOSTER") -> SignalBlock.COMPOSTER;
 			case ("BARREL") -> SignalBlock.BARREL;
 			case ("CHEST") -> SignalBlock.CHEST;
 			case ("SHULKER_BOX") -> SignalBlock.SHULKER_BOX;

@@ -2,6 +2,9 @@ package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.Block;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ContainerComponent;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -11,21 +14,21 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 
 @FunctionalInterface
 public interface SignalBlockSupplier {
 
-    NbtCompound createNbt(int signalStrength);
+    ItemStack createItem(int signalStrength);
 
     default ItemStack getItemStack(Block block, int signalStrength) {
-        ItemStack item = new ItemStack(block);
-        setCompoundNbt(item, this.createNbt(signalStrength));
+        ItemStack item = this.createItem(signalStrength);
         setItemName(item, signalStrength);
         return item;
     }
 
-    static SignalBlockSupplier container(int slots) {
+    static SignalBlockSupplier container(int slots, Item containerType) {
         return signalStrength -> {
             if (isInvalidSignalStrength(signalStrength, 1779))
                 throw new IllegalArgumentException("Container signal must be 0-1779");
@@ -47,32 +50,17 @@ public interface SignalBlockSupplier {
             if (calculateComparatorOutput(itemsNeeded, slots, item.getMaxCount()) != signalStrength)
                 throw new IllegalStateException("This signal strength cannot be achieved with the selected container");
 
+            ItemStack stack = new ItemStack(containerType);
+            DefaultedList<ItemStack> inventoryItems = DefaultedList.ofSize(slots, ItemStack.EMPTY);
+
             for (int slot = 0, count = itemsNeeded; count > 0; slot++, count -= stackSize) {
-                NbtCompound slotTag = new NbtCompound();
-                slotTag.putByte("Slot", (byte) slot);
-                slotTag.putString("id", itemId);
-                slotTag.putByte("Count", (byte) Math.min(stackSize, count));
-                itemsTag.add(slotTag);
+                inventoryItems.set(slot, new ItemStack(item, Math.min(stackSize, count)));
             }
+            ContainerComponent containerComponent = ContainerComponent.fromStacks(inventoryItems);
 
-            NbtCompound tag = new NbtCompound();
-            tag.put("Items", itemsTag);
-            tags.put("BlockEntityTag", tag);
+            stack.set(DataComponentTypes.CONTAINER, containerComponent);
 
-            return tags;
-        };
-    }
-
-    static SignalBlockSupplier composter() {
-        return signalStrength -> {
-            if (signalStrength == 7 || isInvalidSignalStrength(signalStrength, 8))
-                throw new IllegalArgumentException("Composter signal must be 0-6 or 8");
-
-            NbtCompound tags = new NbtCompound();
-            NbtCompound tag = new NbtCompound();
-            tag.putInt("level", signalStrength);
-            tags.put("BlockStateTag", tag);
-            return tags;
+            return stack;
         };
     }
 
@@ -81,11 +69,15 @@ public interface SignalBlockSupplier {
             if (isInvalidSignalStrength(signalStrength, Integer.MAX_VALUE))
                 throw new IllegalArgumentException("Command block signal must be positive");
 
-            NbtCompound tags = new NbtCompound();
-            NbtCompound tag = new NbtCompound();
-            tag.putInt("SuccessCount", signalStrength);
-            tags.put("BlockEntityTag", tag);
-            return tags;
+            ItemStack commandBlockStack = new ItemStack(Items.COMMAND_BLOCK);
+
+            NbtCompound blockEntityNbt = new NbtCompound();
+            blockEntityNbt.putInt("SuccessCount", signalStrength);
+
+            NbtComponent blockEntityData = NbtComponent.of(blockEntityNbt);
+
+            commandBlockStack.set(DataComponentTypes.CUSTOM_DATA, blockEntityData);
+            return commandBlockStack;
         };
     }
 
@@ -119,9 +111,8 @@ public interface SignalBlockSupplier {
     private static void setCompoundNbt(ItemStack item, NbtCompound nbt) {
         nbt.putBoolean("HideFlags", true);
 
-        // FIXME
-//        item.setNbt(nbt);
-//        item.addEnchantment(Enchantment.byRawId(0), 0);
+        item.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(nbt));
+        item.set(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT);
     }
 
     private static void setItemName(ItemStack item, int signalStrength) {
