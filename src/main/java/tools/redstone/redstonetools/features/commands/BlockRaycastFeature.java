@@ -11,8 +11,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 
-import javax.annotation.Nullable;
-
 public abstract class BlockRaycastFeature extends AbstractFeature {
     protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -40,5 +38,5 @@ public abstract class BlockRaycastFeature extends AbstractFeature {
         return true;
     }
 
-	protected abstract int execute(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
+	protected abstract int execute(CommandContext<FabricClientCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException;
 }

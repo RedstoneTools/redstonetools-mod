@@ -28,7 +28,6 @@ import java.util.concurrent.Executors;
 import java.util.ArrayList;
 
 public abstract class ToggleableFeature extends AbstractFeature {
-
     private static final List<KeyBinding> keyBindings = new ArrayList<>();
 
     public void register() {
@@ -38,13 +37,6 @@ public abstract class ToggleableFeature extends AbstractFeature {
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
             saveConfig();
         });
-
-        // todo: help
-//        var containsRequiredArguments = FeatureUtils.getArguments(getClass()).stream()
-//                .anyMatch(a -> !a.isOptional());
-//        if (containsRequiredArguments) {
-//            return;
-//        }
 
         var info = FeatureUtils.getFeatureInfo(getClass());
         var keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -63,8 +55,6 @@ public abstract class ToggleableFeature extends AbstractFeature {
             }
         });
     }
-
-    private static final Executor IO_EXECUTOR = Executors.newSingleThreadExecutor();
 
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
