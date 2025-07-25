@@ -2,6 +2,7 @@ package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.sk89q.worldedit.regions.RegionOperationException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
@@ -11,7 +12,6 @@ import com.sk89q.worldedit.fabric.FabricAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldedit.regions.RegionOperationException;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import net.minecraft.server.command.ServerCommandSource;
@@ -24,7 +24,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class MinSelectionFeature extends AbstractFeature {
     public static void registerCommand() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("minsel")
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/minsel")
                 .executes(context -> new MinSelectionFeature().execute(context))));
     }
 
@@ -40,10 +40,10 @@ public class MinSelectionFeature extends AbstractFeature {
 
         var selector = localSession.getRegionSelector(selectionWorld);
 
+        assert selectionWorld != null;
+        assert BlockTypes.AIR != null;
         boolean isEmpty = true;
         for (BlockVector3 point : selection) {
-	        assert selectionWorld != null;
-	        assert BlockTypes.AIR != null;
 	        if (!selectionWorld.getBlock(point).equals(BlockTypes.AIR.getDefaultState()))
                 isEmpty = false;
         }
@@ -51,7 +51,6 @@ public class MinSelectionFeature extends AbstractFeature {
         if (isEmpty) {
             throw new SimpleCommandExceptionType(Text.of("Cannot minimize empty selections.")).create();
         }
-            
 
         minimiseSelection(selectionWorld, selection);
 
@@ -123,5 +122,4 @@ public class MinSelectionFeature extends AbstractFeature {
 
         return faces;
     }
-
 }

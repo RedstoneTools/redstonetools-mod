@@ -13,12 +13,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 
 public class ItemUtils {
-  
-    private ItemUtils(){
-    }
-
     public static void addExtraNBTText(ItemStack itemStack, String text) {
-
         NbtCompound displayNbt = itemStack.toNbt(MinecraftClient.getInstance().getNetworkHandler().getRegistryManager()).asCompound().get().get("display").asCompound().get();
         NbtList loreList = new NbtList();
 

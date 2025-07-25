@@ -14,10 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
-@Pseudo
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneHitboxMixin {
-
     private static BigDustFeature bigDustFeature;
 
     // use array for better performance
