@@ -19,6 +19,7 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -32,7 +33,7 @@ public class MinSelectionFeature extends AbstractFeature {
         var selection = WorldEditUtils.getSelection(context.getSource().getPlayer());
         var selectionWorld = selection.getWorld();
 
-        var actor = FabricAdapter.adaptPlayer(context.getSource().getPlayer());
+        var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
 
         var localSession = WorldEdit.getInstance()
                 .getSessionManager()
@@ -92,7 +93,7 @@ public class MinSelectionFeature extends AbstractFeature {
         }
 
         try {
-            selection.contract(changes.toArray(new BlockVector3[changes.size()]));
+            selection.contract(changes.toArray(new BlockVector3[0]));
         } catch (RegionOperationException e) {
             throw new CommandSyntaxException(null, Text.literal("There was an error modifying the region."));
         }

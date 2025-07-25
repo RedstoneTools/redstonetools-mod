@@ -5,7 +5,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 public enum ColoredBlockType {
-    // TODO: Merge some things with the ColoredBlock class so we dont have to repeat the formats and stuff
+    // TODO: Merge some things with the ColoredBlock class so we don't have to repeat the formats and stuff
     WOOL("wool", "minecraft:%s_wool"),
     GLASS("glass", "minecraft:%s_stained_glass"),
     CONCRETE("concrete", "minecraft:%s_concrete"),
@@ -36,9 +36,4 @@ public enum ColoredBlockType {
     public Block toBlock() {
         return Registries.BLOCK.get(Identifier.tryParse(toBlockId()));
     }
-    /*
-    public Block toBlock() {
-        return Registry.BLOCK.get(Identifier.tryParse(toBlockId()));
-    }
-     */
 }

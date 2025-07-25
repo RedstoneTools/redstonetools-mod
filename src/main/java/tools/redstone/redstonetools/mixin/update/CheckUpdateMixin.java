@@ -8,6 +8,7 @@ import net.minecraft.client.gui.widget.PressableTextWidget;
 import net.minecraft.text.*;
 import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -23,9 +24,12 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.MOD_VERSION;
 
 @Mixin(TitleScreen.class)
 public class CheckUpdateMixin extends Screen {
+    @Unique
     private static boolean updateChecked = false;
 
+    @Unique
     private static MutableText updateStatus = (MutableText) Text.of("Redstone Tools Version: " + MOD_VERSION + "(Bug found, report on Github)");
+    @Unique
     private static URI uri;
     public CheckUpdateMixin() {
         super(Text.of("UpdateText(Bug found, report on Github)"));
@@ -50,7 +54,7 @@ public class CheckUpdateMixin extends Screen {
             String responseBody = response.body();
 
             if (response.statusCode() < 200 || 299 < response.statusCode()) {
-                LOGGER.error("Got status code " + response.statusCode() + " while trying to check for updates");
+                LOGGER.error("Got status code {} while trying to check for updates", response.statusCode());
                 return;
             }
 
@@ -59,26 +63,26 @@ public class CheckUpdateMixin extends Screen {
             uri = new URI(release.get("html_url").getAsString());
             String newVersion = release.get("tag_name").getAsString();
 
-            LOGGER.info("Found latest version: " + newVersion);
+            LOGGER.info("Found latest version: {}", newVersion);
             if (newVersion.contains("alpha") || newVersion.contains("beta")) {
-                LOGGER.info("Not showing an update popup for alpha or beta release, current version: " + MOD_VERSION + ", new version: " + newVersion);
+                LOGGER.info("Not showing an update popup for alpha or beta release, current version: {}, new version: {}", MOD_VERSION, newVersion);
                 return;
             }
 
             Style underline = Style.EMPTY;
             if (RedstoneToolsClient.MOD_VERSION.equals(newVersion)) {
-                LOGGER.info("Already up to date, current version: " + MOD_VERSION);
+                LOGGER.info("Already up to date, current version: {}", MOD_VERSION);
                 updateStatus = (MutableText) Text.of("Redstone Tools " + MOD_VERSION);
             } else {
-                LOGGER.info("Found newer version, current version: " + RedstoneToolsClient.MOD_VERSION + ", new version: " + newVersion);
+                LOGGER.info("Found newer version, current version: {}, new version: {}", RedstoneToolsClient.MOD_VERSION, newVersion);
                 updateStatus = (MutableText) Text.of("Redstone Tools " + MOD_VERSION + " (");
-                updateStatus.append(Text.of("Click to Update").getWithStyle(underline.withUnderline(true)).get(0));
+                updateStatus.append(Text.of("Click to Update").getWithStyle(underline.withUnderline(true)).getFirst());
                 updateStatus.append(")");
             }
 
         } catch (Exception e) {
             LOGGER.warn("Failed to check for RedstoneTools updates");
-            e.printStackTrace();
+//            e.printStackTrace();
         } finally {
             updateChecked = true;
         }
@@ -86,6 +90,6 @@ public class CheckUpdateMixin extends Screen {
 
     @Inject(method="init", at = @At("HEAD"))
     public void updateTextInjection(CallbackInfo ci){
-        this.addDrawableChild(new PressableTextWidget(4,4, textRenderer.getWidth(updateStatus), textRenderer.fontHeight,updateStatus,button -> {Util.getOperatingSystem().open(uri);},textRenderer));
+        this.addDrawableChild(new PressableTextWidget(4,4, textRenderer.getWidth(updateStatus), textRenderer.fontHeight,updateStatus,button -> Util.getOperatingSystem().open(uri),textRenderer));
     }
 }

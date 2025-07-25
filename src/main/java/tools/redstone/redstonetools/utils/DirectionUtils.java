@@ -4,6 +4,8 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.util.Direction;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class DirectionUtils {
     public static Direction firstOrdinal(Direction playerFacing) {
         return switch (playerFacing) {
@@ -75,7 +77,7 @@ public class DirectionUtils {
     @NotNull
     public static Direction matchDirection(DirectionArgument direction, Direction playerFacing) throws Exception {
         var absoluteDirection = relativeToAbsolute(direction, playerFacing);
-        return switch (absoluteDirection) {
+        return switch (Objects.requireNonNull(absoluteDirection)) {
             case NORTH -> Direction.NORTH;
             case EAST -> Direction.EAST;
             case SOUTH -> Direction.SOUTH;

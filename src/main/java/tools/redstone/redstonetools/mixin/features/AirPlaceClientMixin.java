@@ -11,33 +11,33 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
 @Mixin(MinecraftClient.class)
 public class AirPlaceClientMixin {
+    @Unique
     private final AirPlaceFeature airPlaceFeature = FeatureUtils.getFeature(AirPlaceFeature.class);
     @Shadow
     public HitResult crosshairTarget;
 
-    @Inject(method = "doItemUse", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "doItemUse", at = @At(value = "HEAD"))
     public void doItemUse(CallbackInfo callbackInfo) {
         if (!isAirPlaceAllowed()) {
             return;
         }
 
-        crosshairTarget = airPlaceFeature.findAirPlaceBlockHit(getPlayer());
+        crosshairTarget = AirPlaceFeature.findAirPlaceBlockHit(getPlayer());
     }
 
-    @Inject(method = "doAttack", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "doAttack", at = @At(value = "HEAD"))
     public void doAttack(CallbackInfoReturnable<Boolean> cir) {
         if (!isAirPlaceAllowed()) {
             return;
         }
 
         // Call interactionManager directly because the block is air, with which the player cannot interact
-        var hit = airPlaceFeature.findAirPlaceBlockHit(getPlayer());
+        var hit = AirPlaceFeature.findAirPlaceBlockHit(getPlayer());
         getInteractionManager().attackBlock(hit.getBlockPos(), hit.getSide());
     }
 
@@ -60,11 +60,7 @@ public class AirPlaceClientMixin {
 
         // If air place isn't possible with the current
         // player equipment and state
-        if (!AirPlaceFeature.canAirPlace(getPlayer())) {
-            return false;
-        }
-
-        return true;
+        return AirPlaceFeature.canAirPlace(getPlayer());
     }
 
     @Unique

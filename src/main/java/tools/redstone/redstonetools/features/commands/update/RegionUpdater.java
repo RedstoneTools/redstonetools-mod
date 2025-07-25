@@ -6,8 +6,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class RegionUpdater {
-
-
     public static Text updateRegion(World world, BlockVector3 minPos, BlockVector3 maxPos) {
         long blockCount = 0;
 

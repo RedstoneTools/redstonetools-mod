@@ -18,9 +18,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
-import tools.redstone.redstonetools.features.toggleable.ToggleableFeature;
 import tools.redstone.redstonetools.utils.ColoredBlock;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 

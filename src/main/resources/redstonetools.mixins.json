@@ -8,22 +8,17 @@
   },
   "mixins": [
     "blocks.RedstoneHitboxMixin",
-    "features.AirPlaceServerMixin",
     "features.AutoDustMixin",
     "features.CopyStateMixin",
     "gamerules.DoContainerDropsMixin"
   ],
   "client": [
-    "accessors.MinecraftClientAccessor",
-    "accessors.WorldRendererAccessor",
     "features.AirPlaceClientMixin",
     "features.ItemBindItemStackMixin",
     "features.ItemBindPlayerMixin",
     "macros.AddMacroButtonMixin",
     "macros.InitializeMacroManagerMixin",
     "macros.KeyBindingMixinImpl",
-    "macros.autocomplete.ClientPlayerEntityMixinImpl",
-    "macros.autocomplete.CommandSuggestorMixin",
     "update.CheckUpdateMixin"
   ]
 }

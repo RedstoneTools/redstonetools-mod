@@ -23,6 +23,8 @@ import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.argumenthelpers.DirectionArgumentHelper;
 
+import java.util.Objects;
+
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
@@ -42,7 +44,7 @@ public class RStackFeature extends AbstractFeature {
         int count = IntegerArgumentType.getInteger(context, "count");
         var direction = DirectionArgumentHelper.getDirection(context, "direction");
         int offset = IntegerArgumentType.getInteger(context, "offset");
-        var actor = FabricAdapter.adaptPlayer(context.getSource().getPlayer());
+        var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
 
         var localSession = WorldEdit.getInstance()
                 .getSessionManager()
@@ -72,7 +74,7 @@ public class RStackFeature extends AbstractFeature {
         };
 
         var playerFacing = actor.getLocation().getDirectionEnum();
-        Direction stackDirection = null;
+        Direction stackDirection;
         try {
             stackDirection = matchDirection(direction, playerFacing);
         } catch (Exception e) {
@@ -87,7 +89,7 @@ public class RStackFeature extends AbstractFeature {
                         editSession,
                         selection,
                         editSession,
-                        selection.getMinimumPoint().add(stackVector.multiply(i * offset))
+                        selection.getMinimumPoint().add(Objects.requireNonNull(stackVector).multiply(i * offset))
                 );
                 copy.setSourceMask(airFilter);
                 Operations.complete(copy);

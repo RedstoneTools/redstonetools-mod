@@ -4,15 +4,12 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import tools.redstone.redstonetools.utils.ItemUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 
@@ -42,23 +39,11 @@ public class AirPlaceFeature extends ToggleableFeature {
         if (itemStack == null || itemStack.getItem() == Items.AIR)
             return false;
 
-        // shouldnt offhand also be checked?
+        // TODO: shouldn't offhand also be checked?
         // rocket boost for elytra
-        if (itemStack.getItem() == Items.FIREWORK_ROCKET &&
-                player.getEquippedStack(EquipmentSlot.CHEST).getItem() == Items.ELYTRA &&
-                player.isGliding())
-            return false;
-
-        return true;
-    }
-
-    public static HitResult findAirPlacePosition(MinecraftClient client) {
-        if (client.player == null)
-            return null;
-        ClientPlayerEntity player = client.player;
-
-        float reach = AirPlaceFeature.reach;
-        return player.raycast(reach, 0, false);
+        return itemStack.getItem() != Items.FIREWORK_ROCKET ||
+                player.getEquippedStack(EquipmentSlot.CHEST).getItem() != Items.ELYTRA ||
+                !player.isGliding();
     }
 
     public static BlockHitResult findAirPlaceBlockHit(PlayerEntity playerEntity) {

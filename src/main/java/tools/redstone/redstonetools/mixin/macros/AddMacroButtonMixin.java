@@ -22,8 +22,10 @@ public abstract class AddMacroButtonMixin extends GameOptionsScreen {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
-        this.addDrawableChild(new ButtonWidget.Builder(Text.of("Macros..."), button -> {
-            MinecraftClient.getInstance().setScreen(new MacrosScreen(MinecraftClient.getInstance().currentScreen, MacroManager.getMacros()));
-        }).dimensions(this.width / 2 + 5, this.height / 6 + 36, 150, 20).build());
+        this.addDrawableChild(new ButtonWidget.Builder(Text.of("Macros..."), button ->
+                MinecraftClient.getInstance().setScreen(
+                    new MacrosScreen(MinecraftClient.getInstance().currentScreen, MacroManager.getMacros())))
+                    .dimensions(this.width / 2 + 5, this.height / 6 + 36, 150, 20)
+                    .build());
     }
 }

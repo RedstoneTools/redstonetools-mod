@@ -6,7 +6,6 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.BlockColor;
-import tools.redstone.redstonetools.utils.DirectionArgument;
 
 public class BlockColorArgumentHelper {
 	public static BlockColor getBlockColor(CommandContext<ServerCommandSource> context, String color) throws CommandSyntaxException {

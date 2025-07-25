@@ -2,7 +2,6 @@ package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.Block;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -96,7 +95,7 @@ public interface SignalBlockSupplier {
 
     private static int calculateComparatorOutput(int items, int slots, int item$getMaxCount) {
         float f = (float) items / (float) item$getMaxCount;
-        return MathHelper.floor((f /= (float)slots) * 14.0f) + (items > 0 ? 1 : 0);
+        return MathHelper.floor(f / (float) slots * 14.0f) + (items > 0 ? 1 : 0);
     }
 
     private static Item getBestItem(int signalStrength, int slots) {

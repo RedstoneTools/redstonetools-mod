@@ -17,9 +17,12 @@ public class KeyBindingMixinImpl implements KeyBindingMixin {
     @Shadow @Final private static Map<InputUtil.Key, KeyBinding> KEY_TO_BINDINGS;
 
     @Override
+    // Line under this one gives
+    // `Name does not match the pattern for added mixin members: ".+[_$].+"`
+    // What does that even mean?
     public void removeKeybinding(KeyBinding keyBinding) {
-        KEYS_BY_ID.entrySet().removeIf(entry -> entry.getValue().equals(this));
-        KEY_TO_BINDINGS.entrySet().removeIf(entry -> entry.getValue().equals(this));
+        KEYS_BY_ID.entrySet().removeIf(entry -> entry.getValue().equals((KeyBinding)(Object)this));
+        KEY_TO_BINDINGS.entrySet().removeIf(entry -> entry.getValue().equals((KeyBinding)(Object)this));
     }
 
     @Override

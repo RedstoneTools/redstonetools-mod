@@ -18,6 +18,7 @@ public abstract class ItemBindPlayerMixin {
         try {
             ItemBindFeature.addCommand(message);
         } catch (CommandSyntaxException e) {
+            assert MinecraftClient.getInstance().player != null;
             MinecraftClient.getInstance().player.sendMessage(Text.literal(e.getMessage()), false);
         }
         ci.cancel();

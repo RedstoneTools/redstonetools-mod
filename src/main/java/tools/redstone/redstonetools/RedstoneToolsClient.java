@@ -11,12 +11,9 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.redstone.redstonetools.macros.Commands;
-import tools.redstone.redstonetools.macros.Macro;
 import tools.redstone.redstonetools.macros.gui.malilib.InitHandler;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RedstoneToolsClient implements ClientModInitializer {
     public static final ComponentType<String> COMMAND_COMPONENT = Registry.register(

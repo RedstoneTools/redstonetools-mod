@@ -8,8 +8,5 @@ public class InitHandler implements IInitializationHandler {
 	public void registerModHandlers()
 	{
 		ConfigManager.getInstance().registerConfigHandler("redstonetools", new Configs());
-//		InputEventHandler.getKeybindManager().registerKeybindProvider(InputHandler.getInstance());
-//		InputEventHandler.getInputManager().registerKeyboardInputHandler(InputHandler.getInstance());
-//		InputEventHandler.getInputManager().registerMouseInputHandler(InputHandler.getInstance());
 	}
 }

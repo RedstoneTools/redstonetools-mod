@@ -16,9 +16,11 @@ import tools.redstone.redstonetools.utils.FeatureUtils;
 
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneHitboxMixin {
+    @Unique
     private static BigDustFeature bigDustFeature;
 
     // use array for better performance
+    @Unique
     private static final VoxelShape[] SHAPES = new VoxelShape[16];
 
     @Inject(method="getOutlineShape", at = @At("HEAD"), cancellable = true)

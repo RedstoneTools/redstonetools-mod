@@ -38,8 +38,8 @@ public class MacroManager extends AbstractFeature {
                 macrosJson = reader.readArray();
                 reader.close();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         if (macrosJson == null) {

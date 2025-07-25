@@ -13,7 +13,6 @@ import java.math.BigInteger;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
 public class BaseConvertFeature extends AbstractFeature {
-
 	private static final SimpleCommandExceptionType INVALID_NUMBER =
 			new SimpleCommandExceptionType(Text.literal("Invalid number"));
 

@@ -1,10 +1,8 @@
 package tools.redstone.redstonetools.features.commands.update;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 

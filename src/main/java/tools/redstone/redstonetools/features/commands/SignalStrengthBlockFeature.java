@@ -13,6 +13,7 @@ import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.argumenthelpers.SignalBlockArgumentHelper;
 import tools.redstone.redstonetools.utils.SignalBlock;
 
+import java.util.Objects;
 import java.util.Random;
 
 import static net.minecraft.server.command.CommandManager.argument;
@@ -31,7 +32,7 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
         SignalBlock block = SignalBlockArgumentHelper.getSignalBlock(context, "block");
         try {
             ItemStack itemStack = block.getItemStack(signalStrength);
-            context.getSource().getPlayer().giveItemStack(itemStack);
+            Objects.requireNonNull(context.getSource().getPlayer()).giveItemStack(itemStack);
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw new SimpleCommandExceptionType(Text.literal(e.getMessage())).create();
         }
