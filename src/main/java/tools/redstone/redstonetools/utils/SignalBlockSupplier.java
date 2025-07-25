@@ -25,6 +25,7 @@ public interface SignalBlockSupplier {
     default ItemStack getItemStack(Block block, int signalStrength) {
         ItemStack item = this.createItem(signalStrength);
         setItemName(item, signalStrength);
+        item.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
         return item;
     }
 
