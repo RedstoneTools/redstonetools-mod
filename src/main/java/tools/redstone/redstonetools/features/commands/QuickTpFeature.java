@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.PositionUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -22,7 +23,7 @@ public class QuickTpFeature extends AbstractFeature {
                 .then(argument("distance", DoubleArgumentType.doubleArg())
                 .then(argument("includeFluids", BoolArgumentType.bool())
                 .then(argument("resetVelocity", BoolArgumentType.bool())
-                .executes(context -> new QuickTpFeature().execute(context)))))));
+                .executes(context -> FeatureUtils.getFeature(QuickTpFeature.class).execute(context)))))));
     }
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var player = context.getSource().getEntity();

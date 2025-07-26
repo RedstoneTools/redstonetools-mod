@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Property;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.BlockInfo;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistratio
 public class CopyStateFeature extends PickBlockFeature {
     public static void registerCommand() {
         EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("copystate")
-                .executes(context -> new CopyStateFeature().execute(context))));
+                .executes(context -> FeatureUtils.getFeature(CopyStateFeature.class).execute(context))));
     }
 
     // all of the warnings caused by this function should be fine. hopefully.

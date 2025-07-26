@@ -5,6 +5,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.sk89q.worldedit.regions.RegionOperationException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.WorldEdit;
@@ -26,7 +27,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class MinSelectionFeature extends AbstractFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/minsel")
-                .executes(context -> new MinSelectionFeature().execute(context))));
+                .executes(context -> FeatureUtils.getFeature(MinSelectionFeature.class).execute(context))));
     }
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

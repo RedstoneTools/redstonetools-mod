@@ -10,6 +10,7 @@ import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import net.minecraft.item.ItemStack;
 import tools.redstone.redstonetools.utils.ColoredBlockType;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import javax.annotation.Nullable;
 
@@ -19,7 +20,7 @@ public class ColoredFeature extends PickBlockFeature {
     public static void registerCommand() {
         EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("colored")
                 .then(ClientCommandManager.argument("blockType", StringArgumentType.string())
-                .executes(context -> new ColoredFeature().execute(context)))));
+                .executes(context -> FeatureUtils.getFeature(ColoredFeature.class).execute(context)))));
     }
     public static ColoredBlockType blockType;
     protected boolean requiresBlock() {

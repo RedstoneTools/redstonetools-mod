@@ -7,16 +7,17 @@ import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigHandler;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
-import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 import java.io.File;
+
+import static tools.redstone.redstonetools.RedstoneToolsClient.CONFIG_DIR;
 
 public class Configs implements IConfigHandler {
 	private static final String CONFIG_FILE_NAME = "MacroConfig.json";
 
 	public static class Generic {
-		public static final ConfigHotkey        MACRO_EDITOR                        = new ConfigHotkey("macros", "", "Macros");
+		public static final ConfigHotkey MACRO_EDITOR = new ConfigHotkey("macros", "", "Macros");
 
 		public static final ImmutableList<IConfigBase> OPTIONS = ImmutableList.of(MACRO_EDITOR);
 	}
@@ -24,7 +25,7 @@ public class Configs implements IConfigHandler {
 
 	public static void loadFromFile()
 	{
-		File configFile = new File(FileUtils.getConfigDirectory(), CONFIG_FILE_NAME);
+		File configFile = new File(CONFIG_DIR.toString(), CONFIG_FILE_NAME);
 
 		if (configFile.exists() && configFile.isFile() && configFile.canRead())
 		{
@@ -40,7 +41,7 @@ public class Configs implements IConfigHandler {
 
 	public static void saveToFile()
 	{
-		File dir = FileUtils.getConfigDirectory();
+		File dir = CONFIG_DIR.toFile();
 
 		if ((dir.exists() && dir.isDirectory()) || dir.mkdirs())
 		{

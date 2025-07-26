@@ -82,10 +82,10 @@ public class MacrosScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context, mouseX, mouseY, delta);
+        super.render(context, mouseX, mouseY, delta);
+//        this.renderBackground(context, mouseX, mouseY, delta);
         listWidget.render(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 12, 0xffffff);
-        super.render(context, mouseX, mouseY, delta);
     }
 
     private static class MacroListWidget extends ElementListWidget<MacroEntry> {

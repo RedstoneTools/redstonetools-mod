@@ -22,6 +22,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.argumenthelpers.DirectionArgumentHelper;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ public class RStackFeature extends AbstractFeature {
                 .then(argument("count", IntegerArgumentType.integer())
                 .then(argument("direction", StringArgumentType.string())
                 .then(argument("offset", IntegerArgumentType.integer())
-                .executes(context -> new RStackFeature().execute(context)))))));
+                .executes(context -> FeatureUtils.getFeature(RStackFeature.class).execute(context)))))));
 
     }
 

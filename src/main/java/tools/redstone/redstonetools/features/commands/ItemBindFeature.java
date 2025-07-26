@@ -16,6 +16,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class ItemBindFeature extends AbstractFeature {
 	public static void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("itembind")
-				.executes(context -> new ItemBindFeature().execute(context))
+				.executes(context -> FeatureUtils.getFeature(ItemBindFeature.class).execute(context))
                 .then(argument("reset", BoolArgumentType.bool())
                 .executes(context -> {
                     if (BoolArgumentType.getBool(context, "reset")) {
@@ -37,7 +38,7 @@ public class ItemBindFeature extends AbstractFeature {
                         }
                         return 1;
                     } else {
-                        return new ItemBindFeature().execute(context);
+                        return FeatureUtils.getFeature(ItemBindFeature.class).execute(context);
                     }
                 }))));
 	}

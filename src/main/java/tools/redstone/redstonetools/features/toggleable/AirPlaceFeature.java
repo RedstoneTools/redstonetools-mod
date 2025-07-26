@@ -10,6 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.hit.BlockHitResult;
+import org.checkerframework.checker.units.qual.A;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.ItemUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 
@@ -19,13 +21,20 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class AirPlaceFeature extends ToggleableFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("airplace")
+                .executes(context -> FeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))
                 .then(argument("reach", FloatArgumentType.floatArg(3.0f))
-                .executes(context -> new AirPlaceFeature().toggle(context)))));
+                .executes(context -> FeatureUtils.getFeature(AirPlaceFeature.class).toggle(context)))));
     }
 
     @Override
     public int toggle(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        AirPlaceFeature.reach = FloatArgumentType.getFloat(context, "reach");
+        float r;
+        try {
+            r = FloatArgumentType.getFloat(context, "reach");
+        } catch (IllegalArgumentException e) {
+            r = 5.0f;
+        }
+        AirPlaceFeature.reach = r;
         return toggle(context.getSource());
     }
 

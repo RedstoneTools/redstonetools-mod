@@ -20,6 +20,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.argumenthelpers.SignalBlockArgumentHelper;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.SignalBlock;
 
 import java.util.Objects;
@@ -33,7 +34,7 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("ssb")
                 .then(argument("signalStrength", IntegerArgumentType.integer())
                 .then(argument("block", StringArgumentType.string())
-                .executes(context -> new SignalStrengthBlockFeature().execute(context))))));
+                .executes(context -> FeatureUtils.getFeature(SignalStrengthBlockFeature.class).execute(context))))));
     }
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
