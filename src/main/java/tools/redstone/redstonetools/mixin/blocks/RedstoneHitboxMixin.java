@@ -7,23 +7,24 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Pseudo
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneHitboxMixin {
 
+    @Unique
     private static BigDustFeature bigDustFeature;
 
     // use array for better performance
+    @Unique
     private static final VoxelShape[] SHAPES = new VoxelShape[16];
 
     @Inject(method="getOutlineShape", at = @At("HEAD"), cancellable = true)

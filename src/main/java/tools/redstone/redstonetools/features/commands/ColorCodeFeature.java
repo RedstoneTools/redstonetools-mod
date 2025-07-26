@@ -1,7 +1,20 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.fabric.FabricAdapter;
+import com.sk89q.worldedit.function.mask.Mask;
+import com.sk89q.worldedit.function.mask.Mask2D;
+import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.function.pattern.Pattern;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.World;
+import com.sk89q.worldedit.world.block.BaseBlock;
+import com.sk89q.worldedit.world.block.BlockType;
+import net.minecraft.server.command.ServerCommandSource;
+import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
@@ -9,25 +22,7 @@ import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.ColoredBlock;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.datafixers.util.Either;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.LocalSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.fabric.FabricAdapter;
-import com.sk89q.worldedit.fabric.FabricPlayer;
-import com.sk89q.worldedit.function.mask.Mask;
-import com.sk89q.worldedit.function.mask.Mask2D;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldedit.world.World;
-import com.sk89q.worldedit.world.block.BaseBlock;
-import com.sk89q.worldedit.world.block.BlockState;
-import com.sk89q.worldedit.world.block.BlockType;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import org.jetbrains.annotations.Nullable;
+
 import static tools.redstone.redstonetools.features.arguments.serializers.BlockColorSerializer.blockColor;
 
 @AutoService(AbstractFeature.class)
@@ -41,7 +36,7 @@ public class ColorCodeFeature extends CommandFeature {
 
     private boolean shouldBeColored(World world, BlockVector3 pos, BlockColor onlyColor) {
         var state = world.getBlock(pos);
-        var blockId = state.getBlockType().getId();
+        var blockId = state.getBlockType().id();
 
         var coloredBlock = ColoredBlock.fromBlockId(blockId);
         if (coloredBlock == null) return false;
@@ -54,7 +49,7 @@ public class ColorCodeFeature extends CommandFeature {
 
     private BaseBlock getColoredBlock(World world, BlockVector3 pos, BlockColor color) {
         var state = world.getBlock(pos);
-        var blockId = state.getBlockType().getId();
+        var blockId = state.getBlockType().id();
 
         var coloredBlock = ColoredBlock.fromBlockId(blockId);
         if (coloredBlock == null) return state.toBaseBlock();

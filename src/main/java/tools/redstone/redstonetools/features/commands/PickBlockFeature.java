@@ -1,7 +1,5 @@
 package tools.redstone.redstonetools.features.commands;
 
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.MinecraftClient;
@@ -10,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
+import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.utils.BlockInfo;
 
 import javax.annotation.Nullable;
 
@@ -30,16 +30,16 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
         var stack = stackOrFeedback.left().get();
 
         PlayerInventory playerInventory = client.player.getInventory();
-        playerInventory.addPickBlock(stack);
+        playerInventory.insertStack(stack);
 
         if (client.interactionManager == null) {
             throw new CommandSyntaxException(null, Text.of("Failed to get interaction manager."));
         }
 
-        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.selectedSlot);
+        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.getSelectedSlot());
 
         return Feedback.none();
     }
 
-    protected abstract Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
+    protected abstract Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo);
 }

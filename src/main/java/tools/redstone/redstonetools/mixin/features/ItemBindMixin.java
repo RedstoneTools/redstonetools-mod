@@ -2,18 +2,18 @@ package tools.redstone.redstonetools.mixin.features;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.component.ComponentHolder;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,15 +28,12 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 public abstract class ItemBindMixin {
 
     @Mixin(ItemStack.class)
-    private abstract static class ItemStackMixin {
-
-        @Shadow
-        public abstract @Nullable NbtCompound getNbt();
+    private abstract static class ItemStackMixin implements ComponentHolder {
 
         @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-        public void checkCommandNBT(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
+        public void checkCommandNBT(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
             if (tryToExecuteNBTCommand(hand, world)) {
-                cir.setReturnValue(TypedActionResult.pass((ItemStack) ((Object) this)));
+                cir.setReturnValue(new ActionResult.Pass());
             }
         }
 
@@ -47,12 +44,14 @@ public abstract class ItemBindMixin {
             }
         }
 
+        @Unique
         private boolean tryToExecuteNBTCommand(Hand hand, World world) {
             if (hand == Hand.OFF_HAND || world.isClient) return false;
-            NbtCompound nbt = getNbt();
-            if (nbt == null || !nbt.contains("command")) return false;
-            NbtString command = (NbtString) nbt.get("command");
-            MinecraftClient.getInstance().getNetworkHandler().sendChatCommand(command.asString());
+            NbtComponent nbt = this.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
+            if (nbt == null) return false;
+            NbtString command = (NbtString) nbt.copyNbt().get("command");
+            if (command == null) return false;
+            MinecraftClient.getInstance().getNetworkHandler().sendChatCommand(command.asString().get());
 
             return true;
         }

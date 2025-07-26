@@ -1,27 +1,29 @@
 package tools.redstone.redstonetools.mixin.features;
 
-import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 
-@Mixin(ServerPlayNetworkHandler.class)
+@Mixin(PlayerEntity.class)
 public class AirPlaceServerMixin {
 
+    @Unique
     private final AirPlaceFeature airPlaceFeature = RedstoneToolsClient.INJECTOR.getInstance(AirPlaceFeature.class);
 
-    @ModifyConstant(method = "onPlayerInteractBlock", constant = @Constant(doubleValue = 64.0) )
-    private double modifyConstant(double originalValue) {
+    @Inject(method = "getBlockInteractionRange", at = @At("TAIL"), cancellable = true)
+    private void getBlockInteractionRange(CallbackInfoReturnable<Double> cir) {
+        double originalValue = cir.getReturnValueD();
 
         if (airPlaceFeature.isEnabled()) {
-            float reach5 = AirPlaceFeature.reach.getValue() + 5;
-            return reach5 * reach5;
+            cir.setReturnValue((double) AirPlaceFeature.reach.getValue() + 1);
         } else {
-            return originalValue;
+            cir.setReturnValue(originalValue);
         }
-
     }
 
 }

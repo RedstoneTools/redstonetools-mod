@@ -3,7 +3,6 @@ package tools.redstone.redstonetools.di;
 import com.google.auto.service.AutoService;
 import rip.hippo.inject.DoctorModule;
 import rip.hippo.inject.binding.Binder;
-import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.ReflectionUtils;
 
 @AutoService(DoctorModule.class)

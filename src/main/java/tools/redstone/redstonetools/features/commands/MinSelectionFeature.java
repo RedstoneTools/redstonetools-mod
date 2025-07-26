@@ -2,27 +2,22 @@ package tools.redstone.redstonetools.features.commands;
 
 
 import com.google.auto.service.AutoService;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.datafixers.util.Either;
-import com.sk89q.worldedit.LocalSession;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.fabric.FabricAdapter;
-import com.sk89q.worldedit.fabric.FabricPlayer;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
-import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.features.Feature;
+import tools.redstone.redstonetools.features.feedback.Feedback;
+import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,14 +112,14 @@ public class MinSelectionFeature extends CommandFeature {
         var min = selection.getMinimumPoint();
         var max = selection.getMaximumPoint();
 
-        faces.add(new CuboidRegion(pos1.withX(min.getX()), pos2.withX(min.getX())));
-        faces.add(new CuboidRegion(pos1.withX(max.getX()), pos2.withX(max.getX())));
+        faces.add(new CuboidRegion(pos1.withX(min.x()), pos2.withX(min.x())));
+        faces.add(new CuboidRegion(pos1.withX(max.x()), pos2.withX(max.x())));
 
-        faces.add(new CuboidRegion(pos1.withZ(min.getZ()), pos2.withZ(min.getZ())));
-        faces.add(new CuboidRegion(pos1.withZ(max.getZ()), pos2.withZ(max.getZ())));
+        faces.add(new CuboidRegion(pos1.withZ(min.z()), pos2.withZ(min.z())));
+        faces.add(new CuboidRegion(pos1.withZ(max.z()), pos2.withZ(max.z())));
 
-        faces.add(new CuboidRegion(pos1.withY(min.getY()), pos2.withY(min.getY())));
-        faces.add(new CuboidRegion(pos1.withY(max.getY()), pos2.withY(max.getY())));
+        faces.add(new CuboidRegion(pos1.withY(min.y()), pos2.withY(min.y())));
+        faces.add(new CuboidRegion(pos1.withY(max.y()), pos2.withY(max.y())));
 
         return faces;
     }

@@ -1,20 +1,19 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Vec3d;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.PositionUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+
 import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
 
@@ -35,7 +34,7 @@ public class QuickTpFeature extends CommandFeature {
 
         var targetPosition = getTargetPosition(player);
 
-        player.teleport(targetPosition.x, targetPosition.y, targetPosition.z);
+        player.teleport(targetPosition.x, targetPosition.y, targetPosition.z, false);
 
         return Feedback.none();
     }

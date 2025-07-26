@@ -3,7 +3,6 @@ package tools.redstone.redstonetools.features.toggleable;
 import com.google.auto.service.AutoService;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
@@ -13,19 +12,22 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.Colors;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer;
 import tools.redstone.redstonetools.mixin.accessors.WorldRendererAccessor;
 import tools.redstone.redstonetools.utils.ItemUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 
+import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
 import static tools.redstone.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
+
 
 @AutoService(AbstractFeature.class)
 @Feature(name = "Air Place", description = "Allows you to place blocks in the air.", command = "airplace")
@@ -41,7 +43,7 @@ public class AirPlaceFeature extends ToggleableFeature {
         // rocket boost for elytra
         if (itemStack.getItem() == Items.FIREWORK_ROCKET &&
                 player.getEquippedStack(EquipmentSlot.CHEST).getItem() == Items.ELYTRA &&
-                player.isFallFlying())
+                player.isGliding())
             return false;
 
         return true;
@@ -66,10 +68,8 @@ public class AirPlaceFeature extends ToggleableFeature {
             .withDefault(5.0f);
 
     public static final Argument<Boolean> showOutline = Argument
-            .ofType(BoolSerializer.bool())
+            .ofType(bool())
             .withDefault(true);
-
-    private static final BlockState FULL_BLOCK_STATE = Blocks.BEDROCK.getDefaultState();
 
     {
         // register ghost block renderer
@@ -92,7 +92,8 @@ public class AirPlaceFeature extends ToggleableFeature {
             if (hitResult == null)
                 return true;
             Vec3d pos = hitResult.getPos();
-            BlockPos blockPos = new BlockPos((int) pos.x, (int) pos.y, (int) pos.z);
+            // WHY is it offset by 1 on the x-axis???
+            BlockPos blockPos = new BlockPos((int) pos.x - 1, (int) pos.y, (int) pos.z);
 
             BlockState blockState = ItemUtils.getUseState(client.player,
                     ItemUtils.getMainItem(client.player),
@@ -111,9 +112,12 @@ public class AirPlaceFeature extends ToggleableFeature {
                         context.matrixStack(),
                         consumer,
                         client.player,
-                        camPos.x, camPos.y, camPos.z,
+                        camPos.x,
+                        camPos.y,
+                        camPos.z,
                         blockPos,
-                        blockState
+                        blockState,
+                        ColorHelper.withAlpha(102, Colors.BLACK)
                 );
             } catch (Throwable t) {
                 throw new IllegalStateException(t);

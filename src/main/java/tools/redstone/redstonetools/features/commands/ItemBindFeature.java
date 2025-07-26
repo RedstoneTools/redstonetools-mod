@@ -4,6 +4,8 @@ package tools.redstone.redstonetools.features.commands;
 import com.google.auto.service.AutoService;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtString;
@@ -12,11 +14,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.ItemUtils;
 
 @AutoService(AbstractFeature.class)
 @Feature(command = "itembind", description = "Allows you to bind command to a specific item", name = "Item Bind")
-public class ItemBindFeature extends CommandFeature{
+public class ItemBindFeature extends CommandFeature {
     public static boolean waitingForCommand = false;
     private static ServerPlayerEntity player;
 
@@ -43,8 +44,13 @@ public class ItemBindFeature extends CommandFeature{
             return Feedback.error("You need to be holding an item!");
         }
 
-        mainHandStack.getOrCreateNbt().put("command", NbtString.of(command));
-        ItemUtils.addExtraNBTText(mainHandStack,"Command");
+        var data = mainHandStack.get(DataComponentTypes.CUSTOM_DATA);
+        if (data == null) {
+            data = NbtComponent.DEFAULT;
+        }
+        var nbt = data.copyNbt();
+        nbt.put("command", NbtString.of(command));
+        mainHandStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
 
         waitingForCommand = false;
 

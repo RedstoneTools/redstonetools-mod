@@ -1,13 +1,14 @@
 package tools.redstone.redstonetools.mixin.macros.autocomplete;
 
 import com.mojang.brigadier.suggestion.Suggestions;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatInputSuggestor;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.DrawContext;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -48,6 +49,7 @@ public class CommandSuggestorMixin{
     }
 
 
+    @Unique
     private int i = 0;
 
     @Inject(method = "render", at = @At("HEAD"))
@@ -55,7 +57,7 @@ public class CommandSuggestorMixin{
         i = 0;
     }
 
-    @ModifyVariable(method = "render", at = @At("LOAD"), ordinal = 0)
+    @ModifyVariable(method = "render", at = @At("LOAD"), ordinal = 0, argsOnly = true)
     public int messageYPos(int j) {
         if (MacroCommandSuggestor.instance(this)) {
             int y = MacroCommandSuggestor.getY(this);

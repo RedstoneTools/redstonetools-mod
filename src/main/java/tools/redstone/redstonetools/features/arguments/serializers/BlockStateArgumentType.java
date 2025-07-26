@@ -5,7 +5,6 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.BlockStateArgument;
-import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.registry.Registries;
 
 @AutoService(GenericArgumentType.class)
@@ -42,7 +41,7 @@ public class BlockStateArgumentType extends BrigadierArgumentType<BlockStateArgu
         var builder = new StringBuilder()
                 .append(Registries.BLOCK.getId(block));
 
-        if (state.getProperties().size() == 0) {
+        if (state.getProperties().isEmpty()) {
             return builder.toString();
         }
 
@@ -62,28 +61,6 @@ public class BlockStateArgumentType extends BrigadierArgumentType<BlockStateArgu
         builder.append(']');
 
         return builder.toString();
-    }
-
-    public static class BlockStateArgumentSerializer extends Serializer<BlockStateArgumentType, ArgumentSerializer.ArgumentTypeProperties<BlockStateArgumentType>>{
-
-        @Override
-        public ArgumentTypeProperties<BlockStateArgumentType> getArgumentTypeProperties(BlockStateArgumentType argumentType) {
-            return new Properties();
-        }
-
-        public final class Properties
-                implements ArgumentSerializer.ArgumentTypeProperties<BlockStateArgumentType>{
-
-            @Override
-            public BlockStateArgumentType createType(CommandRegistryAccess commandRegistryAccess) {
-                return new BlockStateArgumentType(commandRegistryAccess);
-            }
-
-            @Override
-            public ArgumentSerializer<BlockStateArgumentType, ?> getSerializer() {
-                return BlockStateArgumentSerializer.this;
-            }
-        }
     }
 
 }

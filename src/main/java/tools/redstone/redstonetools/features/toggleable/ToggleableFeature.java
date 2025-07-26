@@ -1,24 +1,18 @@
 package tools.redstone.redstonetools.features.toggleable;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.context.CommandContext;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager.RegistrationEnvironment;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.features.feedback.FeedbackSender;
-import tools.redstone.redstonetools.utils.ReflectionUtils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
@@ -32,14 +26,10 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static tools.redstone.redstonetools.RedstoneToolsClient.INJECTOR;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -55,9 +45,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
         // load user settings
         // and register save hook
         loadConfig();
-        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
-            saveConfig();
-        });
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfig());
 
         var containsRequiredArguments = ReflectionUtils.getArguments(getClass()).stream()
                 .anyMatch(a -> !a.isOptional());
@@ -110,7 +98,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
                     .executes(context -> {
                         Object value = argument.getValue();
                         return Feedback.success("Option {} of feature {} is set to: {}", name, getName(),
-                                argument.getType().serialize(value)).send(context);
+                                value).send(context);
                     })
                     .then(argument("value", argument.getType()).executes(context -> {
                         Object value = context.getArgument("value", argument.getType().getTypeClass());
@@ -134,11 +122,11 @@ public abstract class ToggleableFeature extends AbstractFeature {
         return enabled;
     }
 
-    public int toggle(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    public int toggle(CommandContext<ServerCommandSource> context) {
         return toggle(context.getSource());
     }
 
-    public int toggle(ServerCommandSource source) throws CommandSyntaxException {
+    public int toggle(ServerCommandSource source) {
         return !enabled ? enable(source) : disable(source);
     }
 
@@ -158,13 +146,13 @@ public abstract class ToggleableFeature extends AbstractFeature {
         onEnable();
     }
 
-    public int enable(ServerCommandSource source) throws CommandSyntaxException {
+    public int enable(ServerCommandSource source) {
         enable();
         Feedback.success("Enabled feature {}", getName()).send(source);
         return 0;
     }
 
-    public int enable(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    public int enable(CommandContext<ServerCommandSource> context) {
         return enable(context.getSource());
     }
 
@@ -173,13 +161,13 @@ public abstract class ToggleableFeature extends AbstractFeature {
         onDisable();
     }
 
-    public int disable(ServerCommandSource source) throws CommandSyntaxException {
+    public int disable(ServerCommandSource source) {
         disable();
         Feedback.success("Disabled feature {}", getName()).send(source);
         return 0;
     }
 
-    public int disable(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    public int disable(CommandContext<ServerCommandSource> context) {
         return disable(context.getSource());
     }
 
@@ -212,7 +200,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
                         continue;
 
                     String valueString = object.get(argument.getName()).getAsString();
-                    Object value = argument.getType().deserialize(valueString);
+                    Object value = argument.getType().parse(new StringReader(valueString));
 
                     argument.setValue(value);
                 }
@@ -230,7 +218,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
     }
 
     /** Saves the configuration to the disk. */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes"})
     public void saveConfig() {
         try {
             if (!Files.exists(configFile)) {
@@ -243,8 +231,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("enabled", Boolean.toString(enabled));
             for (Argument argument : arguments) {
-                Object value = argument.getValue();
-                String valueSerialized = (String) argument.getType().serialize(value);
+                String valueSerialized = argument.getValue().toString();
 
                 jsonObject.addProperty(argument.getName(), valueSerialized);
             }

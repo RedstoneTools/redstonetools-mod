@@ -44,8 +44,8 @@ public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
         return macroFromName == null || macro.isCopyOf(macroFromName);
     }
 
-    protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 20;
+    protected int getScrollbarX() {
+        return super.getScrollbarX() + 20;
     }
 
 
@@ -56,7 +56,7 @@ public class MacroListWidget extends AlwaysSelectedEntryListWidget<MacroEntry> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        MacroEntry entry = super.getEntryAtPosition(width/2,mouseY);
+        MacroEntry entry = super.getEntryAtPosition((double) width / 2, mouseY);
         if (entry != null) entry.mouseClickedInRow(mouseX,mouseY,button);
 
         return super.mouseClicked(mouseX, mouseY, button);

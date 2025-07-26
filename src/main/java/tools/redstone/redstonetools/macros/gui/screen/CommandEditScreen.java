@@ -34,7 +34,6 @@ public class CommandEditScreen extends GameOptionsScreen {
 
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         parent.render(context, mouseX, mouseY, delta);
-        context.getMatrices().translate(0,0,0.03F);
 
         context.fillGradient( 0, 0, this.width, this.height, -1072689136, -804253680);
 
@@ -55,6 +54,11 @@ public class CommandEditScreen extends GameOptionsScreen {
     @Override
     public void resize(MinecraftClient client, int width, int height) {
         parent.resize(client,width,height);
+    }
+
+    @Override
+    protected void addOptions() {
+
     }
 
     @Override

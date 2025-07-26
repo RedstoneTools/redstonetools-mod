@@ -1,16 +1,15 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.google.auto.service.AutoService;
+import com.mojang.datafixers.util.Either;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.arguments.Argument;
 import tools.redstone.redstonetools.features.feedback.Feedback;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.BlockInfo;
-import tools.redstone.redstonetools.utils.ColoredBlock;
-import com.mojang.datafixers.util.Either;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.utils.ColoredBlockType;
 
 import javax.annotation.Nullable;
@@ -30,7 +29,7 @@ public class ColoredFeature extends PickBlockFeature {
     protected Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) {
         var color = blockInfo == null
                 ? BlockColor.WHITE
-                : BlockColor.fromBlock(blockInfo.block);
+                : BlockColor.fromBlock(blockInfo.block());
 
         var coloredBlock = blockType.getValue().withColor(color);
 

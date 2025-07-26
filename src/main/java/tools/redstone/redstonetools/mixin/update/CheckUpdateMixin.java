@@ -5,9 +5,12 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.PressableTextWidget;
-import net.minecraft.text.*;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -23,9 +26,12 @@ import static tools.redstone.redstonetools.RedstoneToolsClient.MOD_VERSION;
 
 @Mixin(TitleScreen.class)
 public class CheckUpdateMixin extends Screen {
+    @Unique
     private static boolean updateChecked = false;
 
+    @Unique
     private static MutableText updateStatus = (MutableText) Text.of("Redstone Tools Version: " + MOD_VERSION + "(Bug found, report on Github)");
+    @Unique
     private static URI uri;
     public CheckUpdateMixin() {
         super(Text.of("UpdateText(Bug found, report on Github)"));
@@ -72,7 +78,7 @@ public class CheckUpdateMixin extends Screen {
             } else {
                 LOGGER.info("Found newer version, current version: " + RedstoneToolsClient.MOD_VERSION + ", new version: " + newVersion);
                 updateStatus = (MutableText) Text.of("Redstone Tools " + MOD_VERSION + " (");
-                updateStatus.append(Text.of("Click to Update").getWithStyle(underline.withUnderline(true)).get(0));
+                updateStatus.append(Text.of("Click to Update").getWithStyle(underline.withUnderline(true)).getFirst());
                 updateStatus.append(")");
             }
 
@@ -86,6 +92,6 @@ public class CheckUpdateMixin extends Screen {
 
     @Inject(method="init", at = @At("HEAD"))
     public void updateTextInjection(CallbackInfo ci){
-        this.addDrawableChild(new PressableTextWidget(4,4, textRenderer.getWidth(updateStatus), textRenderer.fontHeight,updateStatus,button -> {Util.getOperatingSystem().open(uri);},textRenderer));
+        this.addDrawableChild(new PressableTextWidget(4, 4, textRenderer.getWidth(updateStatus), textRenderer.fontHeight, updateStatus, button -> Util.getOperatingSystem().open(uri), textRenderer));
     }
 }

@@ -1,15 +1,15 @@
 package tools.redstone.redstonetools.macros.gui.widget.commandlist;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.macros.gui.MacroCommandSuggestor;
 import tools.redstone.redstonetools.macros.gui.screen.MacroEditScreen;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.EntryListWidget;
 import tools.redstone.redstonetools.macros.gui.widget.IconButtonWidget;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 
     protected void removeCommand(CommandEntry command) {
         removeEntry(command);
-        setScrollAmount(getScrollAmount());
+        setScrollY(getScrollY());
     }
 
     protected int getScrollbarPositionX() {
@@ -123,10 +123,6 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
         return width;
     }
 
-    public int getWidth() {
-        return this.width;
-    }
-
     @Override
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 
@@ -147,9 +143,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
             command.setMaxLength(255);
             command.setText(text);
 
-            deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0,0,20,20,Text.empty(),(button) -> {
-                this.owner.removeCommand(this);
-            },null);
+            deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON, 0, 0, 20, 20, Text.empty(), (button) -> this.owner.removeCommand(this), null);
 
             MacroCommandSuggestor commandMacroCommandSuggestor = new MacroCommandSuggestor(client, owner.getParent(), command,client.textRenderer,true,false, 0,0,0);
             commandMacroCommandSuggestor.setWindowActive(false);

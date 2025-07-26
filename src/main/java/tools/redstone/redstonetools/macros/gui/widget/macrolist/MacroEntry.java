@@ -30,12 +30,8 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
             buttonWidget.onPress();
         }
 
-        deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON,0, 0, 20, 20 ,Text.of(""), (button) -> {
-            deleteIfConfirmed();
-        },null);
-        editButton = new IconButtonWidget(IconButtonWidget.PENCIL_ICON,0, 0, 20, 20, Text.of(""), (button) -> {
-            owner.parent.openEditScreen(this);
-        },null);
+        deleteButton = new IconButtonWidget(IconButtonWidget.CROSS_ICON, 0, 0, 20, 20, Text.of(""), (button) -> deleteIfConfirmed(), null);
+        editButton = new IconButtonWidget(IconButtonWidget.PENCIL_ICON, 0, 0, 20, 20, Text.of(""), (button) -> owner.parent.openEditScreen(this), null);
     }
 
 
@@ -78,8 +74,6 @@ public class MacroEntry extends AlwaysSelectedEntryListWidget.Entry<MacroEntry>{
         if (clickWidget(buttonWidget, mouseX, mouseY)) macro.enabled = buttonWidget.isChecked();
         clickWidget(editButton,mouseX,mouseY);
         clickWidget(deleteButton,mouseX,mouseY);
-
-
     }
 
 

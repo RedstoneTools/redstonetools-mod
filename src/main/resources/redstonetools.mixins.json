@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "tools.redstone.redstonetools.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "injectors": {
     "defaultRequire": 1
   },
@@ -10,12 +10,10 @@
     "blocks.RedstoneHitboxMixin",
     "features.AirPlaceServerMixin",
     "features.AutoDustMixin",
-    "features.CopyStateMixin",
     "features.ItemBindMixin$ItemStackMixin",
     "gamerules.DoContainerDropsMixin"
   ],
   "client": [
-    "accessors.MinecraftClientAccessor",
     "accessors.WorldRendererAccessor",
     "features.AirPlaceClientMixin",
     "features.ItemBindMixin$NetworkHandlerMixin",
