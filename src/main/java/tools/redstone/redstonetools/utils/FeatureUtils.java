@@ -24,6 +24,7 @@ public class FeatureUtils {
     public static <T> T getFeature(Class<T> clazz) {
         if (features == null) {
             Set<AbstractFeature> FEATURES = new HashSet<>();
+            FEATURES.add(new BinaryBlockReadFeature());
             FEATURES.add(new BigDustFeature());
             FEATURES.add(new AutoDustFeature());
             FEATURES.add(new AirPlaceFeature());
