@@ -13,12 +13,14 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistratio
 
 public class Commands {
 	public static void registerCommands() {
-		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("edit-macros")
-				.executes(commandContext -> {
-					MinecraftClient.getInstance().setScreen(new MacrosScreen(MinecraftClient.getInstance().currentScreen, MacroManager.getMacros()));
-					return 1;
-				})));
+//		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("edit-macros")
+//				.executes(commandContext -> {
+//					MinecraftClient.getInstance().setScreen(new MacrosScreen(MinecraftClient.getInstance().currentScreen, MacroManager.getMacros()));
+//					return 1;
+//				})));
+		// for some reason setScreen doesn't work in commands. sucks.
 
+		BinaryBlockReadFeature.registerCommand();
 		BaseConvertFeature.registerCommand();
 		UpdateFeature.registerCommand();
 		ColorCodeFeature.registerCommand();

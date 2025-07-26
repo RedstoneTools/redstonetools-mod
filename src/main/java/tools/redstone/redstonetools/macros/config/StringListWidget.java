@@ -54,6 +54,7 @@ public class StringListWidget extends ElementListWidget<StringListWidget.Entry> 
 					0,0, rowWidth - deleteBtnWidth - 4, 20,
 					Text.literal("cmd")
 			);
+			field.setMaxLength(255); // randomly chosen number.
 			field.setText(backing.get(idx));
 			field.setChangedListener(s -> backing.set(idx, s));
 

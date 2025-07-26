@@ -147,6 +147,7 @@ public class MacroManager extends AbstractFeature {
                 createCommandMacro("itembind", new String[] {"itembind"}),
                 createCommandMacro("minsel", new String[] {"minsel"}),
                 createCommandMacro("quicktp", new String[] {"quicktp 50 false false"}),
+                createCommandMacro("binaryblockread", new String[] {"binaryblockread 2 redstone_lamp 10 false"}),
 //                createCommandMacro("rstack", new String[] {"rstack me"}), // why was this a thing originally
                 createCommandMacro("update", new String[] {"update"})
         );
