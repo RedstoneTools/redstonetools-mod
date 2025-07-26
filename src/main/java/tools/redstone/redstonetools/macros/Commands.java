@@ -32,7 +32,7 @@ public class Commands {
 		QuickTpFeature.registerCommand();
 		RStackFeature.registerCommand();
 		SignalStrengthBlockFeature.registerCommand();
-
+		GiveMeFeature.registerCommand();
 		AirPlaceFeature.registerCommand();
 		BigDustFeature.registerCommand();
 		AutoDustFeature.registerCommand();

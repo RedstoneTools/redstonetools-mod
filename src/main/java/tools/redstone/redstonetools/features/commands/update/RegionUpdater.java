@@ -13,10 +13,8 @@ public class RegionUpdater {
             for (int y = minPos.y() - 1; y <= maxPos.y() + 1; y++) {
                 for (int z = minPos.z() - 1; z <= maxPos.z() + 1; z++) {
                     BlockPos pos = new BlockPos(x, y, z);
-
-                    world.updateNeighbors(new BlockPos(x, y, z), world.getBlockState(pos).getBlock());
+                    world.updateNeighbors(pos, world.getBlockState(pos).getBlock());
                     blockCount++;
-
                 }
             }
         }

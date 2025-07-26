@@ -9,6 +9,7 @@ import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.argumenthelpers.BlockColorArgumentHelper;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.ColoredBlock;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.EditSession;
@@ -32,12 +33,12 @@ public class ColorCodeFeature extends AbstractFeature {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("colorcode")
                 .then(argument("color", StringArgumentType.string())
                 .then(argument("onlyColor", StringArgumentType.string()))
-                .executes(ColorCodeFeature::execute))));
+                .executes(context -> FeatureUtils.getFeature(ColorCodeFeature.class).execute(context)))));
     }
-    public static BlockColor color;
-    public static BlockColor onlyColor;
+    public BlockColor color;
+    public BlockColor onlyColor;
 
-    private static boolean shouldBeColored(World world, BlockVector3 pos, BlockColor onlyColor) {
+    private boolean shouldBeColored(World world, BlockVector3 pos, BlockColor onlyColor) {
         var state = world.getBlock(pos);
         var blockId = state.getBlockType().id();
 
@@ -50,7 +51,7 @@ public class ColorCodeFeature extends AbstractFeature {
         return blockColor == onlyColor;
     }
 
-    private static BaseBlock getColoredBlock(World world, BlockVector3 pos, BlockColor color) {
+    private BaseBlock getColoredBlock(World world, BlockVector3 pos, BlockColor color) {
         var state = world.getBlock(pos);
         var blockId = state.getBlockType().id();
 
@@ -63,8 +64,8 @@ public class ColorCodeFeature extends AbstractFeature {
         return blockType.getDefaultState().toBaseBlock();
     }
 
-    protected static int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ColorCodeFeature.color = BlockColorArgumentHelper.getBlockColor(context, "color");
+    protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        color = BlockColorArgumentHelper.getBlockColor(context, "color");
         var player = context.getSource().getPlayer();
 
         var selection = WorldEditUtils.getSelection(player);

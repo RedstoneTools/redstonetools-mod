@@ -39,6 +39,7 @@ public class FeatureUtils {
             FEATURES.add(new ColorCodeFeature());
             FEATURES.add(new BaseConvertFeature());
             FEATURES.add(new UpdateFeature());
+            FEATURES.add(new GiveMeFeature());
             if (clazz == MacroManager.class) FEATURES.add(new MacroManager());
             features = FEATURES;
         }
@@ -49,7 +50,7 @@ public class FeatureUtils {
                 .findFirst();
 
         if (found.isEmpty()) {
-            System.out.println("Add this one: " + clazz.getName());
+            System.out.println("Add " + clazz.getSimpleName() + " to FeatureUtils");
             throw new RuntimeException();
         }
         return found.orElseThrow();

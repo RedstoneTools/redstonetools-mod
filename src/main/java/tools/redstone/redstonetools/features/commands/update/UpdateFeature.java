@@ -4,6 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 import java.util.Objects;
@@ -13,7 +14,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class UpdateFeature extends AbstractFeature {
 	public static void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("update")
-				.executes(context -> new UpdateFeature().execute(context))));
+				.executes(context -> FeatureUtils.getFeature(UpdateFeature.class).execute(context))));
 	}
 
 	protected int execute(CommandContext<ServerCommandSource> context)
