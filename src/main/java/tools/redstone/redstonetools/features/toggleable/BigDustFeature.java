@@ -13,14 +13,15 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class BigDustFeature extends ToggleableFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("bigdust")
-                        .then(argument("heightInPixels", IntegerArgumentType.integer(1, 16)))
-                .executes(context -> FeatureUtils.getFeature(BigDustFeature.class).toggle(context))));
+                .then(argument("heightInPixels", IntegerArgumentType.integer(1, 16))
+                .executes(context -> FeatureUtils.getFeature(BigDustFeature.class).toggle(context)))));
     }
     public static int heightInPixels;
     @Override
 
     public int toggle(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         heightInPixels = IntegerArgumentType.getInteger(context, "heightInPixels");
-        return super.toggle(context);
+        super.toggle(context);
+        return 1;
     }
 }

@@ -32,9 +32,11 @@ import static net.minecraft.server.command.CommandManager.literal;
 public abstract class AutoDustMixin {
     @Inject(method = "onPlaced", at = @At("TAIL"))
     private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-	    if (!FeatureUtils.getFeature(AutoDustFeature.class).isEnabled()) {
+	    if (!FeatureUtils.getFeature(AutoDustFeature.class).isEnabled() || world.isClient) {
             return;
         }
+
+        System.out.println("AD mixin ran");
 
         var dustPos = pos.up();
         var block = world.getBlockState(pos).getBlock();

@@ -139,7 +139,16 @@ public class MacroManager extends AbstractFeature {
                         "gamerule doContainerDrops false",
                         "time set noon",
                         "weather clear"
-                })
+                }),
+                createCommandMacro("airplace", new String[] {"airplace"}),
+                createCommandMacro("autodust", new String[] {"autodust"}),
+                createCommandMacro("bigdust", new String[] {"bigdust 3"}),
+                createCommandMacro("copystate", new String[] {"copystate"}),
+                createCommandMacro("itembind", new String[] {"itembind"}),
+                createCommandMacro("minsel", new String[] {"minsel"}),
+                createCommandMacro("quicktp", new String[] {"quicktp 50 false false"}),
+//                createCommandMacro("rstack", new String[] {"rstack me"}), // why was this a thing originally
+                createCommandMacro("update", new String[] {"update"})
         );
     }
 

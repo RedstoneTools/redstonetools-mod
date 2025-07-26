@@ -5,6 +5,8 @@ import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
+import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
+import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 import tools.redstone.redstonetools.macros.gui.malilib.MacrosScreen;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.*;
@@ -30,5 +32,7 @@ public class Commands {
 		SignalStrengthBlockFeature.registerCommand();
 
 		AirPlaceFeature.registerCommand();
+		BigDustFeature.registerCommand();
+		AutoDustFeature.registerCommand();
 	}
 }

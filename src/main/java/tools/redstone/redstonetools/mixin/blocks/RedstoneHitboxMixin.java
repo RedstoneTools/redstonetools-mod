@@ -16,20 +16,13 @@ import tools.redstone.redstonetools.utils.FeatureUtils;
 
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneHitboxMixin {
-    @Unique
-    private static BigDustFeature bigDustFeature;
-
     // use array for better performance
     @Unique
     private static final VoxelShape[] SHAPES = new VoxelShape[16];
 
     @Inject(method="getOutlineShape", at = @At("HEAD"), cancellable = true)
     public void getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
-        if (bigDustFeature == null) {
-            bigDustFeature = FeatureUtils.getFeature(BigDustFeature.class);
-        }
-
-        if (bigDustFeature.isEnabled()) {
+        if (FeatureUtils.getFeature(BigDustFeature.class).isEnabled()) {
             cir.setReturnValue(SHAPES[BigDustFeature.heightInPixels - 1]);
         }
     }
@@ -39,5 +32,4 @@ public class RedstoneHitboxMixin {
             SHAPES[i - 1] = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, i, 16.0);
         }
     }
-
 }

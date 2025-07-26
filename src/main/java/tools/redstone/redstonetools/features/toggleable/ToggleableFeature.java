@@ -97,7 +97,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
 
     public int enable(ServerCommandSource source) throws CommandSyntaxException {
         enable();
-        source.sendMessage(Text.literal("Enabled feature %s".formatted(getClass().getName())));
+        source.sendMessage(Text.literal("Enabled feature %s".formatted(this.getClass().getSimpleName())));
         return 0;
     }
 
@@ -112,7 +112,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
 
     public int disable(ServerCommandSource source) throws CommandSyntaxException {
         disable();
-        source.sendMessage(Text.literal("Disabled feature %s".formatted(getClass().getName())));
+        source.sendMessage(Text.literal("Disabled feature %s".formatted(this.getClass().getSimpleName())));
         return 0;
     }
 
