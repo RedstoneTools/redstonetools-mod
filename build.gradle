@@ -1,7 +1,7 @@
 //file:noinspection GroovyAssignabilityCheck
 
 plugins {
-	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id 'fabric-loom' version '1.11-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.github.johnrengelman.shadow' version '8.+'
 }
@@ -50,7 +50,7 @@ dependencies {
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// Worldedit API
-	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.21.5:7.4.0-SNAPSHOT")
+	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.21.7:7.4.0-SNAPSHOT")
 }
 
 processResources {

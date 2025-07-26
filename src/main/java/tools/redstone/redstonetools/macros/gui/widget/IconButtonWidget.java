@@ -2,9 +2,9 @@ package tools.redstone.redstonetools.macros.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.text.Text;
@@ -27,13 +27,12 @@ public class IconButtonWidget extends ButtonWidget {
 
         TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
         AbstractTexture abstractTexture = textureManager.getTexture(texture);
-        RenderSystem.setShaderTexture(0, abstractTexture.getGlTexture());
+        RenderSystem.setShaderTexture(0, abstractTexture.getGlTextureView());
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        context.drawTexture(RenderLayer::getGuiTextured, this.texture, this.getX(), this.getY(), 0, 0, 20, this.height, 20, 20);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, this.texture, this.getX(), this.getY(), 0, 0, 20, this.height, 20, 20);
     }
 
 }
