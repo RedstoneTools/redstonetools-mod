@@ -31,6 +31,7 @@ public class ColorCodeFeature extends AbstractFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("colorcode")
                 .then(argument("color", BlockColorArgumentType.blockcolor())
+                .executes(context -> FeatureUtils.getFeature(ColorCodeFeature.class).execute(context))
                 .then(argument("onlyColor", BlockColorArgumentType.blockcolor())
                 .executes(context -> FeatureUtils.getFeature(ColorCodeFeature.class).execute(context))))));
     }
@@ -65,9 +66,11 @@ public class ColorCodeFeature extends AbstractFeature {
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         color = BlockColorArgumentType.getBlockColor(context, "color");
-        onlyColor = BlockColorArgumentType.getBlockColor(context, "onlyColor");
-        System.out.println(color.name());
-        System.out.println(onlyColor.name());
+        try {
+            onlyColor = BlockColorArgumentType.getBlockColor(context, "onlyColor");
+        } catch (Exception ignored) {
+            onlyColor = null;
+        }
         var player = context.getSource().getPlayer();
 
         var selection = WorldEditUtils.getSelection(player);
