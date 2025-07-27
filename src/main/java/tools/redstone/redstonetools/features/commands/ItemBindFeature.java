@@ -79,7 +79,7 @@ public class ItemBindFeature extends AbstractFeature {
 
         waitingForCommand = false;
 
-		player.sendMessage(Text.literal("Successfully bound command: '%s' to this item (%s)!".formatted(command, mainHandStack.getItem())));
+		player.sendMessage(Text.literal("Successfully bound command: '%s' to this item (%s)!".formatted(command, mainHandStack.getItem().getName().getString())));
 
     }
 }
