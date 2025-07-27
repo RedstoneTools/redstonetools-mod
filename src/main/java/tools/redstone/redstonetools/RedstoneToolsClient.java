@@ -3,13 +3,17 @@ package tools.redstone.redstonetools;
 import com.mojang.serialization.Codec;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
 import net.minecraft.component.ComponentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.redstone.redstonetools.features.commands.argument.BlockColorArgumentType;
+import tools.redstone.redstonetools.features.commands.serializer.BlockColorArgumentSerializer;
 import tools.redstone.redstonetools.macros.Commands;
 import tools.redstone.redstonetools.macros.gui.malilib.InitHandler;
 
@@ -46,5 +50,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
         // Register commands
         InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
         Commands.registerCommands();
+        ArgumentTypeRegistry.registerArgumentType(Identifier.of("blockcolor"), BlockColorArgumentType.class, ConstantArgumentSerializer.of(BlockColorArgumentType::blockcolor));
+//        Registry.register(Registries.COMMAND_ARGUMENT_TYPE, Identifier.of("blockcolor"), new BlockColorArgumentSerializer());
     }
 }

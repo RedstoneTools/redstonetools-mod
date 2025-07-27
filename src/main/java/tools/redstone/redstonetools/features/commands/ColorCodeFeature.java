@@ -1,12 +1,11 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.commands.argumenthelpers.BlockColorArgumentHelper;
+import tools.redstone.redstonetools.features.commands.argument.BlockColorArgumentType;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.ColoredBlock;
 import tools.redstone.redstonetools.utils.FeatureUtils;
@@ -31,9 +30,9 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class ColorCodeFeature extends AbstractFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("colorcode")
-                .then(argument("color", StringArgumentType.string())
-                .then(argument("onlyColor", StringArgumentType.string()))
-                .executes(context -> FeatureUtils.getFeature(ColorCodeFeature.class).execute(context)))));
+                .then(argument("color", BlockColorArgumentType.blockcolor())
+                .then(argument("onlyColor", BlockColorArgumentType.blockcolor())
+                .executes(context -> FeatureUtils.getFeature(ColorCodeFeature.class).execute(context))))));
     }
     public BlockColor color;
     public BlockColor onlyColor;
@@ -65,7 +64,10 @@ public class ColorCodeFeature extends AbstractFeature {
     }
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        color = BlockColorArgumentHelper.getBlockColor(context, "color");
+        color = BlockColorArgumentType.getBlockColor(context, "color");
+        onlyColor = BlockColorArgumentType.getBlockColor(context, "onlyColor");
+        System.out.println(color.name());
+        System.out.println(onlyColor.name());
         var player = context.getSource().getPlayer();
 
         var selection = WorldEditUtils.getSelection(player);
