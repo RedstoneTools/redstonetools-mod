@@ -22,7 +22,7 @@ public class GiveMeFeature extends AbstractFeature {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("g")
                 .then(argument("item", ItemStackArgumentType.itemStack(registryAccess))
                 .executes(context -> FeatureUtils.getFeature(GiveMeFeature.class).execute(context, ItemStackArgumentType.getItemStackArgument(context, "item"), 1))
-                .then(argument("count", IntegerArgumentType.integer(0, 64))
+                .then(argument("count", IntegerArgumentType.integer(0, 99))
                 .executes(context -> FeatureUtils.getFeature(GiveMeFeature.class).execute(context, ItemStackArgumentType.getItemStackArgument(context, "item"), IntegerArgumentType.getInteger(context, "count")))))));
     }
 
@@ -31,7 +31,13 @@ public class GiveMeFeature extends AbstractFeature {
         ItemStack stack = itemArgument.createStack(count, false);
         if (player != null) {
             stack.setCount(count);
-            player.getInventory().setStack(player.getInventory().getEmptySlot(), stack);
+            if (player.getInventory().getEmptySlot() != -1) {
+                player.getInventory().setStack(player.getInventory().getEmptySlot(), stack);
+//                player.getInventory().markDirty();
+                context.getSource().sendMessage(Text.of("Gave %s of %s to %s".formatted(count, itemArgument.getItem().getName().getString(), player.getName().getString())));
+            } else {
+                context.getSource().sendMessage(Text.of("Inventory full!"));
+            }
         } else
             context.getSource().sendMessage(Text.of("Player not found."));
         return 0;
