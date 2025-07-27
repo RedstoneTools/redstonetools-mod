@@ -1,11 +1,10 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import tools.redstone.redstonetools.features.commands.argumenthelpers.ColoredBlockTypeArgumentHelper;
+import tools.redstone.redstonetools.features.commands.argument.ColoredBlockTypeArgumentType;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import net.minecraft.item.ItemStack;
@@ -19,7 +18,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistratio
 public class ColoredFeature extends PickBlockFeature {
     public static void registerCommand() {
         EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("colored")
-                .then(ClientCommandManager.argument("blockType", StringArgumentType.string())
+                .then(ClientCommandManager.argument("blockType", ColoredBlockTypeArgumentType.coloredblocktype())
                 .executes(context -> FeatureUtils.getFeature(ColoredFeature.class).execute(context)))));
     }
     public static ColoredBlockType blockType;
@@ -38,7 +37,7 @@ public class ColoredFeature extends PickBlockFeature {
     }
     @Override
     protected int execute(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
-        blockType = ColoredBlockTypeArgumentHelper.getColoredBlockType(context, "blockType");
+        blockType = ColoredBlockTypeArgumentType.getColoredBlockType(context, "blockType");
         return super.execute(context, blockInfo);
     }
 }

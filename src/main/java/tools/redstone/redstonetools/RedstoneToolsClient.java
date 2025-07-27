@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.redstone.redstonetools.features.commands.argument.BlockColorArgumentType;
-import tools.redstone.redstonetools.features.commands.serializer.BlockColorArgumentSerializer;
+import tools.redstone.redstonetools.features.commands.argument.ColoredBlockTypeArgumentType;
 import tools.redstone.redstonetools.macros.Commands;
 import tools.redstone.redstonetools.macros.gui.malilib.InitHandler;
 
@@ -50,7 +50,8 @@ public class RedstoneToolsClient implements ClientModInitializer {
         // Register commands
         InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
         Commands.registerCommands();
-        ArgumentTypeRegistry.registerArgumentType(Identifier.of("blockcolor"), BlockColorArgumentType.class, ConstantArgumentSerializer.of(BlockColorArgumentType::blockcolor));
+        ArgumentTypeRegistry.registerArgumentType(Identifier.of("blockcolor"),             BlockColorArgumentType.class, ConstantArgumentSerializer.of(BlockColorArgumentType::blockcolor));
+        ArgumentTypeRegistry.registerArgumentType(Identifier.of("coloredblocktype"), ColoredBlockTypeArgumentType.class, ConstantArgumentSerializer.of(ColoredBlockTypeArgumentType::coloredblocktype));
 //        Registry.register(Registries.COMMAND_ARGUMENT_TYPE, Identifier.of("blockcolor"), new BlockColorArgumentSerializer());
     }
 }

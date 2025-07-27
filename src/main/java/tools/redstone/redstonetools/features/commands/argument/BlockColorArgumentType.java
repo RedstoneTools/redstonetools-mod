@@ -57,7 +57,6 @@ public class BlockColorArgumentType implements ArgumentType<BlockColor> {
                 throw new SimpleCommandExceptionType(Text.literal("Could not resolve block color!")).create();
                 }
             };
-        System.out.println("got to 2");
         return color;
     }
 
