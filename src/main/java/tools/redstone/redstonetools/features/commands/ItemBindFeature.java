@@ -32,7 +32,7 @@ public class ItemBindFeature extends AbstractFeature {
                     if (BoolArgumentType.getBool(context, "reset")) {
                         if (context.getSource().getPlayer() != null) {
                             context.getSource().getPlayer().getMainHandStack().remove(RedstoneToolsClient.COMMAND_COMPONENT);
-                            context.getSource().getPlayer().getMainHandStack().remove(DataComponentTypes.LORE);
+                            context.getSource().getPlayer().getMainHandStack().set(DataComponentTypes.LORE, Items.STONE.getDefaultStack().get(DataComponentTypes.LORE));
                             context.getSource().sendMessage(Text.of("Successfully removed command from the item in your main hand"));
                         } else {
                             context.getSource().sendMessage(Text.of("You need to be holding an item in your main hand!"));
