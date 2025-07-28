@@ -1,7 +1,6 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -21,7 +20,7 @@ import com.sk89q.worldedit.regions.Region;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.commands.argumenthelpers.DirectionArgumentHelper;
+import tools.redstone.redstonetools.features.commands.argument.DirectionArgumentType;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.util.Objects;
@@ -35,7 +34,7 @@ public class RStackFeature extends AbstractFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("rstack")
                 .then(argument("count", IntegerArgumentType.integer())
-                .then(argument("direction", StringArgumentType.string())
+                .then(argument("direction", DirectionArgumentType.direction())
                 .then(argument("offset", IntegerArgumentType.integer())
                 .executes(context -> FeatureUtils.getFeature(RStackFeature.class).execute(context)))))));
 
@@ -43,7 +42,7 @@ public class RStackFeature extends AbstractFeature {
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         int count = IntegerArgumentType.getInteger(context, "count");
-        var direction = DirectionArgumentHelper.getDirection(context, "direction");
+        var direction = DirectionArgumentType.getDirection(context, "direction");
         int offset = IntegerArgumentType.getInteger(context, "offset");
         var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
 
