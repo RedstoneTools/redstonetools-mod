@@ -6,7 +6,7 @@ import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.network.PacketByteBuf;
 import tools.redstone.redstonetools.features.commands.argument.DirectionArgumentType;
 
-public class DirectionArgumentSerializer  implements ArgumentSerializer<DirectionArgumentType, DirectionArgumentSerializer.Properties> {
+public class DirectionArgumentSerializer implements ArgumentSerializer<DirectionArgumentType, DirectionArgumentSerializer.Properties> {
     public void writePacket(DirectionArgumentSerializer.Properties properties, PacketByteBuf packetByteBuf) {
     }
 

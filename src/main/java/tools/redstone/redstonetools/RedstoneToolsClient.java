@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import tools.redstone.redstonetools.features.commands.argument.BlockColorArgumentType;
 import tools.redstone.redstonetools.features.commands.argument.ColoredBlockTypeArgumentType;
 import tools.redstone.redstonetools.features.commands.argument.DirectionArgumentType;
+import tools.redstone.redstonetools.features.commands.argument.SignalBlockArgumentType;
 import tools.redstone.redstonetools.macros.Commands;
 import tools.redstone.redstonetools.macros.gui.malilib.InitHandler;
 
@@ -54,6 +55,7 @@ public class RedstoneToolsClient implements ClientModInitializer {
         ArgumentTypeRegistry.registerArgumentType(Identifier.of("blockcolor"),             BlockColorArgumentType.class, ConstantArgumentSerializer.of(BlockColorArgumentType::blockcolor));
         ArgumentTypeRegistry.registerArgumentType(Identifier.of("coloredblocktype"), ColoredBlockTypeArgumentType.class, ConstantArgumentSerializer.of(ColoredBlockTypeArgumentType::coloredblocktype));
         ArgumentTypeRegistry.registerArgumentType(Identifier.of("direction"),               DirectionArgumentType.class, ConstantArgumentSerializer.of(DirectionArgumentType::direction));
+        ArgumentTypeRegistry.registerArgumentType(Identifier.of("signalblock"),           SignalBlockArgumentType.class, ConstantArgumentSerializer.of(SignalBlockArgumentType::signalblock));
 //        Registry.register(Registries.COMMAND_ARGUMENT_TYPE, Identifier.of("blockcolor"), new BlockColorArgumentSerializer());
     }
 }

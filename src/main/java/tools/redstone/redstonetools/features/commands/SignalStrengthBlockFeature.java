@@ -1,25 +1,15 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.block.Blocks;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ContainerComponent;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registries;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.commands.argumenthelpers.SignalBlockArgumentHelper;
+import tools.redstone.redstonetools.features.commands.argument.SignalBlockArgumentType;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.SignalBlock;
 
@@ -33,13 +23,13 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("ssb")
                 .then(argument("signalStrength", IntegerArgumentType.integer())
-                .then(argument("block", StringArgumentType.string())
+                .then(argument("block", SignalBlockArgumentType.signalblock())
                 .executes(context -> FeatureUtils.getFeature(SignalStrengthBlockFeature.class).execute(context))))));
     }
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         int signalStrength = IntegerArgumentType.getInteger(context, "signalStrength");
-        SignalBlock block = SignalBlockArgumentHelper.getSignalBlock(context, "block");
+        SignalBlock block = SignalBlockArgumentType.getSignalBlock(context, "block");
         try {
             ItemStack itemStack = block.getItemStack(signalStrength);
             Objects.requireNonNull(context.getSource().getPlayer()).giveItemStack(itemStack);
