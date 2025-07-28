@@ -44,7 +44,8 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
                     "Why would you want this??", "Wtf are you going to use this for?", "What for?",
                     "... Ok, if you're sure.", "I'm 99% sure you could just use any other block.",
                     "This seems unnecessary.", "Is that a typo?", "Do you just like the glint?",
-                    "Wow, what a fancy but otherwise useless barrel.", "For decoration?"};
+                    "Wow, what a fancy but otherwise useless " + block.name().toLowerCase().replace("_", " ") + "."
+                    , "For decoration?"};
             context.getSource().sendMessage(Text.literal(funny[new Random().nextInt(funny.length)]));
             return 1;
         }
