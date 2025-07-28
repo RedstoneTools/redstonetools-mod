@@ -112,21 +112,17 @@ public class AirPlaceFeature extends ToggleableFeature {
             Camera camera = client.gameRenderer.getCamera();
             Vec3d camPos = camera.getPos();
 
-            try {
-                VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.getLines());
+            VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.getLines());
 
-                ((WorldRendererInvoker)(context.worldRenderer())).invokeDrawBlockOutline(
-                        context.matrixStack(),
-                        consumer,
-                        client.player,
-                        camPos.x, camPos.y, camPos.z,
-                        blockPos,
-                        blockState,
-                        Colors.BLACK
-                );
-            } catch (Throwable t) {
-                throw new IllegalStateException(t);
-            }
+            ((WorldRendererInvoker)(context.worldRenderer())).invokeDrawBlockOutline(
+                    context.matrixStack(),
+                    consumer,
+                    client.player,
+                    camPos.x, camPos.y, camPos.z,
+                    blockPos,
+                    blockState,
+                    Colors.BLACK
+            );
 
             return true;
         });
