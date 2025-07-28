@@ -43,8 +43,6 @@ repositories {
 }
 
 dependencies {
-	// Doctor (dependency-injection)
-	include implementation("rip.hippo:Doctor:1.0.1")
 	include implementation("javax.inject:javax.inject:1")
 
 	// Json
@@ -63,7 +61,7 @@ dependencies {
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// Worldedit API
-	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.21.5:7.3.14")
+	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc${project.worldedit_version}")
 	// MaLiLib
 	modApi "maven.modrinth:malilib:${project.malilib_version}"
 }
