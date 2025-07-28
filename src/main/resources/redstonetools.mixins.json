@@ -10,6 +10,7 @@
     "blocks.RedstoneHitboxMixin",
     "features.AutoDustMixin",
     "features.CopyStateMixin",
+    "features.PlayerInventoryAccessor",
     "gamerules.DoContainerDropsMixin"
   ],
   "client": [

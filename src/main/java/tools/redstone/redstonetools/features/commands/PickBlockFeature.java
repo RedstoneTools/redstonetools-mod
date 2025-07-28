@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.MinecraftClient;
@@ -28,7 +29,7 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
             throw new SimpleCommandExceptionType(Text.literal("Failed to get interaction manager.")).create();
         }
 
-        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.getSelectedSlot());
+        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + ((PlayerInventoryAccessor)playerInventory).getSelectedSlot());
 
         return 1;
     }
@@ -43,10 +44,10 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
         if (i == -1) {
             int j;
             pi.setSelectedSlot(pi.getSwappableHotbarSlot());
-            if (!pi.getMainStacks().get(pi.getSelectedSlot()).isEmpty() && (j = pi.getEmptySlot()) != -1) {
-                pi.getMainStacks().set(j, pi.getMainStacks().get(pi.getSelectedSlot()));
+            if (!((PlayerInventoryAccessor)pi).getMain().get(((PlayerInventoryAccessor)pi).getSelectedSlot()).isEmpty() && (j = pi.getEmptySlot()) != -1) {
+                ((PlayerInventoryAccessor)pi).getMain().set(j, ((PlayerInventoryAccessor)pi).getMain().get(((PlayerInventoryAccessor)pi).getSelectedSlot()));
             }
-            pi.getMainStacks().set(pi.getSelectedSlot(), stack);
+            ((PlayerInventoryAccessor)pi).getMain().set(((PlayerInventoryAccessor)pi).getSelectedSlot(), stack);
         } else {
             pi.swapSlotWithHotbar(i);
         }

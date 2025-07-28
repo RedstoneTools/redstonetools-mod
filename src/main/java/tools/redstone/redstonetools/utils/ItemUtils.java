@@ -2,36 +2,13 @@ package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
 
 public class ItemUtils {
-    public static void addExtraNBTText(ItemStack itemStack, String text) {
-        NbtCompound displayNbt = itemStack.toNbt(MinecraftClient.getInstance().getNetworkHandler().getRegistryManager()).asCompound().get().get("display").asCompound().get();
-        NbtList loreList = new NbtList();
-
-        if (displayNbt == null) {
-            displayNbt = new NbtCompound();
-        } else {
-            loreList = (NbtList) displayNbt.get("Lore");
-        }
-        String lore = "\"(+"+text +")\"";
-
-        if (loreList != null && !loreList.contains(NbtString.of(lore))) loreList.add(NbtString.of(lore));
-        displayNbt.put("Lore", loreList);
-        itemStack.toNbt(MinecraftClient.getInstance().getNetworkHandler().getRegistryManager()).asCompound().get().get("display").asCompound().get();
-
-        // FIXME
-//        itemStack.setSubNbt("display", displayNbt); // idk
-    }
-
     public static boolean isEmpty(ItemStack itemStack) {
         return itemStack == null || itemStack.getItem() == Items.AIR || itemStack.getCount() == 0;
     }
