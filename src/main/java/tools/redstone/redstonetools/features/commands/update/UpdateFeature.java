@@ -13,7 +13,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class UpdateFeature extends AbstractFeature {
 	public static void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("update")
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/update")
 				.executes(context -> FeatureUtils.getFeature(UpdateFeature.class).execute(context))));
 	}
 

@@ -17,7 +17,7 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistratio
 
 public class ColoredFeature extends PickBlockFeature {
     public static void registerCommand() {
-        EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("colored")
+        EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("/colored")
                 .then(ClientCommandManager.argument("blockType", ColoredBlockTypeArgumentType.coloredblocktype())
                 .executes(context -> FeatureUtils.getFeature(ColoredFeature.class).execute(context)))));
     }

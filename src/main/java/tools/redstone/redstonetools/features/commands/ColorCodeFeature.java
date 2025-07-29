@@ -29,7 +29,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class ColorCodeFeature extends AbstractFeature {
     public static void registerCommand() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("colorcode")
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/colorcode")
                 .then(argument("color", BlockColorArgumentType.blockcolor())
                 .executes(context -> FeatureUtils.getFeature(ColorCodeFeature.class).execute(context))
                 .then(argument("onlyColor", BlockColorArgumentType.blockcolor())

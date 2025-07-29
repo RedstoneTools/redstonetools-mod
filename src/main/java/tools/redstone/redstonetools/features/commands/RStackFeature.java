@@ -32,7 +32,7 @@ import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
 public class RStackFeature extends AbstractFeature {
     public static void registerCommand() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("rstack")
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/rstack")
                 .then(argument("count", IntegerArgumentType.integer())
                 .then(argument("direction", DirectionArgumentType.direction())
                 .then(argument("offset", IntegerArgumentType.integer())

@@ -26,7 +26,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class MinSelectionFeature extends AbstractFeature {
     public static void registerCommand() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("minsel")
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/minsel")
                 .executes(context -> FeatureUtils.getFeature(MinSelectionFeature.class).execute(context))));
     }
 
