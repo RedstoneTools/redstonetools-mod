@@ -19,18 +19,38 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class QuickTpFeature extends AbstractFeature {
     public static void registerCommand() {
+        var qtp = FeatureUtils.getFeature(QuickTpFeature.class);
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("quicktp")
+                .executes(qtp::parseArguments)
                 .then(argument("distance", DoubleArgumentType.doubleArg())
-                .then(argument("includeFluids", BoolArgumentType.bool())
+                .executes(qtp::parseArguments)
+                .then(argument("throughFluids", BoolArgumentType.bool())
+                .executes(qtp::parseArguments)
                 .then(argument("resetVelocity", BoolArgumentType.bool())
-                .executes(context -> FeatureUtils.getFeature(QuickTpFeature.class).execute(context)))))));
+                .executes(qtp::parseArguments))))));
     }
-    protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getEntity();
 
-        double distance = DoubleArgumentType.getDouble(context, "distance");
-        boolean includeFluids = BoolArgumentType.getBool(context, "includeFluids");
-        boolean resetVelocity = BoolArgumentType.getBool(context, "resetVelocity");
+    protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        double distance;
+        boolean includeFluids;
+        boolean resetVelocity;
+        try { distance = DoubleArgumentType.getDouble(context, "distance"); }
+        catch (Exception ignored) {
+            distance = 50.0;
+        }
+        try { includeFluids = !BoolArgumentType.getBool(context, "throughFluids"); }
+        catch (Exception ignored) {
+            includeFluids = false;
+        }
+        try { resetVelocity = BoolArgumentType.getBool(context, "resetVelocity"); }
+        catch (Exception ignored) {
+            resetVelocity = true;
+        }
+        return execute(context, distance, includeFluids, resetVelocity);
+    }
+
+    protected int execute(CommandContext<ServerCommandSource> context, double distance, boolean includeFluids, boolean resetVelocity) throws CommandSyntaxException {
+        var player = context.getSource().getPlayer();
 
 	    assert player != null;
 

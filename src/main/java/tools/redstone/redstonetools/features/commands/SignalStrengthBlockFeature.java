@@ -21,15 +21,25 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class SignalStrengthBlockFeature extends AbstractFeature {
     public static void registerCommand() {
+        var ssb = FeatureUtils.getFeature(SignalStrengthBlockFeature.class);
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("ssb")
                 .then(argument("signalStrength", IntegerArgumentType.integer())
+                .executes(ssb::parseArguments)
                 .then(argument("block", SignalBlockArgumentType.signalblock())
-                .executes(context -> FeatureUtils.getFeature(SignalStrengthBlockFeature.class).execute(context))))));
+                .executes(ssb::parseArguments)))));
     }
 
-    protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         int signalStrength = IntegerArgumentType.getInteger(context, "signalStrength");
-        SignalBlock block = SignalBlockArgumentType.getSignalBlock(context, "block");
+        SignalBlock block;
+        try { block = SignalBlockArgumentType.getSignalBlock(context, "block"); }
+        catch (Exception ignored) {
+            block = SignalBlock.AUTO;
+        }
+        return execute(context, signalStrength, block);
+    }
+
+    protected int execute(CommandContext<ServerCommandSource> context, int signalStrength, SignalBlock block) throws CommandSyntaxException {
         try {
             ItemStack itemStack = block.getItemStack(signalStrength);
             Objects.requireNonNull(context.getSource().getPlayer()).giveItemStack(itemStack);
