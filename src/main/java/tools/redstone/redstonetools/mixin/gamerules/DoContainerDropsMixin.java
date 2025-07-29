@@ -1,9 +1,8 @@
 package tools.redstone.redstonetools.mixin.gamerules;
 
-import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,10 +13,10 @@ import static tools.redstone.redstonetools.RedstoneToolsGameRules.DO_CONTAINER_D
 
 @Mixin(ItemScatterer.class)
 public class DoContainerDropsMixin {
-    @Inject(method = "spawn(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/inventory/Inventory;)V", at = @At("HEAD"), cancellable = true)
-    private static void spawn(World world, BlockPos pos, Inventory inventory, CallbackInfo ci) {
+    @Inject(method = "spawn(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)V", at = @At("HEAD"), cancellable = true)
+    private static void preventSpawning(World world, double x, double y, double z, ItemStack stack, CallbackInfo ci) {
         if (world instanceof ServerWorld serverWorld) {
-            if (serverWorld.getGameRules().getBoolean(DO_CONTAINER_DROPS)) ci.cancel();
+            if (!serverWorld.getGameRules().getBoolean(DO_CONTAINER_DROPS)) ci.cancel();
         }
     }
 }
