@@ -24,22 +24,24 @@ public class FeatureUtils {
     public static <T> T getFeature(Class<T> clazz) {
         if (features == null) {
             Set<AbstractFeature> FEATURES = new HashSet<>();
-            FEATURES.add(new BinaryBlockReadFeature());
             FEATURES.add(new BigDustFeature());
             FEATURES.add(new AutoDustFeature());
             FEATURES.add(new AirPlaceFeature());
             FEATURES.add(new SignalStrengthBlockFeature());
-            FEATURES.add(new RStackFeature());
             FEATURES.add(new QuickTpFeature());
-            FEATURES.add(new MinSelectionFeature());
             FEATURES.add(new MacroFeature());
             FEATURES.add(new ItemBindFeature());
             FEATURES.add(new CopyStateFeature());
-            FEATURES.add(new ColoredFeature());
-            FEATURES.add(new ColorCodeFeature());
             FEATURES.add(new BaseConvertFeature());
-            FEATURES.add(new UpdateFeature());
             FEATURES.add(new GiveMeFeature());
+            if (DependencyLookup.WORLDEDIT_PRESENT) {
+                FEATURES.add(new BinaryBlockReadFeature());
+                FEATURES.add(new RStackFeature());
+                FEATURES.add(new MinSelectionFeature());
+                FEATURES.add(new ColoredFeature());
+                FEATURES.add(new ColorCodeFeature());
+                FEATURES.add(new UpdateFeature());
+            }
             if (clazz == MacroManager.class) FEATURES.add(new MacroManager());
             features = FEATURES;
         }
