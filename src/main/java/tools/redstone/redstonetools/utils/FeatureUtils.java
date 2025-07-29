@@ -42,15 +42,17 @@ public class FeatureUtils {
                 FEATURES.add(new ColorCodeFeature());
                 FEATURES.add(new UpdateFeature());
             }
-            if (clazz == MacroManager.class) FEATURES.add(new MacroManager());
             features = FEATURES;
         }
-        if (clazz == MacroManager.class) features.add(new MacroManager());
+        Optional<T> found1 = features.stream()
+                .filter(clazz::isInstance)
+                .map(clazz::cast)
+                .findFirst();
+        if (clazz == MacroManager.class && found1.isEmpty()) features.add(new MacroManager());
         Optional<T> found = features.stream()
                 .filter(clazz::isInstance)
                 .map(clazz::cast)
                 .findFirst();
-
         if (found.isEmpty()) {
             System.out.println("Add " + clazz.getSimpleName() + " to FeatureUtils");
             throw new RuntimeException();
