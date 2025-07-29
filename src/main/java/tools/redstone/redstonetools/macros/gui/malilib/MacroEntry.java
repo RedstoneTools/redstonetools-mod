@@ -44,7 +44,8 @@ public class MacroEntry extends ElementListWidget.Entry<MacroEntry> {
     public void render(DrawContext context, int index, int y, int x, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float delta) {
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        context.drawText(mc.textRenderer, macro.name, x + 4, y + (rowHeight - 9) / 2, 0xFFFFFF, false);
+        context.drawText(mc.textRenderer, macro.name, x + 4, y + (rowHeight - 9) / 2, 0xFFFFFFFF, false);
+
 
         int btnY = y + (rowHeight - 18) / 2;
         int deleteX = x + rowWidth - deleteButton.getWidth() - 4;
