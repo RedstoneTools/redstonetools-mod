@@ -14,7 +14,7 @@ import tools.redstone.redstonetools.features.commands.ItemBindFeature;
 public abstract class ItemBindPlayerMixin {
     @Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
     public void injectCommand(String message, CallbackInfo ci) {
-        if (!message.startsWith("/") || !ItemBindFeature.waitingForCommand) return;
+        if (!ItemBindFeature.waitingForCommand) return;
         try {
             ItemBindFeature.addCommand(message);
         } catch (CommandSyntaxException e) {
