@@ -9,7 +9,7 @@ import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.macros.MacroManager;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
@@ -17,7 +17,7 @@ public class MacroFeature extends AbstractFeature {
     public static void registerCommand() {
         EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("macro")
                 .then(ClientCommandManager.argument("macro", StringArgumentType.string())
-                .executes(context -> FeatureUtils.getFeature(MacroFeature.class).execute(context)))));
+                .executes(context -> ClientFeatureUtils.getFeature(MacroFeature.class).execute(context)))));
     }
     protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
         String macro = StringArgumentType.getString(context, "macro");

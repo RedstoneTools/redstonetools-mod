@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 
 @Mixin(ItemStack.class)
@@ -20,8 +21,8 @@ public abstract class ItemBindItemStackMixin {
         assert MinecraftClient.getInstance().player != null;
         if (world.isClient) {
             ItemStack stack = user.getMainHandStack();
-            if (stack.contains(RedstoneToolsClient.COMMAND_COMPONENT)) {
-                String command = stack.get(RedstoneToolsClient.COMMAND_COMPONENT);
+            if (stack.contains(RedstoneTools.COMMAND_COMPONENT)) {
+                String command = stack.get(RedstoneTools.COMMAND_COMPONENT);
                 MinecraftClient.getInstance().player.networkHandler.sendChatCommand(command);
                 cir.setReturnValue(ActionResult.PASS);
             }

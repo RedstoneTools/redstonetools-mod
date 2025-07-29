@@ -11,8 +11,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 
+import java.util.Objects;
+
 public abstract class BlockRaycastFeature extends AbstractFeature {
     protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
+        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
+            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
+        }
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null || client.world == null) {
             throw new CommandSyntaxException(null, Text.of("This command is client-side only."));

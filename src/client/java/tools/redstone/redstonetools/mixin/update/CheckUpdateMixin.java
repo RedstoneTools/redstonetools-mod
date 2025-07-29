@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.RedstoneToolsClient;
 
 import java.net.URI;
@@ -19,8 +20,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import static tools.redstone.redstonetools.RedstoneTools.MOD_VERSION;
 import static tools.redstone.redstonetools.RedstoneToolsClient.LOGGER;
-import static tools.redstone.redstonetools.RedstoneToolsClient.MOD_VERSION;
+import static tools.redstone.redstonetools.RedstoneTools.MOD_VERSION;
 
 @Mixin(TitleScreen.class)
 public class CheckUpdateMixin extends Screen {
@@ -70,11 +72,11 @@ public class CheckUpdateMixin extends Screen {
             }
 
             Style underline = Style.EMPTY;
-            if (RedstoneToolsClient.MOD_VERSION.equals(newVersion)) {
+            if (RedstoneTools.MOD_VERSION.equals(newVersion)) {
                 LOGGER.info("Already up to date, current version: {}", MOD_VERSION);
                 updateStatus = (MutableText) Text.of("Redstone Tools " + MOD_VERSION);
             } else {
-                LOGGER.info("Found newer version, current version: {}, new version: {}", RedstoneToolsClient.MOD_VERSION, newVersion);
+                LOGGER.info("Found newer version, current version: {}, new version: {}", RedstoneTools.MOD_VERSION, newVersion);
                 updateStatus = (MutableText) Text.of("Redstone Tools " + MOD_VERSION + " (");
                 updateStatus.append(Text.of("Click to Update").getWithStyle(underline.withUnderline(true)).getFirst());
                 updateStatus.append(")");

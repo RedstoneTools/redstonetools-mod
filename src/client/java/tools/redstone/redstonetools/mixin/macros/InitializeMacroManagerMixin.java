@@ -7,12 +7,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tools.redstone.redstonetools.macros.MacroManager;
-import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 @Mixin(MinecraftClient.class)
 public class InitializeMacroManagerMixin {
     @Inject(method = "<init>", at = @At("TAIL"))
     public void registerMacros(RunArgs args, CallbackInfo ci){
-        FeatureUtils.getFeature(MacroManager.class);
+        ClientFeatureUtils.getFeature(MacroManager.class);
     }
 }

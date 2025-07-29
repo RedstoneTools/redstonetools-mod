@@ -22,7 +22,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import tools.redstone.redstonetools.mixin.features.WorldRendererInvoker;
-import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 import tools.redstone.redstonetools.utils.ItemUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 
@@ -32,11 +32,11 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class AirPlaceFeature extends ToggleableFeature {
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("airplace")
-                .executes(context -> FeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))
+                .executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))
                 .then(argument("reach", FloatArgumentType.floatArg(3.0f))
-                .executes(context -> FeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))
+                .executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))
                 .then(argument("showOutline", BoolArgumentType.bool())
-                .executes(context -> FeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))))));
+                .executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))))));
     }
 
     @Override

@@ -12,7 +12,7 @@ import tools.redstone.redstonetools.utils.DependencyLookup;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
-public class Commands {
+public class ClientCommands {
 	public static void registerCommands() {
 		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("edit-macros")
 				.executes(commandContext -> {
@@ -28,6 +28,9 @@ public class Commands {
 			RStackFeature.registerCommand();
 		}
 
+		ColoredFeature.registerCommand();
+		CopyStateFeature.registerCommand();
+		ItemBindFeature.registerCommand();
 		BaseConvertFeature.registerCommand();
 		ColoredFeature.registerCommand();
 		CopyStateFeature.registerCommand();

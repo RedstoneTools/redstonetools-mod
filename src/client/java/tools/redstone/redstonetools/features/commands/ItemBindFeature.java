@@ -14,11 +14,12 @@ import net.minecraft.item.Items;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.RedstoneToolsClient;
+import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -26,14 +27,14 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class ItemBindFeature extends AbstractFeature {
 	public static void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("itembind")
-				.executes(context -> FeatureUtils.getFeature(ItemBindFeature.class).execute(context))
+				.executes(context -> ClientFeatureUtils.getFeature(ItemBindFeature.class).execute(context))
                 .then(argument("reset", BoolArgumentType.bool())
                 .executes(context -> {
                     if (BoolArgumentType.getBool(context, "reset")) {
                         var player = context.getSource().getPlayer();
                         if (player != null) {
                             var mainStack = player.getMainHandStack();
-                            mainStack.remove(RedstoneToolsClient.COMMAND_COMPONENT);
+                            mainStack.remove(RedstoneTools.COMMAND_COMPONENT);
                             mainStack.set(DataComponentTypes.LORE, mainStack.getItem().getDefaultStack().get(DataComponentTypes.LORE));
                             context.getSource().sendMessage(Text.of("Successfully removed command from the item in your main hand"));
                         } else {
@@ -41,7 +42,7 @@ public class ItemBindFeature extends AbstractFeature {
                         }
                         return 1;
                     } else {
-                        return FeatureUtils.getFeature(ItemBindFeature.class).execute(context);
+                        return ClientFeatureUtils.getFeature(ItemBindFeature.class).execute(context);
                     }
                 }))));
 	}
@@ -49,6 +50,9 @@ public class ItemBindFeature extends AbstractFeature {
     private static ServerPlayerEntity player;
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
+            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
+        }
 		ServerCommandSource source = context.getSource();
         player = source.getPlayer();
         waitingForCommand = true;
@@ -74,7 +78,7 @@ public class ItemBindFeature extends AbstractFeature {
 
         MinecraftClient client = MinecraftClient.getInstance();
 	    assert client.world != null;
-        mainHandStack.set(RedstoneToolsClient.COMMAND_COMPONENT, command);
+        mainHandStack.set(RedstoneTools.COMMAND_COMPONENT, command);
         //                                                                                                   `command` here doesn't start with a / for some
         //                                                                                                   reason, so we add it ourselves so its more clear
         mainHandStack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.of("Has command: /" + command))));

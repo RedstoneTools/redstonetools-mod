@@ -3,16 +3,18 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.FeatureUtils;
+
+import java.util.Objects;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -27,6 +29,9 @@ public class GiveMeFeature extends AbstractFeature {
     }
 
     private int execute(CommandContext<ServerCommandSource> context, ItemStackArgument itemArgument, int count) throws CommandSyntaxException {
+        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
+            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
+        }
         ServerPlayerEntity player = context.getSource().getPlayer();
         ItemStack stack = itemArgument.createStack(count, false);
         if (player != null) {

@@ -12,15 +12,5 @@
     "features.CopyStateMixin",
     "features.PlayerInventoryAccessor",
     "gamerules.DoContainerDropsMixin"
-  ],
-  "client": [
-    "features.AirPlaceClientMixin",
-    "features.ItemBindItemStackMixin",
-    "features.ItemBindPlayerMixin",
-    "features.WorldRendererInvoker",
-    "macros.AddMacroButtonMixin",
-    "macros.InitializeMacroManagerMixin",
-    "macros.KeyBindingMixinImpl",
-    "update.CheckUpdateMixin"
   ]
 }

@@ -40,6 +40,9 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
     }
 
     protected int execute(CommandContext<ServerCommandSource> context, int signalStrength, SignalBlock block) throws CommandSyntaxException {
+        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
+            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
+        }
         try {
             ItemStack itemStack = block.getItemStack(signalStrength);
             Objects.requireNonNull(context.getSource().getPlayer()).giveItemStack(itemStack);

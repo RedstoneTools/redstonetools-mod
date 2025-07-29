@@ -2,6 +2,7 @@ package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BlockStateComponent;
@@ -10,20 +11,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Property;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.BlockInfo;
-import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
-
 
 public class CopyStateFeature extends PickBlockFeature {
     public static void registerCommand() {
-        EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("copystate")
-                .executes(context -> FeatureUtils.getFeature(CopyStateFeature.class).execute(context))));
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("copystate")
+                .executes(context -> ClientFeatureUtils.getFeature(CopyStateFeature.class).execute(context))));
     }
 
     // all of the warnings caused by this function should be fine. hopefully.

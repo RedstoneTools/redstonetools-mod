@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 import java.math.BigInteger;
 
@@ -21,7 +21,7 @@ public class BaseConvertFeature extends AbstractFeature {
 		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("base")
 				.then(ClientCommandManager.argument("inputNum", IntegerArgumentType.integer())
 				.then(ClientCommandManager.argument("toBase",   IntegerArgumentType.integer())
-				.executes(context -> FeatureUtils.getFeature(BaseConvertFeature.class).execute(context))))));
+				.executes(context -> ClientFeatureUtils.getFeature(BaseConvertFeature.class).execute(context))))));
 	}
 
     protected int execute(CommandContext<FabricClientCommandSource> context)

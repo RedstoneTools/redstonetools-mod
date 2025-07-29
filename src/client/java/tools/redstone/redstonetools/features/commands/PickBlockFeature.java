@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.network.packet.s2c.play.InventoryS2CPacket;
 import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -16,20 +17,17 @@ import javax.annotation.Nullable;
 
 public abstract class PickBlockFeature extends BlockRaycastFeature {
     protected int execute(CommandContext<FabricClientCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null) {
+        var player = context.getSource().getPlayer();
+        if (player == null) {
             throw new SimpleCommandExceptionType(Text.literal("Failed to get player.")).create();
         }
 
         var stack = getItemStack(context, blockInfo);
 
-        PlayerInventory playerInventory = client.player.getInventory();
+        PlayerInventory playerInventory = player.getInventory();
         addPickBlock(playerInventory, stack);
-        if (client.interactionManager == null) {
-            throw new SimpleCommandExceptionType(Text.literal("Failed to get interaction manager.")).create();
-        }
 
-        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + ((PlayerInventoryAccessor)playerInventory).getSelectedSlot());
+        MinecraftClient.getInstance().interactionManager.clickCreativeStack(MinecraftClient.getInstance().player.getStackInHand(Hand.MAIN_HAND), 36 + ((PlayerInventoryAccessor)playerInventory).getSelectedSlot());
 
         return 1;
     }
