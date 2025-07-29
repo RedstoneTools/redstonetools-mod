@@ -27,6 +27,7 @@ public class FeatureUtils {
             FEATURES.add(new BigDustFeature());
             FEATURES.add(new AutoDustFeature());
             FEATURES.add(new AirPlaceFeature());
+            FEATURES.add(new ColoredFeature());
             FEATURES.add(new SignalStrengthBlockFeature());
             FEATURES.add(new QuickTpFeature());
             FEATURES.add(new MacroFeature());
@@ -38,7 +39,6 @@ public class FeatureUtils {
                 FEATURES.add(new BinaryBlockReadFeature());
                 FEATURES.add(new RStackFeature());
                 FEATURES.add(new MinSelectionFeature());
-                FEATURES.add(new ColoredFeature());
                 FEATURES.add(new ColorCodeFeature());
                 FEATURES.add(new UpdateFeature());
             }
