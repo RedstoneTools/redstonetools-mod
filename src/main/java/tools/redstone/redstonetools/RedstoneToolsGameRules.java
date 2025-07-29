@@ -11,13 +11,13 @@ public class RedstoneToolsGameRules {
     }
 
     public static GameRules.Key<GameRules.BooleanRule> DO_CONTAINER_DROPS;
-    public static GameRules.Key<GameRules.BooleanRule> DO_BLOCK_UPDATES_AFTER_EDIT;
+//    public static GameRules.Key<GameRules.BooleanRule> DO_BLOCK_UPDATES_AFTER_EDIT;
 
     public static void register() {
         DO_CONTAINER_DROPS = GameRuleRegistry.register("doContainerDrops", GameRules.Category.DROPS, GameRuleFactory.createBooleanRule(true));
 
-        if (DependencyLookup.WORLDEDIT_PRESENT) {
-            DO_BLOCK_UPDATES_AFTER_EDIT = GameRuleRegistry.register("doBlockUpdatesAfterEdit", GameRules.Category.UPDATES, GameRuleFactory.createBooleanRule(false));
-        }
+//        if (DependencyLookup.WORLDEDIT_PRESENT) {
+//            DO_BLOCK_UPDATES_AFTER_EDIT = GameRuleRegistry.register("doBlockUpdatesAfterEdit", GameRules.Category.UPDATES, GameRuleFactory.createBooleanRule(false));
+//        }
     }
 }
