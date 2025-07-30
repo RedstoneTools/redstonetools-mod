@@ -31,7 +31,8 @@ public class CopyStateFeature extends PickBlockFeature {
         ItemStack stack = new ItemStack(Objects.requireNonNull(blockInfo).block);
 
         List<Text> lore = new ArrayList<>();
-        lore.add(Text.of("BlockState: "));
+        if (blockInfo.state.getProperties().isEmpty())
+            return stack.getItem().getDefaultStack();
 
         BlockStateComponent component = BlockStateComponent.DEFAULT;
         for (Property prop : blockInfo.state.getProperties()) {
