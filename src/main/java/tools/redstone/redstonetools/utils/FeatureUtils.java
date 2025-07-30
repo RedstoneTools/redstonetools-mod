@@ -27,6 +27,7 @@ public class FeatureUtils {
             FEATURES.add(new SignalStrengthBlockFeature());
             FEATURES.add(new QuickTpFeature());
             FEATURES.add(new GiveMeFeature());
+            FEATURES.add(new ItemBindFeature());
             if (DependencyLookup.WORLDEDIT_PRESENT) {
                 FEATURES.add(new BinaryBlockReadFeature());
                 FEATURES.add(new RStackFeature());

@@ -21,6 +21,7 @@ public abstract class ItemBindPlayerMixin {
             assert MinecraftClient.getInstance().player != null;
             MinecraftClient.getInstance().player.sendMessage(Text.literal(e.getMessage()), false);
         }
+        ItemBindFeature.waitingForCommand = false;
         ci.cancel();
     }
 }

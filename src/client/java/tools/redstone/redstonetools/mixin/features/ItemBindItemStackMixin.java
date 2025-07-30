@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.RedstoneTools;
-import tools.redstone.redstonetools.RedstoneToolsClient;
 
 @Mixin(ItemStack.class)
 public abstract class ItemBindItemStackMixin {
@@ -19,13 +18,12 @@ public abstract class ItemBindItemStackMixin {
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     private void checkCommandNBT(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         assert MinecraftClient.getInstance().player != null;
-        if (world.isClient) {
-            ItemStack stack = user.getMainHandStack();
-            if (stack.contains(RedstoneTools.COMMAND_COMPONENT)) {
-                String command = stack.get(RedstoneTools.COMMAND_COMPONENT);
-                MinecraftClient.getInstance().player.networkHandler.sendChatCommand(command);
-                cir.setReturnValue(ActionResult.PASS);
-            }
+        ItemStack stack = user.getMainHandStack();
+        if (!world.isClient()) return;
+        if (stack.contains(RedstoneTools.COMMAND_COMPONENT)) {
+            String command = stack.get(RedstoneTools.COMMAND_COMPONENT);
+            MinecraftClient.getInstance().player.networkHandler.sendChatCommand(command);
+            cir.setReturnValue(ActionResult.PASS);
         }
     }
 }
