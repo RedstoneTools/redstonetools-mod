@@ -41,15 +41,7 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
             playerInventory.swapStackWithHotbar(stack);
         }
         System.out.println("Got here 5");
-        try {
-            context.getSource().getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(playerInventory.getSelectedSlot()));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println();
-            e.printStackTrace();
-            System.out.println();
-            System.out.println(e);
-        }
+        context.getSource().getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(((PlayerInventoryAccessor)playerInventory).getSelectedSlot()));
         System.out.println("Got here 6");
         player.playerScreenHandler.sendContentUpdates();
         return 1;

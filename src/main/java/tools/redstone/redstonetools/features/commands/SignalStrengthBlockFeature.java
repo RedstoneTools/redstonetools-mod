@@ -13,7 +13,6 @@ import tools.redstone.redstonetools.features.commands.argument.SignalBlockArgume
 import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.SignalBlock;
 
-import java.util.Objects;
 import java.util.Random;
 
 import static net.minecraft.server.command.CommandManager.argument;
@@ -40,13 +39,11 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
     }
 
     protected int execute(CommandContext<ServerCommandSource> context, int signalStrength, SignalBlock block) throws CommandSyntaxException {
-        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
-            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
-        }
         try {
+            var playerInventory = context.getSource().getPlayer().getInventory();
             ItemStack itemStack = block.getItemStack(signalStrength);
-            Objects.requireNonNull(context.getSource().getPlayer()).giveItemStack(itemStack);
-        } catch (IllegalArgumentException | IllegalStateException e) {
+            playerInventory.swapStackWithHotbar(itemStack);
+        } catch (IllegalArgumentException | IllegalStateException | NullPointerException e) {
             throw new SimpleCommandExceptionType(Text.literal(e.getMessage())).create();
         }
 

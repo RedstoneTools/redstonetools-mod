@@ -3,7 +3,6 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
@@ -17,7 +16,6 @@ import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT;
 import static net.minecraft.server.command.CommandManager.argument;
@@ -29,9 +27,6 @@ public class ItemBindFeature extends AbstractFeature {
                 .executes(context -> FeatureUtils.getFeature(ItemBindFeature.class).execute(context))
                 .then(argument("reset", BoolArgumentType.bool())
                         .executes(context -> {
-                            if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
-                                throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
-                            }
                             if (BoolArgumentType.getBool(context, "reset")) {
                                 var player = context.getSource().getPlayer();
                                 if (player != null) {
