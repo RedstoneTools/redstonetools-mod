@@ -41,10 +41,10 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": ">=1.21.4 <=1.21.8",
-    "malilib": "*"
+    "minecraft": ">=1.21.4 <=1.21.8"
   },
   "recommends": {
-    "worldedit": "*"
+    "worldedit": "*",
+    "malilib": "*"
   }
 }

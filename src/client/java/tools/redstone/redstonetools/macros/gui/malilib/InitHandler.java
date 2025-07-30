@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.macros.gui.malilib;
 
 import fi.dy.masa.malilib.config.ConfigManager;
+import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 
 public class InitHandler implements IInitializationHandler {
@@ -8,5 +9,8 @@ public class InitHandler implements IInitializationHandler {
 	public void registerModHandlers()
 	{
 		ConfigManager.getInstance().registerConfigHandler("redstonetools", new Configs());
+	}
+	public static void initHandlerExecuter() {
+		InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
 	}
 }
