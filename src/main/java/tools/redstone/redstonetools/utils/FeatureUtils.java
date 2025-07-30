@@ -28,6 +28,8 @@ public class FeatureUtils {
             FEATURES.add(new QuickTpFeature());
             FEATURES.add(new GiveMeFeature());
             FEATURES.add(new ItemBindFeature());
+            FEATURES.add(new ColoredFeature());
+            FEATURES.add(new CopyStateFeature());
             if (DependencyLookup.WORLDEDIT_PRESENT) {
                 FEATURES.add(new BinaryBlockReadFeature());
                 FEATURES.add(new RStackFeature());
