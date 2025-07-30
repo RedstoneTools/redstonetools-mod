@@ -51,9 +51,9 @@ public class ItemBindFeature extends AbstractFeature {
     private static ServerPlayerEntity player;
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
-            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
-        }
+//        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
+//            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
+//        }
         ServerCommandSource source = context.getSource();
         player = source.getPlayer();
         waitingForCommand = true;

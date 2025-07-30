@@ -31,7 +31,6 @@ public class ClientFeatureUtils {
             FEATURES.add(new SignalStrengthBlockFeature());
             FEATURES.add(new QuickTpFeature());
             FEATURES.add(new MacroFeature());
-            FEATURES.add(new ItemBindFeature());
             FEATURES.add(new CopyStateFeature());
             FEATURES.add(new BaseConvertFeature());
             FEATURES.add(new GiveMeFeature());

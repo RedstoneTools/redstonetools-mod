@@ -30,11 +30,9 @@ public class ClientCommands {
 
 		ColoredFeature.registerCommand();
 		CopyStateFeature.registerCommand();
-		ItemBindFeature.registerCommand();
 		BaseConvertFeature.registerCommand();
 		ColoredFeature.registerCommand();
 		CopyStateFeature.registerCommand();
-		ItemBindFeature.registerCommand();
 		MacroFeature.registerCommand();
 		QuickTpFeature.registerCommand();
 		SignalStrengthBlockFeature.registerCommand();
