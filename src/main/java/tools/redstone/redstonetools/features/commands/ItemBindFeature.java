@@ -15,6 +15,7 @@ import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,34 +48,27 @@ public class ItemBindFeature extends AbstractFeature {
                             }
                         }))));
     }
-    public static boolean waitingForCommand = false;
-    private static ServerPlayerEntity player;
+    public static ArrayList<ServerPlayerEntity> playersWaitingForCommmand = new ArrayList<>();
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 //        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
 //            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
 //        }
         ServerCommandSource source = context.getSource();
-        player = source.getPlayer();
-        waitingForCommand = true;
+        playersWaitingForCommmand.add(source.getPlayer());
 
         source.sendMessage(Text.literal("Please run any command and hold the item you want the command be bound to in your main hand"));
         return 1;
     }
 
-    public static void addCommand(String command) {
-        if (!waitingForCommand) return;
+    public static void addCommand(String command, ServerPlayerEntity playerI) {
+        if (!waitingForCommandForPlayer(playerI)) return;
 
-        if (player == null) {
-            waitingForCommand = false;
-            return;
-        }
-
-        ItemStack mainHandStack = player.getMainHandStack();
+        ItemStack mainHandStack = playerI.getMainHandStack();
         if (mainHandStack == null || mainHandStack.getItem() == Items.AIR) {
-            if (player.getOffHandStack() == null)
-                player.sendMessage(Text.literal("You need to be holding an item!"));
-            else player.sendMessage(Text.literal("You need to be holding an item in your main hand!"));
+            if (playerI.getOffHandStack() == null)
+                playerI.sendMessage(Text.literal("You need to be holding an item!"));
+            else playerI.sendMessage(Text.literal("You need to be holding an item in your main hand!"));
             return;
         }
 
@@ -83,9 +77,13 @@ public class ItemBindFeature extends AbstractFeature {
         //                                                                                                   reason, so we add it ourselves so its more clear
         mainHandStack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.of("Has command: /" + command))));
 
-        waitingForCommand = false;
-        player.sendMessage(Text.literal("Successfully bound command: '%s' to this item (%s)!".formatted(command, mainHandStack.getItem().getName().getString())), false);
+        playersWaitingForCommmand.remove(playerI);
+        playerI.sendMessage(Text.literal("Successfully bound command: '%s' to this item (%s)!".formatted(command, mainHandStack.getItem().getName().getString())), false);
 
+    }
+
+    public static boolean waitingForCommandForPlayer(ServerPlayerEntity player1) {
+        return playersWaitingForCommmand.contains(player1);
     }
 }
 

@@ -9,9 +9,9 @@
   "mixins": [
     "blocks.RedstoneHitboxMixin",
     "features.AutoDustMixin",
-    "features.ClientConnectionMixin",
     "features.CopyStateMixin",
     "features.PlayerInventoryAccessor",
+    "features.ServerPlayNetworkHandlerMixin",
     "gamerules.DoContainerDropsMixin"
   ]
 }
