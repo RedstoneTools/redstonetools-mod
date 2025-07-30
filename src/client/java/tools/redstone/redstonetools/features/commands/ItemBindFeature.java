@@ -63,15 +63,12 @@ public class ItemBindFeature extends AbstractFeature {
     }
 
     public static void addCommand(String command) throws CommandSyntaxException {
-        System.out.println("Got here");
         if (!waitingForCommand || MinecraftClient.getInstance().getServer() == null) return;
-        System.out.println("Got here");
 
         if (player == null) {
             waitingForCommand = false;
             return;
         }
-        System.out.println("Got here");
 
         ItemStack mainHandStack = player.getMainHandStack().copy();
         if (mainHandStack == null || mainHandStack.getItem() == Items.AIR) {
@@ -79,7 +76,6 @@ public class ItemBindFeature extends AbstractFeature {
                  throw new SimpleCommandExceptionType(Text.literal("You need to be holding an item!")).create();
             else throw new SimpleCommandExceptionType(Text.literal("You need to be holding an item in your main hand!")).create();
         }
-        System.out.println("Got here");
 
         MinecraftClient client = MinecraftClient.getInstance();
 	    assert client.world != null;
@@ -88,7 +84,6 @@ public class ItemBindFeature extends AbstractFeature {
         //                                                                                                   reason, so we add it ourselves so its more clear
         mainHandStack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.of("Has command: /" + command))));
 
-        System.out.println("Got here");
         waitingForCommand = false;
 
         player.getInventory().setStack(player.getInventory().getEmptySlot(), mainHandStack);

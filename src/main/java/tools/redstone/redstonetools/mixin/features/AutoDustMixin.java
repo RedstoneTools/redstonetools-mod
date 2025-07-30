@@ -30,8 +30,6 @@ public abstract class AutoDustMixin {
             return;
         }
 
-        System.out.println("AD mixin ran");
-
         var dustPos = pos.up();
         var block = world.getBlockState(pos).getBlock();
         var blockAbove = world.getBlockState(dustPos).getBlock();

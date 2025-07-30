@@ -63,15 +63,12 @@ public class ItemBindFeature extends AbstractFeature {
     }
 
     public static void addCommand(String command) {
-        System.out.println("Got here");
         if (!waitingForCommand) return;
-        System.out.println("Got here");
 
         if (player == null) {
             waitingForCommand = false;
             return;
         }
-        System.out.println("Got here");
 
         ItemStack mainHandStack = player.getMainHandStack().copy();
         if (mainHandStack == null || mainHandStack.getItem() == Items.AIR) {
@@ -79,14 +76,12 @@ public class ItemBindFeature extends AbstractFeature {
                 player.sendMessage(Text.literal("You need to be holding an item!"));
             else player.sendMessage(Text.literal("You need to be holding an item in your main hand!"));
         }
-        System.out.println("Got here");
 
         mainHandStack.set(RedstoneTools.COMMAND_COMPONENT, command);
         //                                                                                                   `command` here doesn't start with a / for some
         //                                                                                                   reason, so we add it ourselves so its more clear
         mainHandStack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.of("Has command: /" + command))));
 
-        System.out.println("Got here");
         waitingForCommand = false;
 
         player.getInventory().setStack(player.getInventory().getEmptySlot(), mainHandStack);
