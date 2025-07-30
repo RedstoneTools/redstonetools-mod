@@ -2,7 +2,9 @@ package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -14,30 +16,42 @@ import javax.annotation.Nullable;
 
 public abstract class PickBlockFeature extends BlockRaycastFeature {
     protected int execute(CommandContext<ServerCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException {
-        var player = context.getSource().getPlayer();
+        ServerPlayerEntity player = context.getSource().getPlayer();
         if (player == null) {
             throw new SimpleCommandExceptionType(Text.literal("Failed to get player.")).create();
         }
 
+        System.out.println("Got here 1");
         var stack = getItemStack(context, blockInfo);
 
+        System.out.println("Got here 2");
         PlayerInventory playerInventory = player.getInventory();
         addPickBlock(playerInventory, stack);
 
-        boolean didSwitch = false;
-        for (int i = 0; i < 9; i++) {
-            ItemStack itemStack = playerInventory.getStack(i);
-            if (itemStack.getItem().equals(stack.getItem())) {
+        System.out.println("Got here 3");
+        int i = playerInventory.getSlotWithStack(stack);
+        System.out.println("Got here 4");
+        if (i != -1) {
+            if (PlayerInventory.isValidHotbarIndex(i)) {
                 playerInventory.setSelectedSlot(i);
-                didSwitch = true;
-                break;
+            } else {
+                playerInventory.swapSlotWithHotbar(i);
             }
+        } else if (player.isInCreativeMode()) {
+            playerInventory.swapStackWithHotbar(stack);
         }
-        if (!didSwitch) {
-            playerInventory.setSelectedStack(stack);
+        System.out.println("Got here 5");
+        try {
+            context.getSource().getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(playerInventory.getSelectedSlot()));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println();
+            e.printStackTrace();
+            System.out.println();
+            System.out.println(e);
         }
-//        MinecraftClient.getInstance().interactionManager.clickCreativeStack(MinecraftClient.getInstance().player.getStackInHand(Hand.MAIN_HAND), 36 + ((PlayerInventoryAccessor)playerInventory).getSelectedSlot());
-
+        System.out.println("Got here 6");
+        player.playerScreenHandler.sendContentUpdates();
         return 1;
     }
 
