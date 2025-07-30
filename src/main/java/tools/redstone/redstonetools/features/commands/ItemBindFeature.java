@@ -58,7 +58,7 @@ public class ItemBindFeature extends AbstractFeature {
         player = source.getPlayer();
         waitingForCommand = true;
 
-        player.sendMessage(Text.literal("Please run any command and hold the item you want the command be bound to in your main hand"), false);
+        source.sendMessage(Text.literal("Please run any command and hold the item you want the command be bound to in your main hand"));
         return 1;
     }
 
@@ -70,11 +70,12 @@ public class ItemBindFeature extends AbstractFeature {
             return;
         }
 
-        ItemStack mainHandStack = player.getMainHandStack().copy();
+        ItemStack mainHandStack = player.getMainHandStack();
         if (mainHandStack == null || mainHandStack.getItem() == Items.AIR) {
             if (player.getOffHandStack() == null)
                 player.sendMessage(Text.literal("You need to be holding an item!"));
             else player.sendMessage(Text.literal("You need to be holding an item in your main hand!"));
+            return;
         }
 
         mainHandStack.set(RedstoneTools.COMMAND_COMPONENT, command);
@@ -83,8 +84,6 @@ public class ItemBindFeature extends AbstractFeature {
         mainHandStack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.of("Has command: /" + command))));
 
         waitingForCommand = false;
-
-        player.getInventory().setStack(player.getInventory().getEmptySlot(), mainHandStack);
         player.sendMessage(Text.literal("Successfully bound command: '%s' to this item (%s)!".formatted(command, mainHandStack.getItem().getName().getString())), false);
 
     }
