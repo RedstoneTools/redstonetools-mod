@@ -2,7 +2,6 @@ package tools.redstone.redstonetools.utils;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 
@@ -18,7 +17,7 @@ public class ItemUtils {
         return isEmpty(stack) ? player.getOffHandStack() : stack;
     }
 
-    public static BlockState getPlacementState(ClientPlayerEntity player, ItemStack stack, float reach) {
+    public static BlockState getPlacementState(PlayerEntity player, ItemStack stack, float reach) {
         Item type = stack.getItem();
         if (!(type instanceof BlockItem blockItem))
             return null;
@@ -30,7 +29,7 @@ public class ItemUtils {
         ));
     }
 
-    public static BlockState getUseState(ClientPlayerEntity player, ItemStack stack, float reach) {
+    public static BlockState getUseState(PlayerEntity player, ItemStack stack, float reach) {
         if (stack == null || stack.getItem() == Items.AIR)
             return null;
         BlockState state = getPlacementState(player, stack, reach);

@@ -5,10 +5,8 @@ import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
-import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
-import tools.redstone.redstonetools.macros.MacroManager;
 
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -26,15 +24,12 @@ public class FeatureUtils {
             Set<AbstractFeature> FEATURES = new HashSet<>();
             FEATURES.add(new BigDustFeature());
             FEATURES.add(new AutoDustFeature());
-            FEATURES.add(new AirPlaceFeature());
-            FEATURES.add(new ColoredFeature());
             FEATURES.add(new SignalStrengthBlockFeature());
             FEATURES.add(new QuickTpFeature());
-            FEATURES.add(new MacroFeature());
-            FEATURES.add(new ItemBindFeature());
-            FEATURES.add(new CopyStateFeature());
-            FEATURES.add(new BaseConvertFeature());
             FEATURES.add(new GiveMeFeature());
+            FEATURES.add(new ItemBindFeature());
+            FEATURES.add(new ColoredFeature());
+            FEATURES.add(new CopyStateFeature());
             if (DependencyLookup.WORLDEDIT_PRESENT) {
                 FEATURES.add(new BinaryBlockReadFeature());
                 FEATURES.add(new RStackFeature());
@@ -44,11 +39,6 @@ public class FeatureUtils {
             }
             features = FEATURES;
         }
-        Optional<T> found1 = features.stream()
-                .filter(clazz::isInstance)
-                .map(clazz::cast)
-                .findFirst();
-        if (clazz == MacroManager.class && found1.isEmpty()) features.add(new MacroManager());
         Optional<T> found = features.stream()
                 .filter(clazz::isInstance)
                 .map(clazz::cast)

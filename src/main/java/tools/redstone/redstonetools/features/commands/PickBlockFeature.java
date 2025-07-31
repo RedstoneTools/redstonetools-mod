@@ -2,35 +2,42 @@ package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
 
 import javax.annotation.Nullable;
 
 public abstract class PickBlockFeature extends BlockRaycastFeature {
-    protected int execute(CommandContext<FabricClientCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null) {
+    protected int execute(CommandContext<ServerCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException {
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        if (player == null) {
             throw new SimpleCommandExceptionType(Text.literal("Failed to get player.")).create();
         }
 
         var stack = getItemStack(context, blockInfo);
 
-        PlayerInventory playerInventory = client.player.getInventory();
+        PlayerInventory playerInventory = player.getInventory();
         addPickBlock(playerInventory, stack);
-        if (client.interactionManager == null) {
-            throw new SimpleCommandExceptionType(Text.literal("Failed to get interaction manager.")).create();
+
+        int i = playerInventory.getSlotWithStack(stack);
+        if (i != -1) {
+            if (PlayerInventory.isValidHotbarIndex(i)) {
+                playerInventory.setSelectedSlot(i);
+            } else {
+                playerInventory.swapSlotWithHotbar(i);
+            }
+        } else if (player.isInCreativeMode()) {
+            playerInventory.swapStackWithHotbar(stack);
         }
-
-        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + ((PlayerInventoryAccessor)playerInventory).getSelectedSlot());
-
+        context.getSource().getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(((PlayerInventoryAccessor)playerInventory).getSelectedSlot()));
+        player.playerScreenHandler.sendContentUpdates();
         return 1;
     }
 
@@ -53,5 +60,5 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
         }
     }
 
-	protected abstract ItemStack getItemStack(CommandContext<FabricClientCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
+	protected abstract ItemStack getItemStack(CommandContext<ServerCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
 }

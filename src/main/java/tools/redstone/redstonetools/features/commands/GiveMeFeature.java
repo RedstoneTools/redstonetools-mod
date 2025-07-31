@@ -6,7 +6,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -27,13 +26,23 @@ public class GiveMeFeature extends AbstractFeature {
     }
 
     private int execute(CommandContext<ServerCommandSource> context, ItemStackArgument itemArgument, int count) throws CommandSyntaxException {
+//        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
+//            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
+//        }
         ServerPlayerEntity player = context.getSource().getPlayer();
         ItemStack stack = itemArgument.createStack(count, false);
         if (player != null) {
-            stack.setCount(count);
-            if (player.getInventory().getEmptySlot() != -1) {
-                player.getInventory().setStack(player.getInventory().getEmptySlot(), stack);
-//                player.getInventory().markDirty();
+            boolean gaveStack = false;
+            if (count > 64) {
+                stack.setCount(count);
+                if (player.getInventory().getEmptySlot() != -1) {
+                    player.getInventory().setStack(player.getInventory().getEmptySlot(), stack);
+                    gaveStack = true;
+                }
+            } else {
+                gaveStack = player.getInventory().insertStack(stack);
+            }
+            if (gaveStack) {
                 context.getSource().sendMessage(Text.of("Gave %s of %s to %s".formatted(count, itemArgument.getItem().getName().getString(), player.getName().getString())));
             } else {
                 context.getSource().sendMessage(Text.of("Inventory full!"));

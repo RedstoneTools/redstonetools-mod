@@ -2,23 +2,27 @@ package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 
 public abstract class BlockRaycastFeature extends AbstractFeature {
-    protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null || client.world == null) {
+    protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        ServerWorld world = context.getSource().getWorld();
+        if (player == null || context.getSource().getWorld() == null) {
             throw new CommandSyntaxException(null, Text.of("This command is client-side only."));
         }
+        double maxDistance = player.getAttributeValue(EntityAttributes.BLOCK_INTERACTION_RANGE);
+        BlockHitResult hitresult = (BlockHitResult)player.raycast(maxDistance, 1.0f, false);
 
-        if (client.crosshairTarget == null || client.crosshairTarget.getType() != HitResult.Type.BLOCK) {
+        if (hitresult == null) {
             if (requiresBlock()) {
                 throw new SimpleCommandExceptionType(Text.literal("You must be looking at a block to use this command.")).create();
             } else {
@@ -26,9 +30,9 @@ public abstract class BlockRaycastFeature extends AbstractFeature {
             }
         }
 
-        var blockPos = ((BlockHitResult) client.crosshairTarget).getBlockPos();
-        var blockState = client.world.getBlockState(blockPos);
-        var blockEntity = client.world.getBlockEntity(blockPos);
+        var blockPos = (hitresult).getBlockPos();
+        var blockState = world.getBlockState(blockPos);
+        var blockEntity = world.getBlockEntity(blockPos);
         var block = blockState.getBlock();
 
         return execute(context, new BlockInfo(block, blockPos, blockState, blockEntity));
@@ -38,5 +42,5 @@ public abstract class BlockRaycastFeature extends AbstractFeature {
         return true;
     }
 
-	protected abstract int execute(CommandContext<FabricClientCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException;
+	protected abstract int execute(CommandContext<ServerCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException;
 }

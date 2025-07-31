@@ -3,14 +3,11 @@ package tools.redstone.redstonetools.utils;
 import net.minecraft.block.Block;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ContainerComponent;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -22,7 +19,7 @@ public interface SignalBlockSupplier {
 
     ItemStack createItem(int signalStrength);
 
-    default ItemStack getItemStack(Block block, int signalStrength) {
+    default ItemStack getItemStack(Block ignoredBlock, int signalStrength) {
         ItemStack item = this.createItem(signalStrength);
         setItemName(item, signalStrength);
         item.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
@@ -31,25 +28,12 @@ public interface SignalBlockSupplier {
 
     static SignalBlockSupplier container(int slots, Item containerType) {
         return signalStrength -> {
-            if (isInvalidSignalStrength(signalStrength, 1779))
-                throw new IllegalArgumentException("Container signal must be 0-1779");
-
-            NbtCompound tags = new NbtCompound();
-            NbtList itemsTag = new NbtList();
+            if (isInvalidSignalStrength(signalStrength, 1387))
+                throw new IllegalArgumentException("Container signal must be 0-1387");
 
             Item item = getBestItem(signalStrength, slots);
             int stackSize = getStackSize(signalStrength, item);
-            int itemsNeeded = Math.max(0, signalStrength == 1
-                    ? 1
-                    : (int) Math.ceil(slots * (signalStrength - 1) / 14D * item.getMaxCount()));
-            String itemId = Registries.ITEM.getId(item).toString();
-
-            // Check that the calculated number of items is correct.
-            // This is to prevent problems with items that have a maximum stack size of 1 but stackSize > 1.
-            // TODO: This can be improved by removing an item and adding stackable items up to the desired signal strength.
-            // Even with the improvement, this will still fail for inventories with no available slots.
-            if (calculateComparatorOutput(itemsNeeded, slots, item.getMaxCount()) != signalStrength)
-                throw new IllegalStateException("This signal strength cannot be achieved with the selected container");
+            int itemsNeeded = getItemsNeeded(slots, signalStrength, item);
 
             ItemStack stack = new ItemStack(containerType);
             DefaultedList<ItemStack> inventoryItems = DefaultedList.ofSize(slots, ItemStack.EMPTY);
@@ -63,6 +47,20 @@ public interface SignalBlockSupplier {
 
             return stack;
         };
+    }
+
+    private static int getItemsNeeded(int slots, int signalStrength, Item item) {
+        int itemsNeeded = Math.max(0, signalStrength == 1
+                ? 1
+                : (int) Math.ceil(slots * (signalStrength - 1) / 14D * item.getMaxCount()));
+
+        // Check that the calculated number of items is correct.
+        // This is to prevent problems with items that have a maximum stack size of 1 but stackSize > 1.
+        // TODO: This can be improved by removing an item and adding stackable items up to the desired signal strength.
+        // Even with the improvement, this will still fail for inventories with no available slots.
+        if (calculateComparatorOutput(itemsNeeded, slots, item.getMaxCount()) != signalStrength)
+            throw new IllegalStateException("This signal strength cannot be achieved with the selected container");
+        return itemsNeeded;
     }
 
     static SignalBlockSupplier commandBlock() {
@@ -102,18 +100,11 @@ public interface SignalBlockSupplier {
 
     private static int getStackSize(int signalStrength, Item item) {
         if (signalStrength > 897)
-            return 127;
+            return 99;
         else if (signalStrength > 15)
             return 64;
         else
             return item.getMaxCount();
-    }
-
-    private static void setCompoundNbt(ItemStack item, NbtCompound nbt) {
-        nbt.putBoolean("HideFlags", true);
-
-        item.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(nbt));
-        item.set(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT);
     }
 
     private static void setItemName(ItemStack item, int signalStrength) {
