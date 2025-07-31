@@ -108,7 +108,10 @@ public class MacroEditScreen extends Screen {
         if (capturingKey) {
             capturingKey = false;
             InputUtil.Key key = InputUtil.fromKeyCode(keyCode, scanCode);
-            macro.setKey(key);
+            if (key.getCode() == InputUtil.GLFW_KEY_ESCAPE)
+                macro.setKey(InputUtil.UNKNOWN_KEY);
+            else
+                macro.setKey(key);
             keyButton.setMessage(Text.literal("Key: " + macro.getKey().getTranslationKey().replace("key.keyboard.", "")));
             return true;
         }
