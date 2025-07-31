@@ -41,12 +41,14 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 
     @Override
     public int toggle(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
+        boolean hasArguments = true;
         float r;
         boolean o;
         try {
             r = FloatArgumentType.getFloat(context, "reach");
         } catch (IllegalArgumentException e) {
             r = 5.0f;
+            hasArguments = false;
         }
         try {
             o = BoolArgumentType.getBool(context, "showOutline");
@@ -55,6 +57,9 @@ public class AirPlaceFeature extends ClientToggleableFeature {
         }
         AirPlaceFeature.showOutline = o;
         AirPlaceFeature.reach = r;
+        if (hasArguments && isEnabled()) {
+            return 1;
+        }
         return toggle(context.getSource());
     }
 
