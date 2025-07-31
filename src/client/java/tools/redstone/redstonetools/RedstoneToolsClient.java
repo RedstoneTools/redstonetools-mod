@@ -2,6 +2,7 @@ package tools.redstone.redstonetools;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.redstone.redstonetools.macros.ClientCommands;
@@ -15,11 +16,15 @@ public class RedstoneToolsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOGGER.info("Initializing Redstone Tools");
-
-        // check if malilib present, if not throw
-        // TODO: open a window telling the user to install malilib
-        //       can't use swing or something because minecraft runs in headless mode
+        // check if malilib present, if not open an error window and throw
         if (!FabricLoader.getInstance().isModLoaded("malilib")) {
+            TinyFileDialogs.tinyfd_messageBox(
+                    "Error",
+                    "MaLiLib not present!\nPlease install MaLiLib if you want to use redstonetools",
+                    "ok",
+                    "error",
+                    false
+            );
             throw new IllegalStateException("MaLiLib not present");
         }
 
