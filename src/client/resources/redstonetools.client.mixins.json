@@ -12,7 +12,6 @@
     "features.WorldRendererInvoker",
     "macros.AddMacroButtonMixin",
     "macros.InitializeMacroManagerMixin",
-    "macros.KeyBindingMixinImpl",
     "update.CheckUpdateMixin"
   ]
 }

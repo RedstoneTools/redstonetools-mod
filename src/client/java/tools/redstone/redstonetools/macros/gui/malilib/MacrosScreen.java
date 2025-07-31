@@ -64,7 +64,6 @@ public class MacrosScreen extends Screen {
     }
 
     public void deleteMacro(Macro macro, MacroEntry entry) {
-        macro.unregisterKeyBinding();
         macros.remove(macro);
         if (entry != null) {
             listWidget.removeMacro(entry);

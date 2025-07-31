@@ -58,6 +58,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
         AirPlaceFeature.showOutline = o;
         AirPlaceFeature.reach = r;
         if (hasArguments && isEnabled()) {
+            System.out.println("Did not disable, instead updated variables");
             return 1;
         }
         return toggle(context.getSource());

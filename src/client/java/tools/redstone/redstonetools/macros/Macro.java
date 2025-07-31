@@ -9,7 +9,6 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
-import tools.redstone.redstonetools.utils.KeyBindingUtils;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -145,11 +144,6 @@ public class Macro {
 
     public Macro createCopy() {
         return new Macro(name,enabled,key,new ArrayList<>(actions),this);
-    }
-
-    public void unregisterKeyBinding(){
-        if (keyBinding == null) return;
-        KeyBindingUtils.removeKeyBinding(keyBinding);
     }
 
     public boolean needsSaving() {
