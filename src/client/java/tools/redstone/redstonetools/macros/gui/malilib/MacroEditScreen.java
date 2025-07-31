@@ -45,7 +45,7 @@ public class MacroEditScreen extends Screen {
         }).dimensions(margin, y, 100, 18).build();
         this.addDrawableChild(enabledButton);
 
-        keyButton = ButtonWidget.builder(Text.literal("Key: " + macro.getKey().getTranslationKey().replace("key.keyboard.", "")), btn -> {
+        keyButton = ButtonWidget.builder(Text.literal("Key: " + Text.translatable(macro.getKey().getTranslationKey()).getString()), btn -> {
             capturingKey = true;
             btn.setMessage(Text.literal("Press a key..."));
         }).dimensions(margin + 110, y, 120, 18).build();
@@ -112,7 +112,7 @@ public class MacroEditScreen extends Screen {
                 macro.setKey(InputUtil.UNKNOWN_KEY);
             else
                 macro.setKey(key);
-            keyButton.setMessage(Text.literal("Key: " + macro.getKey().getTranslationKey().replace("key.keyboard.", "")));
+            keyButton.setMessage(Text.literal("Key: " + Text.translatable(macro.getKey().getTranslationKey()).getString()));
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
