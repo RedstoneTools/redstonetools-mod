@@ -32,8 +32,17 @@ public class GiveMeFeature extends AbstractFeature {
         ServerPlayerEntity player = context.getSource().getPlayer();
         ItemStack stack = itemArgument.createStack(count, false);
         if (player != null) {
-            stack.setCount(count);
-            if (player.getInventory().insertStack(stack)) {
+            boolean gaveStack = false;
+            if (count > 64) {
+                stack.setCount(count);
+                if (player.getInventory().getEmptySlot() != -1) {
+                    player.getInventory().setStack(player.getInventory().getEmptySlot(), stack);
+                    gaveStack = true;
+                }
+            } else {
+                gaveStack = player.getInventory().insertStack(stack);
+            }
+            if (gaveStack) {
                 context.getSource().sendMessage(Text.of("Gave %s of %s to %s".formatted(count, itemArgument.getItem().getName().getString(), player.getName().getString())));
             } else {
                 context.getSource().sendMessage(Text.of("Inventory full!"));
