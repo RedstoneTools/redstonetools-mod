@@ -33,9 +33,7 @@ public class GiveMeFeature extends AbstractFeature {
         ItemStack stack = itemArgument.createStack(count, false);
         if (player != null) {
             stack.setCount(count);
-            if (player.getInventory().getEmptySlot() != -1) {
-                player.getInventory().setStack(player.getInventory().getEmptySlot(), stack);
-//                player.getInventory().markDirty();
+            if (player.getInventory().insertStack(stack)) {
                 context.getSource().sendMessage(Text.of("Gave %s of %s to %s".formatted(count, itemArgument.getItem().getName().getString(), player.getName().getString())));
             } else {
                 context.getSource().sendMessage(Text.of("Inventory full!"));
