@@ -56,7 +56,7 @@ public class ClientFeatureUtils {
                 .map(clazz::cast)
                 .findFirst();
         if (found.isEmpty()) {
-            System.out.println("Add " + clazz.getSimpleName() + " to FeatureUtils");
+            System.out.println("Add " + clazz.getSimpleName() + " to ClientFeatureUtils");
             throw new RuntimeException();
         }
         return found.orElseThrow();

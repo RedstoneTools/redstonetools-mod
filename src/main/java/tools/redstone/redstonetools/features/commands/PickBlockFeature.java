@@ -21,16 +21,12 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
             throw new SimpleCommandExceptionType(Text.literal("Failed to get player.")).create();
         }
 
-        System.out.println("Got here 1");
         var stack = getItemStack(context, blockInfo);
 
-        System.out.println("Got here 2");
         PlayerInventory playerInventory = player.getInventory();
         addPickBlock(playerInventory, stack);
 
-        System.out.println("Got here 3");
         int i = playerInventory.getSlotWithStack(stack);
-        System.out.println("Got here 4");
         if (i != -1) {
             if (PlayerInventory.isValidHotbarIndex(i)) {
                 playerInventory.setSelectedSlot(i);
@@ -40,9 +36,7 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
         } else if (player.isInCreativeMode()) {
             playerInventory.swapStackWithHotbar(stack);
         }
-        System.out.println("Got here 5");
         context.getSource().getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(((PlayerInventoryAccessor)playerInventory).getSelectedSlot()));
-        System.out.println("Got here 6");
         player.playerScreenHandler.sendContentUpdates();
         return 1;
     }
