@@ -42,7 +42,8 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
         try {
             var playerInventory = context.getSource().getPlayer().getInventory();
             ItemStack itemStack = block.getItemStack(signalStrength);
-            playerInventory.swapStackWithHotbar(itemStack);
+            playerInventory.insertStack(itemStack);
+//            playerInventory.swapStackWithHotbar(itemStack);
         } catch (IllegalArgumentException | IllegalStateException | NullPointerException e) {
             throw new SimpleCommandExceptionType(Text.literal(e.getMessage())).create();
         }
