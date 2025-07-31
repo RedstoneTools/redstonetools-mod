@@ -72,18 +72,6 @@ public class MacroManager extends AbstractFeature {
         return false;
     }
 
-    public static void addMacro(Macro macro) {
-        macros.add(macro);
-
-        saveChanges();
-    }
-
-    public static void removeMacro(Macro macro) {
-        macros.remove(macro);
-
-        saveChanges();
-    }
-
     public static void saveChanges() {
         try {
             Files.createDirectories(macrosFilePath.getParent());

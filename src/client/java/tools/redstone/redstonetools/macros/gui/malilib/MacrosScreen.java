@@ -52,9 +52,7 @@ public class MacrosScreen extends Screen {
         this.addDrawableChild(addButton);
         this.addSelectableChild(addButton);
 
-        ButtonWidget backButton = ButtonWidget.builder(Text.literal("Back"), btn -> {
-            this.close();
-        }).dimensions(10, btnY, 60, 20).build();
+        ButtonWidget backButton = ButtonWidget.builder(Text.literal("Back"), btn -> this.close()).dimensions(10, btnY, 60, 20).build();
         this.addDrawableChild(backButton);
         this.addSelectableChild(backButton);
     }

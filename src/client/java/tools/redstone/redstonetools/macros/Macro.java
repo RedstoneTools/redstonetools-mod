@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.gui.GuiModConfigs;
 import fi.dy.masa.malilib.config.options.ConfigStringList;
 import tools.redstone.redstonetools.macros.actions.Action;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
@@ -28,7 +27,7 @@ public class Macro {
     public boolean enabled;
     public List<CommandAction> actions;
     transient boolean _wasPressed = false;
-    public List<String> actionsAsStringList = new AbstractList<String>() {
+    public List<String> actionsAsStringList = new AbstractList<>() {
         @Override
         public String get(int index) {
             return actions.get(index).command;
@@ -59,10 +58,8 @@ public class Macro {
     public final ConfigStringList config;
     public final GuiModConfigs configGui;
 
-    private final Macro original;
-
     public void fromStringList(List<String> stringList) {
-        List<CommandAction> newActions = new ArrayList<CommandAction>();
+        List<CommandAction> newActions = new ArrayList<>();
 	    for (String s : stringList) {
 		    newActions.add(new CommandAction(s));
 	    }
@@ -70,30 +67,12 @@ public class Macro {
     }
 
     public Macro(String name, boolean enabled, Key key, List<CommandAction> actions) {
-        this(name,enabled,key,actions,null);
-        changeKeyBindingKeyCode();
-    }
-
-    public Macro(String name, boolean enabled, Key key, List<CommandAction> actions, Macro original) {
         this.name = name;
         this.enabled = enabled;
         this.key = key;
         this.actions = actions;
-        this.original = original;
 	    this.config = new ConfigStringList(this.name, ImmutableList.copyOf(actionsAsStringList));
         this.configGui = new GuiModConfigs("redstonetools", null, false, this.name);
-    }
-
-    public void registerKeyBinding() {
-        if (keyBinding == null) return;
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (keyBinding == null || key == InputUtil.UNKNOWN_KEY) return;
-
-            if (keyBinding.wasPressed()) {
-                run();
-            }
-        });
     }
 
     public void run() {
@@ -104,23 +83,6 @@ public class Macro {
         for (Action action : actions) {
             action.run();
         }
-    }
-
-    public void applyChangesToOriginal() {
-        assert isCopy();
-
-        original.name = name;
-        original.enabled = enabled;
-        original.setKey(key);
-        original.actions = new ArrayList<>(actions);
-    }
-
-    public boolean isCopy(){
-        return original != null;
-    }
-
-    public boolean isCopyOf(Macro macro) {
-        return original == macro;
     }
 
     public void setKey(Key key) {
@@ -142,18 +104,6 @@ public class Macro {
         return key;
     }
 
-    public Macro createCopy() {
-        return new Macro(name,enabled,key,new ArrayList<>(actions),this);
-    }
-
-    public boolean needsSaving() {
-        return !isCopy() || !original.equals(this);
-    }
-
-    public boolean isEmpty() {
-        return name.isEmpty() && key == InputUtil.UNKNOWN_KEY && actions.isEmpty();
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Macro macro) {
@@ -169,7 +119,4 @@ public class Macro {
         return super.equals(obj);
     }
 
-    public List<CommandAction> getActions() {
-        return actions;
-    }
 }
