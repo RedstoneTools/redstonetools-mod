@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.macros;
+package tools.redstone.redstonetools;
 
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
