@@ -58,6 +58,7 @@ public class MacroArgumentType  implements ArgumentType<Macro> {
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         List<String> macroNamesList = new ArrayList<>();
         MacroManager.getMacros().forEach(macro -> macroNamesList.add(macro.name));
+        macroNamesList.sort(String.CASE_INSENSITIVE_ORDER);
         return CommandSource.suggestMatching(macroNamesList, builder);
     }
 }
