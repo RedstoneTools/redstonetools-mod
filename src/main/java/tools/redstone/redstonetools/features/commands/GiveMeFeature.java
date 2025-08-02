@@ -9,6 +9,7 @@ import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -35,34 +36,27 @@ public class GiveMeFeature extends AbstractFeature {
             PlayerInventory inventory = player.getInventory();
             int emptySlot = inventory.getEmptySlot();
             ItemStack selectedSlot = inventory.getStack(inventory.getSelectedSlot());
-            int slotInHotbarOfSameType = checkForSlotInHotbarOfSameType(inventory, stack);
-            if (selectedSlot.isEmpty()) {
-                player.sendMessage(Text.literal("1"));
-                inventory.setSelectedStack(stack);
-            } else if (selectedSlot.getItem().equals(stack.getItem())) {
+            int firstSlotOfSameType = firstSlotOfSameType(inventory, stack);
+            if (selectedSlot.getItem().equals(stack.getItem())) {
                 if (selectedSlot.getCount() + stack.getCount() < 99) { // same item, sum is valid
-                    player.sendMessage(Text.literal("2"));
                     selectedSlot.setCount(selectedSlot.getCount() + stack.getCount());
                 } else { // same item, sum is not valid
-                    player.sendMessage(Text.literal("3"));
                     stack.setCount(selectedSlot.getCount() + stack.getCount() - 99);
                     selectedSlot.setCount(99);
                     inventory.setStack(emptySlot, stack);
                 }
-            } else if (slotInHotbarOfSameType != -1) { // slot in hotbar of same type, sum is valid
-                ItemStack sameType = inventory.getStack(slotInHotbarOfSameType);
-                player.sendMessage(Text.literal("4"));
-                inventory.setSelectedSlot(slotInHotbarOfSameType);
-                inventory.updateItems();
+            } else if (firstSlotOfSameType != -1) { // slot in hotbar of same type, sum is valid
+                ItemStack sameType = inventory.getStack(firstSlotOfSameType);
+                player.networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(firstSlotOfSameType));
+                inventory.setSelectedSlot(firstSlotOfSameType);
                 sameType.setCount(sameType.getCount() + stack.getCount());
-                selectedSlot.setCount(selectedSlot.getCount() + stack.getCount());
+            } else if (selectedSlot.isEmpty()) {
+                inventory.setSelectedStack(stack);
             } else if (PlayerInventory.isValidHotbarIndex(emptySlot)) { // empty slot in hotbar
-                player.sendMessage(Text.literal("5"));
+                player.networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(emptySlot));
                 inventory.setSelectedSlot(emptySlot);
                 inventory.setSelectedStack(stack);
-                inventory.updateItems();
             } else if (emptySlot != -1) { // empty slot in inventory
-                player.sendMessage(Text.literal("6"));
                 inventory.setStack(emptySlot, selectedSlot);
                 inventory.setSelectedStack(stack);
             } else {
@@ -74,8 +68,8 @@ public class GiveMeFeature extends AbstractFeature {
         return 0;
     }
 
-    private int checkForSlotInHotbarOfSameType(PlayerInventory inventory, ItemStack stack) {
-        for (int i = 0; i < 9; i++) {
+    private int firstSlotOfSameType(PlayerInventory inventory, ItemStack stack) {
+        for (int i = 0; i < inventory.size(); i++) {
             if (inventory.getStack(i).getItem() == stack.getItem() &&
             inventory.getStack(i).getCount() + stack.getCount() < 99) {
                 return i;
