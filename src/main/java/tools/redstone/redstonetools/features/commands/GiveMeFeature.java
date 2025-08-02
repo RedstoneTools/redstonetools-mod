@@ -3,9 +3,11 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -26,29 +28,59 @@ public class GiveMeFeature extends AbstractFeature {
     }
 
     private int execute(CommandContext<ServerCommandSource> context, ItemStackArgument itemArgument, int count) throws CommandSyntaxException {
-//        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
-//            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
-//        }
         ServerPlayerEntity player = context.getSource().getPlayer();
-        ItemStack stack = itemArgument.createStack(count, false);
+        ItemStack stack = itemArgument.createStack(1, false);
+        stack.setCount(count);
         if (player != null) {
-            boolean gaveStack = false;
-            if (count > 64) {
-                stack.setCount(count);
-                if (player.getInventory().getEmptySlot() != -1) {
-                    player.getInventory().setStack(player.getInventory().getEmptySlot(), stack);
-                    gaveStack = true;
+            PlayerInventory inventory = player.getInventory();
+            int emptySlot = inventory.getEmptySlot();
+            ItemStack selectedSlot = inventory.getStack(inventory.getSelectedSlot());
+            int slotInHotbarOfSameType = checkForSlotInHotbarOfSameType(inventory, stack);
+            if (selectedSlot.isEmpty()) {
+                player.sendMessage(Text.literal("1"));
+                inventory.setSelectedStack(stack);
+            } else if (selectedSlot.getItem().equals(stack.getItem())) {
+                if (selectedSlot.getCount() + stack.getCount() < 99) { // same item, sum is valid
+                    player.sendMessage(Text.literal("2"));
+                    selectedSlot.setCount(selectedSlot.getCount() + stack.getCount());
+                } else { // same item, sum is not valid
+                    player.sendMessage(Text.literal("3"));
+                    stack.setCount(selectedSlot.getCount() + stack.getCount() - 99);
+                    selectedSlot.setCount(99);
+                    inventory.setStack(emptySlot, stack);
                 }
+            } else if (slotInHotbarOfSameType != -1) { // slot in hotbar of same type, sum is valid
+                ItemStack sameType = inventory.getStack(slotInHotbarOfSameType);
+                player.sendMessage(Text.literal("4"));
+                inventory.setSelectedSlot(slotInHotbarOfSameType);
+                inventory.updateItems();
+                sameType.setCount(sameType.getCount() + stack.getCount());
+                selectedSlot.setCount(selectedSlot.getCount() + stack.getCount());
+            } else if (PlayerInventory.isValidHotbarIndex(emptySlot)) { // empty slot in hotbar
+                player.sendMessage(Text.literal("5"));
+                inventory.setSelectedSlot(emptySlot);
+                inventory.setSelectedStack(stack);
+                inventory.updateItems();
+            } else if (emptySlot != -1) { // empty slot in inventory
+                player.sendMessage(Text.literal("6"));
+                inventory.setStack(emptySlot, selectedSlot);
+                inventory.setSelectedStack(stack);
             } else {
-                gaveStack = player.getInventory().insertStack(stack);
+                throw new SimpleCommandExceptionType(Text.literal("Inventory full!")).create();
             }
-            if (gaveStack) {
-                context.getSource().sendMessage(Text.of("Gave %s of %s to %s".formatted(count, itemArgument.getItem().getName().getString(), player.getName().getString())));
-            } else {
-                context.getSource().sendMessage(Text.of("Inventory full!"));
-            }
+            inventory.markDirty();
         } else
             context.getSource().sendMessage(Text.of("Player not found."));
         return 0;
+    }
+
+    private int checkForSlotInHotbarOfSameType(PlayerInventory inventory, ItemStack stack) {
+        for (int i = 0; i < 9; i++) {
+            if (inventory.getStack(i).getItem() == stack.getItem() &&
+            inventory.getStack(i).getCount() + stack.getCount() < 99) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
