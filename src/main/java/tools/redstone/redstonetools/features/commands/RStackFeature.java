@@ -38,9 +38,13 @@ public class RStackFeature extends AbstractFeature {
                 .then(argument("count", IntegerArgumentType.integer())
                 .then(argument("direction", DirectionArgumentType.direction())
                 .then(argument("offset", IntegerArgumentType.integer())
-                .executes(context -> FeatureUtils.getFeature(RStackFeature.class).execute(context))
+                .executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
                 .then(argument("update", BoolArgumentType.bool())
-                .executes(context -> FeatureUtils.getFeature(RStackFeature.class).execute(context))))))));
+                .executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))))))));
+    }
+
+    protected int pareseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        return execute(context);
     }
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
