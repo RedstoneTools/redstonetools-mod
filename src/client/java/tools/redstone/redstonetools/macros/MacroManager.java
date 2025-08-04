@@ -119,25 +119,25 @@ public class MacroManager extends AbstractFeature {
     public static List<Macro> getDefaultMacros() {
         return List.of(
                 createCommandMacro("redstoner", new String[] {
-                        "gamerule doTileDrops false",
-                        "gamerule doTraderSpawning false",
-                        "gamerule doWeatherCycle false",
-                        "gamerule doDaylightCycle false",
-                        "gamerule doMobSpawning false",
-                        "gamerule doContainerDrops false",
-                        "time set noon",
-                        "weather clear"
+                        "/gamerule doTileDrops false",
+                        "/gamerule doTraderSpawning false",
+                        "/gamerule doWeatherCycle false",
+                        "/gamerule doDaylightCycle false",
+                        "/gamerule doMobSpawning false",
+                        "/gamerule doContainerDrops false",
+                        "/time set noon",
+                        "/weather clear"
                 }),
-                createCommandMacro("airplace", new String[] {"airplace"}),
-                createCommandMacro("autodust", new String[] {"autodust"}),
-                createCommandMacro("bigdust", new String[] {"bigdust 3"}),
-                createCommandMacro("copystate", new String[] {"copystate"}),
-                createCommandMacro("itembind", new String[] {"itembind"}),
-                createCommandMacro("minsel", new String[] {"/minsel"}),
-                createCommandMacro("quicktp", new String[] {"quicktp"}),
-                createCommandMacro("binaryblockread", new String[] {"/binaryblockread"}),
-//                createCommandMacro("rstack", new String[] {"rstack me"}), // why was this a thing originally
-                createCommandMacro("update", new String[] {"/update"})
+                createCommandMacro("airplace", new String[] {"/airplace"}),
+                createCommandMacro("autodust", new String[] {"/autodust"}),
+                createCommandMacro("bigdust", new String[] {"/bigdust 3"}),
+                createCommandMacro("copystate", new String[] {"/copystate"}),
+                createCommandMacro("itembind", new String[] {"/itembind"}),
+                createCommandMacro("minsel", new String[] {"//minsel"}),
+                createCommandMacro("quicktp", new String[] {"/quicktp"}),
+                createCommandMacro("binaryblockread", new String[] {"//binaryblockread"}),
+                createCommandMacro("rstack", new String[] {"//rstack"}),
+                createCommandMacro("update", new String[] {"//update"})
         );
     }
 

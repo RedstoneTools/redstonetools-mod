@@ -13,7 +13,10 @@ public class CommandAction extends Action {
     public void run() {
         var player = MinecraftClient.getInstance().player;
         assert player != null;
-        player.networkHandler.sendChatCommand(command);
+        if (command.startsWith("/"))
+            player.networkHandler.sendChatCommand(command.substring(1));
+        else
+            player.networkHandler.sendChatMessage(command);
     }
 
     @Override
