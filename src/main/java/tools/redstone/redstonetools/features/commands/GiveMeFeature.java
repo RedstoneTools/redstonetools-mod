@@ -14,6 +14,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import static net.minecraft.server.command.CommandManager.argument;
@@ -35,14 +36,15 @@ public class GiveMeFeature extends AbstractFeature {
         if (player != null) {
             PlayerInventory inventory = player.getInventory();
             int emptySlot = inventory.getEmptySlot();
-            ItemStack selectedSlot = inventory.getStack(inventory.getSelectedSlot());
+            ItemStack selectedStack = inventory.getStack(((PlayerInventoryAccessor)inventory).getSelectedSlot());
+            int selectedSlot = ((PlayerInventoryAccessor) inventory).getSelectedSlot();
             int firstSlotOfSameType = firstSlotOfSameType(inventory, stack);
-            if (selectedSlot.getItem().equals(stack.getItem())) {
-                if (selectedSlot.getCount() + stack.getCount() < 99) { // same item, sum is valid
-                    selectedSlot.setCount(selectedSlot.getCount() + stack.getCount());
+            if (selectedStack.getItem().equals(stack.getItem())) {
+                if (selectedStack.getCount() + stack.getCount() < 99) { // same item, sum is valid
+                    selectedStack.setCount(selectedStack.getCount() + stack.getCount());
                 } else { // same item, sum is not valid
-                    stack.setCount(selectedSlot.getCount() + stack.getCount() - 99);
-                    selectedSlot.setCount(99);
+                    stack.setCount(selectedStack.getCount() + stack.getCount() - 99);
+                    selectedStack.setCount(99);
                     inventory.setStack(emptySlot, stack);
                 }
             } else if (PlayerInventory.isValidHotbarIndex(firstSlotOfSameType)) { // slot in hotbar of same type, sum is valid
@@ -53,17 +55,17 @@ public class GiveMeFeature extends AbstractFeature {
             } else if (firstSlotOfSameType != -1) { // slot in inventory of same type, sum is valid
                 ItemStack sameType = inventory.getStack(firstSlotOfSameType);
                 sameType.setCount(sameType.getCount() + stack.getCount());
-                inventory.setStack(firstSlotOfSameType, selectedSlot);
-                inventory.setSelectedStack(sameType);
-            } else if (selectedSlot.isEmpty()) {
-                inventory.setSelectedStack(stack);
+                inventory.setStack(firstSlotOfSameType, selectedStack);
+                inventory.setStack(selectedSlot, sameType);
+            } else if (selectedStack.isEmpty()) {
+                inventory.setStack(selectedSlot, stack);
             } else if (PlayerInventory.isValidHotbarIndex(emptySlot)) { // empty slot in hotbar
                 player.networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(emptySlot));
                 inventory.setSelectedSlot(emptySlot);
-                inventory.setSelectedStack(stack);
+                inventory.setStack(selectedSlot, stack);
             } else if (emptySlot != -1) { // empty slot in inventory
-                inventory.setStack(emptySlot, selectedSlot);
-                inventory.setSelectedStack(stack);
+                inventory.setStack(emptySlot, selectedStack);
+                inventory.setStack(selectedSlot, stack);
             } else {
                 throw new SimpleCommandExceptionType(Text.literal("Inventory full!")).create();
             }
