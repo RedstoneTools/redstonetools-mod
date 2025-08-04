@@ -19,6 +19,7 @@ public abstract class ItemBindItemStackMixin {
     private void checkCommandNBT(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         assert MinecraftClient.getInstance().player != null;
         ItemStack stack = user.getMainHandStack();
+        if (stack.isEmpty()) stack = user.getOffHandStack();
         if (!world.isClient()) return;
         if (stack.contains(RedstoneTools.COMMAND_COMPONENT)) {
             String command = stack.get(RedstoneTools.COMMAND_COMPONENT);
