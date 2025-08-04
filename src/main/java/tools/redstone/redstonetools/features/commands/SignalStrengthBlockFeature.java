@@ -22,6 +22,7 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
     public static void registerCommand() {
         var ssb = FeatureUtils.getFeature(SignalStrengthBlockFeature.class);
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("ssb")
+                .executes(ssb::parseArguments)
                 .then(argument("signalStrength", IntegerArgumentType.integer())
                 .executes(ssb::parseArguments)
                 .then(argument("block", SignalBlockArgumentType.signalblock())
@@ -29,8 +30,12 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
     }
 
     protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        int signalStrength = IntegerArgumentType.getInteger(context, "signalStrength");
+        int signalStrength;
         SignalBlock block;
+        try { signalStrength = IntegerArgumentType.getInteger(context, "signalStrength"); }
+        catch (Exception ignored) {
+            signalStrength = 15;
+        }
         try { block = SignalBlockArgumentType.getSignalBlock(context, "block"); }
         catch (Exception ignored) {
             block = SignalBlock.AUTO;
