@@ -45,11 +45,16 @@ public class GiveMeFeature extends AbstractFeature {
                     selectedSlot.setCount(99);
                     inventory.setStack(emptySlot, stack);
                 }
-            } else if (firstSlotOfSameType != -1) { // slot in hotbar of same type, sum is valid
+            } else if (PlayerInventory.isValidHotbarIndex(firstSlotOfSameType)) { // slot in hotbar of same type, sum is valid
                 ItemStack sameType = inventory.getStack(firstSlotOfSameType);
                 player.networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(firstSlotOfSameType));
                 inventory.setSelectedSlot(firstSlotOfSameType);
                 sameType.setCount(sameType.getCount() + stack.getCount());
+            } else if (firstSlotOfSameType != -1) { // slot in inventory of same type, sum is valid
+                ItemStack sameType = inventory.getStack(firstSlotOfSameType);
+                sameType.setCount(sameType.getCount() + stack.getCount());
+                inventory.setStack(firstSlotOfSameType, selectedSlot);
+                inventory.setSelectedStack(sameType);
             } else if (selectedSlot.isEmpty()) {
                 inventory.setSelectedStack(stack);
             } else if (PlayerInventory.isValidHotbarIndex(emptySlot)) { // empty slot in hotbar

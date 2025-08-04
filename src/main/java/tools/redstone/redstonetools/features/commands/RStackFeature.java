@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -31,19 +32,28 @@ import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
 public class RStackFeature extends AbstractFeature {
+    public static boolean update = true;
     public static void registerCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/rstack")
                 .then(argument("count", IntegerArgumentType.integer())
                 .then(argument("direction", DirectionArgumentType.direction())
                 .then(argument("offset", IntegerArgumentType.integer())
-                .executes(context -> FeatureUtils.getFeature(RStackFeature.class).execute(context)))))));
-
+                .executes(context -> FeatureUtils.getFeature(RStackFeature.class).execute(context))
+                .then(argument("update", BoolArgumentType.bool())
+                .executes(context -> FeatureUtils.getFeature(RStackFeature.class).execute(context))))))));
     }
 
     protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         int count = IntegerArgumentType.getInteger(context, "count");
         var direction = DirectionArgumentType.getDirection(context, "direction");
         int offset = IntegerArgumentType.getInteger(context, "offset");
+        boolean update;
+        try {
+            update = BoolArgumentType.getBool(context, "update");
+        } catch (Exception e) {
+            update = false;
+        }
+        RStackFeature.update = update;
         var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
 
         var localSession = WorldEdit.getInstance()
@@ -92,6 +102,7 @@ public class RStackFeature extends AbstractFeature {
                         selection.getMinimumPoint().add(Objects.requireNonNull(stackVector).multiply(i * offset))
                 );
                 copy.setSourceMask(airFilter);
+                copy.setSourceFunction(position -> false);
                 Operations.complete(copy);
             }
             localSession.remember(editSession);
