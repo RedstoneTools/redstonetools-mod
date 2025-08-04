@@ -27,7 +27,7 @@ public class BinaryBlockReadFeature extends AbstractFeature {
         BinaryBlockReadFeature bbr = FeatureUtils.getFeature(BinaryBlockReadFeature.class);
         CommandRegistrationCallback.EVENT.register(
                 (dispatcher, registryAccess, environment) -> dispatcher.register(
-                literal("/binaryblockread")
+                literal("/read")
                     .executes(bbr::parseArgs)
                 .then(argument("offset", IntegerArgumentType.integer(1))
                     .executes(bbr::parseArgs)
