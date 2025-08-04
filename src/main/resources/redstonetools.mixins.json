@@ -7,10 +7,12 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "AbstractBlockMixin",
     "blocks.RedstoneHitboxMixin",
     "features.AutoDustMixin",
     "features.CopyStateMixin",
     "features.PlayerInventoryAccessor",
+    "features.ServerPlayNetworkHandlerAccessor",
     "features.ServerPlayNetworkHandlerMixin",
     "gamerules.DoContainerDropsMixin"
   ]

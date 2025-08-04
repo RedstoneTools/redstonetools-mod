@@ -10,6 +10,8 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.state.property.Property;
 import net.minecraft.text.Text;
+import tools.redstone.redstonetools.mixin.AbstractBlockMixin;
+import tools.redstone.redstonetools.mixin.features.ServerPlayNetworkHandlerAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
@@ -28,19 +30,26 @@ public class CopyStateFeature extends PickBlockFeature {
     // all of the warnings caused by this function should be fine. hopefully.
     @Override
     protected ItemStack getItemStack(CommandContext<ServerCommandSource> context, BlockInfo blockInfo) {
-        ItemStack stack = new ItemStack(Objects.requireNonNull(blockInfo).block);
+        Objects.requireNonNull(blockInfo);
+        ItemStack stack = ((AbstractBlockMixin)blockInfo.state.getBlock()).callGetPickStack(context.getSource().getWorld(), blockInfo.pos, blockInfo.state, true);
+
+        // what is this :sob:
+        ((ServerPlayNetworkHandlerAccessor)context.getSource().getPlayer().networkHandler).callCopyBlockDataToStack(blockInfo.state, context.getSource().getWorld(), blockInfo.pos, stack);
 
         List<Text> lore = new ArrayList<>();
-        if (blockInfo.state.getProperties().isEmpty())
-            return stack.getItem().getDefaultStack();
-
-        BlockStateComponent component = BlockStateComponent.DEFAULT;
-        for (Property prop : blockInfo.state.getProperties()) {
-            lore.add(Text.of("   " + prop.getName() + ": " + blockInfo.state.get(prop)));
-            component = component.with(prop, blockInfo.state.get(prop));
+        if (blockInfo.entity != null) {
+            lore.add(Text.literal("Has block entity data"));
         }
 
-        stack.set(DataComponentTypes.BLOCK_STATE, component);
+        if (!blockInfo.state.getProperties().isEmpty()) {
+            BlockStateComponent component = BlockStateComponent.DEFAULT;
+            for (Property prop : blockInfo.state.getProperties()) {
+                lore.add(Text.of("   " + prop.getName() + ": " + blockInfo.state.get(prop)));
+                component = component.with(prop, blockInfo.state.get(prop));
+            }
+
+            stack.set(DataComponentTypes.BLOCK_STATE, component);
+        }
         stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
 
         return stack;
