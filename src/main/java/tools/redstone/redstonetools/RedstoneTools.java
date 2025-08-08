@@ -17,11 +17,14 @@ import tools.redstone.redstonetools.features.commands.argument.SignalBlockArgume
 public class RedstoneTools implements ModInitializer {
     public static final String MOD_ID = "redstonetools";
     public static final String MOD_VERSION = "v" + FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString();
+    public static final String MOD_NAME = "Redstone tools";
+
     public static final ComponentType<String> COMMAND_COMPONENT = Registry.register(
             Registries.DATA_COMPONENT_TYPE,
             Identifier.of(RedstoneTools.MOD_ID, "command"),
             ComponentType.<String>builder().codec(Codec.STRING).build()
     );
+
     @Override
     public void onInitialize() {
         RedstoneToolsGameRules.register();

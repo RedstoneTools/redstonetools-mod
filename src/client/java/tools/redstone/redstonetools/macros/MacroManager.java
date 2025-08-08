@@ -5,6 +5,7 @@ import net.minecraft.client.util.InputUtil;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
+import tools.redstone.redstonetools.malilib.widget.MacroBase;
 
 import javax.inject.Singleton;
 import javax.json.Json;
