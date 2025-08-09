@@ -69,7 +69,7 @@ public class GuiConfigs extends GuiConfigsBase {
 		return ConfigOptionWrapper.createFor(configs);
 	}
 
-	private static class ButtonListener implements IButtonActionListener {
+	static class ButtonListener implements IButtonActionListener {
 		private final GuiConfigs parent;
 		private final ConfigGuiTab tab;
 

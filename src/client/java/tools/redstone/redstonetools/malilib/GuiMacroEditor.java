@@ -1,6 +1,10 @@
 package tools.redstone.redstonetools.malilib;
 
-import fi.dy.masa.malilib.config.options.ConfigOptionList;
+import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.options.ConfigBoolean;
+import fi.dy.masa.malilib.config.options.ConfigHotkey;
+import fi.dy.masa.malilib.config.options.ConfigString;
+import fi.dy.masa.malilib.config.options.ConfigStringList;
 import fi.dy.masa.malilib.gui.*;
 import fi.dy.masa.malilib.gui.button.*;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
@@ -8,24 +12,27 @@ import fi.dy.masa.malilib.util.*;
 import fi.dy.masa.malilib.util.position.PositionUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
+import tools.redstone.redstonetools.RedstoneTools;
+import tools.redstone.redstonetools.macros.actions.CommandAction;
+import tools.redstone.redstonetools.malilib.config.MacroManager;
 import tools.redstone.redstonetools.malilib.widget.MacroBase;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.*;
 
-public class GuiMacroEditor  extends GuiBase
+public class GuiMacroEditor extends GuiConfigsBase
 {
 	private final MacroBase macro;
-	private ConfigOptionList configBlockSnap;
-	private int colorY;
+	private final ConfigStringList commands;
 
 	public GuiMacroEditor(MacroBase macro)
 	{
+		super(10, 50, RedstoneTools.MOD_ID, null, macro.getName(), "");
 		this.macro = macro;
-		this.title = StringUtils.translate("Macro editor", macro.getName());
-		this.configBlockSnap = new ConfigOptionList("blockSnap", BlockSnap.NONE, "");
+		this.title = macro.getName();
+		this.commands = new ConfigStringList("Commands", ImmutableList.of());
+		commands.setStrings(macro.actionsAsStringList);
 	}
 
 	@Override
@@ -34,25 +41,29 @@ public class GuiMacroEditor  extends GuiBase
 		super.initGui();
 
 		int x = 10;
-		int y = 20;
-
-		this.createMacroEditorElements(x, y);
 
 		ButtonGeneric button = new ButtonGeneric(x, this.height - 24, -1, 20, GuiConfigs.ConfigGuiTab.MACROS.getDisplayName());
-		this.addButton(button, new GuiMacroManager.ButtonListenerTab(GuiConfigs.ConfigGuiTab.MACROS));
+		this.addButton(button, (a, b) -> {
+			updateConfigs();
+			GuiBase.openGui(new GuiMacroManager());
+		});
 	}
 
-	private void createMacroEditorElements(int x, int y)
-	{
-		this.addLabel(x, y, -1, 14, 0xFFFFFFFF, StringUtils.translate("Name:"));
-		y += 12;
+	@Override
+	public void close() {
+		updateConfigs();
+		GuiBase.openGui(new GuiMacroManager());
+	}
 
-		GuiTextFieldGeneric textField = new GuiTextFieldGeneric(x, y, 240, 17, this.textRenderer);
-		textField.setText(this.macro.getName());
-		var textField2 = this.addTextField(textField, (txtFld) -> { this.macro.setName(txtFld.getText()); return true; });
-		y += textField2.getTextField().getHeight();
-
-		this.addLabel(x, y, -1, 14, 0xFFFFFFFF, this.macro.isEnabled() ? "Enabled" : "Disabled");
+	private void updateConfigs() {
+		this.macro.setName(this.configName.getName());
+		this.macro.setEnabled(this.configEnabled.getBooleanValue());
+		this.macro.keybind = this.configHotkey.getKeybind();
+		this.macro.actions.clear();
+		for (String s : this.configCommands.getStrings()) {
+			this.macro.actions.add(new CommandAction(s));
+		}
+		MacroManager.saveChanges();
 	}
 
 	protected void addBoxInput(int x, int y, int textFieldWidth, DoubleSupplier coordinateSource,
@@ -88,156 +99,44 @@ public class GuiMacroEditor  extends GuiBase
 		}));
 	}
 
-	private String capitalize(String str)
-	{
-		if (str.length() > 1)
-		{
-			return str.substring(0, 1).toUpperCase(Locale.ROOT) + str.substring(1);
-		}
+	private ConfigBoolean    configEnabled;
+	private ConfigHotkey     configHotkey;
+	private ConfigStringList configCommands;
+	private ConfigString     configName;
 
-		return str.length() > 0 ? str.toUpperCase(Locale.ROOT) : str;
+	// I'm sorry
+	@Override
+	public List<ConfigOptionWrapper> getConfigs() {
+		this.configEnabled  = new ConfigBoolean("enabled", this.macro.isEnabled(), "Whether or not to enable the hotkey", "Enabled");
+		this.configHotkey   = new ConfigHotkey("hotkey", this.macro.keybind.getStringValue(), "Pressing this hotkey will activate the macro", "Hotkey");
+		this.configCommands = new ConfigStringList("commands", ImmutableList.copyOf(this.macro.actionsAsStringList), "Commands executed by this macro", "Commands");
+		this.configName     = new ConfigString("name", this.macro.getName(), "Name of the macro", "Name");
+
+		List<ConfigBoolean> configsB = new ArrayList<>();
+		configsB.add(configEnabled);
+
+		List<ConfigHotkey> configsH = new ArrayList<>();
+		configsH.add(configHotkey);
+
+		List<ConfigStringList> configsSL = new ArrayList<>();
+		configsSL.add(configCommands);
+
+		List<ConfigString> configsS = new ArrayList<>();
+		configsS.add(configName);
+
+		List<ConfigOptionWrapper> configOptionWrappers = new ArrayList<>();
+		configOptionWrappers.addAll(immutableListToList(ConfigOptionWrapper.createFor(configsS)));
+		configOptionWrappers.addAll(immutableListToList(ConfigOptionWrapper.createFor(configsH)));
+		configOptionWrappers.addAll(immutableListToList(ConfigOptionWrapper.createFor(configsSL)));
+		configOptionWrappers.addAll(immutableListToList(ConfigOptionWrapper.createFor(configsB)));
+		return ImmutableList.copyOf(configOptionWrappers);
 	}
 
-	private void createShapeEditorElementIntField(int x, int y, IntSupplier supplier, IntConsumer consumer, String translationKey, boolean addButton)
-	{
-		this.addLabel(x + 12, y, -1, 12, 0xFFFFFFFF, translationKey);
-		y += 11;
-
-		GuiTextFieldInteger txtField = new GuiTextFieldInteger(x + 12, y, 40, 14, this.textRenderer);
-		txtField.setText(String.valueOf(supplier.getAsInt()));
-		this.addTextField(txtField, new TextFieldListenerInteger(consumer));
-
-		if (addButton)
-		{
-			String hover = StringUtils.translate("malilib.gui.button.hover.plus_minus_tip");
-			ButtonGeneric button = new ButtonGeneric(x + 54, y - 1, MaLiLibIcons.BTN_PLUSMINUS_16, hover);
-			this.addButton(button, new ButtonListenerIntModifier(supplier, new ChainedIntConsumer(consumer, (val) -> txtField.setText(String.valueOf(supplier.getAsInt())) )));
-		}
-	}
-
-	public static class MutableWrapperBox
-	{
-		protected final Consumer<Box> boxConsumer;
-		protected double minX;
-		protected double minY;
-		protected double minZ;
-		protected double maxX;
-		protected double maxY;
-		protected double maxZ;
-
-		public MutableWrapperBox(Box box, Consumer<Box> boxConsumer)
-		{
-			this.minX = box.minX;
-			this.minY = box.minY;
-			this.minZ = box.minZ;
-			this.maxX = box.maxX;
-			this.maxY = box.maxY;
-			this.maxZ = box.maxZ;
-			this.boxConsumer = boxConsumer;
-		}
-
-		public double getMinX()
-		{
-			return this.minX;
-		}
-
-		public double getMinY()
-		{
-			return this.minY;
-		}
-
-		public double getMinZ()
-		{
-			return this.minZ;
-		}
-
-		public double getMaxX()
-		{
-			return this.maxX;
-		}
-
-		public double getMaxY()
-		{
-			return this.maxY;
-		}
-
-		public double getMaxZ()
-		{
-			return this.maxZ;
-		}
-
-		public void setMinX(double minX)
-		{
-			this.minX = minX;
-			this.updateBox();
-		}
-
-		public void setMinY(double minY)
-		{
-			this.minY = minY;
-			this.updateBox();
-		}
-
-		public void setMinZ(double minZ)
-		{
-			this.minZ = minZ;
-			this.updateBox();
-		}
-
-		public void setMaxX(double maxX)
-		{
-			this.maxX = maxX;
-			this.updateBox();
-		}
-
-		public void setMaxY(double maxY)
-		{
-			this.maxY = maxY;
-			this.updateBox();
-		}
-
-		public void setMaxZ(double maxZ)
-		{
-			this.maxZ = maxZ;
-			this.updateBox();
-		}
-
-		public void setMinCorner(Vec3d pos)
-		{
-			this.minX = pos.x;
-			this.minY = pos.y;
-			this.minZ = pos.z;
-			this.updateBox();
-		}
-
-		public void setMaxCorner(Vec3d pos)
-		{
-			this.maxX = pos.x;
-			this.maxY = pos.y;
-			this.maxZ = pos.z;
-			this.updateBox();
-		}
-
-		protected void updateBox()
-		{
-			Box box = new Box(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
-			this.boxConsumer.accept(box);
-		}
-	}
-
-	private record TextFieldListenerInteger(IntConsumer consumer) implements ITextFieldListener<GuiTextFieldInteger>
-	{
-		@Override
-		public boolean onTextChange(GuiTextFieldInteger textField)
-		{
-			try
-			{
-				this.consumer.accept(Integer.parseInt(textField.getText()));
-				return true;
-			}
-			catch (Exception ignore) {}
-
-			return false;
+	private <E> List<E> immutableListToList(List<E> aFor) {
+		if (aFor instanceof ImmutableList<E> IL) {
+			return new ArrayList<>(IL);
+		} else {
+			throw new IllegalStateException("Trying to convert a " + aFor.getClass() + " to List");
 		}
 	}
 
@@ -254,26 +153,6 @@ public class GuiMacroEditor  extends GuiBase
 			catch (Exception ignore) {}
 
 			return false;
-		}
-	}
-
-	private record ChainedDoubleConsumer(DoubleConsumer consumerOne, DoubleConsumer consumerTwo) implements DoubleConsumer
-	{
-		@Override
-		public void accept(double value)
-		{
-			this.consumerOne.accept(value);
-			this.consumerTwo.accept(value);
-		}
-	}
-
-	private record ChainedIntConsumer(IntConsumer consumerOne, IntConsumer consumerTwo) implements IntConsumer
-	{
-		@Override
-		public void accept(int value)
-		{
-			this.consumerOne.accept(value);
-			this.consumerTwo.accept(value);
 		}
 	}
 

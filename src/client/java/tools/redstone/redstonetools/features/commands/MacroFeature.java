@@ -5,8 +5,8 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.argument.MacroArgumentType;
-import tools.redstone.redstonetools.macros.Macro;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import tools.redstone.redstonetools.malilib.widget.MacroBase;
 import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
@@ -18,7 +18,7 @@ public class MacroFeature extends AbstractFeature {
                 .executes(context -> ClientFeatureUtils.getFeature(MacroFeature.class).execute(context)))));
     }
     protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-        Macro macro = MacroArgumentType.getMacro(context, "macro");
+        MacroBase macro = MacroArgumentType.getMacro(context, "macro");
         macro.run();
         return 1;
     }

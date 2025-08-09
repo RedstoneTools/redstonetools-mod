@@ -9,7 +9,7 @@ import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
-import tools.redstone.redstonetools.macros.MacroManager;
+import tools.redstone.redstonetools.malilib.config.MacroManager;
 
 import java.io.IOException;
 import java.nio.file.Files;

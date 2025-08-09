@@ -7,15 +7,13 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.DrawContext;
+import tools.redstone.redstonetools.malilib.GuiConfigs;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 
-import java.util.List;
-
 public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	private final WidgetListMacros parent;
-	private final MacroBase macro;
-	private final List<String> hoverLines;
+	public  final MacroBase macro;
 	private final boolean isOdd;
 	private final int buttonsStartX;
 
@@ -23,7 +21,6 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	                        MacroBase macro, int listIndex, WidgetListMacros parent) {
 		super(x, y, width, height, macro, listIndex);
 		this.macro = macro;
-		this.hoverLines = macro.getWidgetHoverLines();
 		this.isOdd = isOdd;
 		this.parent = parent;
 		y += 1;
@@ -32,9 +29,6 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 
 		posX -= this.addButton(posX, y, ButtonListener.Type.REMOVE);
 		posX -= this.addButton(posX, y, ButtonListener.Type.CONFIGURE);
-		posX -= this.addButton(posX, y, ButtonListener.Type.TOGGLE);
-		var hotkeyButton = this.addButton(new ConfigButtonKeybind(posX - 300, y, 300, 20, macro.keybind, null), null);
-		posX -= (hotkeyButton.getX() + 1);
 		this.buttonsStartX = posX;
 	}
 
@@ -43,12 +37,6 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 		this.addButton(button, new ButtonListener(type, this));
 
 		return button.getWidth() + 1;
-	}
-
-	private int createButtonOnOff(int xRight, int y, boolean isCurrentlyOn, ButtonListener.Type type) {
-		ButtonOnOff button = new ButtonOnOff(xRight, y, -1, true, type.getTranslationKey(), isCurrentlyOn);
-		this.addButton(button, new ButtonListener(type, this));
-		return button.getWidth() + 2;
 	}
 
 	@Override
@@ -77,10 +65,6 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	@Override
 	public void postRenderHovered(DrawContext context, int mouseX, int mouseY, boolean selected) {
 		super.postRenderHovered(context, mouseX, mouseY, selected);
-
-		if (mouseX >= this.x && mouseX < this.buttonsStartX && mouseY >= this.y && mouseY <= this.y + this.height) {
-			RenderUtils.drawHoverText(context, mouseX, mouseY, this.hoverLines);
-		}
 	}
 
 	private static class ButtonListener implements IButtonActionListener {
@@ -119,7 +103,7 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 
 			private String translationKey;
 
-			private Type(String translationKey) {
+			Type(String translationKey) {
 				this.translationKey = translationKey;
 			}
 

@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tools.redstone.redstonetools.macros.MacroManager;
-import tools.redstone.redstonetools.macros.gui.malilib.MacrosScreen;
+import tools.redstone.redstonetools.malilib.GuiMacroManager;
+import tools.redstone.redstonetools.malilib.config.MacroManager;
 
 @Mixin(ControlsOptionsScreen.class)
 public abstract class AddMacroButtonMixin extends GameOptionsScreen {
@@ -24,7 +24,7 @@ public abstract class AddMacroButtonMixin extends GameOptionsScreen {
     public void addMacroButton(CallbackInfo ci) {
         this.body.addWidgetEntry(new ButtonWidget.Builder(Text.of("Macros..."), button ->
                 MinecraftClient.getInstance().setScreen(
-                        new MacrosScreen(MinecraftClient.getInstance().currentScreen, MacroManager.getMacros())))
+                        new GuiMacroManager()))
                 .build(), null);
     }
 }

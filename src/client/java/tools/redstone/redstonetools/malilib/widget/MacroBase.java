@@ -1,17 +1,13 @@
 package tools.redstone.redstonetools.malilib.widget;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
-import fi.dy.masa.malilib.util.JsonUtils;
-import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.Vec3d;
+import tools.redstone.redstonetools.macros.actions.Action;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
 
-import java.util.ArrayList;
+import java.util.AbstractList;
 import java.util.List;
 
 public class MacroBase {
@@ -21,7 +17,33 @@ public class MacroBase {
 	protected boolean enabled;
 	public IKeybind keybind;
 	public List<CommandAction> actions;
-
+	public List<String> actionsAsStringList = new AbstractList<>() {
+		@Override
+		public String get(int index) {
+			return actions.get(index).command;
+		}
+		@Override
+		public String set(int index, String element) {
+			CommandAction action = actions.get(index);
+			String old = action.command;
+			action.command = element;
+			return old;
+		}
+		@Override
+		public int size() {
+			return actions.size();
+		}
+		@Override
+		public void add(int index, String element) {
+			actions.add(index, new CommandAction(element));
+		}
+		@Override
+		public String remove(int index) {
+			String old = actions.get(index).command;
+			actions.remove(index);
+			return old;
+		}
+	};
 	transient protected boolean needsUpdate;
 
 	public MacroBase(String name, String keybind, List<CommandAction> actions) {
@@ -30,6 +52,16 @@ public class MacroBase {
 		this.mc = MinecraftClient.getInstance();
 		this.name = name;
 		this.needsUpdate = true;
+		this.enabled = true;
+	}
+
+	public MacroBase(String name, String keybind, List<CommandAction> actions, boolean enabled) {
+		this.actions = actions;
+		this.keybind = KeybindMulti.fromStorageString(keybind, KeybindSettings.DEFAULT);
+		this.mc = MinecraftClient.getInstance();
+		this.name = name;
+		this.needsUpdate = true;
+		this.enabled = enabled;
 	}
 
 	public String getName() {
@@ -38,6 +70,12 @@ public class MacroBase {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean setEnabled(boolean enabled) {
+		boolean oldEnabled = this.enabled;
+		this.enabled = enabled;
+		return  oldEnabled;
 	}
 
 	public boolean isEnabled() {
@@ -56,30 +94,13 @@ public class MacroBase {
 		this.needsUpdate = true;
 	}
 
-	public void moveToPosition(Vec3d pos) {
-	}
+	public void run() {
+		if (!enabled) {
+			return;
+		}
 
-	public List<String> getWidgetHoverLines() {
-		List<String> lines = new ArrayList<>();
-
-		lines.add(StringUtils.translate("minihud.gui.hover.shape.type_value", this.getName()));
-
-		return lines;
-	}
-
-	public JsonObject toJson() {
-		JsonObject obj = new JsonObject();
-
-		obj.add("enabled", new JsonPrimitive(this.enabled));
-		obj.add("display_name", new JsonPrimitive(this.name));
-
-		return obj;
-	}
-
-	public void fromJson(JsonObject obj) {
-		this.enabled = JsonUtils.getBoolean(obj, "enabled");
-		if (JsonUtils.hasString(obj, "display_name")) {
-			this.name = obj.get("display_name").getAsString();
+		for (Action action : actions) {
+			action.run();
 		}
 	}
 }
