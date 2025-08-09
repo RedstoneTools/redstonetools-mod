@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.malilib.config;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
@@ -20,6 +19,7 @@ import java.util.List;
 public class MacroManager extends AbstractFeature {
 	private static Path macrosFilePath;
 	private static List<MacroBase> macros = new ArrayList<>();
+
 	public static List<MacroBase> getAllMacros() {
 		return macros;
 	}
@@ -101,7 +101,7 @@ public class MacroManager extends AbstractFeature {
 		return Json.createObjectBuilder()
 				.add("name", macro.getName())
 				.add("enabled", macro.isEnabled())
-				.add("key", macro.keybind.getStringValue())
+				.add("key", macro.hotkey.getKeybind().getStringValue())
 				.add("actions", actionsJson)
 				.build();
 	}
@@ -119,7 +119,7 @@ public class MacroManager extends AbstractFeature {
 
 	public static List<MacroBase> getDefaultMacros() {
 		return List.of(
-				createCommandMacro("redstoner", new String[] {
+				createCommandMacro("redstoner", new String[]{
 						"/gamerule doTileDrops false",
 						"/gamerule doTraderSpawning false",
 						"/gamerule doWeatherCycle false",
@@ -129,16 +129,16 @@ public class MacroManager extends AbstractFeature {
 						"/time set noon",
 						"/weather clear"
 				}),
-				createCommandMacro("airplace", new String[] {"/airplace"}),
-				createCommandMacro("autodust", new String[] {"/autodust"}),
-				createCommandMacro("bigdust", new String[] {"/bigdust 3"}),
-				createCommandMacro("copystate", new String[] {"/copystate"}),
-				createCommandMacro("itembind", new String[] {"/itembind"}),
-				createCommandMacro("minsel", new String[] {"//minsel"}),
-				createCommandMacro("quicktp", new String[] {"/quicktp"}),
-				createCommandMacro("binaryblockread", new String[] {"//binaryblockread"}),
-				createCommandMacro("rstack", new String[] {"//rstack"}),
-				createCommandMacro("update", new String[] {"//update"})
+				createCommandMacro("airplace", new String[]{"/airplace"}),
+				createCommandMacro("autodust", new String[]{"/autodust"}),
+				createCommandMacro("bigdust", new String[]{"/bigdust 3"}),
+				createCommandMacro("copystate", new String[]{"/copystate"}),
+				createCommandMacro("itembind", new String[]{"/itembind"}),
+				createCommandMacro("minsel", new String[]{"//minsel"}),
+				createCommandMacro("quicktp", new String[]{"/quicktp"}),
+				createCommandMacro("binaryblockread", new String[]{"//binaryblockread"}),
+				createCommandMacro("rstack", new String[]{"//rstack"}),
+				createCommandMacro("update", new String[]{"//update"})
 		);
 	}
 
@@ -196,16 +196,5 @@ public class MacroManager extends AbstractFeature {
 
 	public static void addMacro(MacroBase macro) {
 		macros.add(macro);
-	}
-	static {
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (client.currentScreen != null) return;
-			for (MacroBase macro : macros) {
-				if (!macro.isEnabled()) continue;
-				if (macro.keybind.isPressed()) {
-					macro.run();
-				}
-			}
-		});
 	}
 }

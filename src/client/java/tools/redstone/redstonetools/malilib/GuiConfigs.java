@@ -22,7 +22,8 @@ public class GuiConfigs extends GuiConfigsBase {
 	@Override
 	public void initGui() {
 		if (GuiConfigs.tab == ConfigGuiTab.MACROS) {
-			GuiConfigsBase.openGui(new GuiMacroManager()); return;
+			GuiConfigsBase.openGui(new GuiMacroManager());
+			return;
 		}
 		super.initGui();
 		this.clearOptions();
@@ -50,7 +51,7 @@ public class GuiConfigs extends GuiConfigsBase {
 
 	@Override
 	protected boolean useKeybindSearch() {
-		return GuiConfigs.tab == ConfigGuiTab.MACROS;
+		return false;
 	}
 
 	@Override

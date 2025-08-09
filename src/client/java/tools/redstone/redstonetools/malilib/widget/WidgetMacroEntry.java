@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.malilib.widget;
 
+import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.button.*;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
@@ -7,13 +8,12 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.DrawContext;
-import tools.redstone.redstonetools.malilib.GuiConfigs;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 
 public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	private final WidgetListMacros parent;
-	public  final MacroBase macro;
+	public final MacroBase macro;
 	private final boolean isOdd;
 	private final int buttonsStartX;
 
@@ -56,8 +56,7 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 		else {
 			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x50FFFFFF);
 		}
-		String name = this.macro.getName();
-		this.drawString(context, this.x + 4, this.y + 7, 0xFFFFFFFF, name);
+		this.drawString(context, this.x + 4, this.y + 7, 0xFFFFFFFF, this.macro.getName());
 
 		super.render(context, mouseX, mouseY, selected);
 	}
@@ -79,41 +78,31 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 		@Override
 		public void actionPerformedWithButton(ButtonBase button, int mouseButton) {
 			if (this.type == Type.CONFIGURE) {
-				GuiMacroEditor gui = new GuiMacroEditor(this.widget.macro);
+				GuiMacroEditor gui = new GuiMacroEditor(this.widget.macro, this.widget.parent);
 				gui.setParent(GuiUtils.getCurrentScreen());
 				GuiBase.openGui(gui);
+				this.widget.parent.refreshEntries();
 			} else if (this.type == Type.REMOVE) {
-				System.out.println("Removed macro");
 				MacroManager.removeMacro(this.widget.macro);
 				this.widget.parent.refreshEntries();
-			} else if (this.type == Type.TOGGLE) {
-				this.widget.macro.toggleEnabled();
-				if (this.widget.macro.enabled)
-					this.type.setTranslationKey("Enable");
-				else
-					this.type.setTranslationKey("Disable");
-				this.widget.parent.refreshEntries();
+				InputEventHandler.getKeybindManager().unregisterKeybindProvider(this.widget.macro.handler);
+				InputEventHandler.getInputManager().unregisterKeyboardInputHandler(this.widget.macro.handler);
+				InputEventHandler.getInputManager().unregisterMouseInputHandler(this.widget.macro.handler);
 			}
 		}
 
 		public enum Type {
 			CONFIGURE("Edit"),
-			REMOVE("Remove"),
-			TOGGLE("Disable");
+			REMOVE("Remove");
 
-			private String translationKey;
+			private final String name;
 
-			Type(String translationKey) {
-				this.translationKey = translationKey;
+			Type(String name) {
+				this.name = name;
 			}
-
-			public String getTranslationKey() {
-				return this.translationKey;
-			}
-			public void   setTranslationKey(String key) { this.translationKey = key;}
 
 			public String getDisplayName(Object... args) {
-				return StringUtils.translate(this.translationKey, args);
+				return StringUtils.translate(this.name, args);
 			}
 		}
 	}
