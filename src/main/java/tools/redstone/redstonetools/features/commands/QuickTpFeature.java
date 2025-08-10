@@ -38,7 +38,7 @@ public class QuickTpFeature extends AbstractFeature {
         catch (Exception ignored) {
             distance = 50.0;
         }
-        try { includeFluids = !BoolArgumentType.getBool(context, "throughFluids"); }
+        try { includeFluids = BoolArgumentType.getBool(context, "throughFluids"); }
         catch (Exception ignored) {
             includeFluids = false;
         }

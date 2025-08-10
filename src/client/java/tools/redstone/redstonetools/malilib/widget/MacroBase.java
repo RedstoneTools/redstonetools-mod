@@ -56,7 +56,7 @@ public class MacroBase {
 	}
 
 	public MacroBase(String name, String keybind, List<CommandAction> actions, boolean enabled) {
-		this.actions = actions;
+		this.actions = new java.util.ArrayList<>(actions);
 		this.hotkey = new ConfigHotkey("hotkey", keybind, "Pressing this hotkey will activate the macro", "Hotkey");
 		this.hotkey.getKeybind().setCallback((t, g) -> {
 			this.run();
