@@ -11,28 +11,29 @@ import tools.redstone.redstonetools.malilib.InitHandler;
 import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 public class RedstoneToolsClient implements ClientModInitializer {
-    public static final Logger LOGGER = LoggerFactory.getLogger(RedstoneTools.MOD_ID);
-    @Override
-    public void onInitializeClient() {
-        LOGGER.info("Initializing Redstone Tools");
-        // check if malilib present, if not open an error window and throw
-        if (!FabricLoader.getInstance().isModLoaded("malilib")) {
-            TinyFileDialogs.tinyfd_messageBox(
-                    "Error",
-                    "MaLiLib not present!\nPlease install MaLiLib if you want to use redstonetools",
-                    "ok",
-                    "error",
-                    false
-            );
-            throw new IllegalStateException("MaLiLib not present");
-        }
+	public static final Logger LOGGER = LoggerFactory.getLogger(RedstoneTools.MOD_ID);
 
-        ClientLifecycleEvents.CLIENT_STOPPING.register(t -> ClientFeatureUtils.saveToggles());
-        ClientLifecycleEvents.CLIENT_STARTED.register(t -> ClientFeatureUtils.readToggles());
+	@Override
+	public void onInitializeClient() {
+		LOGGER.info("Initializing Redstone Tools");
+		// check if malilib present, if not open an error window and throw
+		if (!FabricLoader.getInstance().isModLoaded("malilib")) {
+			TinyFileDialogs.tinyfd_messageBox(
+					"Error",
+					"MaLiLib not present!\nPlease install MaLiLib if you want to use redstonetools",
+					"ok",
+					"error",
+					false
+			);
+			throw new IllegalStateException("MaLiLib not present");
+		}
 
-        ClientCommands.registerCommands();
-        Commands.registerCommands();
+		ClientLifecycleEvents.CLIENT_STOPPING.register(t -> ClientFeatureUtils.saveToggles());
+		ClientLifecycleEvents.CLIENT_STARTED.register(t -> ClientFeatureUtils.readToggles());
 
-        InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
-    }
+		ClientCommands.registerCommands();
+		Commands.registerCommands();
+
+		InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
+	}
 }
