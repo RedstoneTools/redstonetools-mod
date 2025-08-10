@@ -7,7 +7,6 @@ import fi.dy.masa.malilib.config.options.ConfigString;
 import fi.dy.masa.malilib.config.options.ConfigStringList;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
-import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import net.minecraft.client.gui.DrawContext;
 import tools.redstone.redstonetools.RedstoneTools;
@@ -23,7 +22,7 @@ public class GuiMacroEditor extends GuiConfigsBase {
 	private final MacroBase macro;
 	private final ConfigStringList commands;
 	private final WidgetListMacros parent;
-	private final GuiTextFieldGeneric errorText;
+	private float errorCountDown;
 
 	public GuiMacroEditor(MacroBase macro, WidgetListMacros parent) {
 		super(10, 50, RedstoneTools.MOD_ID, null, macro.getName(), "");
@@ -31,11 +30,9 @@ public class GuiMacroEditor extends GuiConfigsBase {
 		this.macro = macro;
 		this.title = macro.getName();
 		this.commands = new ConfigStringList("Commands", ImmutableList.of());
-		this.configEnabled = new ConfigBoolean("enabled", this.macro.isEnabled(), "Whether or not to enable the hotkey", "Enabled");
+		this.configEnabled = new ConfigBoolean("enabled", this.macro.isEnabled(), "Whether or not to enable the macro", "Enabled");
 		this.configName = new ConfigString("name", this.macro.getName(), "Name of the macro", "Name");
 		this.commands.setStrings(macro.actionsAsStringList);
-		this.errorText = new GuiTextFieldGeneric(this.width / 2, 50, -1, 20, mc.textRenderer);
-		this.errorText.visible = false;
 	}
 
 	@Override
@@ -51,18 +48,22 @@ public class GuiMacroEditor extends GuiConfigsBase {
 	@Override
 	public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks) {
 		super.render(drawContext, mouseX, mouseY, partialTicks);
+		if (errorCountDown > 0.0f) {
+			drawContext.drawText(this.textRenderer, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
+			errorCountDown -= partialTicks;
+		}
 	}
 
 	@Override
-	public void close() {
-		updateConfigsAndClose();
+	public void closeGui(boolean showParent) {
+		if (updateConfigsAndClose()) return;
+		super.closeGui(showParent);
 	}
 
-	private void updateConfigsAndClose() {
+	private boolean updateConfigsAndClose() {
 		if (MacroManager.nameExists(this.configName.getStringValue(), this.macro)) {
-			this.errorText.setText("Name already exists!");
-			this.errorText.visible = true;
-			return;
+			errorCountDown = 50.0f;
+			return true;
 		}
 		this.macro.setName(this.configName.getStringValue());
 		this.macro.setEnabled(this.configEnabled.getBooleanValue());
@@ -73,6 +74,7 @@ public class GuiMacroEditor extends GuiConfigsBase {
 		MacroManager.saveChanges();
 		this.parent.refreshEntries();
 		GuiBase.openGui(new GuiMacroManager());
+		return false;
 	}
 
 	private final ConfigBoolean configEnabled;
