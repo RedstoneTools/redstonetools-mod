@@ -21,14 +21,14 @@ public class BaseConvertFeature extends AbstractFeature {
 	public static void registerCommand() {
 		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("base")
 				.then(ClientCommandManager.argument("inputNum", StringArgumentType.word())
-				.then(ClientCommandManager.argument("toBase",   IntegerArgumentType.integer(2, 16))
-				.executes(context -> ClientFeatureUtils.getFeature(BaseConvertFeature.class).execute(context))))));
+						.then(ClientCommandManager.argument("toBase", IntegerArgumentType.integer(2, 16))
+								.executes(context -> ClientFeatureUtils.getFeature(BaseConvertFeature.class).execute(context))))));
 	}
 
-    protected int execute(CommandContext<FabricClientCommandSource> context)
-        throws com.mojang.brigadier.exceptions.CommandSyntaxException {
-	    String number = StringArgumentType.getString(context, "inputNum");
-	    int toBase = IntegerArgumentType.getInteger(context, "toBase");
+	protected int execute(CommandContext<FabricClientCommandSource> context)
+			throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+		String number = StringArgumentType.getString(context, "inputNum");
+		int toBase = IntegerArgumentType.getInteger(context, "toBase");
 
 		int base = 10;
 		number = number.toLowerCase();
@@ -45,12 +45,12 @@ public class BaseConvertFeature extends AbstractFeature {
 		}
 		if (base != 10) number = number.substring(2);
 		BigInteger integer;
-	    try {
-		    integer = new BigInteger(number, base);
-	    } catch (NumberFormatException e) {
-		    throw INVALID_NUMBER.create();
-	    }
-	    String output = integer.toString(toBase).toLowerCase();
+		try {
+			integer = new BigInteger(number, base);
+		} catch (NumberFormatException e) {
+			throw INVALID_NUMBER.create();
+		}
+		String output = integer.toString(toBase).toLowerCase();
 
 		String toPrefix = "";
 		if (toBase == 16) {
@@ -60,11 +60,11 @@ public class BaseConvertFeature extends AbstractFeature {
 		} else if (toBase == 2) {
 			toPrefix = "0b";
 		}
-        if (!toPrefix.isEmpty()) {
-            context.getSource().sendFeedback(Text.literal("%s = %s".formatted(prefix + number, toPrefix + output)));
-        } else {
-            context.getSource().sendFeedback(Text.literal("%s = %s in base %s".formatted(prefix + number, output, toBase)));
-        }
-        return 1;
-    }
+		if (!toPrefix.isEmpty()) {
+			context.getSource().sendFeedback(Text.literal("%s = %s".formatted(prefix + number, toPrefix + output)));
+		} else {
+			context.getSource().sendFeedback(Text.literal("%s = %s in base %s".formatted(prefix + number, output, toBase)));
+		}
+		return 1;
+	}
 }

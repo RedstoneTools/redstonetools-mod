@@ -61,8 +61,6 @@ public class GuiConfigs extends GuiConfigsBase {
 
 		if (tab == ConfigGuiTab.GENERAL) {
 			configs = Configs.General.OPTIONS;
-		} else if (tab == ConfigGuiTab.MACROS) {
-			configs = Configs.Macros.MACROS;
 		} else {
 			return Collections.emptyList();
 		}

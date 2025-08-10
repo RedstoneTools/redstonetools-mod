@@ -11,8 +11,8 @@ import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 @Mixin(MinecraftClient.class)
 public class InitializeMacroManagerMixin {
-    @Inject(method = "<init>", at = @At("TAIL"))
-    public void registerMacros(RunArgs args, CallbackInfo ci){
-        ClientFeatureUtils.getFeature(MacroManager.class);
-    }
+	@Inject(method = "<init>", at = @At("TAIL"))
+	public void registerMacros(RunArgs args, CallbackInfo ci) {
+		ClientFeatureUtils.getFeature(MacroManager.class);
+	}
 }

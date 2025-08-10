@@ -17,48 +17,49 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class MacroArgumentType  implements ArgumentType<MacroBase> {
+public class MacroArgumentType implements ArgumentType<MacroBase> {
 
-    private static final Collection<String> EXAMPLES = List.of(" ");
+	private static final Collection<String> EXAMPLES = List.of(" ");
 
-    public MacroArgumentType() {
-    }
-    public static MacroArgumentType macro() {
-        return new MacroArgumentType();
-    }
+	public MacroArgumentType() {
+	}
 
-    public static MacroBase getMacro(final CommandContext<?> context, final String name) throws CommandSyntaxException {
-        return context.getArgument(name, MacroBase.class);
-    }
+	public static MacroArgumentType macro() {
+		return new MacroArgumentType();
+	}
 
-    @Override
-    public MacroBase parse(final StringReader reader) throws CommandSyntaxException {
-        final int start = reader.getCursor();
-        final String result = reader.getRemaining();
-        reader.setCursor(reader.getTotalLength());
-        final MacroBase macro = MacroManager.getMacro(result);
-        if (macro == null) {
-            reader.setCursor(start);
-            throw new SimpleCommandExceptionType(Text.literal("Macro '" + result + "' doesn't exist!")).create();
-        }
-        return macro;
-    }
+	public static MacroBase getMacro(final CommandContext<?> context, final String name) throws CommandSyntaxException {
+		return context.getArgument(name, MacroBase.class);
+	}
 
-    @Override
-    public String toString() {
-        return ("macro()");
-    }
+	@Override
+	public MacroBase parse(final StringReader reader) throws CommandSyntaxException {
+		final int start = reader.getCursor();
+		final String result = reader.getRemaining();
+		reader.setCursor(reader.getTotalLength());
+		final MacroBase macro = MacroManager.getMacro(result);
+		if (macro == null) {
+			reader.setCursor(start);
+			throw new SimpleCommandExceptionType(Text.literal("Macro '" + result + "' doesn't exist!")).create();
+		}
+		return macro;
+	}
 
-    @Override
-    public Collection<String> getExamples() {
-        return EXAMPLES;
-    }
+	@Override
+	public String toString() {
+		return ("macro()");
+	}
 
-    @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        List<String> macroNamesList = new ArrayList<>();
-        MacroManager.getMacros().forEach(macro -> macroNamesList.add(macro.getName()));
-        macroNamesList.sort(String.CASE_INSENSITIVE_ORDER);
-        return CommandSource.suggestMatching(macroNamesList, builder);
-    }
+	@Override
+	public Collection<String> getExamples() {
+		return EXAMPLES;
+	}
+
+	@Override
+	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+		List<String> macroNamesList = new ArrayList<>();
+		MacroManager.getMacros().forEach(macro -> macroNamesList.add(macro.getName()));
+		macroNamesList.sort(String.CASE_INSENSITIVE_ORDER);
+		return CommandSource.suggestMatching(macroNamesList, builder);
+	}
 }

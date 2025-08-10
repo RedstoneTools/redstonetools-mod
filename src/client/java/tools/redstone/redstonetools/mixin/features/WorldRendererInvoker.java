@@ -11,6 +11,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(WorldRenderer.class)
 public interface WorldRendererInvoker {
-    @Invoker
-    void invokeDrawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos pos, BlockState state, int color);
+	@Invoker
+	void invokeDrawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos pos, BlockState state, int color);
 }

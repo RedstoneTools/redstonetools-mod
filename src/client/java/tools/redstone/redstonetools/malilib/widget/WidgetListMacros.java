@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.malilib.widget;
 
-import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import tools.redstone.redstonetools.malilib.config.MacroManager;

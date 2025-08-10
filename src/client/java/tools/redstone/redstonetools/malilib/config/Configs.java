@@ -1,16 +1,13 @@
 package tools.redstone.redstonetools.malilib.config;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.IConfigHandler;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
-import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.util.JsonUtils;
 import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.RedstoneTools;
-import tools.redstone.redstonetools.malilib.widget.ConfigMacro;
 
 import java.io.File;
 import java.util.List;
@@ -23,23 +20,6 @@ public class Configs implements IConfigHandler {
 		public static final List<ConfigHotkey> OPTIONS = List.of(HOTKEY_OPEN_GUI);
 	}
 
-	public static class Macros {
-
-		public static final ConfigMacro HOTKEY = new ConfigMacro("test",
-				true,
-				true,
-				"",
-				KeybindSettings.DEFAULT,
-				"comment",
-				"Test",
-				"tesT",
-				ImmutableList.of("/time set 0"),
-				List.of());
-		public static final List<ConfigMacro> MACROS = List.of(HOTKEY);
-
-
-	}
-
 	public static void loadFromFile() {
 		File configFile = new File(MinecraftClient.getInstance().runDirectory, "config/" + CONFIG_FILE_NAME);
 
@@ -50,7 +30,6 @@ public class Configs implements IConfigHandler {
 				JsonObject root = element.getAsJsonObject();
 
 				ConfigUtils.readConfigBase(root, "Generic", General.OPTIONS);
-				ConfigUtils.readConfigBase(root, "Hotkeys", Macros.MACROS);
 			}
 		}
 	}
@@ -62,7 +41,6 @@ public class Configs implements IConfigHandler {
 			JsonObject root = new JsonObject();
 
 			ConfigUtils.writeConfigBase(root, "Generic", General.OPTIONS);
-			ConfigUtils.writeConfigBase(root, "Hotkeys", Macros.MACROS);
 
 			JsonUtils.writeJsonToFile(root, new File(dir, CONFIG_FILE_NAME));
 		}
