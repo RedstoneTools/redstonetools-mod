@@ -19,5 +19,7 @@ public class Commands {
         GiveMeFeature.registerCommand();
         BigDustFeature.registerCommand();
         AutoDustFeature.registerCommand();
+        ColoredFeature.registerCommand();
+        CopyStateFeature.registerCommand();
     }
 }
