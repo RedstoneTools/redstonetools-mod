@@ -22,7 +22,15 @@ public class WidgetListMacros extends WidgetListBase<MacroBase, WidgetMacroEntry
 
 	@Override
 	protected WidgetMacroEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, MacroBase entry) {
-		return new WidgetMacroEntry(x, y, this.browserEntryWidth,
-				this.getBrowserEntryHeightFor(entry), isOdd, entry, listIndex, this);
+		WidgetMacroEntry temp;
+		try {
+			temp = new WidgetMacroEntry8(x, y, this.browserEntryWidth,
+					this.getBrowserEntryHeightFor(entry), isOdd, entry, listIndex, this);
+		} catch (NoSuchMethodError e) {
+			System.out.println(e.getClass());
+			temp = new WidgetMacroEntry4(x, y, this.browserEntryWidth,
+					this.getBrowserEntryHeightFor(entry), isOdd, entry, listIndex, this);
+		}
+		return temp;
 	}
 }

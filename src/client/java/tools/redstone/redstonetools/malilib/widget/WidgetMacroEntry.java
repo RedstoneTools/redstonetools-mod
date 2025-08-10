@@ -6,18 +6,16 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.DrawContext;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 
 public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	private final WidgetListMacros parent;
 	public final MacroBase macro;
-	private final boolean isOdd;
-	private final int buttonsStartX;
+	protected final boolean isOdd;
+	protected final int buttonsStartX;
 
 	public WidgetMacroEntry(int x, int y, int width, int height, boolean isOdd,
 	                        MacroBase macro, int listIndex, WidgetListMacros parent) {
@@ -39,33 +37,6 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 		this.addButton(button, new ButtonListener(type, this));
 
 		return button.getWidth() + 1;
-	}
-
-	@Override
-	public boolean canSelectAt(int mouseX, int mouseY, int mouseButton) {
-		return super.canSelectAt(mouseX, mouseY, mouseButton) && mouseX < this.buttonsStartX;
-	}
-
-	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, boolean selected) {
-		// Draw a lighter background for the hovered and the selected entry
-		if (selected || this.isMouseOver(mouseX, mouseY)) {
-			RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x70FFFFFF);
-		} else if (this.isOdd) {
-			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x20FFFFFF);
-		}
-		// Draw a slightly lighter background for even entries
-		else {
-			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x50FFFFFF);
-		}
-		this.drawString(context, this.x + 4, this.y + 7, 0xFFFFFFFF, this.macro.getName());
-
-		super.render(context, mouseX, mouseY, selected);
-	}
-
-	@Override
-	public void postRenderHovered(DrawContext context, int mouseX, int mouseY, boolean selected) {
-		super.postRenderHovered(context, mouseX, mouseY, selected);
 	}
 
 	private static class ButtonListener implements IButtonActionListener {
