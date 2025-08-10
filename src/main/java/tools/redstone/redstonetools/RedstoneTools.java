@@ -3,7 +3,6 @@ package tools.redstone.redstonetools;
 import com.mojang.serialization.Codec;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
 import net.minecraft.component.ComponentType;
 import net.minecraft.registry.Registries;
@@ -16,7 +15,7 @@ import tools.redstone.redstonetools.features.commands.argument.SignalBlockArgume
 
 public class RedstoneTools implements ModInitializer {
     public static final String MOD_ID = "redstonetools";
-    public static final String MOD_VERSION = "v" + FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString();
+    public static final String MOD_VERSION = "v3.0.0";
     public static final String MOD_NAME = "Redstone tools";
 
     public static final ComponentType<String> COMMAND_COMPONENT = Registry.register(
