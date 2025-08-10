@@ -26,8 +26,7 @@ public class WidgetListMacros extends WidgetListBase<MacroBase, WidgetMacroEntry
 		try {
 			temp = new WidgetMacroEntry8(x, y, this.browserEntryWidth,
 					this.getBrowserEntryHeightFor(entry), isOdd, entry, listIndex, this);
-		} catch (NoSuchMethodError e) {
-			System.out.println(e.getClass());
+		} catch (NoSuchMethodError ignored) {
 			temp = new WidgetMacroEntry4(x, y, this.browserEntryWidth,
 					this.getBrowserEntryHeightFor(entry), isOdd, entry, listIndex, this);
 		}
