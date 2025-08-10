@@ -4,7 +4,6 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.commands.*;
-import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 
@@ -35,7 +34,6 @@ public class FeatureUtils {
                 FEATURES.add(new RStackFeature());
                 FEATURES.add(new MinSelectionFeature());
                 FEATURES.add(new ColorCodeFeature());
-                FEATURES.add(new UpdateFeature());
             }
             features = FEATURES;
         }

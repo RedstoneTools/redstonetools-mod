@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.*;
-import tools.redstone.redstonetools.features.commands.update.UpdateFeature;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
@@ -44,7 +43,6 @@ public class ClientFeatureUtils {
 				FEATURES.add(new RStackFeature());
 				FEATURES.add(new MinSelectionFeature());
 				FEATURES.add(new ColorCodeFeature());
-				FEATURES.add(new UpdateFeature());
 			}
 			features = FEATURES;
 		}
