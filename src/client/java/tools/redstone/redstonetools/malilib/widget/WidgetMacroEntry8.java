@@ -7,8 +7,8 @@ public class WidgetMacroEntry8 extends WidgetMacroEntry {
 	public WidgetMacroEntry8(int x, int y, int width, int height, boolean isOdd, MacroBase macro, int listIndex, WidgetListMacros parent) {
 		super(x, y, width, height, isOdd, macro, listIndex, parent);
 		try {
-			// theres probably a better way to check for this method being a thing or not.
-			RenderUtils.drawRect(new DrawContext(this.getEntry().mc, null), 0, 0, 0, 0, 0x70FFFFFF);
+			RenderUtils.drawRect(new DrawContext(this.getEntry().mc, null), 0, 0, 0, 0, 0x70FFFFFF)
+			; // theres probably a better way to check for this method being a thing or not.
 		} catch (NullPointerException ignored) {}
 	}
 
