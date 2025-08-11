@@ -85,7 +85,7 @@ public class ClientFeatureUtils {
 		storedState.airPlaceReach = AirPlaceFeature.reach;
 		storedState.airPlaceShowOutline = AirPlaceFeature.showOutline;
 
-		BigDustFeature bigdust = FeatureUtils.getFeature(BigDustFeature.class);
+		BigDustFeature bigdust = ClientFeatureUtils.getFeature(BigDustFeature.class);
 		storedState.bigDust = bigdust.isEnabled();
 		storedState.bigDustHeightInPixels = BigDustFeature.heightInPixels;
 
