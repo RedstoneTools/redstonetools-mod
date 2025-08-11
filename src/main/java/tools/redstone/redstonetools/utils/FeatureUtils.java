@@ -5,7 +5,6 @@ import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.Feature;
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
-import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -21,7 +20,6 @@ public class FeatureUtils {
     public static <T> T getFeature(Class<T> clazz) {
         if (features == null) {
             Set<AbstractFeature> FEATURES = new HashSet<>();
-            FEATURES.add(new BigDustFeature());
             FEATURES.add(new AutoDustFeature());
             FEATURES.add(new SignalStrengthBlockFeature());
             FEATURES.add(new QuickTpFeature());

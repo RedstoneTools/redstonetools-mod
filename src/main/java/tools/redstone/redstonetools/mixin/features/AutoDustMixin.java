@@ -4,10 +4,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -26,19 +26,21 @@ import tools.redstone.redstonetools.utils.FeatureUtils;
 public abstract class AutoDustMixin {
     @Inject(method = "onPlaced", at = @At("TAIL"))
     private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-	    if (!FeatureUtils.getFeature(AutoDustFeature.class).isEnabled() || world.isClient) {
-            return;
+        if (placer instanceof ServerPlayerEntity player) {
+            if (!FeatureUtils.getFeature(AutoDustFeature.class).isEnabled(player) || world.isClient) {
+                return;
+            }
+
+            var dustPos = pos.up();
+            var block = world.getBlockState(pos).getBlock();
+            var blockAbove = world.getBlockState(dustPos).getBlock();
+
+            if (!blockAbove.equals(Blocks.AIR) || ColoredBlock.fromBlock(block) == null) {
+                return;
+            }
+
+            ItemPlacementContext context = new ItemPlacementContext(player, Hand.MAIN_HAND,new ItemStack(Items.REDSTONE),new BlockHitResult(new Vec3d(dustPos.getX(),dustPos.getY(),dustPos.getZ()), Direction.UP, dustPos,false));
+            placer.getWorld().setBlockState(dustPos, Blocks.REDSTONE_WIRE.getPlacementState(context));
         }
-
-        var dustPos = pos.up();
-        var block = world.getBlockState(pos).getBlock();
-        var blockAbove = world.getBlockState(dustPos).getBlock();
-
-        if (!blockAbove.equals(Blocks.AIR) || ColoredBlock.fromBlock(block) == null) {
-            return;
-        }
-
-        ItemPlacementContext context = new ItemPlacementContext((PlayerEntity) placer, Hand.MAIN_HAND,new ItemStack(Items.REDSTONE),new BlockHitResult(new Vec3d(dustPos.getX(),dustPos.getY(),dustPos.getZ()), Direction.UP, dustPos,false));
-        placer.getWorld().setBlockState(dustPos, Blocks.REDSTONE_WIRE.getPlacementState(context));
     }
 }

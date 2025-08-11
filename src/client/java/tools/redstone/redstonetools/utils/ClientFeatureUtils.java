@@ -6,7 +6,6 @@ import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
-import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 
@@ -29,21 +28,9 @@ public class ClientFeatureUtils {
 		if (features == null) {
 			Set<AbstractFeature> FEATURES = new HashSet<>();
 			FEATURES.add(new BigDustFeature());
-			FEATURES.add(new AutoDustFeature());
 			FEATURES.add(new AirPlaceFeature());
-			FEATURES.add(new ColoredFeature());
-			FEATURES.add(new SignalStrengthBlockFeature());
-			FEATURES.add(new QuickTpFeature());
 			FEATURES.add(new MacroFeature());
-			FEATURES.add(new CopyStateFeature());
 			FEATURES.add(new BaseConvertFeature());
-			FEATURES.add(new GiveMeFeature());
-			if (DependencyLookup.WORLDEDIT_PRESENT) {
-				FEATURES.add(new BinaryBlockReadFeature());
-				FEATURES.add(new RStackFeature());
-				FEATURES.add(new MinSelectionFeature());
-				FEATURES.add(new ColorCodeFeature());
-			}
 			features = FEATURES;
 		}
 		Optional<T> found1 = features.stream()
@@ -80,12 +67,12 @@ public class ClientFeatureUtils {
 			AirPlaceFeature.reach = storedState.airPlaceReach;
 			AirPlaceFeature.showOutline = storedState.airPlaceShowOutline;
 
-			BigDustFeature bigdust = FeatureUtils.getFeature(BigDustFeature.class);
+			BigDustFeature bigdust = ClientFeatureUtils.getFeature(BigDustFeature.class);
 			bigdust.setEnabled(storedState.bigDust);
 			BigDustFeature.heightInPixels = storedState.bigDustHeightInPixels;
 
-			AutoDustFeature autodust = FeatureUtils.getFeature(AutoDustFeature.class);
-			autodust.setEnabled(storedState.autoDust);
+//			AutoDustFeature autodust = FeatureUtils.getFeature(AutoDustFeature.class);
+//			autodust.setEnabled(storedState.autoDust);
 		} catch (IOException e) {
 			System.err.println("Error reading file: " + e.getMessage());
 		}
@@ -102,8 +89,8 @@ public class ClientFeatureUtils {
 		storedState.bigDust = bigdust.isEnabled();
 		storedState.bigDustHeightInPixels = BigDustFeature.heightInPixels;
 
-		AutoDustFeature autodust = FeatureUtils.getFeature(AutoDustFeature.class);
-		storedState.autoDust = autodust.isEnabled();
+//		AutoDustFeature autodust = FeatureUtils.getFeature(AutoDustFeature.class);
+//		storedState.autoDust = autodust.isEnabled();
 
 		try {
 			Files.write(togglesFilePath, GSON.toJson(storedState).getBytes());

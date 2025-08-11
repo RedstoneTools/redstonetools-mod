@@ -2,7 +2,6 @@ package tools.redstone.redstonetools;
 
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
-import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 import tools.redstone.redstonetools.utils.DependencyLookup;
 
 public class Commands {
@@ -17,7 +16,6 @@ public class Commands {
         QuickTpFeature.registerCommand();
         SignalStrengthBlockFeature.registerCommand();
         GiveMeFeature.registerCommand();
-        BigDustFeature.registerCommand();
         AutoDustFeature.registerCommand();
         ColoredFeature.registerCommand();
         CopyStateFeature.registerCommand();
