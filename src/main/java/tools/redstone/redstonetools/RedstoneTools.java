@@ -12,6 +12,7 @@ import tools.redstone.redstonetools.features.commands.argument.BlockColorArgumen
 import tools.redstone.redstonetools.features.commands.argument.ColoredBlockTypeArgumentType;
 import tools.redstone.redstonetools.features.commands.argument.DirectionArgumentType;
 import tools.redstone.redstonetools.features.commands.argument.SignalBlockArgumentType;
+import tools.redstone.redstonetools.packets.RedstoneToolsPackets;
 
 public class RedstoneTools implements ModInitializer {
     public static final String MOD_ID = "redstonetools";
@@ -26,6 +27,7 @@ public class RedstoneTools implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        RedstoneToolsPackets.registerPackets();
         RedstoneToolsGameRules.register();
         Commands.registerCommands();
         ArgumentTypeRegistry.registerArgumentType(Identifier.of("blockcolor"),             BlockColorArgumentType.class, ConstantArgumentSerializer.of(BlockColorArgumentType::blockcolor));

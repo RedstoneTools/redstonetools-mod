@@ -1,19 +1,17 @@
 package tools.redstone.redstonetools.features.toggleable;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import tools.redstone.redstonetools.packets.SetFeatureEnabledC2SPayload;
 
 public class AutoDustClient {
 	public static boolean isEnabled;
 
 	public static void registerHandler() {
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-			if (AutoDustClient.isEnabled) {
-				var server = MinecraftClient.getInstance().player.getServer();
-				server.getCommandManager().executeWithPrefix(server.getCommandSource(), "/autodust");
-				MinecraftClient.getInstance().player.sendMessage(Text.of("Enabled autodust"), false);
-			}
+			System.out.println("PACKET SENT " + "AutoDust" + (AutoDustClient.isEnabled ? "0" : "1"));
+			SetFeatureEnabledC2SPayload payload = new SetFeatureEnabledC2SPayload("AutoDust" + (AutoDustClient.isEnabled ? "0" : "1"));
+			ClientPlayNetworking.send(payload);
 		});
 	}
 }
