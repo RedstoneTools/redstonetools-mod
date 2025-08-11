@@ -74,7 +74,7 @@ public class ClientFeatureUtils {
 //			AutoDustFeature autodust = FeatureUtils.getFeature(AutoDustFeature.class);
 //			autodust.setEnabled(storedState.autoDust);
 		} catch (IOException e) {
-			System.err.println("Error reading file: " + e.getMessage());
+			System.err.println("Error reading toggles: " + e.getMessage());
 		}
 	}
 
@@ -101,10 +101,12 @@ public class ClientFeatureUtils {
 
 	private static class StoredState {
 		public boolean airPlace;
-		public float airPlaceReach;
+		public float   airPlaceReach;
 		public boolean airPlaceShowOutline;
+
 		public boolean bigDust;
-		public int bigDustHeightInPixels;
+		public int     bigDustHeightInPixels;
+
 		public boolean autoDust;
 	}
 }
