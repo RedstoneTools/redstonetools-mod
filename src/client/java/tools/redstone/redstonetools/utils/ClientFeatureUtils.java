@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
+import tools.redstone.redstonetools.features.toggleable.AutoDustClient;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 
@@ -71,8 +72,7 @@ public class ClientFeatureUtils {
 			bigdust.setEnabled(storedState.bigDust);
 			BigDustFeature.heightInPixels = storedState.bigDustHeightInPixels;
 
-//			AutoDustFeature autodust = FeatureUtils.getFeature(AutoDustFeature.class);
-//			autodust.setEnabled(storedState.autoDust);
+			AutoDustClient.isEnabled = storedState.autoDust;
 		} catch (IOException e) {
 			System.err.println("Error reading toggles: " + e.getMessage());
 		}
@@ -89,8 +89,7 @@ public class ClientFeatureUtils {
 		storedState.bigDust = bigdust.isEnabled();
 		storedState.bigDustHeightInPixels = BigDustFeature.heightInPixels;
 
-//		AutoDustFeature autodust = FeatureUtils.getFeature(AutoDustFeature.class);
-//		storedState.autoDust = autodust.isEnabled();
+		storedState.autoDust = AutoDustClient.isEnabled;
 
 		try {
 			Files.write(togglesFilePath, GSON.toJson(storedState).getBytes());
