@@ -1,15 +1,17 @@
 package tools.redstone.redstonetools.malilib.widget;
 
 import fi.dy.masa.malilib.render.RenderUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 
 public class WidgetMacroEntry8 extends WidgetMacroEntry {
 	public WidgetMacroEntry8(int x, int y, int width, int height, boolean isOdd, MacroBase macro, int listIndex, WidgetListMacros parent) {
 		super(x, y, width, height, isOdd, macro, listIndex, parent);
 		try {
-			RenderUtils.drawRect(new DrawContext(this.getEntry().mc, null), 0, 0, 0, 0, 0x70FFFFFF)
+			RenderUtils.drawRect(new DrawContext(MinecraftClient.getInstance(), null), 0, 0, 0, 0, 0x70FFFFFF)
 			; // theres probably a better way to check for this method being a thing or not.
-		} catch (NullPointerException ignored) {}
+		} catch (NullPointerException ignored) {
+		}
 	}
 
 	@Override
@@ -23,8 +25,7 @@ public class WidgetMacroEntry8 extends WidgetMacroEntry {
 			RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x70FFFFFF);
 		} else if (this.isOdd) {
 			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x20FFFFFF);
-		}
-		else {
+		} else {
 			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x50FFFFFF);
 		}
 		this.drawString(context, this.x + 4, this.y + 7, 0xFFFFFFFF, this.macro.getName());

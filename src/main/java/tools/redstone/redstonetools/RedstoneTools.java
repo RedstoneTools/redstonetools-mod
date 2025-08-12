@@ -15,24 +15,24 @@ import tools.redstone.redstonetools.features.commands.argument.SignalBlockArgume
 import tools.redstone.redstonetools.packets.RedstoneToolsPackets;
 
 public class RedstoneTools implements ModInitializer {
-    public static final String MOD_ID = "redstonetools";
-    public static final String MOD_VERSION = "v3.0.0";
-    public static final String MOD_NAME = "Redstone tools";
+	public static final String MOD_ID = "redstonetools";
+	public static final String MOD_VERSION = "v3.0.0";
+	public static final String MOD_NAME = "Redstone tools";
 
-    public static final ComponentType<String> COMMAND_COMPONENT = Registry.register(
-            Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(RedstoneTools.MOD_ID, "command"),
-            ComponentType.<String>builder().codec(Codec.STRING).build()
-    );
+	public static final ComponentType<String> COMMAND_COMPONENT = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(RedstoneTools.MOD_ID, "command"),
+			ComponentType.<String>builder().codec(Codec.STRING).build()
+	);
 
-    @Override
-    public void onInitialize() {
-        RedstoneToolsPackets.registerPackets();
-        RedstoneToolsGameRules.register();
-        Commands.registerCommands();
-        ArgumentTypeRegistry.registerArgumentType(Identifier.of("blockcolor"),             BlockColorArgumentType.class, ConstantArgumentSerializer.of(BlockColorArgumentType::blockcolor));
-        ArgumentTypeRegistry.registerArgumentType(Identifier.of("coloredblocktype"), ColoredBlockTypeArgumentType.class, ConstantArgumentSerializer.of(ColoredBlockTypeArgumentType::coloredblocktype));
-        ArgumentTypeRegistry.registerArgumentType(Identifier.of("direction"),               DirectionArgumentType.class, ConstantArgumentSerializer.of(DirectionArgumentType::direction));
-        ArgumentTypeRegistry.registerArgumentType(Identifier.of("signalblock"),           SignalBlockArgumentType.class, ConstantArgumentSerializer.of(SignalBlockArgumentType::signalblock));
-    }
+	@Override
+	public void onInitialize() {
+		RedstoneToolsPackets.registerPackets();
+		RedstoneToolsGameRules.register();
+		Commands.registerCommands();
+		ArgumentTypeRegistry.registerArgumentType(Identifier.of("blockcolor"), BlockColorArgumentType.class, ConstantArgumentSerializer.of(BlockColorArgumentType::blockcolor));
+		ArgumentTypeRegistry.registerArgumentType(Identifier.of("coloredblocktype"), ColoredBlockTypeArgumentType.class, ConstantArgumentSerializer.of(ColoredBlockTypeArgumentType::coloredblocktype));
+		ArgumentTypeRegistry.registerArgumentType(Identifier.of("direction"), DirectionArgumentType.class, ConstantArgumentSerializer.of(DirectionArgumentType::direction));
+		ArgumentTypeRegistry.registerArgumentType(Identifier.of("signalblock"), SignalBlockArgumentType.class, ConstantArgumentSerializer.of(SignalBlockArgumentType::signalblock));
+	}
 }

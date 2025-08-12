@@ -17,53 +17,54 @@ import java.util.concurrent.CompletableFuture;
 
 public class ColoredBlockTypeArgumentType implements ArgumentType<ColoredBlockType> {
 
-    private static final Collection<String> EXAMPLES = Arrays.asList("wool", "concrete", "terracotta");
+	private static final Collection<String> EXAMPLES = Arrays.asList("wool", "concrete", "terracotta");
 
-    public ColoredBlockTypeArgumentType() {
-    }
-    public static ColoredBlockTypeArgumentType coloredblocktype() {
-        return new ColoredBlockTypeArgumentType();
-    }
+	public ColoredBlockTypeArgumentType() {
+	}
 
-    public static ColoredBlockType getColoredBlockType(final CommandContext<?> context, final String name) {
-        return context.getArgument(name, ColoredBlockType.class);
-    }
+	public static ColoredBlockTypeArgumentType coloredblocktype() {
+		return new ColoredBlockTypeArgumentType();
+	}
 
-    @Override
-    public ColoredBlockType parse(final StringReader reader) throws CommandSyntaxException {
-        final int start = reader.getCursor();
-        final String result = reader.readString();
+	public static ColoredBlockType getColoredBlockType(final CommandContext<?> context, final String name) {
+		return context.getArgument(name, ColoredBlockType.class);
+	}
 
-        ColoredBlockType color =
-            switch (result.toUpperCase()) {
-                case ("WOOL") -> ColoredBlockType.WOOL;
-                case ("GLASS") -> ColoredBlockType.GLASS;
-                case ("CONCRETE") -> ColoredBlockType.CONCRETE;
-                case ("TERRACOTTA") -> ColoredBlockType.TERRACOTTA;
-                default -> {
-                    reader.setCursor(start);
-                    throw new SimpleCommandExceptionType(Text.literal("Could not resolve block color!")).create();
-                }
-            };
-        return color;
-    }
+	@Override
+	public ColoredBlockType parse(final StringReader reader) throws CommandSyntaxException {
+		final int start = reader.getCursor();
+		final String result = reader.readString();
 
-    @Override
-    public String toString() {
-        return ("coloredblocktype()");
-    }
+		ColoredBlockType blockType =
+				switch (result.toUpperCase()) {
+					case ("WOOL") -> ColoredBlockType.WOOL;
+					case ("GLASS") -> ColoredBlockType.GLASS;
+					case ("CONCRETE") -> ColoredBlockType.CONCRETE;
+					case ("TERRACOTTA") -> ColoredBlockType.TERRACOTTA;
+					default -> {
+						reader.setCursor(start);
+						throw new SimpleCommandExceptionType(Text.literal("Could not resolve block color!")).create();
+					}
+				};
+		return blockType;
+	}
 
-    @Override
-    public Collection<String> getExamples() {
-        return EXAMPLES;
-    }
+	@Override
+	public String toString() {
+		return ("coloredblocktype()");
+	}
 
-    String[] colors = {
-            "wool", "glass", "concrete", "terracotta"
-    };
+	@Override
+	public Collection<String> getExamples() {
+		return EXAMPLES;
+	}
 
-    @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(colors, builder);
-    }
+	String[] colors = {
+			"wool", "glass", "concrete", "terracotta"
+	};
+
+	@Override
+	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+		return CommandSource.suggestMatching(colors, builder);
+	}
 }

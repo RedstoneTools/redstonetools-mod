@@ -1,8 +1,5 @@
 package tools.redstone.redstonetools.malilib.widget;
 
-import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.gui.DrawContext;
-
 public class WidgetMacroEntry4 extends WidgetMacroEntry {
 	public WidgetMacroEntry4(int x, int y, int width, int height, boolean isOdd, MacroBase macro, int listIndex, WidgetListMacros parent) {
 		super(x, y, width, height, isOdd, macro, listIndex, parent);

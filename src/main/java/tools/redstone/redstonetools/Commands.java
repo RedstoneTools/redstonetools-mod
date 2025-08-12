@@ -5,19 +5,19 @@ import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.utils.DependencyLookup;
 
 public class Commands {
-    public static void registerCommands() {
-        if (DependencyLookup.WORLDEDIT_PRESENT) {
-            BinaryBlockReadFeature.registerCommand();
-            ColorCodeFeature.registerCommand();
-            MinSelectionFeature.registerCommand();
-            RStackFeature.registerCommand();
-        }
-        ItemBindFeature.registerCommand();
-        QuickTpFeature.registerCommand();
-        SignalStrengthBlockFeature.registerCommand();
-        GiveMeFeature.registerCommand();
-        AutoDustFeature.registerCommand();
-        ColoredFeature.registerCommand();
-        CopyStateFeature.registerCommand();
-    }
+	public static void registerCommands() {
+		if (DependencyLookup.WORLDEDIT_PRESENT) {
+			BinaryBlockReadFeature.registerCommand();
+			ColorCodeFeature.registerCommand();
+			MinSelectionFeature.registerCommand();
+			RStackFeature.registerCommand();
+		}
+		ItemBindFeature.registerCommand();
+		QuickTpFeature.registerCommand();
+		SignalStrengthBlockFeature.registerCommand();
+		GiveMeFeature.registerCommand();
+		AutoDustFeature.registerCommand();
+		ColoredFeature.registerCommand();
+		CopyStateFeature.registerCommand();
+	}
 }

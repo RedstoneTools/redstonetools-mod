@@ -24,23 +24,23 @@ import tools.redstone.redstonetools.utils.FeatureUtils;
 
 @Mixin(Block.class)
 public abstract class AutoDustMixin {
-    @Inject(method = "onPlaced", at = @At("TAIL"))
-    private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-        if (placer instanceof ServerPlayerEntity player) {
-            if (!FeatureUtils.getFeature(AutoDustFeature.class).isEnabled(player) || world.isClient) {
-                return;
-            }
+	@Inject(method = "onPlaced", at = @At("TAIL"))
+	private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
+		if (placer instanceof ServerPlayerEntity player) {
+			if (!FeatureUtils.getFeature(AutoDustFeature.class).isEnabled(player) || world.isClient) {
+				return;
+			}
 
-            var dustPos = pos.up();
-            var block = world.getBlockState(pos).getBlock();
-            var blockAbove = world.getBlockState(dustPos).getBlock();
+			var dustPos = pos.up();
+			var block = world.getBlockState(pos).getBlock();
+			var blockAbove = world.getBlockState(dustPos).getBlock();
 
-            if (!blockAbove.equals(Blocks.AIR) || ColoredBlock.fromBlock(block) == null) {
-                return;
-            }
+			if (!blockAbove.equals(Blocks.AIR) || ColoredBlock.fromBlock(block) == null) {
+				return;
+			}
 
-            ItemPlacementContext context = new ItemPlacementContext(player, Hand.MAIN_HAND,new ItemStack(Items.REDSTONE),new BlockHitResult(new Vec3d(dustPos.getX(),dustPos.getY(),dustPos.getZ()), Direction.UP, dustPos,false));
-            placer.getWorld().setBlockState(dustPos, Blocks.REDSTONE_WIRE.getPlacementState(context));
-        }
-    }
+			ItemPlacementContext context = new ItemPlacementContext(player, Hand.MAIN_HAND, new ItemStack(Items.REDSTONE), new BlockHitResult(new Vec3d(dustPos.getX(), dustPos.getY(), dustPos.getZ()), Direction.UP, dustPos, false));
+			placer.getWorld().setBlockState(dustPos, Blocks.REDSTONE_WIRE.getPlacementState(context));
+		}
+	}
 }

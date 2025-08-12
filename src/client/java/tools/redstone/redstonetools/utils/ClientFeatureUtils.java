@@ -4,7 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.commands.*;
+import tools.redstone.redstonetools.features.commands.BaseConvertFeature;
+import tools.redstone.redstonetools.features.commands.MacroFeature;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 import tools.redstone.redstonetools.features.toggleable.AutoDustClient;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
@@ -100,11 +101,11 @@ public class ClientFeatureUtils {
 
 	private static class StoredState {
 		public boolean airPlace;
-		public float   airPlaceReach;
+		public float airPlaceReach;
 		public boolean airPlaceShowOutline;
 
 		public boolean bigDust;
-		public int     bigDustHeightInPixels;
+		public int bigDustHeightInPixels;
 
 		public boolean autoDust;
 	}

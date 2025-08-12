@@ -10,23 +10,23 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 public class WorldEditUtils {
-    public static Region getSelection(ServerPlayerEntity player) throws CommandSyntaxException {
-        if (!DependencyLookup.WORLDEDIT_PRESENT) {
-            throw new IllegalStateException("WorldEdit is not loaded.");
-        }
+	public static Region getSelection(ServerPlayerEntity player) throws CommandSyntaxException {
+		if (!DependencyLookup.WORLDEDIT_PRESENT) {
+			throw new IllegalStateException("WorldEdit is not loaded.");
+		}
 
-        var actor = FabricAdapter.adaptPlayer(player);
+		var actor = FabricAdapter.adaptPlayer(player);
 
-        var localSession = WorldEdit.getInstance()
-                .getSessionManager()
-                .get(actor);
+		var localSession = WorldEdit.getInstance()
+				.getSessionManager()
+				.get(actor);
 
-        var selectionWorld = localSession.getSelectionWorld();
+		var selectionWorld = localSession.getSelectionWorld();
 
-        try {
-            return localSession.getSelection(selectionWorld);
-        } catch (IncompleteRegionException ex) {
-            throw new SimpleCommandExceptionType(Text.literal("Please make a selection with WorldEdit first")).create();
-        }
-    }
+		try {
+			return localSession.getSelection(selectionWorld);
+		} catch (IncompleteRegionException ex) {
+			throw new SimpleCommandExceptionType(Text.literal("Please make a selection with WorldEdit first")).create();
+		}
+	}
 }

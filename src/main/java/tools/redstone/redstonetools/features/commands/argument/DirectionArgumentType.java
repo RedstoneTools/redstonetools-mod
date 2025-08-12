@@ -17,66 +17,67 @@ import java.util.concurrent.CompletableFuture;
 
 public class DirectionArgumentType implements ArgumentType<DirectionArgument> {
 
-    private static final Collection<String> EXAMPLES = Arrays.asList("blue", "red", "magenta");
+	private static final Collection<String> EXAMPLES = Arrays.asList("blue", "red", "magenta");
 
-    public DirectionArgumentType() {
-    }
-    public static DirectionArgumentType direction() {
-        return new DirectionArgumentType();
-    }
+	public DirectionArgumentType() {
+	}
 
-    public static DirectionArgument getDirection(final CommandContext<?> context, final String name) {
-        return context.getArgument(name, DirectionArgument.class);
-    }
+	public static DirectionArgumentType direction() {
+		return new DirectionArgumentType();
+	}
 
-    @Override
-    public DirectionArgument parse(final StringReader reader) throws CommandSyntaxException {
-        final int start = reader.getCursor();
-        final String result = reader.readString();
+	public static DirectionArgument getDirection(final CommandContext<?> context, final String name) {
+		return context.getArgument(name, DirectionArgument.class);
+	}
 
-        DirectionArgument direction =
-                switch (result.toUpperCase()) {
-                    case ("ME") -> DirectionArgument.ME;
-                    case ("FORWARD") -> DirectionArgument.FORWARD;
-                    case ("BACK") -> DirectionArgument.BACK;
-                    case ("NORTH") -> DirectionArgument.NORTH;
-                    case ("EAST") -> DirectionArgument.EAST;
-                    case ("SOUTH") -> DirectionArgument.SOUTH;
-                    case ("WEST") -> DirectionArgument.WEST;
-                    case ("NORTHEAST") -> DirectionArgument.NORTHEAST;
-                    case ("NORTHWEST") -> DirectionArgument.NORTHWEST;
-                    case ("SOUTHEAST") -> DirectionArgument.SOUTHEAST;
-                    case ("SOUTHWEST") -> DirectionArgument.SOUTHWEST;
-                    case ("UP") -> DirectionArgument.UP;
-                    case ("DOWN") -> DirectionArgument.DOWN;
-                    case ("LEFT") -> DirectionArgument.LEFT;
-                    case ("RIGHT") -> DirectionArgument.RIGHT;
-                    default -> {
-                        reader.setCursor(start);
-                        throw new SimpleCommandExceptionType(Text.literal("Could not resolve direction!")).create();
-                    }
-                };
-        return direction;
-    }
+	@Override
+	public DirectionArgument parse(final StringReader reader) throws CommandSyntaxException {
+		final int start = reader.getCursor();
+		final String result = reader.readString();
 
-    @Override
-    public String toString() {
-        return ("directionargument()");
-    }
+		DirectionArgument direction =
+				switch (result.toUpperCase()) {
+					case ("ME") -> DirectionArgument.ME;
+					case ("FORWARD") -> DirectionArgument.FORWARD;
+					case ("BACK") -> DirectionArgument.BACK;
+					case ("NORTH") -> DirectionArgument.NORTH;
+					case ("EAST") -> DirectionArgument.EAST;
+					case ("SOUTH") -> DirectionArgument.SOUTH;
+					case ("WEST") -> DirectionArgument.WEST;
+					case ("NORTHEAST") -> DirectionArgument.NORTHEAST;
+					case ("NORTHWEST") -> DirectionArgument.NORTHWEST;
+					case ("SOUTHEAST") -> DirectionArgument.SOUTHEAST;
+					case ("SOUTHWEST") -> DirectionArgument.SOUTHWEST;
+					case ("UP") -> DirectionArgument.UP;
+					case ("DOWN") -> DirectionArgument.DOWN;
+					case ("LEFT") -> DirectionArgument.LEFT;
+					case ("RIGHT") -> DirectionArgument.RIGHT;
+					default -> {
+						reader.setCursor(start);
+						throw new SimpleCommandExceptionType(Text.literal("Could not resolve direction!")).create();
+					}
+				};
+		return direction;
+	}
 
-    @Override
-    public Collection<String> getExamples() {
-        return EXAMPLES;
-    }
+	@Override
+	public String toString() {
+		return ("directionargument()");
+	}
 
-    String[] directionArguments = {
-            "me", "forward", "back", "north", "east", "south", "west",
-            "northeast", "northwest", "southeast", "southwest", "up", "down",
-            "left", "right"
-    };
+	@Override
+	public Collection<String> getExamples() {
+		return EXAMPLES;
+	}
 
-    @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(directionArguments, builder);
-    }
+	String[] directionArguments = {
+			"me", "forward", "back", "north", "east", "south", "west",
+			"northeast", "northwest", "southeast", "southwest", "up", "down",
+			"left", "right"
+	};
+
+	@Override
+	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+		return CommandSource.suggestMatching(directionArguments, builder);
+	}
 }

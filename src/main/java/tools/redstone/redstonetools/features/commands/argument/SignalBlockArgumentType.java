@@ -17,62 +17,63 @@ import java.util.concurrent.CompletableFuture;
 
 public class SignalBlockArgumentType implements ArgumentType<SignalBlock> {
 
-    private static final Collection<String> EXAMPLES = Arrays.asList("blue", "red", "magenta");
+	private static final Collection<String> EXAMPLES = Arrays.asList("blue", "red", "magenta");
 
-    public SignalBlockArgumentType() {
-    }
-    public static SignalBlockArgumentType signalblock() {
-        return new SignalBlockArgumentType();
-    }
+	public SignalBlockArgumentType() {
+	}
 
-    public static SignalBlock getSignalBlock(final CommandContext<?> context, final String name) {
-        return context.getArgument(name, SignalBlock.class);
-    }
+	public static SignalBlockArgumentType signalblock() {
+		return new SignalBlockArgumentType();
+	}
 
-    @Override
-    public SignalBlock parse(final StringReader reader) throws CommandSyntaxException {
-        final int start = reader.getCursor();
-        final String result = reader.readString();
+	public static SignalBlock getSignalBlock(final CommandContext<?> context, final String name) {
+		return context.getArgument(name, SignalBlock.class);
+	}
 
-        SignalBlock signalBlock =
-                switch (result.toUpperCase()) {
-                    case ("BARREL") -> SignalBlock.BARREL;
-                    case ("CHEST") -> SignalBlock.CHEST;
-                    case ("SHULKER_BOX") -> SignalBlock.SHULKER_BOX;
-                    case ("DISPENSER") -> SignalBlock.DISPENSER;
-                    case ("DROPPER") -> SignalBlock.DROPPER;
-                    case ("HOPPER") -> SignalBlock.HOPPER;
-                    case ("BREWING_STAND") -> SignalBlock.BREWING_STAND;
-                    case ("FURNACE") -> SignalBlock.FURNACE;
-                    case ("SMOKER") -> SignalBlock.SMOKER;
-                    case ("BLAST_FURNACE") -> SignalBlock.BLAST_FURNACE;
-                    case ("COMMAND_BLOCK") -> SignalBlock.COMMAND_BLOCK;
-                    case ("AUTO") -> SignalBlock.AUTO;
-                    default -> {
-                        reader.setCursor(start);
-                        throw new SimpleCommandExceptionType(Text.literal("Could not resolve signal block!")).create();
-                    }
-                };
-        return signalBlock;
-    }
+	@Override
+	public SignalBlock parse(final StringReader reader) throws CommandSyntaxException {
+		final int start = reader.getCursor();
+		final String result = reader.readString();
 
-    @Override
-    public String toString() {
-        return ("signalblockargument()");
-    }
+		SignalBlock signalBlock =
+				switch (result.toUpperCase()) {
+					case ("BARREL") -> SignalBlock.BARREL;
+					case ("CHEST") -> SignalBlock.CHEST;
+					case ("SHULKER_BOX") -> SignalBlock.SHULKER_BOX;
+					case ("DISPENSER") -> SignalBlock.DISPENSER;
+					case ("DROPPER") -> SignalBlock.DROPPER;
+					case ("HOPPER") -> SignalBlock.HOPPER;
+					case ("BREWING_STAND") -> SignalBlock.BREWING_STAND;
+					case ("FURNACE") -> SignalBlock.FURNACE;
+					case ("SMOKER") -> SignalBlock.SMOKER;
+					case ("BLAST_FURNACE") -> SignalBlock.BLAST_FURNACE;
+					case ("COMMAND_BLOCK") -> SignalBlock.COMMAND_BLOCK;
+					case ("AUTO") -> SignalBlock.AUTO;
+					default -> {
+						reader.setCursor(start);
+						throw new SimpleCommandExceptionType(Text.literal("Could not resolve signal block!")).create();
+					}
+				};
+		return signalBlock;
+	}
 
-    @Override
-    public Collection<String> getExamples() {
-        return EXAMPLES;
-    }
+	@Override
+	public String toString() {
+		return ("signalblockargument()");
+	}
 
-    String[] signalBlockArguments = {
-            "barrel", "chest", "shulker_box", "dispenser", "dropper", "hopper",
-            "brewing_stand", "furnace", "smoker", "blast_furnace", "command_block", "auto"
-    };
+	@Override
+	public Collection<String> getExamples() {
+		return EXAMPLES;
+	}
 
-    @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(signalBlockArguments, builder);
-    }
+	String[] signalBlockArguments = {
+			"barrel", "chest", "shulker_box", "dispenser", "dropper", "hopper",
+			"brewing_stand", "furnace", "smoker", "blast_furnace", "command_block", "auto"
+	};
+
+	@Override
+	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+		return CommandSource.suggestMatching(signalBlockArguments, builder);
+	}
 }

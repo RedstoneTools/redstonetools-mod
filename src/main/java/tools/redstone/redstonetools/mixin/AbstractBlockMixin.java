@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(AbstractBlock.class)
 public interface AbstractBlockMixin {
-    @Invoker
-    ItemStack callGetPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData);
+	@Invoker
+	ItemStack callGetPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData);
 }

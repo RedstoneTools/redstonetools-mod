@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public interface ServerPlayNetworkHandlerAccessor {
-    @Invoker
-    void callCopyBlockDataToStack(BlockState state, ServerWorld world, BlockPos pos, ItemStack stack);
+	@Invoker
+	void callCopyBlockDataToStack(BlockState state, ServerWorld world, BlockPos pos, ItemStack stack);
 }

@@ -10,13 +10,13 @@ import tools.redstone.redstonetools.features.commands.ItemBindFeature;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin {
-    @Inject(method = "executeCommand", at = @At("HEAD"), cancellable = true)
-    public void checkItemBind(String command, CallbackInfo ci) {
-        ServerPlayerEntity player = ((ServerPlayNetworkHandler)(Object)this).getPlayer();
-        if (ItemBindFeature.waitingForCommandForPlayer(player)) {
-            ItemBindFeature.addCommand(command, player);
-            ItemBindFeature.playersWaitingForCommmand.remove(player);
-            ci.cancel();
-        }
-    }
+	@Inject(method = "executeCommand", at = @At("HEAD"), cancellable = true)
+	public void checkItemBind(String command, CallbackInfo ci) {
+		ServerPlayerEntity player = ((ServerPlayNetworkHandler) (Object) this).getPlayer();
+		if (ItemBindFeature.waitingForCommandForPlayer(player)) {
+			ItemBindFeature.addCommand(command, player);
+			ItemBindFeature.playersWaitingForCommmand.remove(player);
+			ci.cancel();
+		}
+	}
 }

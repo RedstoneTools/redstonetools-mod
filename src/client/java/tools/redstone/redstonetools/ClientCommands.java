@@ -1,6 +1,8 @@
 package tools.redstone.redstonetools;
 
-import tools.redstone.redstonetools.features.commands.*;
+import tools.redstone.redstonetools.features.commands.BaseConvertFeature;
+import tools.redstone.redstonetools.features.commands.EditMacroFeature;
+import tools.redstone.redstonetools.features.commands.MacroFeature;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 import tools.redstone.redstonetools.features.toggleable.AutoDustClient;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
