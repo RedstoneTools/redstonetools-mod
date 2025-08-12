@@ -5,14 +5,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tools.redstone.redstonetools.malilib.InitHandler;
 import tools.redstone.redstonetools.packets.RedstoneToolsClientPackets;
 import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
+import static tools.redstone.redstonetools.RedstoneTools.LOGGER;
+
 public class RedstoneToolsClient implements ClientModInitializer {
-	public static final Logger LOGGER = LoggerFactory.getLogger(RedstoneTools.MOD_ID);
 
 	@Override
 	public void onInitializeClient() {
