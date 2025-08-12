@@ -11,7 +11,6 @@ public class RedstoneToolsPackets {
 		PayloadTypeRegistry.playC2S().register(SetFeatureEnabledC2SPayload.ID, SetFeatureEnabledC2SPayload.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SetFeatureEnabledC2SPayload.ID, (payload, context) -> {
-			System.out.println("PACKET RECEIVED SERVER" + payload.featureAndToggle());
 			String str = payload.featureAndToggle();
 			String feature = str.substring(0, str.length() - 1);
 			boolean enabled = str.charAt(str.length() - 1) == '1';

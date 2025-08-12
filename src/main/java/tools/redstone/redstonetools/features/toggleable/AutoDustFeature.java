@@ -17,7 +17,6 @@ public class AutoDustFeature extends ToggleableFeature {
 	}
 
 	private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		System.out.println("PACKET SENT " + "AutoDust" + (this.isEnabled(context.getSource().getPlayerOrThrow()) ? "1" : "0"));
 		var payload = new SetFeatureEnabledS2CPayload("AutoDust" + (this.isEnabled(context.getSource().getPlayerOrThrow()) ? "1" : "0"));
 		ServerPlayNetworking.send(context.getSource().getPlayerOrThrow(), payload);
 		return this.toggle(context);

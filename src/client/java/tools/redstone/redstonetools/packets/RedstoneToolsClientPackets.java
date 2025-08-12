@@ -6,7 +6,6 @@ import tools.redstone.redstonetools.features.toggleable.AutoDustClient;
 public class RedstoneToolsClientPackets {
 	public static void registerPackets() {
 		ClientPlayNetworking.registerGlobalReceiver(SetFeatureEnabledS2CPayload.ID, ((payload, context) -> {
-			System.out.println("PACKET RECEIVED " + payload.featureAndToggle());
 			String feature = payload.featureAndToggle().substring(0, payload.featureAndToggle().length() - 1);
 			boolean enabled;
 			enabled = payload.featureAndToggle().endsWith("1");

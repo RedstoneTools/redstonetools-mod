@@ -9,7 +9,6 @@ public class AutoDustClient {
 
 	public static void registerHandler() {
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-			System.out.println("PACKET SENT " + "AutoDust" + (AutoDustClient.isEnabled ? "0" : "1"));
 			SetFeatureEnabledC2SPayload payload = new SetFeatureEnabledC2SPayload("AutoDust" + (AutoDustClient.isEnabled ? "0" : "1"));
 			ClientPlayNetworking.send(payload);
 		});
