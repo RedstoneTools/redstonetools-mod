@@ -47,14 +47,14 @@ public class ItemBindFeature extends AbstractFeature {
 						}))));
 	}
 
-	public static ArrayList<ServerPlayerEntity> playersWaitingForCommmand = new ArrayList<>();
+	public static ArrayList<ServerPlayerEntity> playersWaitingForCommand = new ArrayList<>();
 
 	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 //        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
 //            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
 //        }
 		ServerCommandSource source = context.getSource();
-		playersWaitingForCommmand.add(source.getPlayer());
+		playersWaitingForCommand.add(source.getPlayer());
 
 		source.sendMessage(Text.literal("Please run any command and hold the item you want the command be bound to in your main hand"));
 		return 1;
@@ -77,13 +77,13 @@ public class ItemBindFeature extends AbstractFeature {
 		//                                                                                                   reason, so we add it ourselves so its more clear
 		stack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.of("Has command: /" + command))));
 
-		playersWaitingForCommmand.remove(playerI);
+		playersWaitingForCommand.remove(playerI);
 		playerI.sendMessage(Text.literal("Successfully bound command: '%s' to this item (%s)!".formatted(command, stack.getItem().getName().getString())), false);
 
 	}
 
 	public static boolean waitingForCommandForPlayer(ServerPlayerEntity player1) {
-		return playersWaitingForCommmand.contains(player1);
+		return playersWaitingForCommand.contains(player1);
 	}
 }
 

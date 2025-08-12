@@ -15,7 +15,7 @@ public class ServerPlayNetworkHandlerMixin {
 		ServerPlayerEntity player = ((ServerPlayNetworkHandler) (Object) this).getPlayer();
 		if (ItemBindFeature.waitingForCommandForPlayer(player)) {
 			ItemBindFeature.addCommand(command, player);
-			ItemBindFeature.playersWaitingForCommmand.remove(player);
+			ItemBindFeature.playersWaitingForCommand.remove(player);
 			ci.cancel();
 		}
 	}

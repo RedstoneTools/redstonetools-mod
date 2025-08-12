@@ -70,7 +70,7 @@ public class DirectionArgumentType implements ArgumentType<DirectionArgument> {
 		return EXAMPLES;
 	}
 
-	String[] directionArguments = {
+	final String[] directionArguments = {
 			"me", "forward", "back", "north", "east", "south", "west",
 			"northeast", "northwest", "southeast", "southwest", "up", "down",
 			"left", "right"

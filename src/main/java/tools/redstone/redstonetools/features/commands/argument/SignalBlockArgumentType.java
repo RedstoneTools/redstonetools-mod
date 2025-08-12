@@ -67,7 +67,7 @@ public class SignalBlockArgumentType implements ArgumentType<SignalBlock> {
 		return EXAMPLES;
 	}
 
-	String[] signalBlockArguments = {
+	final String[] signalBlockArguments = {
 			"barrel", "chest", "shulker_box", "dispenser", "dropper", "hopper",
 			"brewing_stand", "furnace", "smoker", "blast_furnace", "command_block", "auto"
 	};

@@ -59,12 +59,12 @@ public class ColoredBlockTypeArgumentType implements ArgumentType<ColoredBlockTy
 		return EXAMPLES;
 	}
 
-	String[] colors = {
+	final String[] blockTypes = {
 			"wool", "glass", "concrete", "terracotta"
 	};
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		return CommandSource.suggestMatching(colors, builder);
+		return CommandSource.suggestMatching(blockTypes, builder);
 	}
 }

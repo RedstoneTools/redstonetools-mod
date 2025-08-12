@@ -43,6 +43,8 @@ public class CheckUpdateMixin extends Screen {
 		if (updateChecked)
 			return;
 
+		// TODO: move this to earlier in game launch and move it to a separate
+		//       thread so it doesn't slow down game startup by 1-3 seconds
 		try {
 			LOGGER.info("Checking for updates...");
 

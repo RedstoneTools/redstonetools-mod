@@ -9,7 +9,7 @@ public class RedstoneToolsClientPackets {
 			System.out.println("PACKET RECEIVED " + payload.featureAndToggle());
 			String feature = payload.featureAndToggle().substring(0, payload.featureAndToggle().length() - 1);
 			boolean enabled;
-			enabled = payload.featureAndToggle().substring(payload.featureAndToggle().length() - 1).equals("1");
+			enabled = payload.featureAndToggle().endsWith("1");
 
 			switch (feature) {
 				case "AutoDust":

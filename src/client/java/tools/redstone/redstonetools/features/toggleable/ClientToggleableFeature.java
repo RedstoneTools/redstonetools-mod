@@ -43,10 +43,6 @@ public abstract class ClientToggleableFeature extends AbstractFeature {
 		return 0;
 	}
 
-	public int enable(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		return enable(context.getSource());
-	}
-
 	public void disable() {
 		enabled = false;
 		onDisable();
@@ -56,10 +52,6 @@ public abstract class ClientToggleableFeature extends AbstractFeature {
 		disable();
 		source.getPlayer().sendMessage(Text.literal("Disabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))), false);
 		return 0;
-	}
-
-	public int disable(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		return disable(context.getSource());
 	}
 
 	protected void onEnable() {

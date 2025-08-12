@@ -71,7 +71,7 @@ public class BlockColorArgumentType implements ArgumentType<BlockColor> {
 		return EXAMPLES;
 	}
 
-	String[] colors = {
+	final String[] colors = {
 			"white", "orange", "magenta",
 			"light_blue", "yellow", "lime",
 			"pink", "gray", "light_gray",
