@@ -6,8 +6,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -25,22 +25,31 @@ import java.util.Set;
 public abstract class AutoRotateMixin {
 
     @Unique
-    private static final Set<Block> ROTATABLE = Set.of(
-            Blocks.REPEATER,
-            Blocks.COMPARATOR,
-            Blocks.OBSERVER,
-            Blocks.PISTON,
-            Blocks.STICKY_PISTON
-    );
+    private static Set<Block> ROTATABLE;
+
+    @Unique
+    private static Set<Block> getRotatable() {
+        if (ROTATABLE == null) {
+            ROTATABLE = Set.of(
+                    Blocks.REPEATER,
+                    Blocks.COMPARATOR,
+                    Blocks.OBSERVER,
+                    Blocks.PISTON,
+                    Blocks.STICKY_PISTON
+            );
+        }
+        return ROTATABLE;
+    }
 
     @Inject(method = "onPlaced", at = @At("TAIL"))
     private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
+        if (world == null) return;
         if (world.isClient) return;
         if (!(placer instanceof ServerPlayerEntity player)) return;
         if (!FeatureUtils.getFeature(AutoRotateFeature.class).isEnabled(player)) return;
-        if (!ROTATABLE.contains(state.getBlock())) return;
+        if (!getRotatable().contains(state.getBlock())) return;
 
-        EnumProperty<Direction> dirProp = null;
+        Property<Direction> dirProp = null;
         if (state.contains(Properties.HORIZONTAL_FACING)) {
             dirProp = Properties.HORIZONTAL_FACING;
         } else if (state.contains(Properties.FACING)) {
@@ -49,7 +58,16 @@ public abstract class AutoRotateMixin {
 
         if (dirProp == null) return;
 
-        // Rotate the block to its opposite face
-        world.setBlockState(pos, state.with(dirProp, state.get(dirProp).getOpposite()));
+        Direction current;
+        try {
+            current = state.get(dirProp);
+        } catch (Exception e) {
+            System.err.println("[AutoRotateMixin] could not read direction property for block " + state.getBlock() + " at " + pos + ": " + e);
+            return;
+        }
+
+        if (current == null) return;
+
+        world.setBlockState(pos, state.with(dirProp, current.getOpposite()));
     }
 }
