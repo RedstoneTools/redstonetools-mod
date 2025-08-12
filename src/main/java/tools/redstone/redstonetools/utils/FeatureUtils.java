@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.utils;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
+import tools.redstone.redstonetools.features.toggleable.AutoRotateFeature;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class FeatureUtils {
 		if (features == null) {
 			Set<AbstractFeature> FEATURES = new HashSet<>();
 			FEATURES.add(new AutoDustFeature());
+			FEATURES.add(new AutoRotateFeature());
 			FEATURES.add(new SignalStrengthBlockFeature());
 			FEATURES.add(new QuickTpFeature());
 			FEATURES.add(new GiveMeFeature());
