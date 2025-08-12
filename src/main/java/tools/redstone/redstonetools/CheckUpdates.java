@@ -15,15 +15,12 @@ import static tools.redstone.redstonetools.RedstoneTools.MOD_VERSION;
 import static tools.redstone.redstonetools.RedstoneTools.LOGGER;
 
 public class CheckUpdates {
-	public static boolean updateChecked = false;
+	public volatile static boolean updateCheckSucceeded = false;
 
-	public static MutableText updateStatus = (MutableText) Text.of("Redstone Tools Version: " + MOD_VERSION + "(Bug found, report on Github)");
-	public static URI uri;
+	public volatile static MutableText updateStatus = (MutableText) Text.of("Redstone Tools Version: " + MOD_VERSION + "(Bug found, report on Github)");
+	public volatile static URI uri;
 
 	public static void checkUpdates() {
-		if (updateChecked)
-			return;
-
 		try {
 			LOGGER.info("Checking for updates...");
 
@@ -33,6 +30,9 @@ public class CheckUpdates {
 					.uri(URI.create("https://api.github.com/repositories/597142955/releases/latest"))
 					.GET()
 					.build();
+
+//			simulate update checking taking a while
+//			Thread.sleep(10000);
 
 			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 			String responseBody = response.body();
@@ -63,12 +63,10 @@ public class CheckUpdates {
 				updateStatus.append(Text.of("Click to Update").getWithStyle(underline.withUnderline(true)).getFirst());
 				updateStatus.append(")");
 			}
-
+			updateCheckSucceeded = true;
 		} catch (Exception e) {
 			LOGGER.warn("Failed to check for RedstoneTools updates");
 //            e.printStackTrace();
-		} finally {
-			updateChecked = true;
 		}
 	}
 }
