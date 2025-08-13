@@ -9,13 +9,11 @@
   "client": [
     "blocks.RedstoneHitboxMixin",
     "features.AirPlaceClientMixin",
+    "features.CommandSourceMixin",
     "features.ItemBindItemStackMixin",
     "features.WorldRendererInvoker",
     "macros.AddMacroButtonMixin",
     "macros.InitializeMacroManagerMixin",
     "update.CheckUpdateMixin"
-  ],
-  "mixins": [
-    "features.CommandSourceMixin"
   ]
 }
