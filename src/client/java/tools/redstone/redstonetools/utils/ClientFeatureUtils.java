@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.BaseConvertFeature;
 import tools.redstone.redstonetools.features.commands.MacroFeature;
+import tools.redstone.redstonetools.features.commands.ReachFeature;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 import tools.redstone.redstonetools.features.toggleable.AutoDustClient;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
@@ -33,6 +34,7 @@ public class ClientFeatureUtils {
 			FEATURES.add(new AirPlaceFeature());
 			FEATURES.add(new MacroFeature());
 			FEATURES.add(new BaseConvertFeature());
+			FEATURES.add(new ReachFeature());
 			features = FEATURES;
 		}
 		Optional<T> found1 = features.stream()
