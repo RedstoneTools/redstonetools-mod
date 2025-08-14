@@ -30,7 +30,7 @@ public class QuickTpFeature extends AbstractFeature {
 										.executes(qtp::parseArguments))))));
 	}
 
-	protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+	protected int parseArguments(CommandContext<ServerCommandSource> context) {
 		double distance;
 		boolean includeFluids;
 		boolean resetVelocity;
@@ -49,10 +49,21 @@ public class QuickTpFeature extends AbstractFeature {
 		} catch (Exception ignored) {
 			resetVelocity = true;
 		}
-		return execute(context, distance, includeFluids, resetVelocity);
+		double finalDistance = distance;
+		boolean finalIncludeFluids = includeFluids;
+		boolean finalResetVelocity = resetVelocity;
+		Thread thread = new Thread(() -> {
+			try {
+				execute(context, finalDistance, finalIncludeFluids, finalResetVelocity);
+			} catch (CommandSyntaxException ignored) {
+
+			}
+		});
+		thread.start();
+		return 1;
 	}
 
-	protected int execute(CommandContext<ServerCommandSource> context, double distance, boolean includeFluids, boolean resetVelocity) throws CommandSyntaxException {
+	protected static void execute(CommandContext<ServerCommandSource> context, double distance, boolean includeFluids, boolean resetVelocity) throws CommandSyntaxException {
 		var player = context.getSource().getPlayer();
 
 		assert player != null;
@@ -65,11 +76,9 @@ public class QuickTpFeature extends AbstractFeature {
 		if (resetVelocity) player.setVelocity(Vec3d.ZERO);
 		player.fallDistance = 0;
 		player.velocityModified = true; // guh
-
-		return 0;
 	}
 
-	private Vec3d clampHitPosition(HitResult hit) {
+	private static Vec3d clampHitPosition(HitResult hit) {
 		if (hit.getType() != HitResult.Type.BLOCK) {
 			return hit.getPos().subtract(0, 0.5, 0);
 		}
