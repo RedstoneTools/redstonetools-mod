@@ -56,11 +56,13 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 				GuiBase.openGui(gui);
 				this.widget.parent.refreshEntries();
 			} else if (this.type == Type.REMOVE) {
-				MacroManager.removeMacro(this.widget.macro);
-				this.widget.parent.refreshEntries();
 				InputEventHandler.getKeybindManager().unregisterKeybindProvider(this.widget.macro.handler);
 				InputEventHandler.getInputManager().unregisterKeyboardInputHandler(this.widget.macro.handler);
 				InputEventHandler.getInputManager().unregisterMouseInputHandler(this.widget.macro.handler);
+				InputEventHandler.getKeybindManager().updateUsedKeys();
+				MacroManager.removeMacro(this.widget.macro);
+				MacroManager.saveChanges();
+				this.widget.parent.refreshEntries();
 			}
 		}
 
