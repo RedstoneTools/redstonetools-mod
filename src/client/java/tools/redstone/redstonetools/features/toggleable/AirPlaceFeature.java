@@ -13,9 +13,11 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -57,6 +59,9 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 		}
 		AirPlaceFeature.showOutline = o;
 		AirPlaceFeature.reach = r;
+		if (r > context.getSource().getPlayer().getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).getBaseValue()) {
+			context.getSource().sendFeedback(Text.literal("Reach value is over your block interaction range. Consider using /reach-block to prevent issues!"));
+		}
 		if (hasArguments && isEnabled()) {
 			return 1;
 		}

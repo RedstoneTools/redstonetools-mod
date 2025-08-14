@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tools.redstone.redstonetools.CheckUpdates;
+import tools.redstone.redstonetools.RedstoneTools;
 
 @Mixin(TitleScreen.class)
 public class CheckUpdateMixin extends Screen {
@@ -19,6 +20,7 @@ public class CheckUpdateMixin extends Screen {
 
 	@Inject(method = "init", at = @At("HEAD"))
 	public void updateTextInjection(CallbackInfo ci) {
+		if (!CheckUpdates.updateCheckSucceeded) RedstoneTools.LOGGER.warn("Update checking failed or not yet complete.");
 		this.addDrawableChild(new PressableTextWidget(4, 4, textRenderer.getWidth(CheckUpdates.updateStatus), textRenderer.fontHeight, CheckUpdates.updateStatus, button -> Util.getOperatingSystem().open(CheckUpdates.uri), textRenderer));
 	}
 }
