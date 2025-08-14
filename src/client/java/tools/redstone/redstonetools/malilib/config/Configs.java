@@ -3,7 +3,9 @@ package tools.redstone.redstonetools.malilib.config;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.ConfigUtils;
+import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigHandler;
+import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
 import fi.dy.masa.malilib.util.JsonUtils;
 import net.minecraft.client.MinecraftClient;
@@ -16,8 +18,17 @@ public class Configs implements IConfigHandler {
 	private static final String CONFIG_FILE_NAME = RedstoneTools.MOD_ID + ".json";
 
 	public static class General {
-		public static final ConfigHotkey HOTKEY_OPEN_GUI = new ConfigHotkey("hotkeyOpenMenu", "V,C");
-		public static final List<ConfigHotkey> OPTIONS = List.of(HOTKEY_OPEN_GUI);
+		public static final ConfigHotkey HOTKEY_OPEN_GUI = new ConfigHotkey("hotkeyOpenMenu", "V,C", "Hotkey to open this menu");
+		public static final ConfigBoolean BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS = new ConfigBoolean("improvedCommandSuggestions", true,
+				"""
+						Enables/disables improved suggestions when typing commands.
+						
+						When typing "/give @s redstblock" in chat, with this disabled it will give no suggestions (default behaviour, or "prefix matching"), but with
+						this enabled it will give "redstone_block" as a suggestion (so called "fuzzy matching").""");
+		public static final List<? extends IConfigBase> OPTIONS = List.of(
+				HOTKEY_OPEN_GUI,
+				BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS
+		);
 	}
 
 	public static void loadFromFile() {

@@ -1,8 +1,8 @@
 package tools.redstone.redstonetools.malilib;
 
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
-import fi.dy.masa.malilib.config.options.ConfigHotkey;
 import fi.dy.masa.malilib.config.options.ConfigString;
 import fi.dy.masa.malilib.config.options.ConfigStringList;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -15,7 +15,6 @@ import tools.redstone.redstonetools.malilib.config.MacroManager;
 import tools.redstone.redstonetools.malilib.widget.MacroBase;
 import tools.redstone.redstonetools.malilib.widget.WidgetListMacros;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GuiMacroEditor extends GuiConfigsBase {
@@ -80,34 +79,14 @@ public class GuiMacroEditor extends GuiConfigsBase {
 	private final ConfigBoolean configEnabled;
 	private final ConfigString configName;
 
-	// I'm sorry
 	@Override
 	public List<ConfigOptionWrapper> getConfigs() {
-		List<ConfigBoolean> configsB = new ArrayList<>();
-		configsB.add(this.configEnabled);
-
-		List<ConfigHotkey> configsH = new ArrayList<>();
-		configsH.add(this.macro.hotkey);
-
-		List<ConfigStringList> configsSL = new ArrayList<>();
-		configsSL.add(this.commands);
-
-		List<ConfigString> configsS = new ArrayList<>();
-		configsS.add(this.configName);
-
-		List<ConfigOptionWrapper> configOptionWrappers = new ArrayList<>();
-		configOptionWrappers.addAll(immutableListToList(ConfigOptionWrapper.createFor(configsS)));
-		configOptionWrappers.addAll(immutableListToList(ConfigOptionWrapper.createFor(configsH)));
-		configOptionWrappers.addAll(immutableListToList(ConfigOptionWrapper.createFor(configsSL)));
-		configOptionWrappers.addAll(immutableListToList(ConfigOptionWrapper.createFor(configsB)));
-		return ImmutableList.copyOf(configOptionWrappers);
-	}
-
-	private <E> List<E> immutableListToList(List<E> aFor) {
-		if (aFor instanceof ImmutableList<E> IL) {
-			return new ArrayList<>(IL);
-		} else {
-			throw new IllegalStateException("Trying to convert a " + aFor.getClass() + " to List");
-		}
+		List<? extends IConfigBase> configs = List.of(
+				this.configEnabled,
+				this.macro.hotkey,
+				this.commands,
+				this.configName
+		);
+		return ConfigOptionWrapper.createFor(configs);
 	}
 }

@@ -15,14 +15,9 @@ public class WidgetMacroEntry8 extends WidgetMacroEntry {
 	}
 
 	@Override
-	public boolean canSelectAt(int mouseX, int mouseY, int mouseButton) {
-		return super.canSelectAt(mouseX, mouseY, mouseButton) && mouseX < this.buttonsStartX;
-	}
-
-	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, boolean selected) {
 		if (selected || this.isMouseOver(mouseX, mouseY)) {
-			RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x70FFFFFF);
+			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x70FFFFFF);
 		} else if (this.isOdd) {
 			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x20FFFFFF);
 		} else {

@@ -17,6 +17,11 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	protected final boolean isOdd;
 	protected final int buttonsStartX;
 
+	@Override
+	public boolean canSelectAt(int mouseX, int mouseY, int mouseButton) {
+		return super.canSelectAt(mouseX, mouseY, mouseButton) && mouseX < this.buttonsStartX;
+	}
+
 	public WidgetMacroEntry(int x, int y, int width, int height, boolean isOdd,
 	                        MacroBase macro, int listIndex, WidgetListMacros parent) {
 		super(x, y, width, height, macro, listIndex);
