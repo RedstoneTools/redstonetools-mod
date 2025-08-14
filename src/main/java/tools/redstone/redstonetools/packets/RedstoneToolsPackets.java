@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.features.toggleable.AutoRotateFeature;
+import tools.redstone.redstonetools.features.toggleable.ClickContainerFeature;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
 public class RedstoneToolsPackets {
@@ -19,6 +20,7 @@ public class RedstoneToolsPackets {
 			switch (feature) {
 				case "AutoDust" -> FeatureUtils.getFeature(AutoDustFeature.class).setEnabled(enabled, context.player());
 				case "AutoRotate" -> FeatureUtils.getFeature(AutoRotateFeature.class).setEnabled(enabled, context.player());
+				case "ClickContainers" -> FeatureUtils.getFeature(ClickContainerFeature.class).setEnabled(enabled, context.player());
 				default -> {
 				}
 			}

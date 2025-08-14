@@ -4,6 +4,7 @@ import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.features.toggleable.AutoRotateFeature;
+import tools.redstone.redstonetools.features.toggleable.ClickContainerFeature;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -21,6 +22,7 @@ public class FeatureUtils {
 			Set<AbstractFeature> FEATURES = new HashSet<>();
 			FEATURES.add(new AutoDustFeature());
 			FEATURES.add(new AutoRotateFeature());
+			FEATURES.add(new ClickContainerFeature());
 			FEATURES.add(new SignalStrengthBlockFeature());
 			FEATURES.add(new QuickTpFeature());
 			FEATURES.add(new GiveMeFeature());

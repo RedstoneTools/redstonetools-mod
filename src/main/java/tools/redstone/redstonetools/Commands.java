@@ -3,6 +3,7 @@ package tools.redstone.redstonetools;
 import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.features.toggleable.AutoRotateFeature;
+import tools.redstone.redstonetools.features.toggleable.ClickContainerFeature;
 import tools.redstone.redstonetools.utils.DependencyLookup;
 
 public class Commands {
@@ -19,6 +20,7 @@ public class Commands {
 		GiveMeFeature.registerCommand();
 		AutoDustFeature.registerCommand();
 		AutoRotateFeature.registerCommand();
+		ClickContainerFeature.registerCommand();
 		ColoredFeature.registerCommand();
 		CopyStateFeature.registerCommand();
 	}
