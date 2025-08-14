@@ -18,8 +18,14 @@ public interface CommandSourceMixin {
 	@Inject(method = "shouldSuggest", at = @At("HEAD"), cancellable = true)
 	private static void meow(String remaining, String candidate, CallbackInfoReturnable<Boolean> cir) {
 		if (!Configs.General.BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS.getBooleanValue()) return;
-		if (remaining == null || candidate == null) {cir.setReturnValue(false); return;}
-		if (remaining.isEmpty()) {cir.setReturnValue(true); return;}
+		if (remaining == null || candidate == null) {
+			cir.setReturnValue(false);
+			return;
+		}
+		if (remaining.isEmpty()) {
+			cir.setReturnValue(true);
+			return;
+		}
 
 		int n = candidate.length();
 		List<Integer> starts = new ArrayList<>();
@@ -32,11 +38,13 @@ public interface CommandSourceMixin {
 
 		for (int start : starts) {
 			if (isSubsequenceFrom(remaining, candidate, start)) {
-				cir.setReturnValue(true); return;
+				cir.setReturnValue(true);
+				return;
 			}
 		}
 		cir.setReturnValue(false);
 	}
+
 	@Unique
 	private static boolean isSubsequenceFrom(String remaining, String candidate, int startIdx) {
 		int j = 0;

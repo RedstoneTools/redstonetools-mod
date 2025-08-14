@@ -18,9 +18,12 @@ public class RedstoneToolsPackets {
 			boolean enabled = str.charAt(str.length() - 1) == '1';
 
 			switch (feature) {
-				case "AutoDust" -> FeatureUtils.getFeature(AutoDustFeature.class).setEnabled(enabled, context.player());
-				case "AutoRotate" -> FeatureUtils.getFeature(AutoRotateFeature.class).setEnabled(enabled, context.player());
-				case "ClickContainers" -> FeatureUtils.getFeature(ClickContainerFeature.class).setEnabled(enabled, context.player());
+				case "AutoDust" ->
+						FeatureUtils.getFeature(AutoDustFeature.class).setEnabled(enabled, context.player());
+				case "AutoRotate" ->
+						FeatureUtils.getFeature(AutoRotateFeature.class).setEnabled(enabled, context.player());
+				case "ClickContainers" ->
+						FeatureUtils.getFeature(ClickContainerFeature.class).setEnabled(enabled, context.player());
 				default -> {
 				}
 			}

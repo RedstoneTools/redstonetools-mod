@@ -20,7 +20,8 @@ public class CheckUpdateMixin extends Screen {
 
 	@Inject(method = "init", at = @At("HEAD"))
 	public void updateTextInjection(CallbackInfo ci) {
-		if (!CheckUpdates.updateCheckSucceeded) RedstoneTools.LOGGER.warn("Update checking failed or not yet complete.");
+		if (!CheckUpdates.updateCheckSucceeded)
+			RedstoneTools.LOGGER.warn("Update checking failed or not yet complete.");
 		this.addDrawableChild(new PressableTextWidget(4, 4, textRenderer.getWidth(CheckUpdates.updateStatus), textRenderer.fontHeight, CheckUpdates.updateStatus, button -> Util.getOperatingSystem().open(CheckUpdates.uri), textRenderer));
 	}
 }

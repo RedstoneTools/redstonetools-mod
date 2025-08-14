@@ -28,7 +28,7 @@ public class RedstoneTools implements ModInitializer {
 	===================================================================*/
 	public static final String MOD_VERSION = "v1.21.4-1.21.8-3.0.0";
 	public static final String MOD_NAME = "Redstone tools";
-    public static final Logger LOGGER = LoggerFactory.getLogger(RedstoneTools.MOD_ID);
+	public static final Logger LOGGER = LoggerFactory.getLogger(RedstoneTools.MOD_ID);
 
 	public static final ComponentType<String> COMMAND_COMPONENT = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,

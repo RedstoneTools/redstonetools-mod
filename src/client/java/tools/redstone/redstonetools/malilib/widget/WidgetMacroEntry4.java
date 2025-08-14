@@ -79,8 +79,7 @@ public class WidgetMacroEntry4 extends WidgetMacroEntry {
 			invokedrawRect(this.x, this.y, this.width, this.height, 0x70FFFFFF);
 		} else if (this.isOdd) {
 			invokedrawRect(this.x, this.y, this.width, this.height, 0x20FFFFFF);
-		}
-		else {
+		} else {
 			invokedrawRect(this.x, this.y, this.width, this.height, 0x50FFFFFF);
 		}
 		invokedrawString(this.x + 4, this.y + 7, 0xFFFFFFFF, this.macro.getName(), context);

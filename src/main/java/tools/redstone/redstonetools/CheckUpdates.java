@@ -11,8 +11,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import static tools.redstone.redstonetools.RedstoneTools.MOD_VERSION;
 import static tools.redstone.redstonetools.RedstoneTools.LOGGER;
+import static tools.redstone.redstonetools.RedstoneTools.MOD_VERSION;
 
 public class CheckUpdates {
 	public volatile static boolean updateCheckSucceeded = false;

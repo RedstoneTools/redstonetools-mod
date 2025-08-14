@@ -21,18 +21,19 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class ClickContainerFeature extends ToggleableFeature {
 	private static long lasttime = -1;
+
 	static {
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 			if (world == null) return ActionResult.PASS;
-			if(world.isClient) return ActionResult.PASS;
-			if (!FeatureUtils.getFeature(ClickContainerFeature.class).isEnabled((ServerPlayerEntity) player)) return ActionResult.PASS;
+			if (world.isClient) return ActionResult.PASS;
+			if (!FeatureUtils.getFeature(ClickContainerFeature.class).isEnabled((ServerPlayerEntity) player))
+				return ActionResult.PASS;
 			if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;
 
 			BlockPos pos = hitResult.getBlockPos();
 			BlockState state = world.getBlockState(pos);
 
-			if(world.getTime() == lasttime) {
-				System.out.println("time = lasttime");
+			if (world.getTime() == lasttime) {
 				return ActionResult.PASS;
 			}
 			lasttime = world.getTime();
