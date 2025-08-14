@@ -9,6 +9,7 @@
   "mixins": [
     "AbstractBlockMixin",
     "features.AutoDustMixin",
+    "features.AutoRotateMixin",
     "features.PlayerInventoryAccessor",
     "features.ServerPlayNetworkHandlerAccessor",
     "features.ServerPlayNetworkHandlerMixin",
