@@ -78,6 +78,7 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 
 		this.addButton(addMacroButton, (btn, mbtn) -> {
 			MacroManager.addMacro(new MacroBase("macro " + MacroManager.getAllMacros().size(), "", new ArrayList<>()));
+			MacroManager.saveChanges();
 			this.getListWidget().refreshEntries();
 		});
 	}
