@@ -1,73 +1,30 @@
 package tools.redstone.redstonetools.mixin.features;
 
-import net.minecraft.block.Block;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.property.Properties;
-import net.minecraft.state.property.Property;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tools.redstone.redstonetools.features.toggleable.AutoRotateFeature;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
-import java.util.Set;
-
-@Mixin(Block.class)
+@Mixin(BlockItem.class)
 public abstract class AutoRotateMixin {
+	@ModifyReturnValue(method = "getPlacementState", at = @At("RETURN"))
+	private BlockState changeRotation(BlockState original, @Local(argsOnly = true) ItemPlacementContext context) {
+		if (!FeatureUtils.getFeature(AutoRotateFeature.class).isEnabled(context.getPlayer())) return original;
+		if (original.contains(Properties.FACING))
+			original = original.with(Properties.FACING, original.get(Properties.FACING).getOpposite());
 
-	@Unique
-	private static Set<Block> ROTATABLE;
+		if (original.contains(Properties.HORIZONTAL_FACING))
+			original= original.with(Properties.HORIZONTAL_FACING, original.get(Properties.HORIZONTAL_FACING).getOpposite());
 
-	@Unique
-	private static Set<Block> getRotatable() {
-		if (ROTATABLE == null) {
-			ROTATABLE = Set.of(
-					Blocks.REPEATER,
-					Blocks.COMPARATOR,
-					Blocks.OBSERVER,
-					Blocks.PISTON,
-					Blocks.STICKY_PISTON
-			);
-		}
-		return ROTATABLE;
-	}
+		if (original.contains(Properties.HOPPER_FACING))
+			original= original.with(Properties.HOPPER_FACING, original.get(Properties.HOPPER_FACING).getOpposite());
 
-	@Inject(method = "onPlaced", at = @At("TAIL"))
-	private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-		if (world == null) return;
-		if (world.isClient) return;
-		if (!(placer instanceof ServerPlayerEntity player)) return;
-		if (!FeatureUtils.getFeature(AutoRotateFeature.class).isEnabled(player)) return;
-		if (!getRotatable().contains(state.getBlock())) return;
-
-		Property<Direction> dirProp = null;
-		if (state.contains(Properties.HORIZONTAL_FACING)) {
-			dirProp = Properties.HORIZONTAL_FACING;
-		} else if (state.contains(Properties.FACING)) {
-			dirProp = Properties.FACING;
-		}
-
-		if (dirProp == null) return;
-
-		Direction current;
-		try {
-			current = state.get(dirProp);
-		} catch (Exception e) {
-			System.err.println("[AutoRotateMixin] could not read direction property for block " + state.getBlock() + " at " + pos + ": " + e);
-			return;
-		}
-
-		if (current == null) return;
-
-		world.setBlockState(pos, state.with(dirProp, current.getOpposite()));
+		return original;
 	}
 }

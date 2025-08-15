@@ -1,8 +1,8 @@
 package tools.redstone.redstonetools.features.toggleable;
 
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
 
@@ -10,9 +10,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class ToggleableFeature extends AbstractFeature {
-	private final Set<ServerPlayerEntity> enabledFor = new HashSet<>(); // volatile for thread safety
+	private final Set<PlayerEntity> enabledFor = new HashSet<>(); // volatile for thread safety
 
-	public boolean isEnabled(ServerPlayerEntity player) {
+	public boolean isEnabled(PlayerEntity player) {
 		return enabledFor.contains(player);
 	}
 
@@ -21,11 +21,11 @@ public abstract class ToggleableFeature extends AbstractFeature {
 	}
 
 	public int toggle(ServerCommandSource source) {
-		ServerPlayerEntity player = source.getPlayer();
+		PlayerEntity player = source.getPlayer();
 		return !enabledFor.contains(player) ? enable(source) : disable(source);
 	}
 
-	public void setEnabled(boolean status, ServerPlayerEntity player) {
+	public void setEnabled(boolean status, PlayerEntity player) {
 		if (status) {
 			enable(player);
 		} else {
@@ -33,7 +33,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
 		}
 	}
 
-	public void enable(ServerPlayerEntity player) {
+	public void enable(PlayerEntity player) {
 		enabledFor.add(player);
 		onEnable();
 	}
@@ -44,7 +44,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
 		return 0;
 	}
 
-	public void disable(ServerPlayerEntity player) {
+	public void disable(PlayerEntity player) {
 		enabledFor.remove(player);
 		onDisable();
 	}
