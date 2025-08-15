@@ -7,9 +7,7 @@ import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.BaseConvertFeature;
 import tools.redstone.redstonetools.features.commands.MacroFeature;
 import tools.redstone.redstonetools.features.commands.ReachFeature;
-import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
-import tools.redstone.redstonetools.features.toggleable.AutoDustClient;
-import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
+import tools.redstone.redstonetools.features.toggleable.*;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 
 import java.io.IOException;
@@ -76,6 +74,9 @@ public class ClientFeatureUtils {
 			BigDustFeature.heightInPixels = storedState.bigDustHeightInPixels;
 
 			AutoDustClient.isEnabled = storedState.autoDust;
+			AutoRotateClient.isEnabled = storedState.autoRotate;
+			ClickContainerClient.isEnabled = storedState.clickContainer;
+
 		} catch (IOException e) {
 			System.err.println("Error reading toggles: " + e.getMessage());
 		}
@@ -83,16 +84,18 @@ public class ClientFeatureUtils {
 
 	public static void saveToggles() {
 		var storedState = new StoredState();
-		AirPlaceFeature airplace = ClientFeatureUtils.getFeature(AirPlaceFeature.class);
-		storedState.airPlace = airplace.isEnabled();
+		AirPlaceFeature airPlace = ClientFeatureUtils.getFeature(AirPlaceFeature.class);
+		storedState.airPlace = airPlace.isEnabled();
 		storedState.airPlaceReach = AirPlaceFeature.reach;
 		storedState.airPlaceShowOutline = AirPlaceFeature.showOutline;
 
-		BigDustFeature bigdust = ClientFeatureUtils.getFeature(BigDustFeature.class);
-		storedState.bigDust = bigdust.isEnabled();
+		BigDustFeature bigDust = ClientFeatureUtils.getFeature(BigDustFeature.class);
+		storedState.bigDust = bigDust.isEnabled();
 		storedState.bigDustHeightInPixels = BigDustFeature.heightInPixels;
 
 		storedState.autoDust = AutoDustClient.isEnabled;
+		storedState.autoRotate = AutoRotateClient.isEnabled;
+		storedState.clickContainer = ClickContainerClient.isEnabled;
 
 		try {
 			Files.write(togglesFilePath, GSON.toJson(storedState).getBytes());
@@ -110,5 +113,7 @@ public class ClientFeatureUtils {
 		public int bigDustHeightInPixels;
 
 		public boolean autoDust;
+		public boolean autoRotate;
+		public boolean clickContainer;
 	}
 }

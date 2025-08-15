@@ -17,5 +17,7 @@ public class ClientCommands {
 		ClickContainerFeature.registerCommand();
 		BigDustFeature.registerCommand();
 		AutoDustClient.registerHandler();
+		AutoRotateClient.registerHandler();
+		ClickContainerClient.registerHandler();
 	}
 }
