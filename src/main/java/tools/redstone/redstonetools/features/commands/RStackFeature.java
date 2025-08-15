@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -22,6 +21,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.argument.DirectionArgumentType;
+import tools.redstone.redstonetools.utils.DirectionArgument;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.util.Objects;
@@ -32,33 +32,34 @@ import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
 public class RStackFeature extends AbstractFeature {
-	public static boolean update = true;
-
 	public static void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/rstack")
+						.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
 				.then(argument("count", IntegerArgumentType.integer())
+						.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
 						.then(argument("direction", DirectionArgumentType.direction())
+								.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
 								.then(argument("offset", IntegerArgumentType.integer())
-										.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
-										.then(argument("update", BoolArgumentType.bool())
-												.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))))))));
+										.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context)))))));
 	}
 
 	protected int pareseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		return execute(context);
+		int count;
+		DirectionArgument direction;
+		int offset;
+		try {
+			count = IntegerArgumentType.getInteger(context, "count");
+		} catch (Exception ignored) {count = 1;}
+		try {
+			direction = DirectionArgumentType.getDirection(context, "direction");
+		} catch (Exception ignored) {direction = DirectionArgument.ME;}
+		try {
+			offset = IntegerArgumentType.getInteger(context, "offset");
+		} catch (Exception ignored) {offset = 1;}
+		return execute(context, count, offset, direction);
 	}
 
-	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		int count = IntegerArgumentType.getInteger(context, "count");
-		var direction = DirectionArgumentType.getDirection(context, "direction");
-		int offset = IntegerArgumentType.getInteger(context, "offset");
-		boolean update;
-		try {
-			update = BoolArgumentType.getBool(context, "update");
-		} catch (Exception e) {
-			update = false;
-		}
-		RStackFeature.update = update;
+	protected int execute(CommandContext<ServerCommandSource> context, int count, int offset, DirectionArgument direction) throws CommandSyntaxException {
 		var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
 
 		var localSession = WorldEdit.getInstance()
