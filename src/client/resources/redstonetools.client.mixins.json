@@ -9,6 +9,7 @@
   "client": [
     "blocks.RedstoneHitboxMixin",
     "features.AirPlaceClientMixin",
+    "features.AutoRotateClientMixin",
     "features.CommandSourceMixin",
     "features.ItemBindItemStackMixin",
     "features.WorldRendererInvoker",
