@@ -4,9 +4,13 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,9 +25,11 @@ public class ClickContainerFeature extends ToggleableFeature {
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 			if (world == null) return ActionResult.PASS;
 			if (world.isClient) return ActionResult.PASS;
-			if (!FeatureUtils.getFeature(ClickContainerFeature.class).isEnabled((ServerPlayerEntity) player))
-				return ActionResult.PASS;
-			if (!player.getStackInHand(hand).isEmpty()) return ActionResult.PASS;
+			if (!FeatureUtils.getFeature(ClickContainerFeature.class).isEnabled((ServerPlayerEntity) player)) return ActionResult.PASS;
+
+			ItemStack stack = player.getStackInHand(hand);
+			if (stack.isIn(ItemTags.SWORDS) || stack.isIn(ItemTags.AXES) || stack.isIn(ItemTags.PICKAXES) || stack.isIn(ItemTags.SHOVELS) || stack.isIn(ItemTags.HOES)) return ActionResult.PASS;
+			if (stack.isEmpty()) return ActionResult.PASS;
 
 			BlockPos pos = hitResult.getBlockPos();
 			BlockState state = world.getBlockState(pos);
@@ -35,7 +41,7 @@ public class ClickContainerFeature extends ToggleableFeature {
 
 			if (state.isOf(Blocks.WATER_CAULDRON) || state.isOf(Blocks.LAVA_CAULDRON) || state.isOf(Blocks.POWDER_SNOW_CAULDRON)) {
 				if (state.contains(Properties.LEVEL_3)) {
-					handleIntLevelProperty(world, pos, state, Properties.LEVEL_3, Blocks.CAULDRON);
+					handleIntLevelProperty(world, pos, state, Properties.LEVEL_3, Blocks.CAULDRON, (ServerPlayerEntity) player);
 					return ActionResult.SUCCESS;
 				}
 			}
@@ -47,7 +53,7 @@ public class ClickContainerFeature extends ToggleableFeature {
 			}
 
 			if (state.isOf(Blocks.COMPOSTER)) {
-				handleIntLevelProperty(world, pos, state, Properties.LEVEL_8, Blocks.COMPOSTER);
+				handleIntLevelProperty(world, pos, state, Properties.LEVEL_8, Blocks.COMPOSTER, (ServerPlayerEntity) player);
 				return ActionResult.SUCCESS;
 			}
 
@@ -55,7 +61,7 @@ public class ClickContainerFeature extends ToggleableFeature {
 		});
 	}
 
-	public static void handleIntLevelProperty(World world, BlockPos pos, BlockState state, IntProperty prop, net.minecraft.block.Block resetBlock) {
+	public static void handleIntLevelProperty(World world, BlockPos pos, BlockState state, IntProperty prop, net.minecraft.block.Block resetBlock, ServerPlayerEntity player) {
 		if (prop == null) return;
 		Integer current;
 		try {
@@ -75,6 +81,8 @@ public class ClickContainerFeature extends ToggleableFeature {
 
 		int next = current + 1;
 		world.setBlockState(pos, state.with(prop, next), 3);
+
+		player.sendMessage(Text.of("§2[ClickContainers] §6Increased level!"));
 	}
 
 	public static void registerCommand() {
