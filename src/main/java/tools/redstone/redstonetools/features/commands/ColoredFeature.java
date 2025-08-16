@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
 public class ColoredFeature extends PickBlockFeature {
 	public static void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("colored")
+						.executes(context -> FeatureUtils.getFeature(ColoredFeature.class).execute(context))
 				.then(CommandManager.argument("blockType", ColoredBlockTypeArgumentType.coloredblocktype())
 						.executes(context -> FeatureUtils.getFeature(ColoredFeature.class).execute(context)))));
 	}
@@ -39,10 +40,11 @@ public class ColoredFeature extends PickBlockFeature {
 
 	@Override
 	protected int execute(CommandContext<ServerCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
-//        if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
-//            throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
-//        }
-		blockType = ColoredBlockTypeArgumentType.getColoredBlockType(context, "blockType");
+		try {
+			blockType = ColoredBlockTypeArgumentType.getColoredBlockType(context, "blockType");
+		} catch (Exception e) {
+			blockType = ColoredBlockType.WOOL;
+		}
 		return super.execute(context, blockInfo);
 	}
 }
