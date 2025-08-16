@@ -8,14 +8,19 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.property.Properties;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import tools.redstone.redstonetools.features.toggleable.AutoRotateClient;
 
 @Mixin(BlockItem.class)
 public abstract class AutoRotateClientMixin {
+	@Shadow
+	protected abstract boolean canPlace(ItemPlacementContext context, BlockState state);
+
 	@ModifyReturnValue(method = "getPlacementState", at = @At("RETURN"))
 	private BlockState changeRotation(BlockState original, @Local(argsOnly = true) ItemPlacementContext context) {
-		if (!AutoRotateClient.isEnabled) return original;
+		if (!AutoRotateClient.isEnabled
+				|| original == null) return original;
 		if (original.contains(Properties.FACING))
 			original = original.with(Properties.FACING, original.get(Properties.FACING).getOpposite());
 
@@ -25,6 +30,6 @@ public abstract class AutoRotateClientMixin {
 		if (original.contains(Properties.HOPPER_FACING))
 			original= original.with(Properties.HOPPER_FACING, original.get(Properties.HOPPER_FACING).getOpposite());
 
-		return original;
+		return this.canPlace(context, original) ? original : null;
 	}
 }
