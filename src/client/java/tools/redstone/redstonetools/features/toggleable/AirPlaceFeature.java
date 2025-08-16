@@ -49,7 +49,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 		try {
 			r = FloatArgumentType.getFloat(context, "reach");
 		} catch (IllegalArgumentException e) {
-			r = 5.0f;
+			r = 4.5f;
 			hasArguments = false;
 		}
 		try {

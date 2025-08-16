@@ -1,20 +1,15 @@
 package tools.redstone.redstonetools.features.toggleable;
 
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import tools.redstone.redstonetools.packets.SetFeatureEnabledS2CPayload;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import static net.minecraft.server.command.CommandManager.literal;
@@ -84,12 +79,11 @@ public class ClickContainerFeature extends ToggleableFeature {
 
 	public static void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("clickcontainers")
-				.executes(context -> FeatureUtils.getFeature(ClickContainerFeature.class).execute(context))));
+				.executes(context -> FeatureUtils.getFeature(ClickContainerFeature.class).toggle(context))));
 	}
 
-	private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		var payload = new SetFeatureEnabledS2CPayload("ClickContainer" + (this.isEnabled(context.getSource().getPlayerOrThrow()) ? "1" : "0"));
-		ServerPlayNetworking.send(context.getSource().getPlayerOrThrow(), payload);
-		return this.toggle(context);
+	@Override
+	public String getName() {
+		return "ClickContainers";
 	}
 }

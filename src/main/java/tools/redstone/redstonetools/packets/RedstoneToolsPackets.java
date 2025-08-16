@@ -13,9 +13,8 @@ public class RedstoneToolsPackets {
 		PayloadTypeRegistry.playC2S().register(SetFeatureEnabledC2SPayload.ID, SetFeatureEnabledC2SPayload.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(SetFeatureEnabledC2SPayload.ID, (payload, context) -> {
-			String str = payload.featureAndToggle();
-			String feature = str.substring(0, str.length() - 1);
-			boolean enabled = str.charAt(str.length() - 1) == '1';
+			String feature = payload.featureAndToggle().substring(0, payload.featureAndToggle().length() - 1);
+			boolean enabled = payload.featureAndToggle().endsWith("1");
 
 			switch (feature) {
 				case "AutoDust" ->

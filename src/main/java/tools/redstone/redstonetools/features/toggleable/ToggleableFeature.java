@@ -1,31 +1,35 @@
 package tools.redstone.redstonetools.features.toggleable;
 
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.entity.player.PlayerEntity;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.packets.SetFeatureEnabledS2CPayload;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public abstract class ToggleableFeature extends AbstractFeature {
-	private final Set<PlayerEntity> enabledFor = new HashSet<>(); // volatile for thread safety
+	private final Set<UUID> enabledFor = new HashSet<>(); // volatile for thread safety
 
-	public boolean isEnabled(PlayerEntity player) {
-		return enabledFor.contains(player);
+	public boolean isEnabled(ServerPlayerEntity player) {
+		return enabledFor.contains(player.getUuid());
 	}
 
-	public int toggle(CommandContext<ServerCommandSource> context) {
+	public int toggle(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 		return toggle(context.getSource());
 	}
 
-	public int toggle(ServerCommandSource source) {
-		PlayerEntity player = source.getPlayer();
-		return !enabledFor.contains(player) ? enable(source) : disable(source);
+	public int toggle(ServerCommandSource source) throws CommandSyntaxException {
+		ServerPlayerEntity player = source.getPlayerOrThrow();
+		return !enabledFor.contains(player.getUuid()) ? enable(source) : disable(source);
 	}
 
-	public void setEnabled(boolean status, PlayerEntity player) {
+	public void setEnabled(boolean status, ServerPlayerEntity player) {
 		if (status) {
 			enable(player);
 		} else {
@@ -33,27 +37,33 @@ public abstract class ToggleableFeature extends AbstractFeature {
 		}
 	}
 
-	public void enable(PlayerEntity player) {
-		enabledFor.add(player);
+	public void enable(ServerPlayerEntity player) {
+		enabledFor.add(player.getUuid());
+		var payload = new SetFeatureEnabledS2CPayload(this.getName() + "1");
+		ServerPlayNetworking.send(player, payload);
 		onEnable();
 	}
 
-	public int enable(ServerCommandSource source) {
-		enable(source.getPlayer());
-		source.sendMessage(Text.literal("Enabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))));
+	public int enable(ServerCommandSource source) throws CommandSyntaxException {
+		enable(source.getPlayerOrThrow());
+		source.sendMessage(Text.literal("Enabled " + this.getName()));
 		return 0;
 	}
 
-	public void disable(PlayerEntity player) {
-		enabledFor.remove(player);
+	public void disable(ServerPlayerEntity player) {
+		enabledFor.remove(player.getUuid());
+		var payload = new SetFeatureEnabledS2CPayload(this.getName() + "0");
+		ServerPlayNetworking.send(player, payload);
 		onDisable();
 	}
 
-	public int disable(ServerCommandSource source) {
-		disable(source.getPlayer());
-		source.sendMessage(Text.literal("Disabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))));
+	public int disable(ServerCommandSource source) throws CommandSyntaxException {
+		disable(source.getPlayerOrThrow());
+		source.sendMessage(Text.literal("Disabled " + this.getName()));
 		return 0;
 	}
+
+	public abstract String getName();
 
 	protected void onEnable() {
 	}

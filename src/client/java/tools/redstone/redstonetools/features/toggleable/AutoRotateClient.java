@@ -9,7 +9,7 @@ public class AutoRotateClient {
 
 	public static void registerHandler() {
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-			SetFeatureEnabledC2SPayload payload = new SetFeatureEnabledC2SPayload("AutoRotate" + (AutoRotateClient.isEnabled ? "0" : "1"));
+			SetFeatureEnabledC2SPayload payload = new SetFeatureEnabledC2SPayload("AutoRotate" + (AutoRotateClient.isEnabled ? "1" : "0"));
 			ClientPlayNetworking.send(payload);
 		});
 	}
