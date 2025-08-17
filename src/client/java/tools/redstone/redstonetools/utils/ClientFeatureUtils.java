@@ -66,7 +66,6 @@ public class ClientFeatureUtils {
 
 			AirPlaceFeature airplace = ClientFeatureUtils.getFeature(AirPlaceFeature.class);
 			airplace.setEnabled(storedState.airPlace);
-			AirPlaceFeature.reach = storedState.airPlaceReach;
 			AirPlaceFeature.showOutline = storedState.airPlaceShowOutline;
 
 			BigDustFeature bigdust = ClientFeatureUtils.getFeature(BigDustFeature.class);
@@ -86,7 +85,6 @@ public class ClientFeatureUtils {
 		var storedState = new StoredState();
 		AirPlaceFeature airPlace = ClientFeatureUtils.getFeature(AirPlaceFeature.class);
 		storedState.airPlace = airPlace.isEnabled();
-		storedState.airPlaceReach = AirPlaceFeature.reach;
 		storedState.airPlaceShowOutline = AirPlaceFeature.showOutline;
 
 		BigDustFeature bigDust = ClientFeatureUtils.getFeature(BigDustFeature.class);
@@ -106,7 +104,6 @@ public class ClientFeatureUtils {
 
 	private static class StoredState {
 		public boolean airPlace;
-		public float airPlaceReach;
 		public boolean airPlaceShowOutline;
 
 		public boolean bigDust;

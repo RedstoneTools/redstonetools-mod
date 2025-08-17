@@ -1,7 +1,6 @@
 package tools.redstone.redstonetools.features.toggleable;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -17,7 +16,6 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -35,10 +33,8 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 	public static void registerCommand() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal("airplace")
 				.executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))
-				.then(argument("reach", FloatArgumentType.floatArg(3.0f))
-						.executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))
-						.then(argument("showOutline", BoolArgumentType.bool())
-								.executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))))));
+					.then(argument("showOutline", BoolArgumentType.bool())
+						.executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context)))));
 	}
 
 	@Override
@@ -47,21 +43,12 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 		float r;
 		boolean o;
 		try {
-			r = FloatArgumentType.getFloat(context, "reach");
-		} catch (IllegalArgumentException e) {
-			r = 4.5f;
-			hasArguments = false;
-		}
-		try {
 			o = BoolArgumentType.getBool(context, "showOutline");
 		} catch (IllegalArgumentException e) {
+			hasArguments = false;
 			o = true;
 		}
 		AirPlaceFeature.showOutline = o;
-		AirPlaceFeature.reach = r;
-		if (r > context.getSource().getPlayer().getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).getBaseValue()) {
-			context.getSource().sendFeedback(Text.literal("Reach value is over your block interaction range. Consider using /reach-block to prevent issues!"));
-		}
 		if (hasArguments && isEnabled()) {
 			return 1;
 		}
@@ -89,6 +76,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 	}
 
 	public static BlockHitResult findAirPlaceBlockHit(PlayerEntity playerEntity) {
+		reach = (float) playerEntity.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).getBaseValue();
 		var hit = RaycastUtils.rayCastFromEye(playerEntity, reach);
 		return new BlockHitResult(hit.getPos(), hit.getSide(), hit.getBlockPos(), false);
 	}
