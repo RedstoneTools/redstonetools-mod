@@ -28,7 +28,7 @@ public class ClickContainerFeature extends ToggleableFeature {
 
 			ItemStack stack = player.getStackInHand(hand);
 			if (stack.isIn(ItemTags.SWORDS) || stack.isIn(ItemTags.AXES) || stack.isIn(ItemTags.PICKAXES) || stack.isIn(ItemTags.SHOVELS) || stack.isIn(ItemTags.HOES)) return ActionResult.PASS;
-			if !(stack.isEmpty()) return ActionResult.PASS;
+			if (!stack.isEmpty()) return ActionResult.PASS;
 
 			BlockPos pos = hitResult.getBlockPos();
 			BlockState state = world.getBlockState(pos);
