@@ -33,7 +33,7 @@ public class BinaryBlockReadFeature extends AbstractFeature {
 										.executes(bbr::parseArgs)
 										.then(argument("onBlock", BlockStateArgumentType.blockState(registryAccess))
 												.executes(bbr::parseArgs)
-												.then(argument("toBase", IntegerArgumentType.integer())
+												.then(argument("toBase", IntegerArgumentType.integer(2, 16))
 														.executes(bbr::parseArgs)
 														.then(argument("reverseBits", BoolArgumentType.bool())
 																.executes(bbr::parseArgs)
