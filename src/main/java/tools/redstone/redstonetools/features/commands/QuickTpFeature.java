@@ -50,7 +50,7 @@ public class QuickTpFeature extends AbstractFeature {
 			resetVelocity = true;
 		}
 		double finalDistance = distance;
-		boolean finalIncludeFluids = includeFluids;
+		boolean finalIncludeFluids = !includeFluids;
 		boolean finalResetVelocity = resetVelocity;
 		Thread thread = new Thread(() -> {
 			try {
