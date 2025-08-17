@@ -23,7 +23,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
 import tools.redstone.redstonetools.mixin.features.WorldRendererInvoker;
 import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 import tools.redstone.redstonetools.utils.ItemUtils;
@@ -74,9 +73,8 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 	public static boolean showOutline;
 
 	public static boolean canAirPlace(PlayerEntity player) {
-		if (player.getGameMode() != null)
-			if (player.getGameMode().getIndex() == GameMode.SPECTATOR.getIndex())
-				return false;
+		if (player.isSpectator())
+			return false;
 		ItemStack itemStack = ItemUtils.getMainItem(player);
 
 		// empty slot

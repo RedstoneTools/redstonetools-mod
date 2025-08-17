@@ -22,7 +22,7 @@ public abstract class ItemBindItemStackMixin {
 		if (stack.isEmpty()) stack = user.getOffHandStack();
 		if (!world.isClient()) return;
 		if (stack.contains(RedstoneTools.COMMAND_COMPONENT)) {
-			String command = stack.get(RedstoneTools.COMMAND_COMPONENT);
+			String command = stack.getComponents().get(RedstoneTools.COMMAND_COMPONENT);
 			MinecraftClient.getInstance().player.networkHandler.sendChatCommand(command);
 			cir.setReturnValue(ActionResult.PASS);
 		}

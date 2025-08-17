@@ -9,6 +9,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.BlockInfo;
 
@@ -22,7 +23,7 @@ public abstract class BlockRaycastFeature extends AbstractFeature {
 		double maxDistance = player.getAttributeValue(EntityAttributes.BLOCK_INTERACTION_RANGE);
 		BlockHitResult hitresult = (BlockHitResult) player.raycast(maxDistance, 1.0f, false);
 
-		if (hitresult == null) {
+		if (hitresult.getType() == HitResult.Type.MISS) {
 			if (requiresBlock()) {
 				throw new SimpleCommandExceptionType(Text.literal("You must be looking at a block to use this command.")).create();
 			} else {
