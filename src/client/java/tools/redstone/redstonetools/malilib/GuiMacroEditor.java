@@ -29,8 +29,8 @@ public class GuiMacroEditor extends GuiConfigsBase {
 		this.macro = macro;
 		this.title = macro.getName();
 		this.commands = new ConfigStringList("Commands", ImmutableList.of());
-		this.configEnabled = new ConfigBoolean("enabled", this.macro.isEnabled(), "Whether or not to enable the macro", "Enabled");
-		this.configName = new ConfigString("name", this.macro.getName(), "Name of the macro", "Name");
+		this.configEnabled = new ConfigBoolean("Enabled", this.macro.isEnabled(), "Whether or not to enable the macro");
+		this.configName = new ConfigString("Name", this.macro.getName(), "Name of the macro");
 		this.commands.setStrings(macro.actionsAsStringList);
 	}
 

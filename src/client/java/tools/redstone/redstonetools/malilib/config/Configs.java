@@ -17,15 +17,15 @@ public class Configs implements IConfigHandler {
 	private static final String CONFIG_FILE_NAME = RedstoneTools.MOD_ID + ".json";
 
 	public static class General {
-		public static final ConfigHotkey HOTKEY_OPEN_GUI = new ConfigHotkey("hotkeyOpenMenu", "V,C", "Hotkey to open this menu", "Hotkey open menu");
-		public static final ConfigBoolean BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS = new ConfigBoolean("improvedCommandSuggestions", true,
+		public static final ConfigHotkey HOTKEY_OPEN_GUI = new ConfigHotkey("Hotkey to open menu", "V,C");
+		public static final ConfigBoolean BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS = new ConfigBoolean("Improved command suggestions", true,
 				"""
 						Enables/disables improved suggestions when typing commands.
 						
 						When typing "/give @s redstblock" in chat, with this disabled it will give no suggestions (default behaviour, or "prefix matching"), but with
-						this enabled it will give "redstone_block" as a suggestion (so called "fuzzy matching").""", "Improved command suggestions");
-		public static final ConfigBooleanHotkeyed AIRPLACE_SHOW_OUTLINE = new ConfigBooleanHotkeyed("airplaceShowOutline", true, "", "If enabled, will show a block outline for the block your holding", "/airplace showOutline");
-		public static final ConfigInteger BIGDUST_HEIGHT_IN_PIXELS = new ConfigInteger("bigdustHeightInPixels", 3, 0, 16, "How tall the redstone hitbox should be", "/bigdust heightInPixels");
+						this enabled it will give "redstone_block" as a suggestion (so called "fuzzy matching").""");
+		public static final ConfigBooleanHotkeyed AIRPLACE_SHOW_OUTLINE = new ConfigBooleanHotkeyed("/airplace showOutline", true, "", "If enabled, will show a block outline for the block your holding");
+		public static final ConfigInteger BIGDUST_HEIGHT_IN_PIXELS = new ConfigInteger("/bigdust heightInPixels", 3, 0, 16, "How tall the redstone hitbox should be");
 		public static final List<? extends IConfigBase> OPTIONS = List.of(
 				HOTKEY_OPEN_GUI,
 				BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS,
