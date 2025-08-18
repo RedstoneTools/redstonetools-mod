@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -27,8 +28,8 @@ public class ClickContainerFeature extends ToggleableFeature {
 			if (!FeatureUtils.getFeature(ClickContainerFeature.class).isEnabled((ServerPlayerEntity) player)) return ActionResult.PASS;
 
 			ItemStack stack = player.getStackInHand(hand);
-			if (stack.isIn(ItemTags.SWORDS) || stack.isIn(ItemTags.AXES) || stack.isIn(ItemTags.PICKAXES) || stack.isIn(ItemTags.SHOVELS) || stack.isIn(ItemTags.HOES)) return ActionResult.PASS;
-			if (!stack.isEmpty()) return ActionResult.PASS;
+			if (!stack.isEmpty() ||
+			stack.getItem() instanceof BlockItem) return ActionResult.PASS;
 
 			BlockPos pos = hitResult.getBlockPos();
 			BlockState state = world.getBlockState(pos);
