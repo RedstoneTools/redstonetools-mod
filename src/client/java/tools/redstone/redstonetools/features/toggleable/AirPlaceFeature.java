@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.mixin.features.WorldRendererInvoker;
+import tools.redstone.redstonetools.utils.BlockUtils;
 import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 import tools.redstone.redstonetools.utils.ItemUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
@@ -112,6 +113,9 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			BlockState blockState = ItemUtils.getUseState(client.player,
 					ItemUtils.getMainItem(client.player),
 					reach);
+			if (AutoRotateClient.isEnabled) {
+				blockState = BlockUtils.rotate(blockState);
+			}
 			if (blockState == null)
 				return true;
 
