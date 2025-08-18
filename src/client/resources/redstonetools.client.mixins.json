@@ -10,7 +10,6 @@
     "blocks.RedstoneHitboxMixin",
     "features.AirPlaceClientMixin",
     "features.AutoRotateClientMixin",
-    "features.ClientPlayNetworkHandlerMixin",
     "features.CommandSourceMixin",
     "features.ItemBindItemStackMixin",
     "features.WorldRendererInvoker",

@@ -23,17 +23,21 @@ public class BigDustFeature extends ClientToggleableFeature {
 	@Override
 
 	public int toggle(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		boolean hasArguments = true;
+		boolean hasDifferentArguments = true;
+		int o;
 		try {
-			heightInPixels = IntegerArgumentType.getInteger(context, "heightInPixels");
+			o = IntegerArgumentType.getInteger(context, "heightInPixels");
+			if (o == BigDustFeature.heightInPixels) {
+				return super.toggle(context);
+			}
 		} catch (Exception e) {
-			heightInPixels = 3;
-			hasArguments = false;
+			o = 3;
+			hasDifferentArguments = false;
 		}
-		if (hasArguments && isEnabled()) {
+		heightInPixels = o;
+		if (hasDifferentArguments && isEnabled()) {
 			return 1;
 		}
-		super.toggle(context);
-		return 1;
+		return super.toggle(context);
 	}
 }

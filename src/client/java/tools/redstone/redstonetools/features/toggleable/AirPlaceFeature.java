@@ -21,7 +21,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import tools.redstone.redstonetools.malilib.config.Configs;
 import tools.redstone.redstonetools.mixin.features.WorldRendererInvoker;
 import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 import tools.redstone.redstonetools.utils.ItemUtils;
@@ -40,20 +39,22 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 
 	@Override
 	public int toggle(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		boolean hasArguments = true;
-		float r;
+		boolean hasDifferentArguments = true;
 		boolean o;
 		try {
 			o = BoolArgumentType.getBool(context, "showOutline");
+			if (o == AirPlaceFeature.showOutline) {
+				return super.toggle(context.getSource());
+			}
 		} catch (IllegalArgumentException e) {
-			hasArguments = false;
+			hasDifferentArguments = false;
 			o = true;
 		}
 		AirPlaceFeature.showOutline = o;
-		if (hasArguments && isEnabled()) {
+		if (hasDifferentArguments && isEnabled()) {
 			return 1;
 		}
-		return toggle(context.getSource());
+		return super.toggle(context.getSource());
 	}
 
 
