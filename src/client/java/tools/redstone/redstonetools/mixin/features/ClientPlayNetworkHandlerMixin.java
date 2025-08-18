@@ -14,17 +14,23 @@ import java.util.Collections;
 public class ClientPlayNetworkHandlerMixin {
 	@ModifyVariable(method = "sendChatCommand", at = @At("HEAD"), argsOnly = true)
 	private String addArguments(String value) {
+		if (!Configs.General.ENABLE_PRESET_DEFAULTS.getBooleanValue()) return value;
 		System.out.println(value);
 		ArrayList<String> spaces = new ArrayList<>();
 		Collections.addAll(spaces, value.split(" "));
 		switch (spaces.getFirst()) {
-			case "airplace":
-				System.out.println("airplace");
+			case "g":
 				try {
-					spaces.get(1);
+					try {
+						spaces.get(1);
+					}  catch (IndexOutOfBoundsException ignored) {
+						return value;
+					}
+					spaces.get(2);
 				} catch (IndexOutOfBoundsException ignored) {
-					spaces.add(1, String.valueOf(Configs.General.PRESET_AIRPLACE_SHOW_OUTLINE.getBooleanValue()));
+					spaces.add(String.valueOf(Configs.General.PRESET_GIVEME_COUNT.getIntegerValue()));
 				}
+				break;
 			case "ssb":
 				// uhh do this one later
 				throw new NotImplementedException();
@@ -45,6 +51,7 @@ public class ClientPlayNetworkHandlerMixin {
 				} catch (IndexOutOfBoundsException ignored) {
 					spaces.add( String.valueOf(Configs.General.PRESET_QUICKTP_RESET_VELOCITY.getBooleanValue()));
 				}
+				break;
 			case "/read":
 				System.out.println("/read");
 				try {
@@ -68,6 +75,7 @@ public class ClientPlayNetworkHandlerMixin {
 				} catch (IndexOutOfBoundsException ignored) {
 					spaces.add( String.valueOf(Configs.General.PRESET_BINARYBLOCKREAD_REVERSEBITS.getBooleanValue()));
 				}
+				break;
 			case "/rstack":
 				System.out.println("/rstack");
 				try {
@@ -80,6 +88,7 @@ public class ClientPlayNetworkHandlerMixin {
 				} catch (IndexOutOfBoundsException ignored) {
 					spaces.add(String.valueOf(Configs.General.PRESET_RSTACK_OFFSET.getStringValue()));
 				}
+				break;
 		}
 		StringBuilder valueBuilder = new StringBuilder();
 		for (String str : spaces) valueBuilder.append(str).append(" ");

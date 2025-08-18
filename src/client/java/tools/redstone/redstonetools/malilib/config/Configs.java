@@ -27,6 +27,7 @@ public class Configs implements IConfigHandler {
 						
 						When typing "/give @s redstblock" in chat, with this disabled it will give no suggestions (default behaviour, or "prefix matching"), but with
 						this enabled it will give "redstone_block" as a suggestion (so called "fuzzy matching").""");
+		public static final ConfigBoolean ENABLE_PRESET_DEFAULTS =              new ConfigBoolean("enablePresetDefaults", false);
 		public static final ConfigBoolean PRESET_AIRPLACE_SHOW_OUTLINE =        new ConfigBoolean("default/airplaceShowOutline", true);
 		public static final ConfigInteger PRESET_BIGDUST_HEIGHT_IN_PIXELS =     new ConfigInteger("default/bigdustHeightInPixels", 3);
 		public static final ConfigInteger PRESET_SSB_SIGNAL_STRENGTH =          new ConfigInteger("default/ssbSignalStrength", 15);
@@ -50,6 +51,7 @@ public class Configs implements IConfigHandler {
 		public static final List<? extends IConfigBase> OPTIONS = List.of(
 				HOTKEY_OPEN_GUI,
 				BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS,
+				ENABLE_PRESET_DEFAULTS,
 				PRESET_AIRPLACE_SHOW_OUTLINE,
 				PRESET_BIGDUST_HEIGHT_IN_PIXELS,
 				PRESET_SSB_SIGNAL_STRENGTH,
