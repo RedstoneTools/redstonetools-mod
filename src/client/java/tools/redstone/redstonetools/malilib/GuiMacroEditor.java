@@ -28,7 +28,7 @@ public class GuiMacroEditor extends GuiConfigsBase {
 		this.parent = parent;
 		this.macro = macro;
 		this.title = macro.getName();
-		this.commands = new ConfigStringList("Commands", ImmutableList.of());
+		this.commands = new ConfigStringList("Commands", ImmutableList.of(), "List of commands (prefixed with \"/\") or messages that should be sent in chat upon running the macro");
 		this.configEnabled = new ConfigBoolean("Enabled", this.macro.isEnabled(), "Whether or not to enable the macro");
 		this.configName = new ConfigString("Name", this.macro.getName(), "Name of the macro");
 		this.commands.setStrings(macro.actionsAsStringList);

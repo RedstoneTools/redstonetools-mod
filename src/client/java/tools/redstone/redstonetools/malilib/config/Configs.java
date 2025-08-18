@@ -17,7 +17,7 @@ public class Configs implements IConfigHandler {
 	private static final String CONFIG_FILE_NAME = RedstoneTools.MOD_ID + ".json";
 
 	public static class General {
-		public static final ConfigHotkey HOTKEY_OPEN_GUI = new ConfigHotkey("Hotkey to open menu", "V,C");
+		public static final ConfigHotkey HOTKEY_OPEN_GUI = new ConfigHotkey("Hotkey to open menu", "V,C", "Hotkey to open menu");
 		public static final ConfigBoolean BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS = new ConfigBoolean("Improved command suggestions", true,
 				"""
 						Enables/disables improved suggestions when typing commands.
