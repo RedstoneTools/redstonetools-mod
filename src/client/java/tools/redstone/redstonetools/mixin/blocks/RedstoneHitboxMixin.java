@@ -13,24 +13,26 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
+import tools.redstone.redstonetools.malilib.config.Configs;
 import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneHitboxMixin {
 	// use array for better performance
 	@Unique
-	private static final VoxelShape[] SHAPES = new VoxelShape[16];
+	private static final VoxelShape[] SHAPES = new VoxelShape[17];
 
 	@Inject(method = "getOutlineShape", at = @At("HEAD"), cancellable = true)
 	public void getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
 		if (ClientFeatureUtils.getFeature(BigDustFeature.class).isEnabled()) {
-			cir.setReturnValue(SHAPES[BigDustFeature.heightInPixels - 1]);
+			cir.setReturnValue(SHAPES[Configs.General.BIGDUST_HEIGHT_IN_PIXELS.getIntegerValue()]);
 		}
 	}
 
 	static {
+		SHAPES[0] = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 0.01, 16.0);
 		for (int i = 1; i <= 16; i++) {
-			SHAPES[i - 1] = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, i, 16.0);
+			SHAPES[i] = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, i, 16.0);
 		}
 	}
 }

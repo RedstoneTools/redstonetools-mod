@@ -66,11 +66,9 @@ public class ClientFeatureUtils {
 
 			AirPlaceFeature airplace = ClientFeatureUtils.getFeature(AirPlaceFeature.class);
 			airplace.setEnabled(storedState.airPlace);
-			AirPlaceFeature.showOutline = storedState.airPlaceShowOutline;
 
 			BigDustFeature bigdust = ClientFeatureUtils.getFeature(BigDustFeature.class);
 			bigdust.setEnabled(storedState.bigDust);
-			BigDustFeature.heightInPixels = storedState.bigDustHeightInPixels;
 
 			AutoDustClient.isEnabled = storedState.autoDust;
 			AutoRotateClient.isEnabled = storedState.autoRotate;
@@ -85,11 +83,9 @@ public class ClientFeatureUtils {
 		var storedState = new StoredState();
 		AirPlaceFeature airPlace = ClientFeatureUtils.getFeature(AirPlaceFeature.class);
 		storedState.airPlace = airPlace.isEnabled();
-		storedState.airPlaceShowOutline = AirPlaceFeature.showOutline;
 
 		BigDustFeature bigDust = ClientFeatureUtils.getFeature(BigDustFeature.class);
 		storedState.bigDust = bigDust.isEnabled();
-		storedState.bigDustHeightInPixels = BigDustFeature.heightInPixels;
 
 		storedState.autoDust = AutoDustClient.isEnabled;
 		storedState.autoRotate = AutoRotateClient.isEnabled;
@@ -104,10 +100,8 @@ public class ClientFeatureUtils {
 
 	private static class StoredState {
 		public boolean airPlace;
-		public boolean airPlaceShowOutline;
 
 		public boolean bigDust;
-		public int bigDustHeightInPixels;
 
 		public boolean autoDust;
 		public boolean autoRotate;

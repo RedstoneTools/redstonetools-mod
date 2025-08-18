@@ -1,10 +1,6 @@
 package tools.redstone.redstonetools.features.toggleable;
 
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -22,46 +18,21 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import tools.redstone.redstonetools.RedstoneTools;
+import tools.redstone.redstonetools.malilib.config.Configs;
 import tools.redstone.redstonetools.mixin.features.WorldRendererInvoker;
 import tools.redstone.redstonetools.utils.BlockUtils;
 import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 import tools.redstone.redstonetools.utils.ItemUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class AirPlaceFeature extends ClientToggleableFeature {
 	public static void registerCommand() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal("airplace")
-				.executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))
-					.then(argument("showOutline", BoolArgumentType.bool())
-						.executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context)))));
+						.executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))));
 	}
-
-	@Override
-	public int toggle(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		boolean hasDifferentArguments = true;
-		boolean o;
-		try {
-			o = BoolArgumentType.getBool(context, "showOutline");
-			if (o == AirPlaceFeature.showOutline) {
-				return super.toggle(context.getSource());
-			}
-		} catch (IllegalArgumentException e) {
-			hasDifferentArguments = false;
-			o = true;
-		}
-		AirPlaceFeature.showOutline = o;
-		if (hasDifferentArguments && isEnabled()) {
-			return 1;
-		}
-		return super.toggle(context.getSource());
-	}
-
-
 	public static float reach;
-	public static boolean showOutline;
 
 	public static boolean canAirPlace(PlayerEntity player) {
 		if (player.isSpectator())
@@ -93,7 +64,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, blockOutlineContext) -> {
 			if (!isEnabled())
 				return true;
-			if (!showOutline)
+			if (!Configs.General.AIRPLACE_SHOW_OUTLINE.getBooleanValue())
 				return true;
 
 			MinecraftClient client = MinecraftClient.getInstance();
