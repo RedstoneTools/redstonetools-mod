@@ -55,7 +55,7 @@ public class RStackFeature extends AbstractFeature {
 		} catch (Exception ignored) {direction = DirectionArgument.ME;}
 		try {
 			offset = IntegerArgumentType.getInteger(context, "offset");
-		} catch (Exception ignored) {offset = 1;}
+		} catch (Exception ignored) {offset = 2;}
 		return execute(context, count, offset, direction);
 	}
 
