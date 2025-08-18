@@ -81,6 +81,9 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			BlockHitResult hitResult = findAirPlaceBlockHit(client.player);
 			BlockPos blockPos = hitResult.getBlockPos();
 
+			if (blockPos.getY() > 319 || blockPos.getY() < -64)
+				return true;
+
 			BlockState blockState = ItemUtils.getUseState(client.player,
 					ItemUtils.getMainItem(client.player),
 					reach);
