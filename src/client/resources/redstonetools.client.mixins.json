@@ -14,7 +14,6 @@
     "features.ItemBindItemStackMixin",
     "features.WorldRendererInvoker",
     "macros.AddMacroButtonMixin",
-    "macros.InitializeMacroManagerMixin",
-    "update.CheckUpdateMixin"
+    "macros.InitializeMacroManagerMixin"
   ]
 }

@@ -18,15 +18,7 @@ import tools.redstone.redstonetools.packets.RedstoneToolsPackets;
 
 public class RedstoneTools implements ModInitializer {
 	public static final String MOD_ID = "redstonetools";
-	/*===================================================================
-	/  VERSIONING RULES											  		/
-	/-------------------------------------------------------------------/
-	/  Format: <MCver1>[-<MCver2>]-<ModVer>						  		/
-	/	• ModVer: 3 single digits, separated by dots (e.g., 3.0.0) 		/
-	/	• Multi-version: older MC version first (e.g., 1.18.2-1.21.4)   /
-	/	• Example: MC 1.21.1 → 1.21.3, Mod v4.3.2 → v1.21-1.21.3-4.3.2  /
-	===================================================================*/
-	public static final String MOD_VERSION = "v1.21.4-1.21.8-3.0.0";
+	public static final String MOD_VERSION = "v3.0.0";
 	public static final String MOD_NAME = "Redstone tools";
 	public static final Logger LOGGER = LoggerFactory.getLogger(RedstoneTools.MOD_ID);
 
@@ -38,9 +30,6 @@ public class RedstoneTools implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Thread t = new Thread(CheckUpdates::checkUpdates);
-		t.start();
-
 		RedstoneToolsPackets.registerPackets();
 		RedstoneToolsGameRules.register();
 		Commands.registerCommands();
