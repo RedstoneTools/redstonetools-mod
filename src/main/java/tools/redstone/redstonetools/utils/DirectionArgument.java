@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.utils;
 
+import java.util.Locale;
+
 public enum DirectionArgument {
 	ME,
 	FORWARD,
@@ -19,6 +21,6 @@ public enum DirectionArgument {
 
 	@Override
 	public String toString() {
-		return this.name().toLowerCase();
+		return this.name().toLowerCase(Locale.ROOT);
 	}
 }

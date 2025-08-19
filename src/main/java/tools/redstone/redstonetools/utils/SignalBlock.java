@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 
+import java.util.Locale;
+
 public enum SignalBlock {
 	// cba to do composters.
 	BARREL(Blocks.BARREL, SignalBlockSupplier.container(27, Blocks.BARREL.asItem())),
@@ -42,7 +44,7 @@ public enum SignalBlock {
 
 	@Override
 	public String toString() {
-		return this.name().toLowerCase();
+		return this.name().toLowerCase(Locale.ROOT);
 	}
 
 }
