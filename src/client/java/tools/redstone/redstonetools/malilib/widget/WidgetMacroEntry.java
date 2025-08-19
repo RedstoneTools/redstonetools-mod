@@ -23,7 +23,7 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	}
 
 	public WidgetMacroEntry(int x, int y, int width, int height, boolean isOdd,
-	                        MacroBase macro, int listIndex, WidgetListMacros parent) {
+							MacroBase macro, int listIndex, WidgetListMacros parent) {
 		super(x, y, width, height, macro, listIndex);
 		this.macro = macro;
 		this.isOdd = isOdd;
