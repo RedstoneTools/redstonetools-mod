@@ -24,7 +24,7 @@ public class Configs implements IConfigHandler {
 						
 						When typing "/give @s redstblock" in chat, with this disabled it will give no suggestions (default behaviour, or "prefix matching"), but with
 						this enabled it will give "redstone_block" as a suggestion (so called "fuzzy matching").""");
-		public static final ConfigBoolean AIRPLACE_SHOW_OUTLINE = new ConfigBoolean("Airplace showOutline", true, "", "If enabled, will show a block outline for the block your holding");
+		public static final ConfigBoolean AIRPLACE_SHOW_OUTLINE = new ConfigBoolean("Airplace showOutline", true, "If enabled, will show a block outline for the block your holding");
 		public static final ConfigInteger BIGDUST_HEIGHT_IN_PIXELS = new ConfigInteger("Bigdust heightInPixels", 3, 0, 16, "How tall the redstone hitbox should be");
 		public static final List<? extends IConfigBase> OPTIONS = List.of(
 				HOTKEY_OPEN_GUI,
