@@ -13,6 +13,7 @@ import tools.redstone.redstonetools.malilib.widget.WidgetListMacros;
 import tools.redstone.redstonetools.malilib.widget.WidgetMacroEntry;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, WidgetListMacros>
 		implements ISelectionListener<MacroBase> {
@@ -77,7 +78,12 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 		this.reCreateListWidget();
 
 		this.addButton(addMacroButton, (btn, mbtn) -> {
-			MacroManager.addMacro(new MacroBase("macro " + MacroManager.getAllMacros().size(), "", new ArrayList<>()));
+			String string = "macro ";
+			string += MacroManager.getAllMacros().size();
+			if (MacroManager.nameExists(string, null)) {
+				string += " " + UUID.randomUUID();
+			}
+			MacroManager.addMacro(new MacroBase(string, "", new ArrayList<>()));
 			MacroManager.saveChanges();
 			this.getListWidget().refreshEntries();
 		});
