@@ -25,7 +25,7 @@ public class RedstoneHitboxMixin {
 	@Inject(method = "getOutlineShape", at = @At("HEAD"), cancellable = true)
 	public void getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
 		if (ClientFeatureUtils.getFeature(BigDustFeature.class).isEnabled()) {
-			cir.setReturnValue(SHAPES[Configs.General.BIGDUST_HEIGHT_IN_PIXELS.getIntegerValue()]);
+			cir.setReturnValue(SHAPES[Configs.General.getHeightInPixels()]);
 		}
 	}
 

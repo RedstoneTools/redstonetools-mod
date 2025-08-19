@@ -32,6 +32,15 @@ public class Configs implements IConfigHandler {
 				AIRPLACE_SHOW_OUTLINE,
 				BIGDUST_HEIGHT_IN_PIXELS
 		);
+
+		public static int getHeightInPixels() {
+			try {
+				return BIGDUST_HEIGHT_IN_PIXELS.getIntegerValue();
+			} catch (Exception ignored) {
+				return 1;
+			}
+		}
+
 		static {
 			AIRPLACE_SHOW_OUTLINE.getKeybind().setCallback((t, g) -> {
 				AIRPLACE_SHOW_OUTLINE.setBooleanValue(!AIRPLACE_SHOW_OUTLINE.getBooleanValue());
