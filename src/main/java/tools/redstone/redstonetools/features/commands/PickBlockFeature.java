@@ -1,45 +1,64 @@
 package tools.redstone.redstonetools.features.commands;
 
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.BlockInfo;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.datafixers.util.Either;
-import net.minecraft.client.MinecraftClient;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
+import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
+import tools.redstone.redstonetools.utils.BlockInfo;
 
 import javax.annotation.Nullable;
 
 public abstract class PickBlockFeature extends BlockRaycastFeature {
-    @Override
-    protected final Feedback execute(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null) {
-            return Feedback.error("Failed to get player.");
-        }
+	protected int execute(CommandContext<ServerCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException {
+		ServerPlayerEntity player = context.getSource().getPlayer();
+		if (player == null) {
+			throw new SimpleCommandExceptionType(Text.literal("Failed to get player.")).create();
+		}
 
-        var stackOrFeedback = getItemStack(source, blockInfo);
-        if (stackOrFeedback.right().isPresent()) {
-            return stackOrFeedback.right().get();
-        }
+		var stack = getItemStack(context, blockInfo);
 
-        assert stackOrFeedback.left().isPresent();
-        var stack = stackOrFeedback.left().get();
+		PlayerInventory playerInventory = player.getInventory();
+		addPickBlock(playerInventory, stack);
 
-        PlayerInventory playerInventory = client.player.getInventory();
-        playerInventory.addPickBlock(stack);
+		int i = playerInventory.getSlotWithStack(stack);
+		if (i != -1) {
+			if (PlayerInventory.isValidHotbarIndex(i)) {
+				playerInventory.setSelectedSlot(i);
+			} else {
+				playerInventory.swapSlotWithHotbar(i);
+			}
+		} else if (player.isInCreativeMode()) {
+			playerInventory.swapStackWithHotbar(stack);
+		}
+		context.getSource().getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(((PlayerInventoryAccessor) playerInventory).getSelectedSlot()));
+		player.playerScreenHandler.sendContentUpdates();
+		return 1;
+	}
 
-        if (client.interactionManager == null) {
-            throw new CommandSyntaxException(null, Text.of("Failed to get interaction manager."));
-        }
+	// reimplementation from 1.18.2
+	public void addPickBlock(PlayerInventory pi, ItemStack stack) {
+		int i = pi.getSlotWithStack(stack);
+		if (PlayerInventory.isValidHotbarIndex(i)) {
+			pi.setSelectedSlot(i);
+			return;
+		}
+		if (i == -1) {
+			int j;
+			pi.setSelectedSlot(pi.getSwappableHotbarSlot());
+			if (!((PlayerInventoryAccessor) pi).getMain().get(((PlayerInventoryAccessor) pi).getSelectedSlot()).isEmpty() && (j = pi.getEmptySlot()) != -1) {
+				((PlayerInventoryAccessor) pi).getMain().set(j, ((PlayerInventoryAccessor) pi).getMain().get(((PlayerInventoryAccessor) pi).getSelectedSlot()));
+			}
+			((PlayerInventoryAccessor) pi).getMain().set(((PlayerInventoryAccessor) pi).getSelectedSlot(), stack);
+		} else {
+			pi.swapSlotWithHotbar(i);
+		}
+	}
 
-        client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.selectedSlot);
-
-        return Feedback.none();
-    }
-
-    protected abstract Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
+	protected abstract ItemStack getItemStack(CommandContext<ServerCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
 }

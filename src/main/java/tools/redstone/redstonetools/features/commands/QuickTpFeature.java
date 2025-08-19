@@ -1,60 +1,119 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.google.auto.service.AutoService;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.PositionUtils;
-import tools.redstone.redstonetools.utils.RaycastUtils;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
-import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
-import static tools.redstone.redstonetools.features.arguments.serializers.FloatSerializer.floatArg;
+import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.PositionUtils;
+import tools.redstone.redstonetools.utils.RaycastUtils;
 
-@AutoService(AbstractFeature.class)
-@Feature(name = "Quick TP", description = "Teleports you in the direction you are looking.", command = "quicktp")
-public class QuickTpFeature extends CommandFeature {
-    public static final Argument<Float> distance = Argument
-            .ofType(floatArg(1.0f))
-            .withDefault(50.0f);
-    public static final Argument<Boolean> includeFluids = Argument
-            .ofType(bool())
-            .withDefault(false);
+import java.util.ArrayList;
+import java.util.List;
 
-    @Override
-    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
-        var player = source.getPlayer();
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
-        var targetPosition = getTargetPosition(player);
+public class QuickTpFeature extends AbstractFeature {
+	public static void registerCommand() {
+		var qtp = FeatureUtils.getFeature(QuickTpFeature.class);
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("quicktp")
+				.executes(qtp::parseArguments)
+				.then(argument("distance", DoubleArgumentType.doubleArg())
+						.executes(qtp::parseArguments)
+						.then(argument("throughFluids", BoolArgumentType.bool())
+								.executes(qtp::parseArguments)
+								.then(argument("resetVelocity", BoolArgumentType.bool())
+										.executes(qtp::parseArguments))))));
+	}
 
-        player.teleport(targetPosition.x, targetPosition.y, targetPosition.z);
+	protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+		var player = context.getSource().getPlayer();
 
-        return Feedback.none();
-    }
+		if (quicktpingForPlayer.contains(player)) throw new SimpleCommandExceptionType(Text.literal("Already doing a quicktp!")).create();
+		quicktpingForPlayer.add(player);
+		double distance;
+		boolean includeFluids;
+		boolean resetVelocity;
+		try {
+			distance = DoubleArgumentType.getDouble(context, "distance");
+		} catch (Exception ignored) {
+			distance = 50.0;
+		}
+		try {
+			includeFluids = BoolArgumentType.getBool(context, "throughFluids");
+		} catch (Exception ignored) {
+			includeFluids = false;
+		}
+		try {
+			resetVelocity = BoolArgumentType.getBool(context, "resetVelocity");
+		} catch (Exception ignored) {
+			resetVelocity = true;
+		}
+		double finalDistance = distance;
+		boolean finalIncludeFluids = !includeFluids;
+		boolean finalResetVelocity = resetVelocity;
+		Thread thread = new Thread(() -> {
+			try {
+				execute(context, finalDistance, finalIncludeFluids, finalResetVelocity);
+			} catch (CommandSyntaxException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		thread.start();
+		Thread t2 = new Thread(() -> {
+			try {
+				thread.join(10000);
+			} catch (InterruptedException ignored) {
+			}
+			if (thread.isAlive()) {
+				player.sendMessage(Text.literal("Quicktp still running after 10 seconds. Canceling quicktp!"));
+				quicktpingForPlayer.remove(player);
+			}
+			thread.interrupt();
+		});
+		t2.start();
+		return 1;
+	}
 
-    private Vec3d getTargetPosition(PlayerEntity player) {
-        // 8 chunks default, 16 blocks per chunk
-        var renderDistanceBlocks = PlayerEntity.getRenderDistanceMultiplier() * 8 * 16;
-        var hit = player.raycast(Math.min(distance.getValue(), renderDistanceBlocks), 0, includeFluids.getValue());
+	public static List<PlayerEntity> quicktpingForPlayer = new ArrayList<>();
 
-        return clampHitPosition(hit).subtract(0, 1.12, 0);
-    }
+	protected static void execute(CommandContext<ServerCommandSource> context, double distance, boolean includeFluids, boolean resetVelocity) throws CommandSyntaxException {
+		var player = context.getSource().getPlayer();
+		assert player != null;
+		try {
+			var hit = player.raycast(distance, 0, includeFluids);
 
-    private Vec3d clampHitPosition(HitResult hit) {
-        if (hit.getType() != HitResult.Type.BLOCK) {
-            return hit.getPos().subtract(0, 0.5, 0);
-        }
+			var targetPosition = clampHitPosition(hit);
 
-        var blockHit = (BlockHitResult) hit;
+			player.requestTeleport(targetPosition.x, targetPosition.y, targetPosition.z);
+			if (resetVelocity) player.setVelocity(Vec3d.ZERO);
+			player.fallDistance = 0;
+			player.velocityModified = true; // guh
+		} finally {
+			quicktpingForPlayer.remove(player);
+		}
+	}
 
-        var neighbor = RaycastUtils.getBlockHitNeighbor(blockHit);
-        var neighborPos = neighbor.getBlockPos();
+	private static Vec3d clampHitPosition(HitResult hit) {
+		if (hit.getType() != HitResult.Type.BLOCK) {
+			return hit.getPos().subtract(0, 0.5, 0);
+		}
 
-        return PositionUtils.getBottomPositionOfBlock(neighborPos);
-    }
+		var blockHit = (BlockHitResult) hit;
+
+		var neighbor = RaycastUtils.getBlockHitNeighbor(blockHit);
+		var neighborPos = neighbor.getBlockPos();
+
+		return PositionUtils.getBottomPositionOfBlock(neighborPos);
+	}
 }

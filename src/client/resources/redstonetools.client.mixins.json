@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "tools.redstone.redstonetools.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "blocks.RedstoneHitboxMixin",
+    "features.AirPlaceClientMixin",
+    "features.AutoRotateClientMixin",
+    "features.CommandSourceMixin",
+    "features.ItemBindItemStackMixin",
+    "features.WorldRendererInvoker",
+    "macros.AddMacroButtonMixin",
+    "macros.InitializeMacroManagerMixin",
+    "update.CheckUpdateMixin"
+  ]
+}
