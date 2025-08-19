@@ -7,10 +7,14 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import tools.redstone.redstonetools.RedstoneTools;
 
-public record SetFeatureEnabledC2SPayload(String featureAndToggle) implements CustomPayload {
+public record SetFeatureEnabledPayload(String feature, boolean enabled) implements CustomPayload {
 	public static final Identifier SET_ENABLED_PAYLOAD_ID = Identifier.of(RedstoneTools.MOD_ID, "set_enabled");
-	public static final CustomPayload.Id<SetFeatureEnabledC2SPayload> ID = new CustomPayload.Id<>(SET_ENABLED_PAYLOAD_ID);
-	public static final PacketCodec<RegistryByteBuf, SetFeatureEnabledC2SPayload> CODEC = PacketCodec.tuple(PacketCodecs.STRING, SetFeatureEnabledC2SPayload::featureAndToggle, SetFeatureEnabledC2SPayload::new);
+	public static final CustomPayload.Id<SetFeatureEnabledPayload> ID = new CustomPayload.Id<>(SET_ENABLED_PAYLOAD_ID);
+	public static final PacketCodec<RegistryByteBuf, SetFeatureEnabledPayload> CODEC = PacketCodec.tuple(
+		PacketCodecs.STRING, SetFeatureEnabledPayload::feature,
+		PacketCodecs.BOOLEAN, SetFeatureEnabledPayload::enabled,
+		SetFeatureEnabledPayload::new
+	);
 
 	@Override
 	public CustomPayload.Id<? extends CustomPayload> getId() {

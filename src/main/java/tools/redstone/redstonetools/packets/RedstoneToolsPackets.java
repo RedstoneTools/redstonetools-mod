@@ -9,12 +9,12 @@ import tools.redstone.redstonetools.utils.FeatureUtils;
 
 public class RedstoneToolsPackets {
 	public static void registerPackets() {
-		PayloadTypeRegistry.playS2C().register(SetFeatureEnabledS2CPayload.ID, SetFeatureEnabledS2CPayload.CODEC);
-		PayloadTypeRegistry.playC2S().register(SetFeatureEnabledC2SPayload.ID, SetFeatureEnabledC2SPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
 
-		ServerPlayNetworking.registerGlobalReceiver(SetFeatureEnabledC2SPayload.ID, (payload, context) -> {
-			String feature = payload.featureAndToggle().substring(0, payload.featureAndToggle().length() - 1);
-			boolean enabled = payload.featureAndToggle().endsWith("1");
+		ServerPlayNetworking.registerGlobalReceiver(SetFeatureEnabledPayload.ID, (payload, context) -> {
+			String feature = payload.feature();
+			boolean enabled = payload.enabled();
 
 			switch (feature) {
 				case "AutoDust" ->
