@@ -10,6 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.BlockColor;
+import tools.redstone.redstonetools.utils.EnumUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +19,8 @@ import java.util.concurrent.CompletableFuture;
 public class BlockColorArgumentType implements ArgumentType<BlockColor> {
 
 	private static final Collection<String> EXAMPLES = Arrays.asList("blue", "red", "magenta");
+
+	private static final String[] SUGGESTIONS = EnumUtils.lowercaseNames(BlockColor.values());
 
 	public BlockColorArgumentType() {
 	}
@@ -35,35 +38,17 @@ public class BlockColorArgumentType implements ArgumentType<BlockColor> {
 		final int start = reader.getCursor();
 		final String result = reader.readString();
 
-		BlockColor color =
-				switch (result.toUpperCase()) {
-					case ("WHITE") -> BlockColor.WHITE;
-					case ("ORANGE") -> BlockColor.ORANGE;
-					case ("MAGENTA") -> BlockColor.MAGENTA;
-					case ("LIGHT_BLUE") -> BlockColor.LIGHT_BLUE;
-					case ("YELLOW") -> BlockColor.YELLOW;
-					case ("LIME") -> BlockColor.LIME;
-					case ("PINK") -> BlockColor.PINK;
-					case ("GRAY") -> BlockColor.GRAY;
-					case ("LIGHT_GRAY") -> BlockColor.LIGHT_GRAY;
-					case ("CYAN") -> BlockColor.CYAN;
-					case ("PURPLE") -> BlockColor.PURPLE;
-					case ("BLUE") -> BlockColor.BLUE;
-					case ("BROWN") -> BlockColor.BROWN;
-					case ("GREEN") -> BlockColor.GREEN;
-					case ("RED") -> BlockColor.RED;
-					case ("BLACK") -> BlockColor.BLACK;
-					default -> {
-						reader.setCursor(start);
-						throw new SimpleCommandExceptionType(Text.literal("Could not resolve block color!")).create();
-					}
-				};
+		BlockColor color = EnumUtils.byNameOrNull(BlockColor.values(), result);
+		if (color == null) {
+			reader.setCursor(start);
+			throw new SimpleCommandExceptionType(Text.literal("Could not resolve block color!")).create();
+		}
 		return color;
 	}
 
 	@Override
 	public String toString() {
-		return ("blockcolor()");
+		return "blockcolorargument()";
 	}
 
 	@Override
@@ -71,17 +56,8 @@ public class BlockColorArgumentType implements ArgumentType<BlockColor> {
 		return EXAMPLES;
 	}
 
-	final String[] colors = {
-			"white", "orange", "magenta",
-			"light_blue", "yellow", "lime",
-			"pink", "gray", "light_gray",
-			"cyan", "purple", "blue",
-			"brown", "green", "red",
-			"black"
-	};
-
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		return CommandSource.suggestMatching(colors, builder);
+		return CommandSource.suggestMatching(SUGGESTIONS, builder);
 	}
 }

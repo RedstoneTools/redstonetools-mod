@@ -10,7 +10,7 @@ import java.util.Collection;
 public class WidgetListMacros extends WidgetListBase<MacroBase, WidgetMacroEntry> {
 
 	public WidgetListMacros(int x, int y, int width, int height, float zLevel,
-	                        @Nullable ISelectionListener<MacroBase> selectionListener) {
+							@Nullable ISelectionListener<MacroBase> selectionListener) {
 		super(x, y, width, height, selectionListener);
 		this.browserEntryHeight = 22;
 	}

@@ -11,6 +11,7 @@ import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 import java.math.BigInteger;
+import java.util.Locale;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
@@ -31,7 +32,7 @@ public class BaseConvertFeature extends AbstractFeature {
 		int toBase = IntegerArgumentType.getInteger(context, "toBase");
 
 		int base = 10;
-		number = number.toLowerCase();
+		number = number.toLowerCase(Locale.ROOT);
 		String prefix = "";
 		if (number.startsWith("0x")) {
 			prefix = "0x";
@@ -50,7 +51,7 @@ public class BaseConvertFeature extends AbstractFeature {
 		} catch (NumberFormatException e) {
 			throw INVALID_NUMBER.create();
 		}
-		String output = integer.toString(toBase).toLowerCase();
+		String output = integer.toString(toBase).toLowerCase(Locale.ROOT);
 
 		String toPrefix = "";
 		if (toBase == 16) {
