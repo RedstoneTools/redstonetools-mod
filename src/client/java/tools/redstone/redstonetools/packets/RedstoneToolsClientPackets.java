@@ -12,13 +12,9 @@ public class RedstoneToolsClientPackets {
 			boolean enabled = payload.enabled();
 
 			switch (feature) {
-				case "AutoDust":
-					AutoDustClient.isEnabled = enabled;
-				case "AutoRotate":
-					AutoRotateClient.isEnabled = enabled;
-				case "ClickContainer":
-					ClickContainerClient.isEnabled = enabled;
-				default:
+				case "AutoDust" -> AutoDustClient.isEnabled = enabled;
+				case "AutoRotate" -> AutoRotateClient.isEnabled = enabled;
+				case "ClickContainer" -> ClickContainerClient.isEnabled = enabled;
 			}
 		}));
 	}

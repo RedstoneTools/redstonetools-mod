@@ -9,12 +9,12 @@ import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 
 import javax.annotation.Nullable;
 
 public abstract class PickBlockFeature extends BlockRaycastFeature {
+	@Override
 	protected int execute(CommandContext<ServerCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException {
 		ServerPlayerEntity player = context.getSource().getPlayer();
 		if (player == null) {
@@ -36,7 +36,7 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
 		} else if (player.isInCreativeMode()) {
 			playerInventory.swapStackWithHotbar(stack);
 		}
-		context.getSource().getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(((PlayerInventoryAccessor) playerInventory).getSelectedSlot()));
+		context.getSource().getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(playerInventory.getSelectedSlot()));
 		player.playerScreenHandler.sendContentUpdates();
 		return 1;
 	}
@@ -51,10 +51,10 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
 		if (i == -1) {
 			int j;
 			pi.setSelectedSlot(pi.getSwappableHotbarSlot());
-			if (!((PlayerInventoryAccessor) pi).getMain().get(((PlayerInventoryAccessor) pi).getSelectedSlot()).isEmpty() && (j = pi.getEmptySlot()) != -1) {
-				((PlayerInventoryAccessor) pi).getMain().set(j, ((PlayerInventoryAccessor) pi).getMain().get(((PlayerInventoryAccessor) pi).getSelectedSlot()));
+			if (!pi.getMainStacks().get(pi.getSelectedSlot()).isEmpty() && (j = pi.getEmptySlot()) != -1) {
+				pi.getMainStacks().set(j, pi.getMainStacks().get(pi.getSelectedSlot()));
 			}
-			((PlayerInventoryAccessor) pi).getMain().set(((PlayerInventoryAccessor) pi).getSelectedSlot(), stack);
+			pi.getMainStacks().set(pi.getSelectedSlot(), stack);
 		} else {
 			pi.swapSlotWithHotbar(i);
 		}

@@ -35,11 +35,12 @@ public abstract class AutoDustMixin {
 			var block = world.getBlockState(pos).getBlock();
 			var blockAbove = world.getBlockState(dustPos).getBlock();
 
-			if (!blockAbove.equals(Blocks.AIR) || ColoredBlock.fromBlock(block) == null) {
+			if (blockAbove != Blocks.AIR || ColoredBlock.fromBlock(block) == null) {
 				return;
 			}
 
-			ItemPlacementContext context = new ItemPlacementContext(player, Hand.MAIN_HAND, new ItemStack(Items.REDSTONE), new BlockHitResult(new Vec3d(dustPos.getX(), dustPos.getY(), dustPos.getZ()), Direction.UP, dustPos, false));
+			ItemPlacementContext context = new ItemPlacementContext(player, Hand.MAIN_HAND, new ItemStack(Items.REDSTONE),
+				new BlockHitResult(new Vec3d(dustPos.getX(), dustPos.getY(), dustPos.getZ()), Direction.UP, dustPos, false));
 			placer.getWorld().setBlockState(dustPos, Blocks.REDSTONE_WIRE.getPlacementState(context));
 		}
 	}
