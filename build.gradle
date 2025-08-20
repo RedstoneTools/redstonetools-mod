@@ -1,17 +1,26 @@
-//file:noinspection GroovyAssignabilityCheck
-
 plugins {
-	id 'fabric-loom' version '1.2-SNAPSHOT'
+	id 'fabric-loom' version '1.10-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.github.johnrengelman.shadow' version '8.+'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		redstonetools {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+}
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
@@ -19,10 +28,25 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+
+	maven { url "https://maven.shedaniel.me/" }
+	maven { url "https://maven.terraformersmc.com/releases/" }
+	maven { url 'https://masa.dy.fi/maven' }
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
 	maven {
-        name = "WorldEdit Maven"
-        url = "https://maven.enginehub.org/repo/"
-    }
+		name = "WorldEdit Maven"
+		url = "https://maven.enginehub.org/repo/"
+	}
 	maven {
 		name = "JitPack"
 		url = "https://jitpack.io"
@@ -30,13 +54,11 @@ repositories {
 }
 
 dependencies {
-	// Doctor (dependency-injection)
-	include implementation("rip.hippo:Doctor:1.0.1")
 	include implementation("javax.inject:javax.inject:1")
 
 	// Json
 	include implementation("javax.json:javax.json-api:1.1.4")
-	include "org.glassfish:javax.json:1.1.4"
+	include implementation("org.glassfish:javax.json:1.1.4")
 
 	// AutoService
 	annotationProcessor implementation("com.google.auto.service:auto-service:1.1.0")
@@ -50,47 +72,62 @@ dependencies {
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// Worldedit API
-	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc1.18.2:7.2.10")
+	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc${project.worldedit_version}")
+	// MaLiLib
+	modApi "maven.modrinth:malilib:${project.malilib_version}"
 }
 
 processResources {
 	inputs.property "version", project.version
+	inputs.property "minecraft_version", project.minecraft_version
+	inputs.property "minecraft_version_out", project.minecraft_version_out
+	inputs.property "malilib_version", project.minecraft_version_out
+	inputs.property "loader_version", project.loader_version
+	filteringCharset "UTF-8"
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand  "version": project.version,
+				"minecraft_version": project.minecraft_version,
+				"minecraft_version_out": project.minecraft_version_out,
+				"malilib_version": project.minecraft_version_out,
+				"loader_version": project.loader_version
+	}
+}
+
+def targetJavaVersion = 21
+tasks.withType(JavaCompile).configureEach {
+	// ensure that the encoding is set to UTF-8, no matter what the system default is
+	// this fixes some edge cases with special characters not displaying correctly
+	// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+	// If Javadoc is generated, this must be specified in that task too.
+	it.options.encoding = "UTF-8"
+	if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+		it.options.release.set(targetJavaVersion)
 	}
 }
 
 java {
-	withSourcesJar()
-	withJavadocJar()
-
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+	def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+	if (JavaVersion.current() < javaVersion) {
+		toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
 	}
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
 }
 
-shadowJar {
-	archiveClassifier.set("unmapped")
-
-	configurations = [project.configurations.shadow]
-
-	from("LICENSE")
-}
-
-remapJar {
-	inputFile = shadowJar.archiveFile
-}
-
-tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release.set(17)
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}" }
+	}
 }
 
 // configure the maven publication
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
+		create("mavenJava", MavenPublication) {
+			artifactId = project.archives_base_name
 			from components.java
 		}
 	}

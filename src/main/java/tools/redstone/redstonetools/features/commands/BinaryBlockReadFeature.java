@@ -1,101 +1,128 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.google.auto.service.AutoService;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.utils.WorldEditUtils;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.Region;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneLampBlock;
-import net.minecraft.command.argument.BlockStateArgument;
+import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import tools.redstone.redstonetools.features.AbstractFeature;
+import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.WorldEditUtils;
 
-import java.util.Collections;
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
-import static tools.redstone.redstonetools.features.arguments.serializers.BlockStateArgumentSerializer.blockState;
-import static tools.redstone.redstonetools.features.arguments.serializers.BoolSerializer.bool;
-import static tools.redstone.redstonetools.features.arguments.serializers.IntegerSerializer.integer;
-import static tools.redstone.redstonetools.features.arguments.serializers.NumberBaseSerializer.numberBase;
+public class BinaryBlockReadFeature extends AbstractFeature {
+	public static void registerCommand() {
+		BinaryBlockReadFeature bbr = FeatureUtils.getFeature(BinaryBlockReadFeature.class);
+		CommandRegistrationCallback.EVENT.register(
+				(dispatcher, registryAccess, environment) -> dispatcher.register(
+						literal("/read")
+								.executes(bbr::parseArgs)
+								.then(argument("offset", IntegerArgumentType.integer(1))
+										.executes(bbr::parseArgs)
+										.then(argument("onBlock", BlockStateArgumentType.blockState(registryAccess))
+												.executes(bbr::parseArgs)
+												.then(argument("toBase", IntegerArgumentType.integer(2, 16))
+														.executes(bbr::parseArgs)
+														.then(argument("reverseBits", BoolArgumentType.bool())
+																.executes(bbr::parseArgs)
+														)))))
+		);
+	}
 
-@AutoService(AbstractFeature.class)
-@Feature(name = "Binary Block Read", description = "Interprets your WorldEdit selection as a binary number.", command = "/read", worldedit = true)
-public class BinaryBlockReadFeature extends CommandFeature {
-    private static final BlockStateArgument LIT_LAMP_ARG = new BlockStateArgument(
-            Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true),
-            Collections.singleton(RedstoneLampBlock.LIT),
-            null
-    );
+	// this is horrible, but it works
+	protected int parseArgs(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+		int offset;
+		BlockState onBlock;
+		int toBase;
+		boolean reverseBits;
+		try {
+			offset = IntegerArgumentType.getInteger(context, "offset");
+		} catch (Exception ignored) {
+			offset = 2;
+		}
+		try {
+			onBlock = BlockStateArgumentType.getBlockState(context, "onBlock").getBlockState();
+		} catch (Exception ignored) {
+			onBlock = Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true);
+		}
+		try {
+			toBase = IntegerArgumentType.getInteger(context, "toBase");
+		} catch (Exception ignored) {
+			toBase = 10;
+		}
+		try {
+			reverseBits = BoolArgumentType.getBool(context, "reverseBits");
+		} catch (Exception ignored) {
+			reverseBits = false;
+		}
+		return execute(context, offset, onBlock, toBase, reverseBits);
+	}
 
-    public static final Argument<Integer> offset = Argument
-            .ofType(integer(1))
-            .withDefault(2);
-    public static final Argument<BlockStateArgument> onBlock = Argument
-            .ofType(blockState())
-            .withDefault(LIT_LAMP_ARG);
-    public static final Argument<Integer> toBase = Argument
-            .ofType(numberBase())
-            .withDefault(10);
-    public static final Argument<Boolean> reverseBits = Argument
-            .ofType(bool())
-            .withDefault(false);
+	protected int execute(CommandContext<ServerCommandSource> context, int offset, BlockState onBlock, int toBase, boolean reverseBits) throws CommandSyntaxException {
+		var source = context.getSource();
+		Region selection = WorldEditUtils.getSelection(source.getPlayer());
 
-    @Override
-    protected Feedback execute(ServerCommandSource source) throws CommandSyntaxException {
-        var selectionOrFeedback = WorldEditUtils.getSelection(source.getPlayer());
+		var boundingBox = selection.getBoundingBox();
+		var pos1 = boundingBox.getPos1();
+		var pos2 = boundingBox.getPos2();
+		var direction = pos2.subtract(pos1).normalize();
 
-        if (selectionOrFeedback.right().isPresent()) {
-            return selectionOrFeedback.right().get();
-        }
+		// prevent infinite loop
+		if (direction.lengthSq() == 0) {
+			direction = BlockVector3.at(0, 0, 1);
+		}
 
-        assert selectionOrFeedback.left().isPresent();
-        var selection = selectionOrFeedback.left().get();
+		var spacingVector = direction.multiply(offset);
 
-        var boundingBox = selection.getBoundingBox();
-        var pos1 = boundingBox.getPos1();
-        var pos2 = boundingBox.getPos2();
-        var direction = pos2.subtract(pos1).normalize();
+		if (direction.x() + direction.y() + direction.z() > 1) {
+			throw new SimpleCommandExceptionType(Text.of("The selection must have 2 axis the same.")).create();
+		}
 
-        // prevent infinite loop
-        if (direction.lengthSq() == 0) {
-            direction = BlockVector3.at(0, 0, 1);
-        }
+		var bits = new StringBuilder();
+		for (BlockVector3 point = pos1; boundingBox.contains(point); point = point.add(spacingVector)) {
+			var pos = new BlockPos(point.x(), point.y(), point.z());
+			var actualState = source.getWorld().getBlockState(pos);
 
-        var spacingVector = direction.multiply(offset.getValue());
+			var matches = actualState.equals(onBlock);
+			if (matches) {
+				for (var property : onBlock.getProperties()) {
+					try {
+						actualState.get(property);
+					} catch (Exception e) { // actualState doesn't have the same properties as onBlock
+						// so they dont match by default.
+						matches = false;
+						break;
+					}
+					var propertyValue = onBlock.get(property);
 
-        if (direction.getBlockX() + direction.getBlockY() + direction.getBlockZ() > 1) {
-            return Feedback.invalidUsage("The selection must have 2 axis the same.");
-        }
+					if (!actualState.get(property).equals(propertyValue)) {
+						matches = false;
+						break;
+					}
+				}
+			}
 
-        var bits = new StringBuilder();
-        for (BlockVector3 point = pos1; boundingBox.contains(point); point = point.add(spacingVector)) {
-            var pos = new BlockPos(point.getBlockX(), point.getBlockY(), point.getBlockZ());
-            var actualState = source.getWorld().getBlockState(pos);
+			bits.append(matches ? 1 : 0);
+		}
 
-            var matches = actualState.getBlock() == onBlock.getValue().getBlockState().getBlock();
-            if (matches) {
-                for (var property : onBlock.getValue().getProperties()) {
-                    var propertyValue = onBlock.getValue().getBlockState().get(property);
+		if (reverseBits) {
+			bits.reverse();
+		}
 
-                    if (!actualState.get(property).equals(propertyValue)) {
-                        matches = false;
-                        break;
-                    }
-                }
-            }
-
-            bits.append(matches ? 1 : 0);
-        }
-
-        if (reverseBits.getValue()) {
-            bits.reverse();
-        }
-
-        var output = Integer.toString(Integer.parseInt(bits.toString(), 2), toBase.getValue());
-        return Feedback.success("{}.", output);
-    }
-
+		var output = Integer.toString(Integer.parseInt(bits.toString(), 2), toBase);
+		source.sendMessage(Text.of(output));
+		return 0;
+	}
 }

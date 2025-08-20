@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "redstonetools",
   "version": "${version}",
-
   "name": "Redstone Tools",
   "description": "A Redstone Quality of Life mod. To improve efficiency and productivity.",
   "contact": {
@@ -17,27 +16,31 @@
       }
     }
   },
-
   "license": "GPL-3.0",
   "icon": "assets/redstonetools/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "client": [
       "tools.redstone.redstonetools.RedstoneToolsClient"
+    ],
+    "main": [
+      "tools.redstone.redstonetools.RedstoneTools"
     ]
   },
   "mixins": [
-    "redstonetools.mixins.json"
+    "redstonetools.mixins.json",
+    {
+      "config": "redstonetools.client.mixins.json",
+      "environment": "client"
+    }
   ],
-
   "depends": {
-    "fabricloader": ">=0.13.0",
+    "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "~1.18.2",
-    "java": ">=17"
+    "minecraft": ">=1.21.4 <=1.21.8"
   },
   "recommends": {
-    "worldedit": "*"
+    "worldedit": "*",
+    "malilib": "*"
   }
 }

@@ -1,48 +1,56 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.google.auto.service.AutoService;
-import com.mojang.datafixers.util.Either;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
+import com.mojang.brigadier.context.CommandContext;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.BlockStateComponent;
+import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.feedback.Feedback;
-import tools.redstone.redstonetools.mixin.accessors.MinecraftClientAccessor;
+import net.minecraft.state.property.Property;
+import net.minecraft.text.Text;
+import tools.redstone.redstonetools.mixin.AbstractBlockMixin;
+import tools.redstone.redstonetools.mixin.features.ServerPlayNetworkHandlerAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
-import tools.redstone.redstonetools.utils.BlockStateNbtUtil;
+import tools.redstone.redstonetools.utils.FeatureUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
-import static tools.redstone.redstonetools.utils.ItemUtils.addExtraNBTText;
-
-
-@AutoService(AbstractFeature.class)
-@Feature(name = "Copy State", description = "Gives you a copy of the block you're looking at with its BlockState.", command = "copystate")
 public class CopyStateFeature extends PickBlockFeature {
-    @Override
-    protected Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, BlockInfo blockInfo) {
-        MinecraftClient client = MinecraftClient.getInstance();
+	public static void registerCommand() {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("copystate")
+				.executes(context -> FeatureUtils.getFeature(CopyStateFeature.class).execute(context))));
+	}
 
-        ItemStack itemStack = blockInfo.block.getPickStack(client.world, blockInfo.pos, blockInfo.state);
+	// all the warnings caused by this function should be fine. hopefully.
+	@Override
+	protected ItemStack getItemStack(CommandContext<ServerCommandSource> context, BlockInfo blockInfo) {
+		Objects.requireNonNull(blockInfo);
+		ItemStack stack = ((AbstractBlockMixin) blockInfo.state.getBlock()).callGetPickStack(context.getSource().getWorld(), blockInfo.pos, blockInfo.state, true);
 
-        if (blockInfo.state.hasBlockEntity()) {
-            ((MinecraftClientAccessor) client).invokeAddBlockEntityNbt(itemStack, blockInfo.entity);
-        }
+		// what is this :sob:
+		((ServerPlayNetworkHandlerAccessor) Objects.requireNonNull(context.getSource().getPlayer()).networkHandler).callCopyBlockDataToStack(blockInfo.state, context.getSource().getWorld(), blockInfo.pos, stack);
 
-        int i = addBlockStateNbt(itemStack, blockInfo.state);
-        if (i == -1) {
-            return Either.right(Feedback.invalidUsage("This block doesn't have any BlockState!"));
-        }
+		List<Text> lore = new ArrayList<>();
+		if (blockInfo.entity != null) {
+			lore.add(Text.literal("Has block entity data"));
+		}
 
-        return Either.left(itemStack);
-    }
+		if (!blockInfo.state.getProperties().isEmpty()) {
+			BlockStateComponent component = BlockStateComponent.DEFAULT;
+			for (Property prop : blockInfo.state.getProperties()) {
+				lore.add(Text.of("   " + prop.getName() + ": " + blockInfo.state.get(prop)));
+				component = component.with(prop, blockInfo.state.get(prop));
+			}
 
-    private int addBlockStateNbt(ItemStack itemStack, BlockState blockState) {
-        addExtraNBTText(itemStack, "BlockState");
-        BlockStateNbtUtil.putPlacement(itemStack, blockState);
-        return 1;
-    }
+			stack.set(DataComponentTypes.BLOCK_STATE, component);
+		}
+		stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
 
-
+		return stack;
+	}
 }

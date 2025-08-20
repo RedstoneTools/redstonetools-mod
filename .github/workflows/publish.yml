@@ -12,31 +12,31 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-    
+        uses: actions/checkout@v4
+
       - name: Set up Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'adopt'
-    
+
       - name: Build
         run: ./gradlew build
 
       - name: Publish
-        uses: Kir-Antipov/mc-publish@v3.2
+        uses: Kir-Antipov/mc-publish@v3.3
         with:
-          name: Redstone Tools v1.18.2-${{ github.event.inputs.mod-version }}
-        
+          name: Redstone Tools ${{ github.event.inputs.mod-version }}
+
           modrinth-id: 9ySQVrz2
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
           # curseforge-id: 849609
           # curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
-          github-tag: v1.18.2-${{ github.event.inputs.mod-version }}
+          github-tag: ${{ github.event.inputs.mod-version }}
           github-generate-changelog: false
           github-token: ${{ secrets.RELEASE_TOKEN }}
-          
-          files-primary: build/libs/redstonetools-1.18.2-${{ github.event.inputs.mod-version }}.jar
+
+          files-primary: build/libs/redstonetools-${{ github.event.inputs.mod-version }}.jar
           files-secondary: ''

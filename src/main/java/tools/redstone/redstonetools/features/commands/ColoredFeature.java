@@ -1,38 +1,50 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.google.auto.service.AutoService;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.Feature;
-import tools.redstone.redstonetools.features.arguments.Argument;
-import tools.redstone.redstonetools.features.feedback.Feedback;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+import tools.redstone.redstonetools.features.commands.argument.ColoredBlockTypeArgumentType;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.BlockInfo;
-import com.mojang.datafixers.util.Either;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.utils.ColoredBlockType;
+import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import javax.annotation.Nullable;
 
-import static tools.redstone.redstonetools.features.arguments.serializers.ColoredBlockTypeSerializer.coloredBlockType;
-
-@AutoService(AbstractFeature.class)
-@Feature(name = "Colored", description = "Gives the player specified variant of block being looked at, with the same color. Default is White.", command = "colored")
 public class ColoredFeature extends PickBlockFeature {
-    public static final Argument<ColoredBlockType> blockType = Argument.ofType(coloredBlockType());
-    @Override
-    protected boolean requiresBlock() {
-        return false;
-    }
+	public static void registerCommand() {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("colored")
+						.executes(context -> FeatureUtils.getFeature(ColoredFeature.class).execute(context))
+				.then(CommandManager.argument("blockType", ColoredBlockTypeArgumentType.coloredblocktype())
+						.executes(context -> FeatureUtils.getFeature(ColoredFeature.class).execute(context)))));
+	}
 
-    @Override
-    protected Either<ItemStack, Feedback> getItemStack(ServerCommandSource source, @Nullable BlockInfo blockInfo) {
-        var color = blockInfo == null
-                ? BlockColor.WHITE
-                : BlockColor.fromBlock(blockInfo.block);
+	public static ColoredBlockType blockType;
 
-        var coloredBlock = blockType.getValue().withColor(color);
+	protected boolean requiresBlock() {
+		return false;
+	}
 
-        return Either.left(new ItemStack(coloredBlock.toBlock()));
-    }
+	protected ItemStack getItemStack(CommandContext<ServerCommandSource> context, @Nullable BlockInfo blockInfo) {
+		var color = blockInfo == null
+				? BlockColor.WHITE
+				: BlockColor.fromBlock(blockInfo.block);
+
+		var coloredBlock = blockType.withColor(color);
+
+		return new ItemStack(coloredBlock.toBlock());
+	}
+
+	@Override
+	protected int execute(CommandContext<ServerCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
+		try {
+			blockType = ColoredBlockTypeArgumentType.getColoredBlockType(context, "blockType");
+		} catch (Exception e) {
+			blockType = ColoredBlockType.WOOL;
+		}
+		return super.execute(context, blockInfo);
+	}
 }
