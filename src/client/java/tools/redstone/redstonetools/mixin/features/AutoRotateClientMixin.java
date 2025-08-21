@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.mixin.features;
 
-
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.block.BlockState;

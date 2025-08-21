@@ -26,20 +26,18 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class BinaryBlockReadFeature extends AbstractFeature {
 	public static void registerCommand() {
 		BinaryBlockReadFeature bbr = FeatureUtils.getFeature(BinaryBlockReadFeature.class);
-		CommandRegistrationCallback.EVENT.register(
-				(dispatcher, registryAccess, environment) -> dispatcher.register(
-						literal("/read")
-								.executes(bbr.getCommandForArgumentCount(0))
-								.then(argument("offset", IntegerArgumentType.integer(1))
-										.executes(bbr.getCommandForArgumentCount(1))
-										.then(argument("onBlock", BlockStateArgumentType.blockState(registryAccess))
-												.executes(bbr.getCommandForArgumentCount(2))
-												.then(argument("toBase", IntegerArgumentType.integer(2, 16))
-														.executes(bbr.getCommandForArgumentCount(3))
-														.then(argument("reverseBits", BoolArgumentType.bool())
-																.executes(bbr.getCommandForArgumentCount(4))
-														)))))
-		);
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+			dispatcher.register(
+				literal("/read")
+					.executes(bbr.getCommandForArgumentCount(0))
+					.then(argument("offset", IntegerArgumentType.integer(1))
+						.executes(bbr.getCommandForArgumentCount(1))
+						.then(argument("onBlock", BlockStateArgumentType.blockState(registryAccess))
+							.executes(bbr.getCommandForArgumentCount(2))
+							.then(argument("toBase", IntegerArgumentType.integer(2, 16))
+								.executes(bbr.getCommandForArgumentCount(3))
+								.then(argument("reverseBits", BoolArgumentType.bool())
+										.executes(bbr.getCommandForArgumentCount(4))))))));
 	}
 
 	protected Command<ServerCommandSource> getCommandForArgumentCount(int argNum) {
@@ -48,18 +46,12 @@ public class BinaryBlockReadFeature extends AbstractFeature {
 
 	protected int execute(CommandContext<ServerCommandSource> context, int argCount) throws CommandSyntaxException {
 		boolean reverseBits;
-		int offset = argCount >= 1
-			? IntegerArgumentType.getInteger(context, "offset")
-			: 2;
-		BlockState onBlock = argCount >= 2
-			? BlockStateArgumentType.getBlockState(context, "onBlock").getBlockState()
-			: Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true);
-		int toBase = argCount >= 3
-			? IntegerArgumentType.getInteger(context, "toBase")
-			: 10;
-		reverseBits = argCount >= 4
-			? BoolArgumentType.getBool(context, "reverseBits")
-			: false;
+		int offset = argCount >= 1 ? IntegerArgumentType.getInteger(context, "offset") : 2;
+		BlockState onBlock = argCount >= 2 ?
+			BlockStateArgumentType.getBlockState(context, "onBlock").getBlockState() :
+			Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true);
+		int toBase = argCount >= 3 ? IntegerArgumentType.getInteger(context, "toBase") : 10;
+		reverseBits = argCount >= 4 ? BoolArgumentType.getBool(context, "reverseBits") : false;
 		return execute(context, offset, onBlock, toBase, reverseBits);
 	}
 
