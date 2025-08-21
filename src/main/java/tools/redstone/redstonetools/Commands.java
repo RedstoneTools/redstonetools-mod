@@ -17,7 +17,6 @@ public class Commands {
 		ItemBindFeature.registerCommand();
 		QuickTpFeature.registerCommand();
 		SignalStrengthBlockFeature.registerCommand();
-		GiveMeFeature.registerCommand();
 		AutoDustFeature.registerCommand();
 		AutoRotateFeature.registerCommand();
 		ClickContainerFeature.registerCommand();

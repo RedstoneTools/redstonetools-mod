@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.BaseConvertFeature;
+import tools.redstone.redstonetools.features.commands.GiveMeFeature;
 import tools.redstone.redstonetools.features.commands.MacroFeature;
 import tools.redstone.redstonetools.features.commands.ReachFeature;
 import tools.redstone.redstonetools.features.toggleable.*;
@@ -33,6 +34,7 @@ public class ClientFeatureUtils {
 			FEATURES.add(new MacroFeature());
 			FEATURES.add(new BaseConvertFeature());
 			FEATURES.add(new ReachFeature());
+			FEATURES.add(new GiveMeFeature());
 			features = FEATURES;
 		}
 		Optional<T> found1 = features.stream()
