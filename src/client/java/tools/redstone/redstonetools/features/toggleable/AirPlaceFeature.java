@@ -17,7 +17,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.malilib.config.Configs;
 import tools.redstone.redstonetools.mixin.features.WorldRendererInvoker;
 import tools.redstone.redstonetools.utils.BlockUtils;
@@ -44,7 +43,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			return false;
 
 		// itembind in hand
-		if (itemStack.contains(RedstoneTools.COMMAND_COMPONENT)) return false;
+		if (ItemUtils.containsCommand(itemStack)) return false;
 
 		// TODO: shouldn't offhand also be checked?
 		// rocket boost for elytra

@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class ItemBindFeature extends AbstractFeature {
 									if (!mainhand) {
 										stack = player.getOffHandStack();
 									}
-									stack.remove(RedstoneTools.COMMAND_COMPONENT);
+									ItemUtils.removeCommand(stack);
 									stack.set(DataComponentTypes.LORE, stack.getItem().getDefaultStack().get(DataComponentTypes.LORE));
 									context.getSource().getPlayer().sendMessage(Text.of("Successfully removed command from the item in your " + (mainhand ? "hand" : "offhand")), false);
 								} else {
@@ -50,9 +50,6 @@ public class ItemBindFeature extends AbstractFeature {
 	public static ArrayList<ServerPlayerEntity> playersWaitingForCommand = new ArrayList<>();
 
 	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-//		if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
-//			throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
-//		}
 		ServerCommandSource source = context.getSource();
 		playersWaitingForCommand.add(source.getPlayer());
 
@@ -72,7 +69,7 @@ public class ItemBindFeature extends AbstractFeature {
 				stack = playerI.getOffHandStack();
 		}
 
-		stack.set(RedstoneTools.COMMAND_COMPONENT, command);
+		ItemUtils.setCommand(stack, command);
 		//                                                                                                   `command` here doesn't start with a / for some
 		//                                                                                                   reason, so we add it ourselves so its more clear
 		stack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.of("Has command: /" + command))));

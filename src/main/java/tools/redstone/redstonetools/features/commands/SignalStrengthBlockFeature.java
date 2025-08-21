@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -9,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.commands.argument.SignalBlockArgumentType;
+import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.SignalBlock;
 
@@ -27,7 +28,7 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
 				.executes(ssb::parseArguments)
 				.then(argument("signalStrength", IntegerArgumentType.integer())
 						.executes(ssb::parseArguments)
-						.then(argument("block", SignalBlockArgumentType.signalblock())
+						.then(argument("block", StringArgumentType.string()).suggests(ArgumentUtils.SIGNAL_BLOCK_SUGGESTION_PROVIDER)
 								.executes(ssb::parseArguments)))));
 	}
 
@@ -40,7 +41,7 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
 			signalStrength = 15;
 		}
 		try {
-			block = SignalBlockArgumentType.getSignalBlock(context, "block");
+			block = ArgumentUtils.parseSignalBlock(context, "block");
 		} catch (Exception ignored) {
 			block = SignalBlock.AUTO;
 		}

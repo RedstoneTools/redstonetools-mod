@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -20,7 +21,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.commands.argument.DirectionArgumentType;
+import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.DirectionArgument;
 import tools.redstone.redstonetools.utils.FeatureUtils;
 
@@ -37,7 +38,7 @@ public class RStackFeature extends AbstractFeature {
 						.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
 				.then(argument("count", IntegerArgumentType.integer())
 						.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
-						.then(argument("direction", DirectionArgumentType.direction())
+						.then(argument("direction", StringArgumentType.string()).suggests(ArgumentUtils.DIRECTION_SUGGESTION_PROVIDER)
 								.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
 								.then(argument("offset", IntegerArgumentType.integer())
 										.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context)))))));
@@ -51,7 +52,7 @@ public class RStackFeature extends AbstractFeature {
 			count = IntegerArgumentType.getInteger(context, "count");
 		} catch (Exception ignored) {count = 1;}
 		try {
-			direction = DirectionArgumentType.getDirection(context, "direction");
+			direction = ArgumentUtils.parseDirection(context, "direction");
 		} catch (Exception ignored) {direction = DirectionArgument.ME;}
 		try {
 			offset = IntegerArgumentType.getInteger(context, "offset");
