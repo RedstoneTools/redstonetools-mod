@@ -6,14 +6,13 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.packets.SetFeatureEnabledPayload;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public abstract class ToggleableFeature extends AbstractFeature {
+public abstract class ToggleableFeature {
 	private final Set<UUID> enabledFor = new HashSet<>(); // volatile for thread safety
 
 	public boolean isEnabled(ServerPlayerEntity player) {

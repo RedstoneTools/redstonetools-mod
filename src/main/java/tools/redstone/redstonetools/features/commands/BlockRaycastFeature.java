@@ -10,10 +10,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.BlockInfo;
 
-public abstract class BlockRaycastFeature extends AbstractFeature {
+public abstract class BlockRaycastFeature {
 	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 		ServerPlayerEntity player = context.getSource().getPlayer();
 		ServerWorld world = context.getSource().getWorld();

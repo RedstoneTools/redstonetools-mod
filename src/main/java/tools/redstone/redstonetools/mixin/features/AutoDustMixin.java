@@ -20,14 +20,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.utils.ColoredBlock;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 @Mixin(Block.class)
 public abstract class AutoDustMixin {
 	@Inject(method = "onPlaced", at = @At("TAIL"))
 	private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
 		if (placer instanceof ServerPlayerEntity player) {
-			if (!FeatureUtils.getFeature(AutoDustFeature.class).isEnabled(player) || world.isClient) {
+			if (!AutoDustFeature.INSTANCE.isEnabled(player) || world.isClient) {
 				return;
 			}
 

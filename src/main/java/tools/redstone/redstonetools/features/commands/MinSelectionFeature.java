@@ -14,8 +14,6 @@ import com.sk89q.worldedit.world.block.BlockTypes;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 import java.util.ArrayList;
@@ -24,10 +22,15 @@ import java.util.Objects;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class MinSelectionFeature extends AbstractFeature {
-	public static void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/minsel")
-				.executes(context -> FeatureUtils.getFeature(MinSelectionFeature.class).execute(context))));
+public class MinSelectionFeature {
+	public static final MinSelectionFeature INSTANCE = new MinSelectionFeature();
+
+	protected MinSelectionFeature() {
+	}
+
+	public void registerCommand() {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+			dispatcher.register(literal("/minsel").executes(this::execute)));
 	}
 
 	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

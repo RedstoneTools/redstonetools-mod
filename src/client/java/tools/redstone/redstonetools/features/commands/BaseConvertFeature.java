@@ -7,23 +7,26 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 import java.math.BigInteger;
 import java.util.Locale;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
-public class BaseConvertFeature extends AbstractFeature {
+public class BaseConvertFeature {
+	public static final BaseConvertFeature INSTANCE = new BaseConvertFeature();
+
+	protected BaseConvertFeature() {
+	}
+
 	private static final SimpleCommandExceptionType INVALID_NUMBER =
 			new SimpleCommandExceptionType(Text.literal("Invalid number"));
 
-	public static void registerCommand() {
+	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("base")
 				.then(ClientCommandManager.argument("inputNum", StringArgumentType.word())
 						.then(ClientCommandManager.argument("toBase", IntegerArgumentType.integer(2, 16))
-								.executes(context -> ClientFeatureUtils.getFeature(BaseConvertFeature.class).execute(context))))));
+								.executes(this::execute)))));
 	}
 
 	protected int execute(CommandContext<FabricClientCommandSource> context)

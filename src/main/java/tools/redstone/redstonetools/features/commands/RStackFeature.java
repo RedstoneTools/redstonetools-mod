@@ -21,10 +21,8 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
-import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.argument.DirectionArgumentType;
 import tools.redstone.redstonetools.utils.DirectionArgument;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.util.Objects;
 
@@ -33,21 +31,25 @@ import static net.minecraft.server.command.CommandManager.literal;
 import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
-public class RStackFeature extends AbstractFeature {
-	public static void registerCommand() {
-		RStackFeature rStackFeature = FeatureUtils.getFeature(RStackFeature.class);
+public class RStackFeature {
+	public static final RStackFeature INSTANCE = new RStackFeature();
+
+	protected RStackFeature() {
+	}
+
+	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
 			dispatcher.register(
 				literal("/rstack")
-					.executes(rStackFeature.getCommandForArgumentCount(0))
+					.executes(getCommandForArgumentCount(0))
 					.then(argument("count", IntegerArgumentType.integer())
-						.executes(rStackFeature.getCommandForArgumentCount(1))
+						.executes(getCommandForArgumentCount(1))
 						.then(argument("direction", DirectionArgumentType.direction())
-							.executes(rStackFeature.getCommandForArgumentCount(2))
+							.executes(getCommandForArgumentCount(2))
 							.then(argument("offset", IntegerArgumentType.integer())
-								.executes(rStackFeature.getCommandForArgumentCount(3))
+								.executes(getCommandForArgumentCount(3))
 								.then(argument("moveSelection", BoolArgumentType.bool())
-									.executes(rStackFeature.getCommandForArgumentCount(4))))))));
+									.executes(getCommandForArgumentCount(4))))))));
 	}
 
 	protected Command<ServerCommandSource> getCommandForArgumentCount(int argNum) {

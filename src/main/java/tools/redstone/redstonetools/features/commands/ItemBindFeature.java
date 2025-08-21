@@ -10,8 +10,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.RedstoneTools;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,30 +18,34 @@ import static net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVE
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class ItemBindFeature extends AbstractFeature {
-	public static void registerCommand() {
+public class ItemBindFeature {
+	public static final ItemBindFeature INSTANCE = new ItemBindFeature();
+
+	protected ItemBindFeature() {
+	}
+	
+	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess, enviroment) -> dispatcher.register(literal("itembind")
-				.executes(context -> FeatureUtils.getFeature(ItemBindFeature.class).execute(context))
+				.executes(this::execute)
 				.then(argument("reset", BoolArgumentType.bool())
 						.executes(context -> {
-							if (BoolArgumentType.getBool(context, "reset")) {
-								var player = context.getSource().getPlayer();
-								if (player != null) {
-									var stack = player.getMainHandStack();
-									boolean mainhand = stack == ItemStack.EMPTY;
-									if (!mainhand) {
-										stack = player.getOffHandStack();
-									}
-									stack.remove(RedstoneTools.COMMAND_COMPONENT);
-									stack.set(DataComponentTypes.LORE, stack.getItem().getDefaultStack().get(DataComponentTypes.LORE));
-									context.getSource().getPlayer().sendMessage(Text.of("Successfully removed command from the item in your " + (mainhand ? "hand" : "offhand")), false);
-								} else {
-									context.getSource().getPlayer().sendMessage(Text.of("You need to be holding an item in one of your hands!"), false);
-								}
-								return 1;
-							} else {
-								return FeatureUtils.getFeature(ItemBindFeature.class).execute(context);
+							if (!BoolArgumentType.getBool(context, "reset")) {
+								return execute(context);
 							}
+							var player = context.getSource().getPlayer();
+							if (player != null) {
+								var stack = player.getMainHandStack();
+								boolean mainhand = stack == ItemStack.EMPTY;
+								if (!mainhand) {
+									stack = player.getOffHandStack();
+								}
+								stack.remove(RedstoneTools.COMMAND_COMPONENT);
+								stack.set(DataComponentTypes.LORE, stack.getItem().getDefaultStack().get(DataComponentTypes.LORE));
+								context.getSource().getPlayer().sendMessage(Text.of("Successfully removed command from the item in your " + (mainhand ? "hand" : "offhand")), false);
+							} else {
+								context.getSource().getPlayer().sendMessage(Text.of("You need to be holding an item in one of your hands!"), false);
+							}
+							return 1;
 						}))));
 	}
 

@@ -4,9 +4,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.AbstractFeature;
 
-public abstract class ClientToggleableFeature extends AbstractFeature {
+public abstract class ClientToggleableFeature {
 	private volatile boolean enabled; // volatile for thread safety
 
 	public boolean isEnabled() {
