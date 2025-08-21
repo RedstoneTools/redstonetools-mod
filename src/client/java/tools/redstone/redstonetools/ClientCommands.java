@@ -1,9 +1,6 @@
 package tools.redstone.redstonetools;
 
-import tools.redstone.redstonetools.features.commands.BaseConvertFeature;
-import tools.redstone.redstonetools.features.commands.EditMacroFeature;
-import tools.redstone.redstonetools.features.commands.MacroFeature;
-import tools.redstone.redstonetools.features.commands.ReachFeature;
+import tools.redstone.redstonetools.features.commands.*;
 import tools.redstone.redstonetools.features.toggleable.*;
 
 public class ClientCommands {
@@ -12,6 +9,7 @@ public class ClientCommands {
 		EditMacroFeature.registerCommand();
 		MacroFeature.registerCommand();
 		ReachFeature.registerCommand();
+		GiveMeFeature.registerCommand();
 		AirPlaceFeature.registerCommand();
 		AutoRotateFeature.registerCommand();
 		ClickContainerFeature.registerCommand();

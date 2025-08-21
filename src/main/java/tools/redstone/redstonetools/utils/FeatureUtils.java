@@ -25,7 +25,6 @@ public class FeatureUtils {
 			FEATURES.add(new ClickContainerFeature());
 			FEATURES.add(new SignalStrengthBlockFeature());
 			FEATURES.add(new QuickTpFeature());
-			FEATURES.add(new GiveMeFeature());
 			FEATURES.add(new ItemBindFeature());
 			FEATURES.add(new ColoredFeature());
 			FEATURES.add(new CopyStateFeature());
