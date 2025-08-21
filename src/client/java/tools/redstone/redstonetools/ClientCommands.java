@@ -13,6 +13,7 @@ public class ClientCommands {
 		AirPlaceFeature.registerCommand();
 		AutoRotateFeature.registerCommand();
 		ClickContainerFeature.registerCommand();
+		RstFeature.registerCommand();
 		BigDustFeature.registerCommand();
 		AutoDustClient.registerHandler();
 		AutoRotateClient.registerHandler();
