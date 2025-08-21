@@ -17,23 +17,26 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
-import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.argument.BlockColorArgumentType;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.ColoredBlock;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class ColorCodeFeature extends AbstractFeature {
-	public static void registerCommand() {
+public class ColorCodeFeature {
+	public static final ColorCodeFeature INSTANCE = new ColorCodeFeature();
+
+	protected ColorCodeFeature() {
+	}
+
+	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/colorcode")
 				.then(argument("color", BlockColorArgumentType.blockcolor())
-						.executes(context -> FeatureUtils.getFeature(ColorCodeFeature.class).execute(context))
+						.executes(this::execute)
 						.then(argument("onlyColor", BlockColorArgumentType.blockcolor())
-								.executes(context -> FeatureUtils.getFeature(ColorCodeFeature.class).execute(context))))));
+								.executes(this::execute)))));
 	}
 
 	public BlockColor color;

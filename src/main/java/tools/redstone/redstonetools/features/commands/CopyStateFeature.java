@@ -14,16 +14,20 @@ import net.minecraft.text.Text;
 import tools.redstone.redstonetools.mixin.AbstractBlockMixin;
 import tools.redstone.redstonetools.mixin.features.ServerPlayNetworkHandlerAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class CopyStateFeature extends PickBlockFeature {
-	public static void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("copystate")
-				.executes(context -> FeatureUtils.getFeature(CopyStateFeature.class).execute(context))));
+	public static final CopyStateFeature INSTANCE = new CopyStateFeature();
+
+	protected CopyStateFeature() {
+	}
+
+	public void registerCommand() {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+			dispatcher.register(CommandManager.literal("copystate").executes(this::execute)));
 	}
 
 	@Override

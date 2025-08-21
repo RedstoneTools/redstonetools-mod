@@ -1,7 +1,6 @@
 package tools.redstone.redstonetools.malilib.config;
 
 import net.minecraft.client.MinecraftClient;
-import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
 import tools.redstone.redstonetools.malilib.widget.MacroBase;
 
@@ -16,26 +15,23 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MacroManager extends AbstractFeature {
-	private static Path macrosFilePath;
-	private static List<MacroBase> macros = new ArrayList<>();
+public class MacroManager {
+	private static final Path MACROS_FILE_PATH = MinecraftClient.getInstance().runDirectory.toPath()
+			.resolve("config")
+			.resolve("redstonetools")
+			.resolve("macros.json");
+	private static List<MacroBase> macros;
 
 	public static List<MacroBase> getAllMacros() {
 		return macros;
 	}
 
-	public MacroManager() {
-		macrosFilePath = MinecraftClient.getInstance().runDirectory.toPath()
-				.resolve("config")
-				.resolve("redstonetools")
-				.resolve("macros.json");
-
-
+	public static void loadMacros() {
 		javax.json.JsonArray macrosJson = null;
 		try {
-			Files.createDirectories(macrosFilePath.getParent());
-			if (Files.exists(macrosFilePath)) {
-				var reader = Json.createReader(new FileReader(macrosFilePath.toFile()));
+			Files.createDirectories(MACROS_FILE_PATH.getParent());
+			if (Files.exists(MACROS_FILE_PATH)) {
+				var reader = Json.createReader(new FileReader(MACROS_FILE_PATH.toFile()));
 				macrosJson = reader.readArray();
 				reader.close();
 			}
@@ -75,7 +71,7 @@ public class MacroManager extends AbstractFeature {
 
 	public static void saveChanges() {
 		try {
-			Files.createDirectories(macrosFilePath.getParent());
+			Files.createDirectories(MACROS_FILE_PATH.getParent());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -85,7 +81,7 @@ public class MacroManager extends AbstractFeature {
 			macrosJson.add(getMacroJson(macro));
 		}
 
-		try (var writer = Json.createWriter(new FileWriter(macrosFilePath.toFile()))) {
+		try (var writer = Json.createWriter(new FileWriter(MACROS_FILE_PATH.toFile()))) {
 			writer.writeArray(macrosJson.build());
 		} catch (Exception e) {
 			e.printStackTrace();

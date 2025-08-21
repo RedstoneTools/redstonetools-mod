@@ -12,8 +12,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.PositionUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 
@@ -23,17 +21,21 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class QuickTpFeature extends AbstractFeature {
-	public static void registerCommand() {
-		var qtp = FeatureUtils.getFeature(QuickTpFeature.class);
+public class QuickTpFeature {
+	public static final QuickTpFeature INSTANCE = new QuickTpFeature();
+
+	protected QuickTpFeature() {
+	}
+
+	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("quicktp")
-				.executes(qtp::parseArguments)
+				.executes(this::parseArguments)
 				.then(argument("distance", DoubleArgumentType.doubleArg())
-						.executes(qtp::parseArguments)
+						.executes(this::parseArguments)
 						.then(argument("throughFluids", BoolArgumentType.bool())
-								.executes(qtp::parseArguments)
+								.executes(this::parseArguments)
 								.then(argument("resetVelocity", BoolArgumentType.bool())
-										.executes(qtp::parseArguments))))));
+										.executes(this::parseArguments))))));
 	}
 
 	protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

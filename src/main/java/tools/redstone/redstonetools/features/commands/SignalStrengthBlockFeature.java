@@ -8,9 +8,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.features.commands.argument.SignalBlockArgumentType;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.SignalBlock;
 
 import java.util.Locale;
@@ -20,15 +18,19 @@ import java.util.Random;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class SignalStrengthBlockFeature extends AbstractFeature {
-	public static void registerCommand() {
-		var ssb = FeatureUtils.getFeature(SignalStrengthBlockFeature.class);
+public class SignalStrengthBlockFeature {
+	public static final SignalStrengthBlockFeature INSTANCE = new SignalStrengthBlockFeature();
+
+	protected SignalStrengthBlockFeature() {
+	}
+
+	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("ssb")
-				.executes(ssb::parseArguments)
+				.executes(this::parseArguments)
 				.then(argument("signalStrength", IntegerArgumentType.integer())
-						.executes(ssb::parseArguments)
+						.executes(this::parseArguments)
 						.then(argument("block", SignalBlockArgumentType.signalblock())
-								.executes(ssb::parseArguments)))));
+								.executes(this::parseArguments)))));
 	}
 
 	protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

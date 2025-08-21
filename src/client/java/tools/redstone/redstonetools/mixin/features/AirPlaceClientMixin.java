@@ -12,12 +12,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
-import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 @Mixin(MinecraftClient.class)
 public class AirPlaceClientMixin {
 	@Unique
-	private final AirPlaceFeature airPlaceFeature = ClientFeatureUtils.getFeature(AirPlaceFeature.class);
+	private final AirPlaceFeature airPlaceFeature = AirPlaceFeature.INSTANCE;
 	@Shadow
 	public HitResult crosshairTarget;
 

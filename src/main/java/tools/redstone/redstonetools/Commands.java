@@ -9,18 +9,18 @@ import tools.redstone.redstonetools.utils.DependencyLookup;
 public class Commands {
 	public static void registerCommands() {
 		if (DependencyLookup.WORLDEDIT_PRESENT) {
-			BinaryBlockReadFeature.registerCommand();
-			ColorCodeFeature.registerCommand();
-			MinSelectionFeature.registerCommand();
-			RStackFeature.registerCommand();
+			BinaryBlockReadFeature.INSTANCE.registerCommand();
+			ColorCodeFeature.INSTANCE.registerCommand();
+			MinSelectionFeature.INSTANCE.registerCommand();
+			RStackFeature.INSTANCE.registerCommand();
 		}
-		ItemBindFeature.registerCommand();
-		QuickTpFeature.registerCommand();
-		SignalStrengthBlockFeature.registerCommand();
-		AutoDustFeature.registerCommand();
-		AutoRotateFeature.registerCommand();
-		ClickContainerFeature.registerCommand();
-		ColoredFeature.registerCommand();
-		CopyStateFeature.registerCommand();
+		ItemBindFeature.INSTANCE.registerCommand();
+		QuickTpFeature.INSTANCE.registerCommand();
+		SignalStrengthBlockFeature.INSTANCE.registerCommand();
+		AutoDustFeature.INSTANCE.registerCommand();
+		AutoRotateFeature.INSTANCE.registerCommand();
+		ClickContainerFeature.INSTANCE.registerCommand();
+		ColoredFeature.INSTANCE.registerCommand();
+		CopyStateFeature.INSTANCE.registerCommand();
 	}
 }

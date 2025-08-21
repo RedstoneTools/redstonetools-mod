@@ -6,27 +6,28 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.ClientFeatureUtils;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
-public class GiveMeFeature extends AbstractFeature {
-	public static void registerCommand() {
-		GiveMeFeature giveMeFeature = ClientFeatureUtils.getFeature(GiveMeFeature.class);
+public class GiveMeFeature {
+	public static final GiveMeFeature INSTANCE = new GiveMeFeature();
+
+	protected GiveMeFeature() {
+	}
+
+	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 			literal("g")
 				.then(argument("item", ItemStackArgumentType.itemStack(registryAccess))
-					.executes(context -> giveMeFeature.execute(
+					.executes(context -> this.execute(
 						context,
 						registryAccess,
 						ItemStackArgumentType.getItemStackArgument(context, "item"),
 						1))
 					.then(argument("count", IntegerArgumentType.integer(1))
-						.executes(context -> giveMeFeature.execute(
+						.executes(context -> this.execute(
 							context,
 							registryAccess,
 							ItemStackArgumentType.getItemStackArgument(context, "item"),

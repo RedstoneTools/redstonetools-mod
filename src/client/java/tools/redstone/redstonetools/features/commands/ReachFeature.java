@@ -4,17 +4,20 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
-public class ReachFeature extends AbstractFeature {
-	public static void registerCommand() {
+public class ReachFeature {
+	public static final ReachFeature INSTANCE = new ReachFeature();
+
+	protected ReachFeature() {
+	}
+
+	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(ClientCommandManager.literal("reach")
 					.then(ClientCommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
-							.executes(context -> ClientFeatureUtils.getFeature(ReachFeature.class).execute(context))));
+							.executes(this::execute)));
 
 			dispatcher.register(ClientCommandManager.literal("reach-block")
 					.then(ClientCommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))

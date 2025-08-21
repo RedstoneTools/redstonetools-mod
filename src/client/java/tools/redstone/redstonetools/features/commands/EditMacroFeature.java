@@ -7,7 +7,12 @@ import tools.redstone.redstonetools.malilib.GuiMacroManager;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
 public class EditMacroFeature {
-	public static void registerCommand() {
+	public static final EditMacroFeature INSTANCE = new EditMacroFeature();
+
+	protected EditMacroFeature() {
+	}
+
+	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("edit-macros")
 				.executes(commandContext -> {
 					MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(new GuiMacroManager()));
