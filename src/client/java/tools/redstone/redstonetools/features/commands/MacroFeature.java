@@ -17,9 +17,14 @@ public class MacroFeature {
 	}
 
 	public void registerCommand() {
-		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal("macro")
+		EVENT.register((dispatcher, registryAccess) -> {
+			dispatcher.register(literal("macro")
 				.then(argument("macro", MacroArgumentType.macro())
-						.executes(this::execute))));
+					.executes(this::execute)));
+			dispatcher.register(literal("m")
+				.then(argument("macro", MacroArgumentType.macro())
+					.executes(this::execute)));
+		});
 	}
 
 	protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
