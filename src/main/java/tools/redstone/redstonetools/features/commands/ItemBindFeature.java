@@ -9,7 +9,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.ItemUtils;
-import tools.redstone.redstonetools.RedstoneTools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,16 +36,16 @@ public class ItemBindFeature {
 			return 0;
 		}
 		boolean mainhand;
-		if (player.getMainHandStack().get(RedstoneTools.COMMAND_COMPONENT) != null) {
+		if (ItemUtils.containsCommand(player.getMainHandStack())) {
 			mainhand = true;
-		} else if (player.getOffHandStack().get(RedstoneTools.COMMAND_COMPONENT) != null) {
+		} else if (ItemUtils.containsCommand(player.getOffHandStack())) {
 			mainhand = false;
 		} else {
 			context.getSource().getPlayer().sendMessage(Text.of("You need to be holding an item with a command in one of your hands!"), false);
 			return 0;
 		}
 		ItemStack stack = mainhand ? player.getMainHandStack() : player.getOffHandStack();
-		stack.remove(RedstoneTools.COMMAND_COMPONENT);
+		ItemUtils.removeCommand(stack);
 		stack.set(DataComponentTypes.LORE, stack.getItem().getDefaultStack().get(DataComponentTypes.LORE));
 		context.getSource().getPlayer().sendMessage(Text.of("Successfully removed command from the item in your " + (mainhand ? "mainhand" : "offhand")), false);
 		return 1;
