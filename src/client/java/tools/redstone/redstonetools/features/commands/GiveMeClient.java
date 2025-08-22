@@ -11,15 +11,16 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistratio
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
-public class GiveMeFeature {
-	public static final GiveMeFeature INSTANCE = new GiveMeFeature();
+public class GiveMeClient {
+	public static final GiveMeClient INSTANCE = new GiveMeClient();
 
-	protected GiveMeFeature() {
+	protected GiveMeClient() {
 	}
 
 	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 			literal("g")
+				.requires(source -> source.getPlayer().hasPermissionLevel(2))
 				.then(argument("item", ItemStackArgumentType.itemStack(registryAccess))
 					.executes(context -> this.execute(
 						context,

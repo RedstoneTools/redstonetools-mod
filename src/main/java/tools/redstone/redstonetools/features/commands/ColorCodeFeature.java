@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -17,7 +18,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
-import tools.redstone.redstonetools.features.commands.argument.BlockColorArgumentType;
+import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.ColoredBlock;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
@@ -33,9 +34,10 @@ public class ColorCodeFeature {
 
 	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/colorcode")
-				.then(argument("color", BlockColorArgumentType.blockcolor())
+			.requires(source -> source.hasPermissionLevel(2))
+				.then(argument("color", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
 						.executes(this::execute)
-						.then(argument("onlyColor", BlockColorArgumentType.blockcolor())
+						.then(argument("onlyColor", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
 								.executes(this::execute)))));
 	}
 
@@ -69,9 +71,9 @@ public class ColorCodeFeature {
 	}
 
 	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		color = BlockColorArgumentType.getBlockColor(context, "color");
+		color = ArgumentUtils.parseBlockColor(context, "color");
 		try {
-			onlyColor = BlockColorArgumentType.getBlockColor(context, "onlyColor");
+			onlyColor = ArgumentUtils.parseBlockColor(context, "onlyColor");
 		} catch (Exception ignored) {
 			onlyColor = null;
 		}

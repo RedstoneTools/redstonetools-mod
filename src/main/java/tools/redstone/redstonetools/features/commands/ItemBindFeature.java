@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.RedstoneTools;
+import tools.redstone.redstonetools.utils.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ public class ItemBindFeature {
 	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess, enviroment) ->
 			dispatcher.register(literal("itembind")
+				.requires(source -> source.hasPermissionLevel(2))
 				.executes(this::execute)
 				.then(literal("reset")
 					.executes(ItemBindFeature::executeReset))));
@@ -36,16 +37,16 @@ public class ItemBindFeature {
 			return 0;
 		}
 		boolean mainhand;
-		if (player.getMainHandStack().get(RedstoneTools.COMMAND_COMPONENT) != null) {
+		if (ItemUtils.containsCommand(player.getMainHandStack())) {
 			mainhand = true;
-		} else if (player.getOffHandStack().get(RedstoneTools.COMMAND_COMPONENT) != null) {
+		} else if (ItemUtils.containsCommand(player.getOffHandStack())) {
 			mainhand = false;
 		} else {
 			context.getSource().getPlayer().sendMessage(Text.of("You need to be holding an item with a command in one of your hands!"), false);
 			return 0;
 		}
 		ItemStack stack = mainhand ? player.getMainHandStack() : player.getOffHandStack();
-		stack.remove(RedstoneTools.COMMAND_COMPONENT);
+		ItemUtils.removeCommand(stack);
 		stack.set(DataComponentTypes.LORE, stack.getItem().getDefaultStack().get(DataComponentTypes.LORE));
 		context.getSource().getPlayer().sendMessage(Text.of("Successfully removed command from the item in your " + (mainhand ? "mainhand" : "offhand")), false);
 		return 1;
@@ -54,9 +55,6 @@ public class ItemBindFeature {
 	public static ArrayList<ServerPlayerEntity> playersWaitingForCommand = new ArrayList<>();
 
 	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-//		if (!Objects.requireNonNull(context.getSource().getPlayer()).getGameMode().isCreative()) {
-//			throw new SimpleCommandExceptionType(Text.literal("You must be in creative to use this command!")).create();
-//		}
 		ServerCommandSource source = context.getSource();
 		playersWaitingForCommand.add(source.getPlayer());
 
@@ -76,7 +74,7 @@ public class ItemBindFeature {
 				stack = playerI.getOffHandStack();
 		}
 
-		stack.set(RedstoneTools.COMMAND_COMPONENT, command);
+		ItemUtils.setCommand(stack, command);
 		//                                                                                                   `command` here doesn't start with a / for some
 		//                                                                                                   reason, so we add it ourselves so its more clear
 		stack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.of("Has command: /" + command))));

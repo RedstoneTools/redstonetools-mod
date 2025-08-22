@@ -125,9 +125,6 @@ public class MacroManager {
 						"/time set noon",
 						"/weather clear"
 				}),
-				createCommandMacro("airplace", new String[]{"/airplace"}),
-				createCommandMacro("autodust", new String[]{"/autodust"}),
-				createCommandMacro("bigdust", new String[]{"/bigdust 3"}),
 				createCommandMacro("copystate", new String[]{"/copystate"}),
 				createCommandMacro("itembind", new String[]{"/itembind"}),
 				createCommandMacro("minsel", new String[]{"//minsel"}),

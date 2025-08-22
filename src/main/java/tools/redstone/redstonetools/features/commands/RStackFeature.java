@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -21,7 +22,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
-import tools.redstone.redstonetools.features.commands.argument.DirectionArgumentType;
+import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.DirectionArgument;
 
 import java.util.Objects;
@@ -41,10 +42,11 @@ public class RStackFeature {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
 			dispatcher.register(
 				literal("/rstack")
+					.requires(source -> source.hasPermissionLevel(2))
 					.executes(getCommandForArgumentCount(0))
 					.then(argument("count", IntegerArgumentType.integer())
 						.executes(getCommandForArgumentCount(1))
-						.then(argument("direction", DirectionArgumentType.direction())
+						.then(argument("direction", StringArgumentType.string()).suggests(ArgumentUtils.DIRECTION_SUGGESTION_PROVIDER)
 							.executes(getCommandForArgumentCount(2))
 							.then(argument("offset", IntegerArgumentType.integer())
 								.executes(getCommandForArgumentCount(3))
@@ -58,9 +60,9 @@ public class RStackFeature {
 
 	protected int execute(CommandContext<ServerCommandSource> context, int argCount) throws CommandSyntaxException {
 		int count = argCount >= 1 ? IntegerArgumentType.getInteger(context, "count") : 1;
-		DirectionArgument direction = argCount >= 2 ? DirectionArgumentType.getDirection(context, "direction") : DirectionArgument.ME;
+		DirectionArgument direction = argCount >= 2 ? ArgumentUtils.parseDirection(context, "direction") : DirectionArgument.ME;
 		int offset = argCount >= 3 ? IntegerArgumentType.getInteger(context, "offset") : 2;
-		boolean moveSelection = argCount >= 4 ? BoolArgumentType.getBool(context, "moveSelection") : false;
+		boolean moveSelection = argCount >= 4 && BoolArgumentType.getBool(context, "moveSelection");
 		return execute(context, count, offset, direction, moveSelection);
 	}
 

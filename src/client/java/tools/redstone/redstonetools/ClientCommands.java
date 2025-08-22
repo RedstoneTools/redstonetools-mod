@@ -5,18 +5,16 @@ import tools.redstone.redstonetools.features.toggleable.*;
 
 public class ClientCommands {
 	public static void registerCommands() {
-		BaseConvertFeature.INSTANCE.registerCommand();
+		BaseConvertClient.INSTANCE.registerCommand();
 		EditMacroFeature.INSTANCE.registerCommand();
 		MacroFeature.INSTANCE.registerCommand();
-		ReachFeature.INSTANCE.registerCommand();
-		GiveMeFeature.INSTANCE.registerCommand();
+		ReachClient.INSTANCE.registerCommand();
+		GiveMeClient.INSTANCE.registerCommand();
 		AirPlaceFeature.INSTANCE.registerCommand();
 		AutoRotateFeature.INSTANCE.registerCommand();
 		ClickContainerFeature.INSTANCE.registerCommand();
 		RstFeature.INSTANCE.registerCommand();
 		BigDustFeature.INSTANCE.registerCommand();
-		AutoDustClient.registerHandler();
-		AutoRotateClient.registerHandler();
-		ClickContainerClient.registerHandler();
+		QuickTpClient.INSTANCE.registerCommand();
 	}
 }

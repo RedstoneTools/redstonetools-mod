@@ -30,7 +30,9 @@ public class MinSelectionFeature {
 
 	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
-			dispatcher.register(literal("/minsel").executes(this::execute)));
+			dispatcher.register(literal("/minsel")
+				.requires(source -> source.hasPermissionLevel(2))
+				.executes(this::execute)));
 	}
 
 	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

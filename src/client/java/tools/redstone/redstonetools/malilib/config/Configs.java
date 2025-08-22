@@ -16,6 +16,46 @@ import java.util.List;
 public class Configs implements IConfigHandler {
 	private static final String CONFIG_FILE_NAME = RedstoneTools.MOD_ID + ".json";
 
+	public static class Toggles {
+		public static final ConfigBooleanHotkeyed AIRPLACE = new ConfigBooleanHotkeyed("Airplace", false, "", "Whether or not airplace should be enabled");
+		public static final ConfigBooleanHotkeyed AUTODUST = new ConfigBooleanHotkeyed("Autodust", false, "","Whether or not autodust should be enabled");
+		public static final ConfigBooleanHotkeyed AUTOROTATE = new ConfigBooleanHotkeyed("Autorotate", false, "","Whether or not autorotate should be enabled");
+		public static final ConfigBooleanHotkeyed BIGDUST = new ConfigBooleanHotkeyed("Bigdust", false, "","Whether or not bigdust should be enabled");
+		public static final ConfigBooleanHotkeyed CLICKCONTAINERS = new ConfigBooleanHotkeyed("Clickcontainers", false, "","Whether or not clickcontainer should be enabled");
+
+		public static final List<? extends IConfigBase> TOGGLES = List.of(
+			AIRPLACE,
+			AUTODUST,
+			AUTOROTATE,
+			BIGDUST,
+			CLICKCONTAINERS
+		);
+
+
+		static {
+			AIRPLACE.getKeybind().setCallback((t, g) -> {
+				AIRPLACE.setBooleanValue(!AIRPLACE.getBooleanValue());
+				return true;
+			});
+			AUTODUST.getKeybind().setCallback((t, g) -> {
+				AUTODUST.setBooleanValue(!AUTODUST.getBooleanValue());
+				return true;
+			});
+			AUTOROTATE.getKeybind().setCallback((t, g) -> {
+				AUTOROTATE.setBooleanValue(!AUTOROTATE.getBooleanValue());
+				return true;
+			});
+			BIGDUST.getKeybind().setCallback((t, g) -> {
+				BIGDUST.setBooleanValue(!BIGDUST.getBooleanValue());
+				return true;
+			});
+			CLICKCONTAINERS.getKeybind().setCallback((t, g) -> {
+				CLICKCONTAINERS.setBooleanValue(!CLICKCONTAINERS.getBooleanValue());
+				return true;
+			});
+		}
+	}
+
 	public static class General {
 		public static final ConfigHotkey HOTKEY_OPEN_GUI = new ConfigHotkey("Hotkey to open menu", "V,C", "Hotkey to open menu");
 		public static final ConfigBoolean BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS = new ConfigBoolean("Improved command suggestions", true,
@@ -52,6 +92,7 @@ public class Configs implements IConfigHandler {
 				JsonObject root = element.getAsJsonObject();
 
 				ConfigUtils.readConfigBase(root, "Generic", General.OPTIONS);
+				ConfigUtils.readConfigBase(root, "Toggles", Toggles.TOGGLES);
 			}
 		}
 	}
@@ -63,6 +104,7 @@ public class Configs implements IConfigHandler {
 			JsonObject root = new JsonObject();
 
 			ConfigUtils.writeConfigBase(root, "Generic", General.OPTIONS);
+			ConfigUtils.writeConfigBase(root, "Toggles", Toggles.TOGGLES);
 
 			JsonUtils.writeJsonToFile(root, new File(dir, CONFIG_FILE_NAME));
 		}

@@ -24,14 +24,23 @@ public class InputHandler implements IKeybindProvider, IKeyboardInputHandler, IM
 			if (config instanceof IHotkey hotkey)
 				manager.addKeybindToMap(hotkey.getKeybind());
 		}
+		for (IConfigBase config : Configs.Toggles.TOGGLES) {
+			if (config instanceof IHotkey hotkey)
+				manager.addKeybindToMap(hotkey.getKeybind());
+		}
 	}
 
 	@Override
 	public void addHotkeys(IKeybindManager manager) {
-		List<IHotkey> hotkeys = Configs.General.OPTIONS.stream()
-				.filter(IHotkey.class::isInstance)
-				.map(IHotkey.class::cast)
-				.toList();
-		manager.addHotkeysForCategory(RedstoneTools.MOD_NAME, "Generic", hotkeys);
+		List<IHotkey> hotkeysOptions = Configs.General.OPTIONS.stream()
+			.filter(IHotkey.class::isInstance)
+			.map(IHotkey.class::cast)
+			.toList();
+		manager.addHotkeysForCategory(RedstoneTools.MOD_NAME, "Generic", hotkeysOptions);
+		List<IHotkey> hotkeysToggles = Configs.Toggles.TOGGLES.stream()
+			.filter(IHotkey.class::isInstance)
+			.map(IHotkey.class::cast)
+			.toList();
+		manager.addHotkeysForCategory(RedstoneTools.MOD_NAME, "Toggles", hotkeysToggles);
 	}
 }
