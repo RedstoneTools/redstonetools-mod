@@ -1,18 +1,18 @@
 package tools.redstone.redstonetools.features.toggleable;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class AutoRotateFeature extends ToggleableFeature {
+	public static final AutoRotateFeature INSTANCE = new AutoRotateFeature();
 
-	public static void registerCommand() {
+	protected AutoRotateFeature() {
+	}
+
+	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
-				dispatcher.register(literal("autorotate")
-						.executes(context -> FeatureUtils.getFeature(AutoRotateFeature.class).toggle(context))
-				)
-		);
+			dispatcher.register(literal("autorotate").executes(this::toggle)));
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.features.commands;
 
-import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.component.DataComponentTypes;
@@ -9,42 +8,48 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.ItemUtils;
+import tools.redstone.redstonetools.RedstoneTools;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT;
-import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class ItemBindFeature extends AbstractFeature {
-	public static void registerCommand() {
-		EVENT.register((dispatcher, registryAccess, enviroment) -> dispatcher.register(literal("itembind")
-				.executes(context -> FeatureUtils.getFeature(ItemBindFeature.class).execute(context))
-				.then(argument("reset", BoolArgumentType.bool())
-						.executes(context -> {
-							if (BoolArgumentType.getBool(context, "reset")) {
-								var player = context.getSource().getPlayer();
-								if (player != null) {
-									var stack = player.getMainHandStack();
-									boolean mainhand = stack == ItemStack.EMPTY;
-									if (!mainhand) {
-										stack = player.getOffHandStack();
-									}
-									ItemUtils.removeCommand(stack);
-									stack.set(DataComponentTypes.LORE, stack.getItem().getDefaultStack().get(DataComponentTypes.LORE));
-									context.getSource().getPlayer().sendMessage(Text.of("Successfully removed command from the item in your " + (mainhand ? "hand" : "offhand")), false);
-								} else {
-									context.getSource().getPlayer().sendMessage(Text.of("You need to be holding an item in one of your hands!"), false);
-								}
-								return 1;
-							} else {
-								return FeatureUtils.getFeature(ItemBindFeature.class).execute(context);
-							}
-						}))));
+public class ItemBindFeature {
+	public static final ItemBindFeature INSTANCE = new ItemBindFeature();
+
+	protected ItemBindFeature() {
+	}
+
+	public void registerCommand() {
+		EVENT.register((dispatcher, registryAccess, enviroment) ->
+			dispatcher.register(literal("itembind")
+				.executes(this::execute)
+				.then(literal("reset")
+					.executes(ItemBindFeature::executeReset))));
+	}
+
+	private static int executeReset(CommandContext<ServerCommandSource> context) {
+		var player = context.getSource().getPlayer();
+		if (player == null) {
+			return 0;
+		}
+		boolean mainhand;
+		if (player.getMainHandStack().get(RedstoneTools.COMMAND_COMPONENT) != null) {
+			mainhand = true;
+		} else if (player.getOffHandStack().get(RedstoneTools.COMMAND_COMPONENT) != null) {
+			mainhand = false;
+		} else {
+			context.getSource().getPlayer().sendMessage(Text.of("You need to be holding an item with a command in one of your hands!"), false);
+			return 0;
+		}
+		ItemStack stack = mainhand ? player.getMainHandStack() : player.getOffHandStack();
+		stack.remove(RedstoneTools.COMMAND_COMPONENT);
+		stack.set(DataComponentTypes.LORE, stack.getItem().getDefaultStack().get(DataComponentTypes.LORE));
+		context.getSource().getPlayer().sendMessage(Text.of("Successfully removed command from the item in your " + (mainhand ? "mainhand" : "offhand")), false);
+		return 1;
 	}
 
 	public static ArrayList<ServerPlayerEntity> playersWaitingForCommand = new ArrayList<>();
@@ -75,7 +80,7 @@ public class ItemBindFeature extends AbstractFeature {
 		stack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.of("Has command: /" + command))));
 
 		playersWaitingForCommand.remove(playerI);
-		playerI.sendMessage(Text.literal("Successfully bound command: '%s' to this item (%s)!".formatted(command, stack.getItem().getName().getString())), false);
+		playerI.sendMessage(Text.literal("Successfully bound command: '/%s' to this item (%s)!".formatted(command, stack.getItem().getName().getString())), false);
 
 	}
 

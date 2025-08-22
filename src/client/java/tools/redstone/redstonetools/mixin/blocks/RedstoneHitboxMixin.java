@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 import tools.redstone.redstonetools.malilib.config.Configs;
-import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneHitboxMixin {
@@ -24,7 +23,7 @@ public class RedstoneHitboxMixin {
 
 	@Inject(method = "getOutlineShape", at = @At("HEAD"), cancellable = true)
 	public void getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
-		if (ClientFeatureUtils.getFeature(BigDustFeature.class).isEnabled()) {
+		if (BigDustFeature.INSTANCE.isEnabled()) {
 			cir.setReturnValue(SHAPES[Configs.General.getHeightInPixels()]);
 		}
 	}

@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import tools.redstone.redstonetools.features.toggleable.AutoRotateFeature;
 import tools.redstone.redstonetools.utils.BlockUtils;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 @Mixin(BlockItem.class)
 public abstract class AutoRotateMixin {
@@ -23,7 +22,7 @@ public abstract class AutoRotateMixin {
 		if (!(context.getPlayer() instanceof ServerPlayerEntity player))         return original;
 		if (player.getServer() == null)                                          return original;
 		if (!player.getServer().isDedicated())                                   return original;
-		if (!FeatureUtils.getFeature(AutoRotateFeature.class).isEnabled(player)) return original;
+		if (!AutoRotateFeature.INSTANCE.isEnabled(player)) return original;
 		if (original == null)                                                    return null;
 
 		BlockState backup = original;

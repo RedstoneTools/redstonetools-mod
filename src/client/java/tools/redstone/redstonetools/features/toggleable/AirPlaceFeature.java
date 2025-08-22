@@ -20,17 +20,22 @@ import net.minecraft.util.math.Vec3d;
 import tools.redstone.redstonetools.malilib.config.Configs;
 import tools.redstone.redstonetools.mixin.features.WorldRendererInvoker;
 import tools.redstone.redstonetools.utils.BlockUtils;
-import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 import tools.redstone.redstonetools.utils.ItemUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class AirPlaceFeature extends ClientToggleableFeature {
-	public static void registerCommand() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal("airplace")
-						.executes(context -> ClientFeatureUtils.getFeature(AirPlaceFeature.class).toggle(context))));
+	public static final AirPlaceFeature INSTANCE = new AirPlaceFeature();
+
+	protected AirPlaceFeature() {
 	}
+
+	public void registerCommand() {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal("airplace")
+						.executes(this::toggle)));
+	}
+
 	public static float reach;
 
 	public static boolean canAirPlace(PlayerEntity player) {

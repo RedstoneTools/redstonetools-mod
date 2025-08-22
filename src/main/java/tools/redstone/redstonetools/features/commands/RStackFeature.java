@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -23,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.DirectionArgument;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.util.Objects;
 
@@ -32,35 +33,40 @@ import static net.minecraft.server.command.CommandManager.literal;
 import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
-public class RStackFeature extends AbstractFeature {
-	public static void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/rstack")
-						.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
-				.then(argument("count", IntegerArgumentType.integer())
-						.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
+public class RStackFeature {
+	public static final RStackFeature INSTANCE = new RStackFeature();
+
+	protected RStackFeature() {
+	}
+
+	public void registerCommand() {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+			dispatcher.register(
+				literal("/rstack")
+					.executes(getCommandForArgumentCount(0))
+					.then(argument("count", IntegerArgumentType.integer())
+						.executes(getCommandForArgumentCount(1))
 						.then(argument("direction", StringArgumentType.string()).suggests(ArgumentUtils.DIRECTION_SUGGESTION_PROVIDER)
-								.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context))
-								.then(argument("offset", IntegerArgumentType.integer())
-										.executes(context -> FeatureUtils.getFeature(RStackFeature.class).pareseArguments(context)))))));
+							.executes(getCommandForArgumentCount(2))
+							.then(argument("offset", IntegerArgumentType.integer())
+								.executes(getCommandForArgumentCount(3))
+								.then(argument("moveSelection", BoolArgumentType.bool())
+									.executes(getCommandForArgumentCount(4))))))));
 	}
 
-	protected int pareseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		int count;
-		DirectionArgument direction;
-		int offset;
-		try {
-			count = IntegerArgumentType.getInteger(context, "count");
-		} catch (Exception ignored) {count = 1;}
-		try {
-			direction = ArgumentUtils.parseDirection(context, "direction");
-		} catch (Exception ignored) {direction = DirectionArgument.ME;}
-		try {
-			offset = IntegerArgumentType.getInteger(context, "offset");
-		} catch (Exception ignored) {offset = 2;}
-		return execute(context, count, offset, direction);
+	protected Command<ServerCommandSource> getCommandForArgumentCount(int argNum) {
+		return context -> execute(context, argNum);
 	}
 
-	protected int execute(CommandContext<ServerCommandSource> context, int count, int offset, DirectionArgument direction) throws CommandSyntaxException {
+	protected int execute(CommandContext<ServerCommandSource> context, int argCount) throws CommandSyntaxException {
+		int count = argCount >= 1 ? IntegerArgumentType.getInteger(context, "count") : 1;
+		DirectionArgument direction = argCount >= 2 ? ArgumentUtils.parseDirection(context, "direction"); : DirectionArgument.ME;
+		int offset = argCount >= 3 ? IntegerArgumentType.getInteger(context, "offset") : 2;
+		boolean moveSelection = argCount >= 4 ? BoolArgumentType.getBool(context, "moveSelection") : false;
+		return execute(context, count, offset, direction, moveSelection);
+	}
+
+	protected int execute(CommandContext<ServerCommandSource> context, int count, int offset, DirectionArgument direction, boolean moveSelection) throws CommandSyntaxException {
 		var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
 
 		var localSession = WorldEdit.getInstance()
@@ -102,15 +108,19 @@ public class RStackFeature extends AbstractFeature {
 
 		try (var editSession = localSession.createEditSession(actor)) {
 			for (var i = 1; i <= count; i++) {
+				BlockVector3 offsetVector = Objects.requireNonNull(stackVector).multiply(i * offset);
 				var copy = new ForwardExtentCopy(
 						editSession,
 						selection,
 						editSession,
-						selection.getMinimumPoint().add(Objects.requireNonNull(stackVector).multiply(i * offset))
+						selection.getMinimumPoint().add(offsetVector)
 				);
 				copy.setSourceMask(airFilter);
 				copy.setSourceFunction(position -> false);
 				Operations.complete(copy);
+				if (i == count && moveSelection) {
+					selection.shift(offsetVector);
+				}
 			}
 			localSession.remember(editSession);
 		} catch (WorldEditException e) {
