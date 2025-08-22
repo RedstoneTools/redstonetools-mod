@@ -16,9 +16,5 @@ public class ClientCommands {
 		RstFeature.INSTANCE.registerCommand();
 		BigDustFeature.INSTANCE.registerCommand();
 		QuickTpClient.INSTANCE.registerCommand();
-
-		AutoDustClient.registerHandler();
-		AutoRotateClient.registerHandler();
-		ClickContainerClient.registerHandler();
 	}
 }

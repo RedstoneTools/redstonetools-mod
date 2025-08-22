@@ -2,6 +2,7 @@ package tools.redstone.redstonetools.features.toggleable;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import tools.redstone.redstonetools.malilib.config.Configs;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
@@ -10,6 +11,7 @@ public class BigDustFeature extends ClientToggleableFeature {
 	public static final BigDustFeature INSTANCE = new BigDustFeature();
 
 	protected BigDustFeature() {
+		super(Configs.Toggles.BIGDUST);
 	}
 
 	public void registerCommand() {

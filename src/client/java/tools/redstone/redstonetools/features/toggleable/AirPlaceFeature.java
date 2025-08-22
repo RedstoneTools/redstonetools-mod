@@ -29,6 +29,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 	public static final AirPlaceFeature INSTANCE = new AirPlaceFeature();
 
 	protected AirPlaceFeature() {
+		super(Configs.Toggles.AIRPLACE);
 	}
 
 	public void registerCommand() {
@@ -92,7 +93,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			BlockState blockState = ItemUtils.getUseState(client.player,
 					ItemUtils.getMainItem(client.player),
 					reach);
-			if (AutoRotateClient.isEnabled) {
+			if (AutoRotateClient.isEnabled.getBooleanValue()) {
 				blockState = BlockUtils.rotate(blockState);
 			}
 			if (blockState == null)

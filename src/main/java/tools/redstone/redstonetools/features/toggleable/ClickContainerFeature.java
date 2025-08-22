@@ -95,6 +95,6 @@ public class ClickContainerFeature extends ToggleableFeature {
 
 	@Override
 	public String getName() {
-		return "ClickContainer";
+		return "ClickContainers";
 	}
 }

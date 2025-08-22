@@ -61,6 +61,8 @@ public class GuiConfigs extends GuiConfigsBase {
 
 		if (tab == ConfigGuiTab.GENERAL) {
 			configs = Configs.General.OPTIONS;
+		} else if (tab == ConfigGuiTab.TOGGLES) {
+			configs = Configs.Toggles.TOGGLES;
 		} else {
 			return Collections.emptyList();
 		}
@@ -88,7 +90,8 @@ public class GuiConfigs extends GuiConfigsBase {
 
 	public enum ConfigGuiTab {
 		GENERAL("General"),
-		MACROS("Macros");
+		MACROS("Macros"),
+		TOGGLES("Toggles");
 
 		private final String translationKey;
 

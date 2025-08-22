@@ -31,13 +31,17 @@ public class ConfigUtils {
 
 			AirPlaceFeature.INSTANCE.setEnabled(storedState.airPlace);
 			BigDustFeature.INSTANCE.setEnabled(storedState.bigDust);
-			AutoDustClient.isEnabled = storedState.autoDust;
-			AutoRotateClient.isEnabled = storedState.autoRotate;
-			ClickContainerClient.isEnabled = storedState.clickContainer;
+			AutoDustClient.isEnabled.setBooleanValue(storedState.autoDust);
+			AutoRotateClient.isEnabled.setBooleanValue(storedState.autoRotate);
+			ClickContainerClient.isEnabled.setBooleanValue(storedState.clickContainer);
 
 		} catch (IOException e) {
 			System.err.println("Error reading toggles: " + e.getMessage());
 		}
+
+		AutoDustClient.registerHandler();
+		AutoRotateClient.registerHandler();
+		ClickContainerClient.registerHandler();
 	}
 
 	public static void saveToggles() {
@@ -45,9 +49,9 @@ public class ConfigUtils {
 
 		storedState.airPlace = AirPlaceFeature.INSTANCE.isEnabled();
 		storedState.bigDust = BigDustFeature.INSTANCE.isEnabled();
-		storedState.autoDust = AutoDustClient.isEnabled;
-		storedState.autoRotate = AutoRotateClient.isEnabled;
-		storedState.clickContainer = ClickContainerClient.isEnabled;
+		storedState.autoDust = AutoDustClient.isEnabled.getBooleanValue();
+		storedState.autoRotate = AutoRotateClient.isEnabled.getBooleanValue();
+		storedState.clickContainer = ClickContainerClient.isEnabled.getBooleanValue();
 
 		try {
 			Files.write(togglesFilePath, GSON.toJson(storedState).getBytes());

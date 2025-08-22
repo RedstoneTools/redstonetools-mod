@@ -16,6 +16,22 @@ import java.util.List;
 public class Configs implements IConfigHandler {
 	private static final String CONFIG_FILE_NAME = RedstoneTools.MOD_ID + ".json";
 
+	public static class Toggles {
+		public static final ConfigBoolean AIRPLACE = new ConfigBoolean("Airplace", false, "Whether or not airplace should be enabled");
+		public static final ConfigBoolean AUTODUST = new ConfigBoolean("Autodust", false, "Whether or not autodust should be enabled");
+		public static final ConfigBoolean AUTOROTATE = new ConfigBoolean("Autorotate", false, "Whether or not autorotate should be enabled");
+		public static final ConfigBoolean BIGDUST = new ConfigBoolean("Bigdust", false, "Whether or not bigdust should be enabled");
+		public static final ConfigBoolean CLICKCONTAINERS = new ConfigBoolean("Clickcontainers", false, "Whether or not clickcontainer should be enabled");
+
+		public static final List<? extends IConfigBase> TOGGLES = List.of(
+			AIRPLACE,
+			AUTODUST,
+			AUTOROTATE,
+			BIGDUST,
+			CLICKCONTAINERS
+		);
+	}
+
 	public static class General {
 		public static final ConfigHotkey HOTKEY_OPEN_GUI = new ConfigHotkey("Hotkey to open menu", "V,C", "Hotkey to open menu");
 		public static final ConfigBoolean BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS = new ConfigBoolean("Improved command suggestions", true,

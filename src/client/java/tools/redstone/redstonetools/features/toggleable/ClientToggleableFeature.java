@@ -2,14 +2,19 @@ package tools.redstone.redstonetools.features.toggleable;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
 
 public abstract class ClientToggleableFeature {
-	private volatile boolean enabled; // volatile for thread safety
+	private final ConfigBoolean enabled; // volatile for thread safety
+
+	protected ClientToggleableFeature(ConfigBoolean enabled) {
+		this.enabled = enabled;
+	}
 
 	public boolean isEnabled() {
-		return enabled;
+		return enabled.getBooleanValue();
 	}
 
 	public int toggle(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
@@ -17,11 +22,11 @@ public abstract class ClientToggleableFeature {
 	}
 
 	public int toggle(FabricClientCommandSource source) throws CommandSyntaxException {
-		return !enabled ? enable(source) : disable(source);
+		return !enabled.getBooleanValue() ? enable(source) : disable(source);
 	}
 
 	public void setEnabled(boolean status) {
-		if (status == enabled)
+		if (status == enabled.getBooleanValue())
 			return; // no work to do
 
 		if (status) {
@@ -32,7 +37,7 @@ public abstract class ClientToggleableFeature {
 	}
 
 	public void enable() {
-		enabled = true;
+		enabled.setBooleanValue(true);
 		onEnable();
 	}
 
@@ -43,7 +48,7 @@ public abstract class ClientToggleableFeature {
 	}
 
 	public void disable() {
-		enabled = false;
+		enabled.setBooleanValue(false);
 		onDisable();
 	}
 

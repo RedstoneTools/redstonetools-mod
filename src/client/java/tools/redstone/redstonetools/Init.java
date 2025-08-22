@@ -10,11 +10,10 @@ public class Init {
 	public static void init() {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(t -> ConfigUtils.saveToggles());
 		ClientLifecycleEvents.CLIENT_STARTED.register(t -> ConfigUtils.readToggles());
+		InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
 
 		RedstoneToolsClientPackets.registerPackets();
 		ClientCommands.registerCommands();
 		Commands.registerCommands();
-
-		InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
 	}
 }
