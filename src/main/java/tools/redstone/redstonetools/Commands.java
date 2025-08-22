@@ -14,7 +14,7 @@ public class Commands {
 			MinSelectionFeature.INSTANCE.registerCommand();
 			RStackFeature.INSTANCE.registerCommand();
 		}
-		ItemComponentsFeature.registerCommand(); // temp
+		ItemComponentsFeature.INSTANCE.registerCommand();
 		ItemBindFeature.INSTANCE.registerCommand();
 		QuickTpFeature.INSTANCE.registerCommand();
 		SignalStrengthBlockFeature.INSTANCE.registerCommand();

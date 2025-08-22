@@ -26,9 +26,13 @@ import java.util.Objects;
 import static net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT;
 
 public class ItemComponentsFeature {
-	private static final SimpleCommandExceptionType NO_COMPONENTS_EXCEPTION = new SimpleCommandExceptionType(Text.literal("No components!"));
+	public static final ItemComponentsFeature INSTANCE = new ItemComponentsFeature();
 
-	public static void registerCommand() {
+	protected ItemComponentsFeature() {
+	}
+	private final SimpleCommandExceptionType NO_COMPONENTS_EXCEPTION = new SimpleCommandExceptionType(Text.literal("No components!"));
+
+	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess, enviroment) -> dispatcher.register(CommandManager.literal("components")
 			.requires(source -> source.hasPermissionLevel(2))
 			.executes(context -> components(Objects.requireNonNull(context.getSource().getPlayer()).getMainHandStack(), context.getSource()))
@@ -38,7 +42,7 @@ public class ItemComponentsFeature {
 		));
 	}
 
-	private static int components(ItemStack stack, ServerCommandSource source) throws CommandSyntaxException {
+	private int components(ItemStack stack, ServerCommandSource source) throws CommandSyntaxException {
 		ComponentChanges components = stack.getComponentChanges();
 		if (components.isEmpty())
 			throw NO_COMPONENTS_EXCEPTION.create();
