@@ -60,7 +60,7 @@ public class RStackFeature {
 
 	protected int execute(CommandContext<ServerCommandSource> context, int argCount) throws CommandSyntaxException {
 		int count = argCount >= 1 ? IntegerArgumentType.getInteger(context, "count") : 1;
-		DirectionArgument direction = argCount >= 2 ? ArgumentUtils.parseDirection(context, "direction"); : DirectionArgument.ME;
+		DirectionArgument direction = argCount >= 2 ? ArgumentUtils.parseDirection(context, "direction") : DirectionArgument.ME;
 		int offset = argCount >= 3 ? IntegerArgumentType.getInteger(context, "offset") : 2;
 		boolean moveSelection = argCount >= 4 ? BoolArgumentType.getBool(context, "moveSelection") : false;
 		return execute(context, count, offset, direction, moveSelection);
