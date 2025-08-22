@@ -9,10 +9,10 @@ import net.minecraft.entity.attribute.EntityAttributes;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
-public class ReachFeature {
-	public static final ReachFeature INSTANCE = new ReachFeature();
+public class ReachClient {
+	public static final ReachClient INSTANCE = new ReachClient();
 
-	protected ReachFeature() {
+	protected ReachClient() {
 	}
 
 	public void registerCommand() {

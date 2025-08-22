@@ -14,6 +14,8 @@ public class Commands {
 			MinSelectionFeature.INSTANCE.registerCommand();
 			RStackFeature.INSTANCE.registerCommand();
 		}
+		ReachFeature.INSTANCE.registerCommand();
+		BaseConvertFeature.INSTANCE.registerCommand();
 		GiveMeFeature.INSTANCE.registerCommand();
 		ItemComponentsFeature.INSTANCE.registerCommand();
 		ItemBindFeature.INSTANCE.registerCommand();

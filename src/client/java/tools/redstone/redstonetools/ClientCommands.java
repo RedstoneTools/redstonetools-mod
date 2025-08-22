@@ -5,10 +5,10 @@ import tools.redstone.redstonetools.features.toggleable.*;
 
 public class ClientCommands {
 	public static void registerCommands() {
-		BaseConvertFeature.INSTANCE.registerCommand();
+		BaseConvertClient.INSTANCE.registerCommand();
 		EditMacroFeature.INSTANCE.registerCommand();
 		MacroFeature.INSTANCE.registerCommand();
-		ReachFeature.INSTANCE.registerCommand();
+		ReachClient.INSTANCE.registerCommand();
 		GiveMeClient.INSTANCE.registerCommand();
 		AirPlaceFeature.INSTANCE.registerCommand();
 		AutoRotateFeature.INSTANCE.registerCommand();
