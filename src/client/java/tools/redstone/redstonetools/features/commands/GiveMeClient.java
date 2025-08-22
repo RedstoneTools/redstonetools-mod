@@ -11,10 +11,10 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistratio
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
-public class GiveMeFeature {
-	public static final GiveMeFeature INSTANCE = new GiveMeFeature();
+public class GiveMeClient {
+	public static final GiveMeClient INSTANCE = new GiveMeClient();
 
-	protected GiveMeFeature() {
+	protected GiveMeClient() {
 	}
 
 	public void registerCommand() {

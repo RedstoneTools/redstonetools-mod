@@ -9,12 +9,14 @@ public class ClientCommands {
 		EditMacroFeature.INSTANCE.registerCommand();
 		MacroFeature.INSTANCE.registerCommand();
 		ReachFeature.INSTANCE.registerCommand();
-		GiveMeFeature.INSTANCE.registerCommand();
+		GiveMeClient.INSTANCE.registerCommand();
 		AirPlaceFeature.INSTANCE.registerCommand();
 		AutoRotateFeature.INSTANCE.registerCommand();
 		ClickContainerFeature.INSTANCE.registerCommand();
 		RstFeature.INSTANCE.registerCommand();
 		BigDustFeature.INSTANCE.registerCommand();
+		QuickTpClient.INSTANCE.registerCommand();
+
 		AutoDustClient.registerHandler();
 		AutoRotateClient.registerHandler();
 		ClickContainerClient.registerHandler();
