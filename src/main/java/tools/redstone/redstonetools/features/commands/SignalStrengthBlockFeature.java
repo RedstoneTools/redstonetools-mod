@@ -27,6 +27,7 @@ public class SignalStrengthBlockFeature {
 
 	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("ssb")
+				.requires(source -> source.hasPermissionLevel(2))
 				.executes(this::parseArguments)
 				.then(argument("signalStrength", IntegerArgumentType.integer())
 						.executes(this::parseArguments)

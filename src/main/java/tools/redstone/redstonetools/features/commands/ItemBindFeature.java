@@ -25,6 +25,7 @@ public class ItemBindFeature {
 	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess, enviroment) ->
 			dispatcher.register(literal("itembind")
+				.requires(source -> source.hasPermissionLevel(2))
 				.executes(this::execute)
 				.then(literal("reset")
 					.executes(ItemBindFeature::executeReset))));

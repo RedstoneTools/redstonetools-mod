@@ -31,6 +31,7 @@ public class BinaryBlockReadFeature {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
 			dispatcher.register(
 				literal("/read")
+					.requires(source -> source.hasPermissionLevel(2))
 					.executes(getCommandForArgumentCount(0))
 					.then(argument("offset", IntegerArgumentType.integer(1))
 						.executes(getCommandForArgumentCount(1))
@@ -53,7 +54,7 @@ public class BinaryBlockReadFeature {
 			BlockStateArgumentType.getBlockState(context, "onBlock").getBlockState() :
 			Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true);
 		int toBase = argCount >= 3 ? IntegerArgumentType.getInteger(context, "toBase") : 10;
-		reverseBits = argCount >= 4 ? BoolArgumentType.getBool(context, "reverseBits") : false;
+		reverseBits = argCount >= 4 && BoolArgumentType.getBool(context, "reverseBits");
 		return execute(context, offset, onBlock, toBase, reverseBits);
 	}
 

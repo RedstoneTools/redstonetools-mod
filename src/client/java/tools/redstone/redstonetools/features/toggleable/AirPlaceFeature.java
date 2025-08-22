@@ -33,7 +33,8 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 
 	public void registerCommand() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal("airplace")
-						.executes(this::toggle)));
+			.requires(source -> source.getPlayer().hasPermissionLevel(2))
+			.executes(this::toggle)));
 	}
 
 	public static float reach;

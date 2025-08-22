@@ -27,7 +27,7 @@ public class CopyStateFeature extends PickBlockFeature {
 
 	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
-			dispatcher.register(CommandManager.literal("copystate").executes(this::execute)));
+			dispatcher.register(CommandManager.literal("copystate").requires(source -> source.hasPermissionLevel(2)).executes(this::execute)));
 	}
 
 	@Override

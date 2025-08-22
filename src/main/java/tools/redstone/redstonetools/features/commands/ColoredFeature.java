@@ -22,6 +22,7 @@ public class ColoredFeature extends PickBlockFeature {
 	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
 			dispatcher.register(CommandManager.literal("colored")
+				.requires(source -> source.hasPermissionLevel(2))
 				.executes(this::execute)
 				.then(CommandManager.argument("blockType", StringArgumentType.string()).suggests(ArgumentUtils.COLORED_BLOCK_TYPE_SUGGESTION_PROVIDER)
 					.executes(this::execute))));

@@ -20,6 +20,7 @@ public class GiveMeFeature {
 	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess) -> dispatcher.register(
 			literal("g")
+				.requires(source -> source.getPlayer().hasPermissionLevel(2))
 				.then(argument("item", ItemStackArgumentType.itemStack(registryAccess))
 					.executes(context -> this.execute(
 						context,

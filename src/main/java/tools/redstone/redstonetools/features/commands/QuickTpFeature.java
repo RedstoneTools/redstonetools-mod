@@ -29,6 +29,7 @@ public class QuickTpFeature {
 
 	public void registerCommand() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("quicktp")
+				.requires(source -> source.hasPermissionLevel(2))
 				.executes(this::parseArguments)
 				.then(argument("distance", DoubleArgumentType.doubleArg())
 						.executes(this::parseArguments)

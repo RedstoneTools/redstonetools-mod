@@ -18,6 +18,7 @@ public class ReachFeature {
 	public void registerCommand() {
 		EVENT.register((dispatcher, registryAccess) ->
 			dispatcher.register(ClientCommandManager.literal("reach")
+				.requires(source -> source.getPlayer().hasPermissionLevel(2))
 				.then(ClientCommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
 					.executes(context -> execute(context, true, true))
 				)

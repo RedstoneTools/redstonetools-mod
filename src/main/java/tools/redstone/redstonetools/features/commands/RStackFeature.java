@@ -42,6 +42,7 @@ public class RStackFeature {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
 			dispatcher.register(
 				literal("/rstack")
+					.requires(source -> source.hasPermissionLevel(2))
 					.executes(getCommandForArgumentCount(0))
 					.then(argument("count", IntegerArgumentType.integer())
 						.executes(getCommandForArgumentCount(1))
@@ -61,7 +62,7 @@ public class RStackFeature {
 		int count = argCount >= 1 ? IntegerArgumentType.getInteger(context, "count") : 1;
 		DirectionArgument direction = argCount >= 2 ? ArgumentUtils.parseDirection(context, "direction") : DirectionArgument.ME;
 		int offset = argCount >= 3 ? IntegerArgumentType.getInteger(context, "offset") : 2;
-		boolean moveSelection = argCount >= 4 ? BoolArgumentType.getBool(context, "moveSelection") : false;
+		boolean moveSelection = argCount >= 4 && BoolArgumentType.getBool(context, "moveSelection");
 		return execute(context, count, offset, direction, moveSelection);
 	}
 

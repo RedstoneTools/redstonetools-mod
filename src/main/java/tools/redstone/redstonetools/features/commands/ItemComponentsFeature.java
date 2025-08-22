@@ -30,6 +30,7 @@ public class ItemComponentsFeature {
 
 	public static void registerCommand() {
 		EVENT.register((dispatcher, registryAccess, enviroment) -> dispatcher.register(CommandManager.literal("components")
+			.requires(source -> source.hasPermissionLevel(2))
 			.executes(context -> components(Objects.requireNonNull(context.getSource().getPlayer()).getMainHandStack(), context.getSource()))
 			.then(CommandManager.argument("target", EntityArgumentType.player())
 				.executes(context -> components(EntityArgumentType.getPlayer(context, "target").getMainHandStack(), context.getSource()))

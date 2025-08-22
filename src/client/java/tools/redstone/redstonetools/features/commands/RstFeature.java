@@ -17,7 +17,8 @@ public class RstFeature {
 			dispatcher.register(ClientCommandManager.literal("rst")
 				.executes(commandContext -> {
 					MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(new GuiConfigs()));
-					GuiConfigs.tab = GuiConfigs.ConfigGuiTab.GENERAL;
+					if (GuiConfigs.tab == GuiConfigs.ConfigGuiTab.MACROS)
+						GuiConfigs.tab = GuiConfigs.ConfigGuiTab.GENERAL;
 					return 1;
 				})));
 	}
