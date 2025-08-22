@@ -36,7 +36,7 @@ public class ColorCodeFeature {
 				.then(argument("color", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
 						.executes(this::execute)
 						.then(argument("onlyColor", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
-								.executes(this::execute))))));
+								.executes(this::execute)))));
 	}
 
 	public BlockColor color;
