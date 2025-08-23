@@ -1,7 +1,7 @@
 package tools.redstone.redstonetools.malilib.config;
 
 import net.minecraft.client.MinecraftClient;
-import tools.redstone.redstonetools.macros.actions.CommandAction;
+import tools.redstone.redstonetools.malilib.widget.CommandActionBase;
 import tools.redstone.redstonetools.malilib.widget.MacroBase;
 
 import javax.json.Json;
@@ -90,7 +90,7 @@ public class MacroManager {
 
 	private static javax.json.JsonObject getMacroJson(MacroBase macro) {
 		var actionsJson = Json.createArrayBuilder();
-		for (CommandAction action : macro.actions) {
+		for (CommandActionBase action : macro.actions) {
 			actionsJson.add(getActionJson(action));
 		}
 
@@ -102,8 +102,8 @@ public class MacroManager {
 				.build();
 	}
 
-	private static javax.json.JsonObject getActionJson(CommandAction action) {
-		if (action instanceof CommandAction commandAction) {
+	private static javax.json.JsonObject getActionJson(CommandActionBase action) {
+		if (action instanceof CommandActionBase commandAction) {
 			return Json.createObjectBuilder()
 					.add("type", "command")
 					.add("command", commandAction.command)
@@ -136,9 +136,9 @@ public class MacroManager {
 	}
 
 	private static MacroBase createCommandMacro(String name, String[] commands) {
-		var actions = new CommandAction[commands.length];
+		var actions = new CommandActionBase[commands.length];
 		for (int i = 0; i < commands.length; i++) {
-			actions[i] = new CommandAction(commands[i]);
+			actions[i] = new CommandActionBase(commands[i]);
 		}
 
 		return new MacroBase(name, "", List.of(actions));
@@ -163,8 +163,8 @@ public class MacroManager {
 		return new MacroBase(name, key, actions, enabled);
 	}
 
-	private static List<CommandAction> getActionsFromJson(JsonArray actionsJson) {
-		List<CommandAction> actions = new ArrayList<>();
+	private static List<CommandActionBase> getActionsFromJson(JsonArray actionsJson) {
+		List<CommandActionBase> actions = new ArrayList<>();
 
 		for (int i = 0; i < actionsJson.size(); i++) {
 			actions.add(getActionFromJson(actionsJson.getJsonObject(i)));
@@ -173,11 +173,11 @@ public class MacroManager {
 		return actions;
 	}
 
-	private static CommandAction getActionFromJson(JsonObject actionJson) {
+	private static CommandActionBase getActionFromJson(JsonObject actionJson) {
 		var type = actionJson.getString("type");
 
 		if ("command".equals(type)) {
-			return new CommandAction(actionJson.getString("command"));
+			return new CommandActionBase(actionJson.getString("command"));
 		}
 
 		throw new RuntimeException("Unknown action type: " + type);
