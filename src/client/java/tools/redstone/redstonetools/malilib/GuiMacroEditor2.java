@@ -1,64 +1,69 @@
 package tools.redstone.redstonetools.malilib;
 
-import fi.dy.masa.malilib.gui.GuiListBase;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
-import org.jetbrains.annotations.Nullable;
-import tools.redstone.redstonetools.malilib.widget.*;
+import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
+import tools.redstone.redstonetools.malilib.widget.action.CommandListWidget;
+import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
-public class GuiMacroEditor2 extends GuiListBase<CommandActionBase, WidgetActionEntry, WidgetListActions>
-	implements ISelectionListener<CommandActionBase> {
-
+public class GuiMacroEditor2 extends Screen {
 	private final MacroBase macro;
+	private final Screen parent;
+	private CommandListWidget commandList;
+	private ConfigButtonKeybind buttonKeybind;
 
-	public GuiMacroEditor2(MacroBase macro) {
-		super(10, 10);
-
+	public GuiMacroEditor2(Text title, MacroBase macro, Screen parent) {
+		super(title);
+		this.parent = parent;
+		this.client = MinecraftClient.getInstance();
 		this.macro = macro;
-		this.title = "Macro editor";
 	}
 
 	@Override
-	protected int getBrowserWidth() {
-		return this.width - 20;
+	protected void init() {
+		this.commandList = this.addDrawableChild(
+			new CommandListWidget(this, this.client, this.width, this.height - 75, 0, 36, this.macro)
+		);
+		this.addDrawableChild(ButtonWidget.builder(Text.of("New command"), button ->
+				this.commandList.addEntry())
+			.dimensions(this.width / 2 + 4, this.height - 52, 150, 20)
+			.build());
+		this.buttonKeybind = new ConfigButtonKeybind(10, this.height - 52, 150, 20, macro.hotkey.getKeybind(), null);
 	}
 
 	@Override
-	protected int getBrowserHeight() {
-		return this.height - this.getListY() - 6;
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		buttonKeybind.onKeyPressed(keyCode);
+		if (keyCode == GLFW.GLFW_KEY_ESCAPE && this.shouldCloseOnEsc()) {
+			this.close();
+			return true;
+		} else if (this.commandList.keyPressed(keyCode, scanCode, modifiers))
+			return true;
+		else
+			return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
-	public void initGui() {
-		GuiConfigs.tab = GuiConfigs.ConfigGuiTab.MACROS;
-
-		super.initGui();
-
-		this.clearWidgets();
-		this.clearButtons();
-
-		int y = 26;
-		String name = "Add command";
-		ButtonGeneric addCommandButton = new ButtonGeneric(this.width - 10, y, -1, true, name);
-
-		this.setListPosition(this.getListX(), y + 20);
-		this.reCreateListWidget();
-
-		this.addButton(addCommandButton, (btn, mbtn) -> {
-			this.macro.actions.add(new CommandActionBase(""));
-			this.getListWidget().refreshEntries();
-		});
-
-		this.getListWidget().refreshEntries();
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (buttonKeybind.onMouseClicked((int)mouseX, (int)mouseY, button)) return true;
+		return super.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
-	protected WidgetListActions createListWidget(int listX, int listY) {
-		return new WidgetListActions(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), 0, this, this.macro);
+	public void close() {
+		this.macro.actions.clear();
+		this.commandList.children().forEach(t -> this.macro.actions.add(t.command));
+		GuiBase.openGui(parent);
 	}
 
 	@Override
-	public void onSelectionChange(@Nullable CommandActionBase commandActionBase) {
-
+	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		super.render(context, mouseX, mouseY, deltaTicks);
+		buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
 	}
 }

@@ -8,9 +8,9 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
-import tools.redstone.redstonetools.malilib.widget.MacroBase;
-import tools.redstone.redstonetools.malilib.widget.WidgetListMacros;
-import tools.redstone.redstonetools.malilib.widget.WidgetMacroEntry;
+import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
+import tools.redstone.redstonetools.malilib.widget.macro.WidgetListMacros;
+import tools.redstone.redstonetools.malilib.widget.macro.WidgetMacroEntry;
 
 import java.util.ArrayList;
 import java.util.UUID;

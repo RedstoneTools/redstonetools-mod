@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.malilib.widget;
+package tools.redstone.redstonetools.malilib.widget.macro;
 
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
