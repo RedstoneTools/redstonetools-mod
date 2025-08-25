@@ -4,15 +4,16 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import net.minecraft.client.gui.screen.ChatInputSuggestor;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor2;
 import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
-public class CommandListWidget extends AlwaysSelectedEntryListWidget<CommandListWidget.CommandEntry> {
+public class CommandListWidget extends EntryListWidget<CommandListWidget.CommandEntry> {
 	private final GuiMacroEditor2 parent;
 	private final MacroBase macro;
 
@@ -20,9 +21,7 @@ public class CommandListWidget extends AlwaysSelectedEntryListWidget<CommandList
 		super(mc, width, height, y, itemHeight);
 		this.parent = parent;
 		this.macro = macro;
-		this.macro.actions.forEach((t) -> {
-			this.children().add(new CommandEntry(t, this));
-		});
+		this.macro.actions.forEach((t) -> this.children().add(new CommandEntry(t, this)));
 	}
 
 	@Override
@@ -63,9 +62,14 @@ public class CommandListWidget extends AlwaysSelectedEntryListWidget<CommandList
 		super.renderWidget(context, mouseX, mouseY, deltaTicks);
 	}
 
-	public static class CommandEntry extends AlwaysSelectedEntryListWidget.Entry<CommandListWidget.CommandEntry> {
+	@Override
+	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+
+	}
+
+	public static class CommandEntry extends EntryListWidget.Entry<CommandListWidget.CommandEntry> {
 		public final CommandAction command;
-		private final TextFieldWidget commandWidget;
+		public final TextFieldWidget commandWidget;
 		private final CommandListWidget parent;
 		private boolean isFirst = true;
 		private ButtonBase removeButton;
@@ -76,12 +80,9 @@ public class CommandListWidget extends AlwaysSelectedEntryListWidget<CommandList
 			this.commandWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 250, 50, Text.of(""));
 			this.commandWidget.setText(command.command);
 			this.commandWidget.setMaxLength(256);
-		}
-
-
-		@Override
-		public Text getNarration() {
-			return Text.of("");
+			var commandSuggestor = new ChatInputSuggestor(MinecraftClient.getInstance(), this.parent.parent, this.commandWidget, MinecraftClient.getInstance().textRenderer, false, false, 0, 7, false, Integer.MIN_VALUE);
+			commandSuggestor.setWindowActive(true);
+			commandSuggestor.refresh();
 		}
 
 		@Override
@@ -96,6 +97,11 @@ public class CommandListWidget extends AlwaysSelectedEntryListWidget<CommandList
 				this.removeButton.setX(removeButton.getX() - (removeButton.getWidth() + 10));
 			}
 			removeButton.setY(y + 3);
+
+			if (this.isFocused()) {
+				MinecraftClient.getInstance().setScreen(new CommandEditScreen(parent.parent, this.commandWidget));
+				this.parent.setSelected(null);
+			}
 
 			commandWidget.setFocused(this.isFocused());
 			commandWidget.setPosition(x + 4, y + 3);

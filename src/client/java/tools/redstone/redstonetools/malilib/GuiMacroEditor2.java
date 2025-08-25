@@ -39,7 +39,11 @@ public class GuiMacroEditor2 extends Screen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		buttonKeybind.onKeyPressed(keyCode);
-		if (keyCode == GLFW.GLFW_KEY_ESCAPE && this.shouldCloseOnEsc()) {
+		if (buttonKeybind.isSelected() && keyCode == GLFW.GLFW_KEY_ESCAPE) {
+			buttonKeybind.onClearSelection();
+			return true;
+		}
+		else if (keyCode == GLFW.GLFW_KEY_ESCAPE && this.shouldCloseOnEsc()) {
 			this.close();
 			return true;
 		} else if (this.commandList.keyPressed(keyCode, scanCode, modifiers))
@@ -59,6 +63,8 @@ public class GuiMacroEditor2 extends Screen {
 		this.macro.actions.clear();
 		this.commandList.children().forEach(t -> this.macro.actions.add(t.command));
 		GuiBase.openGui(parent);
+		assert client != null;
+		parent.init(client, parent.width, parent.height);
 	}
 
 	@Override
