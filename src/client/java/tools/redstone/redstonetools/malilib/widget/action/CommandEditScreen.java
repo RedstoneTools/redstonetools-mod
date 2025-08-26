@@ -20,7 +20,14 @@ public class CommandEditScreen extends Screen {
 		this.parent = parent;
 		this.commandField = commandField;
 		client = MinecraftClient.getInstance();
-		this.commandSuggestor = new ChatInputSuggestor(client, this, commandField,client.textRenderer,true,false, commandField.getY() -20,5,false, -805306368);
+		this.commandSuggestor = new ChatInputSuggestor(client, this, commandField,client.textRenderer,true,false, commandField.getY() -20,5,false, -805306368) {
+			@Override
+			public void refresh() {
+				if (client == null) return;
+				if (client.getNetworkHandler() == null) return;
+				super.refresh();
+			}
+		};
 
 		commandField.setChangedListener((s) -> changed = true);
 		commandSuggestor.setWindowActive(true);

@@ -7,7 +7,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
 import tools.redstone.redstonetools.malilib.widget.action.CommandListWidget;
 import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
@@ -25,6 +24,22 @@ public class GuiMacroEditor2 extends Screen {
 	}
 
 	@Override
+	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		super.render(context, mouseX, mouseY, deltaTicks);
+		buttonKeybind.updateDisplayString();
+		buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		buttonKeybind.onKeyPressed(keyCode);
+		if (this.commandList.keyPressed(keyCode, scanCode, modifiers))
+			return true;
+		else
+			return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
 	protected void init() {
 		this.commandList = this.addDrawableChild(
 			new CommandListWidget(this, this.client, this.width, this.height - 75, 0, 36, this.macro)
@@ -33,29 +48,69 @@ public class GuiMacroEditor2 extends Screen {
 				this.commandList.addEntry())
 			.dimensions(this.width / 2 + 4, this.height - 52, 150, 20)
 			.build());
-		this.buttonKeybind = new ConfigButtonKeybind(10, this.height - 52, 150, 20, macro.hotkey.getKeybind(), null);
+		this.buttonKeybind = new ConfigButtonKeybind(10, this.height - 52, 150, 20, macro.hotkey.getKeybind(), null) {
+			@Override
+			public boolean onMouseClicked(int mx, int my, int mb) {
+				if (!this.isMouseOver(mx, my)) {
+					this.selected = false;
+					return false;
+				} else {
+					return super.onMouseClicked(mx, my, mb);
+				}
+			}
+		};
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		buttonKeybind.onKeyPressed(keyCode);
-		if (buttonKeybind.isSelected() && keyCode == GLFW.GLFW_KEY_ESCAPE) {
-			buttonKeybind.onClearSelection();
-			return true;
-		}
-		else if (keyCode == GLFW.GLFW_KEY_ESCAPE && this.shouldCloseOnEsc()) {
-			this.close();
-			return true;
-		} else if (this.commandList.keyPressed(keyCode, scanCode, modifiers))
-			return true;
-		else
-			return super.keyPressed(keyCode, scanCode, modifiers);
+	public void mouseMoved(double mouseX, double mouseY) {
+		commandList.mouseMoved(mouseX, mouseY);
 	}
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (buttonKeybind.onMouseClicked((int)mouseX, (int)mouseY, button)) return true;
+		if (buttonKeybind.onMouseClicked((int) mouseX, (int) mouseY, button)) return true;
+		else if (commandList.mouseClicked(mouseX, mouseY, button)) return true;
 		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		buttonKeybind.onMouseReleased((int)mouseX, (int)mouseY, button);
+		if (commandList.mouseReleased(mouseX, mouseY, button)) return true;
+		else return super.mouseReleased(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		if (commandList.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true;
+		else return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		if (commandList.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) return true;
+		else if (buttonKeybind.onMouseScrolled((int)mouseX, (int) mouseY, horizontalAmount, verticalAmount)) return true;
+		else return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+	}
+
+	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		if (commandList.keyReleased(keyCode, scanCode, modifiers)) return true;
+		else return super.keyReleased(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean charTyped(char chr, int modifiers) {
+		if (commandList.charTyped(chr, modifiers)) return true;
+		else if (buttonKeybind.onCharTyped(chr, modifiers)) return true;
+		else return super.charTyped(chr, modifiers);
+	}
+
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
+		if (commandList.isMouseOver(mouseX, mouseY)) return true;
+		else if (buttonKeybind.isMouseOver((int)mouseX, (int)mouseY)) return true;
+		else return super.isMouseOver(mouseX, mouseY);
 	}
 
 	@Override
@@ -65,11 +120,5 @@ public class GuiMacroEditor2 extends Screen {
 		GuiBase.openGui(parent);
 		assert client != null;
 		parent.init(client, parent.width, parent.height);
-	}
-
-	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-		super.render(context, mouseX, mouseY, deltaTicks);
-		buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
 	}
 }

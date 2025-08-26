@@ -67,6 +67,78 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 
 	}
 
+	@Override
+	public void mouseMoved(double mouseX, double mouseY) {
+		if (this.getSelectedOrNull() != null) {
+			this.getSelectedOrNull().mouseMoved(mouseX, mouseY);
+		}
+		super.mouseMoved(mouseX, mouseY);
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (this.getSelectedOrNull() != null) {
+			this.getSelectedOrNull().mouseClicked(mouseX, mouseY, button);
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		if (this.getSelectedOrNull() != null) {
+			return this.getSelectedOrNull().mouseReleased(mouseX, mouseY ,button);
+		}
+		return super.mouseReleased(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		if (this.getSelectedOrNull() != null) {
+			return this.getSelectedOrNull().mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+		}
+		return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		if (this.getSelectedOrNull() != null) {
+			return this.getSelectedOrNull().mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+		}
+		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (this.getSelectedOrNull() != null) {
+			return this.getSelectedOrNull().keyPressed(keyCode, scanCode, modifiers);
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		if (this.getSelectedOrNull() != null) {
+			return this.getSelectedOrNull().keyReleased(keyCode, scanCode, modifiers);
+		}
+		return super.keyReleased(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean charTyped(char chr, int modifiers) {
+		if (this.getSelectedOrNull() != null) {
+			return this.getSelectedOrNull().charTyped(chr, modifiers);
+		}
+		return super.charTyped(chr, modifiers);
+	}
+
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
+		if (this.getSelectedOrNull() != null) {
+			return this.getSelectedOrNull().isMouseOver(mouseX, mouseY);
+		}
+		return super.isMouseOver(mouseX, mouseY);
+	}
+
 	public static class CommandEntry extends EntryListWidget.Entry<CommandListWidget.CommandEntry> {
 		public final CommandAction command;
 		public final TextFieldWidget commandWidget;
@@ -80,7 +152,14 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			this.commandWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 250, 50, Text.of(""));
 			this.commandWidget.setText(command.command);
 			this.commandWidget.setMaxLength(256);
-			var commandSuggestor = new ChatInputSuggestor(MinecraftClient.getInstance(), this.parent.parent, this.commandWidget, MinecraftClient.getInstance().textRenderer, false, false, 0, 7, false, Integer.MIN_VALUE);
+			var commandSuggestor = new ChatInputSuggestor(MinecraftClient.getInstance(), this.parent.parent, this.commandWidget, MinecraftClient.getInstance().textRenderer, false, false, 0, 7, false, Integer.MIN_VALUE) {
+				@Override
+				public void refresh() {
+					if (parent.client == null) return;
+					if (parent.client.getNetworkHandler() == null) return;
+					super.refresh();
+				}
+			};
 			commandSuggestor.setWindowActive(true);
 			commandSuggestor.refresh();
 		}
@@ -115,6 +194,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 		@Override
 		public void mouseMoved(double mouseX, double mouseY) {
 			commandWidget.mouseMoved(mouseX, mouseY);
+			super.mouseMoved(mouseX, mouseY);
 		}
 
 		@Override
