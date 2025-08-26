@@ -99,7 +99,7 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 
 	@Override
 	protected WidgetListMacros createListWidget(int listX, int listY) {
-		return new WidgetListMacros(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), 0, this);
+		return new WidgetListMacros(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this, this);
 	}
 
 	@Override

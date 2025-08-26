@@ -2,16 +2,18 @@ package tools.redstone.redstonetools.malilib.widget.macro;
 
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
+import tools.redstone.redstonetools.malilib.GuiMacroManager;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class WidgetListMacros extends WidgetListBase<MacroBase, WidgetMacroEntry> {
-
-	public WidgetListMacros(int x, int y, int width, int height, float zLevel,
+	public GuiMacroManager parent;
+	public WidgetListMacros(int x, int y, int width, int height, GuiMacroManager parent,
 							@Nullable ISelectionListener<MacroBase> selectionListener) {
 		super(x, y, width, height, selectionListener);
+		this.parent = parent;
 		this.browserEntryHeight = 22;
 	}
 

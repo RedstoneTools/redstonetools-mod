@@ -6,10 +6,8 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
-import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.malilib.GuiMacroEditor;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor2;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 
@@ -58,7 +56,7 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 		@Override
 		public void actionPerformedWithButton(ButtonBase button, int mouseButton) {
 			if (this.type == Type.CONFIGURE) {
-				GuiMacroEditor2 gui = new GuiMacroEditor2(Text.of(this.widget.macro.name), this.widget.macro, this.widget.parent);
+				GuiMacroEditor2 gui = new GuiMacroEditor2(Text.of(this.widget.macro.name), this.widget.macro, this.widget.parent.parent);
 				GuiBase.openGui(gui);
 				this.widget.parent.refreshEntries();
 			} else if (this.type == Type.REMOVE) {

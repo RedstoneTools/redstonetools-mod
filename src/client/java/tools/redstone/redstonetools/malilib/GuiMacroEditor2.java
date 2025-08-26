@@ -17,14 +17,14 @@ import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
 public class GuiMacroEditor2 extends Screen {
 	private final MacroBase macro;
-	private final Screen parent;
+	private final GuiMacroManager parent;
 	private CommandListWidget commandList;
 	private ConfigButtonKeybind buttonKeybind;
 	private ConfigButtonBoolean buttonEnabled;
 	private IConfigBoolean configBoolean;
 	private TextFieldWidget nameWidget;
 
-	public GuiMacroEditor2(Text title, MacroBase macro, Screen parent) {
+	public GuiMacroEditor2(Text title, MacroBase macro, GuiMacroManager parent) {
 		super(title);
 		this.parent = parent;
 		this.client = MinecraftClient.getInstance();
@@ -152,7 +152,7 @@ public class GuiMacroEditor2 extends Screen {
 		this.macro.setName(this.nameWidget.getText());
 		MacroManager.saveChanges();
 		assert client != null;
-		parent.init(client, parent.width, parent.height);
+		parent.initGui();
 		GuiBase.openGui(parent);
 	}
 }
