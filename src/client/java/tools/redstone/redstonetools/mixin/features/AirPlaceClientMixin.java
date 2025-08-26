@@ -15,8 +15,6 @@ import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 
 @Mixin(MinecraftClient.class)
 public class AirPlaceClientMixin {
-	@Unique
-	private final AirPlaceFeature airPlaceFeature = AirPlaceFeature.INSTANCE;
 	@Shadow
 	public HitResult crosshairTarget;
 
@@ -43,7 +41,7 @@ public class AirPlaceClientMixin {
 	@Unique
 	private boolean isAirPlaceAllowed() {
 		// If air place is disabled
-		if (!airPlaceFeature.isEnabled()) {
+		if (!AirPlaceFeature.INSTANCE.isEnabled()) {
 			return false;
 		}
 
