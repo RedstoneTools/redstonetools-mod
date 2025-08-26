@@ -15,6 +15,9 @@ import tools.redstone.redstonetools.malilib.config.MacroManager;
 import tools.redstone.redstonetools.malilib.widget.action.CommandListWidget;
 import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class GuiMacroEditor2 extends Screen {
 	private final MacroBase macro;
 	private final GuiMacroManager parent;
@@ -31,12 +34,33 @@ public class GuiMacroEditor2 extends Screen {
 		this.macro = macro;
 	}
 
+	private static Method bkRenderMethod;
+	private static Method beRenderMethod;
+
+
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
 		buttonKeybind.updateDisplayString();
-		buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
-		buttonEnabled.render(context, mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY));
+		try {
+			buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
+			buttonEnabled.render(context, mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY));
+		} catch (NoSuchMethodError ignored) {
+			if (bkRenderMethod == null) {
+				try {
+					bkRenderMethod = ConfigButtonKeybind.class.getMethod("render", int.class, int.class, boolean.class, DrawContext.class);
+					beRenderMethod = ConfigButtonBoolean.class.getMethod("render", int.class, int.class, boolean.class, DrawContext.class);
+				} catch (Exception e) {
+					throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
+				}
+			}
+			try {
+				bkRenderMethod.invoke(buttonKeybind, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY), context);
+				beRenderMethod.invoke(buttonKeybind, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY), context);
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
+			}
+		}
 	}
 
 	@Override

@@ -13,6 +13,9 @@ import tools.redstone.redstonetools.macros.actions.CommandAction;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor2;
 import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class CommandListWidget extends EntryListWidget<CommandListWidget.CommandEntry> {
 	private final GuiMacroEditor2 parent;
 	private final MacroBase macro;
@@ -164,6 +167,8 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			commandSuggestor.refresh();
 		}
 
+		private static Method m;
+
 		@Override
 		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickProgress) {
 			if (isFirst) {
@@ -187,7 +192,22 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			commandWidget.setWidth(entryWidth - 100);
 			commandWidget.setHeight(25);
 			commandWidget.render(context, mouseX, mouseY, tickProgress);
-			removeButton.render(context, mouseX, mouseY, removeButton.isMouseOver());
+			try {
+				removeButton.render(context, mouseX, mouseY, removeButton.isMouseOver());
+			} catch (NoSuchMethodError ignored) {
+				if (m == null) {
+					try {
+						m = ButtonBase.class.getMethod("render", int.class, int.class, boolean.class, DrawContext.class);
+					} catch (Exception e) {
+						throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
+					}
+				}
+				try {
+					m.invoke(removeButton, mouseX, mouseY, removeButton.isMouseOver(), context);
+				} catch (IllegalAccessException | InvocationTargetException e) {
+					throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
+				}
+			}
 			command.command = commandWidget.getText();
 		}
 

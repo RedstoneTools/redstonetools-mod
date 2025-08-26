@@ -11,6 +11,7 @@
     "features.AutoDustMixin",
     "features.AutoRotateMixin",
     "features.CommandManagerMixin",
+    "features.PlayerInventoryAccessor",
     "features.ServerPlayNetworkHandlerAccessor",
     "gamerules.DoContainerDropsMixin"
   ]
