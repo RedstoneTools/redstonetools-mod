@@ -43,6 +43,11 @@ public class GuiMacroEditor2 extends Screen {
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		buttonEnabled.onKeyTyped(keyCode, scanCode, modifiers);
 		buttonKeybind.onKeyPressed(keyCode);
+		if (buttonKeybind.isSelected() && keyCode == 256) {
+			this.macro.hotkey.getKeybind().clearKeys();
+			buttonKeybind.onClearSelection();
+			return true;
+		}
 		if (this.commandList.keyPressed(keyCode, scanCode, modifiers))
 			return true;
 		else
@@ -67,6 +72,11 @@ public class GuiMacroEditor2 extends Screen {
 				} else {
 					return super.onMouseClicked(mx, my, mb);
 				}
+			}
+			@Override
+			public void onClearSelection() {
+				this.firstKey = true;
+				super.onClearSelection();
 			}
 		};
 		this.configBoolean = new ConfigBoolean("", true, "");
