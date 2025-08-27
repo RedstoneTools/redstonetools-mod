@@ -14,6 +14,7 @@ import net.minecraft.text.Text;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 import tools.redstone.redstonetools.malilib.widget.action.CommandListWidget;
 import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
+import tools.redstone.redstonetools.utils.GuiUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -80,14 +81,18 @@ public class GuiMacroEditor2 extends Screen {
 
 	@Override
 	protected void init() {
+		GuiUtils.Layout ncLayout = GuiUtils.getWidgetLayout(4, 10, this.width, 0, true, 50, this.height - 52, 20);
+		GuiUtils.Layout bkLayout = GuiUtils.getWidgetLayout(4, 10, this.width, 1, true, 50, this.height - 52, 20);
+		GuiUtils.Layout beLayout = GuiUtils.getWidgetLayout(4, 10, this.width, 2, true, 50, this.height - 52, 20);
+		GuiUtils.Layout nwLayout = GuiUtils.getWidgetLayout(4, 10, this.width, 3, true, 50, this.height - 52, 20);
 		this.commandList = this.addDrawableChild(
 			new CommandListWidget(this, this.client, this.width, this.height - 75, 0, 36, this.macro)
 		);
 		this.addDrawableChild(ButtonWidget.builder(Text.of("New command"), button ->
 				this.commandList.addEntry())
-			.dimensions(this.width / 2 + 4, this.height - 52, 150, 20)
+			.dimensions(ncLayout.x, ncLayout.y, ncLayout.width, ncLayout.height)
 			.build());
-		this.buttonKeybind = new ConfigButtonKeybind(10, this.height - 52, 150, 20, macro.hotkey.getKeybind(), null) {
+		this.buttonKeybind = new ConfigButtonKeybind(bkLayout.x, bkLayout.y, bkLayout.width, bkLayout.height, macro.hotkey.getKeybind(), null) {
 			@Override
 			public boolean onMouseClicked(int mx, int my, int mb) {
 				if (!this.isMouseOver(mx, my)) {
@@ -105,10 +110,10 @@ public class GuiMacroEditor2 extends Screen {
 		};
 		this.configBoolean = new ConfigBoolean("", true, "");
 		this.configBoolean.setBooleanValue(this.macro.isEnabled());
-		this.buttonEnabled = new ConfigButtonBoolean(buttonKeybind.getX() + buttonKeybind.getWidth() + 10, this.height - 52, 150, 20, this.configBoolean);
-		this.nameWidget = addDrawableChild(new TextFieldWidget(this.textRenderer, 150, 20, Text.of("")));
+		this.buttonEnabled = new ConfigButtonBoolean(beLayout.x, beLayout.y, beLayout.width, beLayout.height, this.configBoolean);
+		this.nameWidget = addDrawableChild(new TextFieldWidget(this.textRenderer, nwLayout.width, nwLayout.height, Text.of("")));
 		this.nameWidget.setText(macro.getName());
-		this.nameWidget.setPosition(buttonEnabled.getX() + buttonEnabled.getWidth() + 10, this.height - 52);
+		this.nameWidget.setPosition(nwLayout.x, nwLayout.y);
 	}
 
 	@Override
@@ -126,8 +131,8 @@ public class GuiMacroEditor2 extends Screen {
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		buttonKeybind.onMouseReleased((int)mouseX, (int)mouseY, button);
-		buttonEnabled.onMouseReleased((int)mouseX, (int)mouseY, button);
+		buttonKeybind.onMouseReleased((int) mouseX, (int) mouseY, button);
+		buttonEnabled.onMouseReleased((int) mouseX, (int) mouseY, button);
 		if (commandList.mouseReleased(mouseX, mouseY, button)) return true;
 		else return super.mouseReleased(mouseX, mouseY, button);
 	}
@@ -141,8 +146,10 @@ public class GuiMacroEditor2 extends Screen {
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
 		if (commandList.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) return true;
-		else if (buttonKeybind.onMouseScrolled((int)mouseX, (int) mouseY, horizontalAmount, verticalAmount)) return true;
-		else if (buttonEnabled.onMouseScrolled((int)mouseX, (int) mouseY, horizontalAmount, verticalAmount)) return true;
+		else if (buttonKeybind.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+			return true;
+		else if (buttonEnabled.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+			return true;
 		else return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
@@ -163,8 +170,8 @@ public class GuiMacroEditor2 extends Screen {
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY) {
 		if (commandList.isMouseOver(mouseX, mouseY)) return true;
-		else if (buttonKeybind.isMouseOver((int)mouseX, (int)mouseY)) return true;
-		else if (buttonEnabled.isMouseOver((int)mouseX, (int)mouseY)) return true;
+		else if (buttonKeybind.isMouseOver((int) mouseX, (int) mouseY)) return true;
+		else if (buttonEnabled.isMouseOver((int) mouseX, (int) mouseY)) return true;
 		else return super.isMouseOver(mouseX, mouseY);
 	}
 

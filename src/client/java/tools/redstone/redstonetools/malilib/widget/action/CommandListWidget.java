@@ -147,7 +147,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 		public final TextFieldWidget commandWidget;
 		private final CommandListWidget parent;
 		private boolean isFirst = true;
-		private ButtonBase removeButton;
+		private ButtonBase removeButton = new ButtonGeneric(0, 0, 0, 0, "Remove");
 
 		public CommandEntry(CommandAction command, CommandListWidget parent) {
 			this.parent = parent;
@@ -155,7 +155,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			this.commandWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 250, 50, Text.of(""));
 			this.commandWidget.setText(command.command);
 			this.commandWidget.setMaxLength(256);
-			var commandSuggestor = new ChatInputSuggestor(MinecraftClient.getInstance(), this.parent.parent, this.commandWidget, MinecraftClient.getInstance().textRenderer, false, false, 0, 7, false, Integer.MIN_VALUE) {
+			var commandSuggester = new ChatInputSuggestor(MinecraftClient.getInstance(), this.parent.parent, this.commandWidget, MinecraftClient.getInstance().textRenderer, false, false, 0, 7, false, Integer.MIN_VALUE) {
 				@Override
 				public void refresh() {
 					if (parent.client == null) return;
@@ -163,8 +163,8 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 					super.refresh();
 				}
 			};
-			commandSuggestor.setWindowActive(true);
-			commandSuggestor.refresh();
+			commandSuggester.setWindowActive(true);
+			commandSuggester.refresh();
 		}
 
 		private static Method m;
@@ -180,7 +180,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 				});
 				this.removeButton.setX(removeButton.getX() - (removeButton.getWidth() + 10));
 			}
-			removeButton.setY(y + 3);
+			removeButton.setY(y + 6);
 
 			if (this.isFocused()) {
 				MinecraftClient.getInstance().setScreen(new CommandEditScreen(parent.parent, this.commandWidget));
@@ -190,7 +190,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			commandWidget.setFocused(this.isFocused());
 			commandWidget.setPosition(x + 4, y + 3);
 			commandWidget.setWidth(entryWidth - 100);
-			commandWidget.setHeight(25);
+			commandWidget.setHeight(26);
 			commandWidget.render(context, mouseX, mouseY, tickProgress);
 			try {
 				removeButton.render(context, mouseX, mouseY, removeButton.isMouseOver());
