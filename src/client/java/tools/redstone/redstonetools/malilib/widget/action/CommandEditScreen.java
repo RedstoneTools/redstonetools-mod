@@ -7,20 +7,21 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
+import tools.redstone.redstonetools.malilib.GuiMacroEditor2;
 
 public class CommandEditScreen extends Screen {
 
 	private final TextFieldWidget commandField;
-	private final ChatInputSuggestor commandSuggestor;
+	private final ChatInputSuggestor commandSuggester;
 	private boolean changed = false;
-	private final Screen parent;
+	private final GuiMacroEditor2 parent;
 
-	public CommandEditScreen(Screen parent, TextFieldWidget commandField) {
+	public CommandEditScreen(GuiMacroEditor2 parent, TextFieldWidget commandField) {
 		super(Text.of(""));
 		this.parent = parent;
 		this.commandField = commandField;
 		client = MinecraftClient.getInstance();
-		this.commandSuggestor = new ChatInputSuggestor(client, this, commandField,client.textRenderer,true,false, commandField.getY() -20,5,false, -805306368) {
+		this.commandSuggester = new ChatInputSuggestor(client, this, commandField, client.textRenderer, true, false, commandField.getY() - 20, 5, false, -805306368) {
 			@Override
 			public void refresh() {
 				if (client == null) return;
@@ -30,31 +31,27 @@ public class CommandEditScreen extends Screen {
 		};
 
 		commandField.setChangedListener((s) -> changed = true);
-		commandSuggestor.setWindowActive(true);
-		commandSuggestor.refresh();
+		commandSuggester.setWindowActive(true);
+		commandSuggester.refresh();
 	}
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		parent.render(context, mouseX, mouseY, delta);
-
-		context.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
 
 		commandField.render(context, mouseX, mouseY, delta);
 
-		commandSuggestor.render(context, mouseX, mouseY);
+		commandSuggester.render(context, mouseX, mouseY);
 		if (changed) {
-			commandSuggestor.refresh();
+			commandSuggester.refresh();
 			changed = false;
 		}
-
 		super.render(context, mouseX, mouseY, delta);
-
+		parent.render(context, mouseX, mouseY, delta);
 	}
 
 	@Override
 	public void resize(MinecraftClient client, int width, int height) {
-		parent.resize(client,width,height);
+		parent.resize(client, width, height);
 	}
 
 	@Override
@@ -62,14 +59,14 @@ public class CommandEditScreen extends Screen {
 		this.client.setScreen(parent);
 		commandField.setFocused(false);
 		commandField.setChangedListener(null);
-		commandSuggestor.setWindowActive(false);
-		commandSuggestor.refresh();
+		commandSuggester.setWindowActive(false);
+		commandSuggester.refresh();
 	}
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (!commandField.mouseClicked(mouseX, mouseY, button)) {
-			if (!commandSuggestor.mouseClicked(mouseX, mouseY, button)) {
+			if (!commandSuggester.mouseClicked(mouseX, mouseY, button)) {
 				close();
 			} else {
 				commandField.setFocused(true);
@@ -80,13 +77,13 @@ public class CommandEditScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double amount, double horzamount) {
-		return commandSuggestor.mouseScrolled(amount);
+	public boolean mouseScrolled(double mouseX, double mouseY, double amount, double horizontalAmount) {
+		return commandSuggester.mouseScrolled(amount);
 	}
 
 	@Override
 	public boolean charTyped(char chr, int modifiers) {
-		return commandField.charTyped(chr,modifiers);
+		return commandField.charTyped(chr, modifiers);
 	}
 
 	@Override
@@ -95,7 +92,7 @@ public class CommandEditScreen extends Screen {
 			close();
 			return true;
 		}
-		commandSuggestor.keyPressed(keyCode, scanCode, modifiers);
+		commandSuggester.keyPressed(keyCode, scanCode, modifiers);
 
 		return commandField.keyPressed(keyCode, scanCode, modifiers);
 	}
