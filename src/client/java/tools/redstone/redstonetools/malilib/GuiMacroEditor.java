@@ -1,92 +1,199 @@
 package tools.redstone.redstonetools.malilib;
 
-import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.IConfigBase;
+import fi.dy.masa.malilib.config.IConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
-import fi.dy.masa.malilib.config.options.ConfigString;
-import fi.dy.masa.malilib.config.options.ConfigStringList;
 import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.GuiConfigsBase;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
+import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import tools.redstone.redstonetools.RedstoneTools;
-import tools.redstone.redstonetools.macros.actions.CommandAction;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.text.Text;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
+import tools.redstone.redstonetools.malilib.widget.action.CommandListWidget;
 import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
-import tools.redstone.redstonetools.malilib.widget.macro.WidgetListMacros;
+import tools.redstone.redstonetools.utils.GuiUtils;
 
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-public class GuiMacroEditor extends GuiConfigsBase {
+public class GuiMacroEditor extends Screen {
 	private final MacroBase macro;
-	private final ConfigStringList commands;
-	private final WidgetListMacros parent;
-	private float errorCountDown;
+	private final GuiMacroManager parent;
+	private CommandListWidget commandList;
+	private ConfigButtonKeybind buttonKeybind;
+	private ConfigButtonBoolean buttonEnabled;
+	private IConfigBoolean configBoolean;
+	private TextFieldWidget nameWidget;
 
-	public GuiMacroEditor(MacroBase macro, WidgetListMacros parent) {
-		super(10, 50, RedstoneTools.MOD_ID, null, macro.getName(), "");
+	public GuiMacroEditor(Text title, MacroBase macro, GuiMacroManager parent) {
+		super(title);
 		this.parent = parent;
+		this.client = MinecraftClient.getInstance();
 		this.macro = macro;
-		this.title = macro.getName();
-		this.commands = new ConfigStringList("Commands", ImmutableList.of(), "List of commands (prefixed with \"/\") or messages that should be sent in chat upon running the macro");
-		this.configEnabled = new ConfigBoolean("Enabled", this.macro.isEnabled(), "Whether or not to enable the macro");
-		this.configName = new ConfigString("Name", this.macro.getName(), "Name of the macro");
-		this.commands.setStrings(macro.actionsAsStringList);
 	}
 
-	@Override
-	public void initGui() {
-		super.initGui();
+	private static Method bkRenderMethod;
+	private static Method beRenderMethod;
 
-		int x = 10;
-
-		ButtonGeneric button = new ButtonGeneric(x, this.height - 24, -1, 20, GuiConfigs.ConfigGuiTab.MACROS.getDisplayName());
-		this.addButton(button, (a, b) -> updateConfigsAndClose());
-	}
 
 	@Override
-	public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks) {
-		super.render(drawContext, mouseX, mouseY, partialTicks);
-		if (errorCountDown > 0.0f) {
-			drawContext.drawText(this.textRenderer, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
-			errorCountDown -= partialTicks;
+	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+		super.render(context, mouseX, mouseY, deltaTicks);
+		buttonKeybind.updateDisplayString();
+		try {
+			buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
+			buttonEnabled.render(context, mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY));
+		} catch (NoSuchMethodError ignored) {
+			if (bkRenderMethod == null) {
+				try {
+					bkRenderMethod = ConfigButtonKeybind.class.getMethod("render", int.class, int.class, boolean.class, DrawContext.class);
+					beRenderMethod = ConfigButtonBoolean.class.getMethod("render", int.class, int.class, boolean.class, DrawContext.class);
+				} catch (Exception e) {
+					throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
+				}
+			}
+			try {
+				bkRenderMethod.invoke(buttonKeybind, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY), context);
+				beRenderMethod.invoke(buttonKeybind, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY), context);
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
+			}
 		}
 	}
 
 	@Override
-	public void closeGui(boolean showParent) {
-		if (updateConfigsAndClose()) return;
-		super.closeGui(showParent);
-	}
-
-	private boolean updateConfigsAndClose() {
-		if (MacroManager.nameExists(this.configName.getStringValue(), this.macro)) {
-			errorCountDown = 50.0f;
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		buttonEnabled.onKeyTyped(keyCode, scanCode, modifiers);
+		buttonKeybind.onKeyPressed(keyCode);
+		if (buttonKeybind.isSelected() && keyCode == 256) {
+			this.macro.hotkey.getKeybind().clearKeys();
+			buttonKeybind.onClearSelection();
 			return true;
 		}
-		this.macro.setName(this.configName.getStringValue());
-		this.macro.setEnabled(this.configEnabled.getBooleanValue());
-		this.macro.actions.clear();
-		for (String s : this.commands.getStrings()) {
-			this.macro.actions.add(new CommandAction(s));
-		}
-		MacroManager.saveChanges();
-		this.parent.refreshEntries();
-		GuiBase.openGui(new GuiMacroManager());
-		return false;
+		if (this.commandList.keyPressed(keyCode, scanCode, modifiers))
+			return true;
+		else
+			return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
-	private final ConfigBoolean configEnabled;
-	private final ConfigString configName;
+	@Override
+	protected void init() {
+		GuiUtils.Layout ncLayout = GuiUtils.getWidgetLayout(4, 10, this.width, 0, true, 50, this.height - 52, 20);
+		GuiUtils.Layout bkLayout = GuiUtils.getWidgetLayout(4, 10, this.width, 1, true, 50, this.height - 52, 20);
+		GuiUtils.Layout beLayout = GuiUtils.getWidgetLayout(4, 10, this.width, 2, true, 50, this.height - 52, 20);
+		GuiUtils.Layout nwLayout = GuiUtils.getWidgetLayout(4, 10, this.width, 3, true, 50, this.height - 52, 20);
+		this.commandList = this.addDrawableChild(
+			new CommandListWidget(this, this.client, this.width, this.height - 75, 0, 36, this.macro)
+		);
+		this.addDrawableChild(ButtonWidget.builder(Text.of("Add command"), button ->
+				this.commandList.addEntry())
+			.dimensions(ncLayout.x, ncLayout.y, ncLayout.width, ncLayout.height)
+			.build());
+		this.buttonKeybind = new ConfigButtonKeybind(bkLayout.x, bkLayout.y, bkLayout.width, bkLayout.height, macro.hotkey.getKeybind(), null) {
+			@Override
+			public boolean onMouseClicked(int mx, int my, int mb) {
+				if (!this.isMouseOver(mx, my)) {
+					this.selected = false;
+					return false;
+				} else {
+					return super.onMouseClicked(mx, my, mb);
+				}
+			}
+			@Override
+			public void onClearSelection() {
+				this.firstKey = true;
+				super.onClearSelection();
+			}
+		};
+		this.configBoolean = new ConfigBoolean("", true, "");
+		this.configBoolean.setBooleanValue(this.macro.isEnabled());
+		this.buttonEnabled = new ConfigButtonBoolean(beLayout.x, beLayout.y, beLayout.width, beLayout.height, this.configBoolean);
+		this.nameWidget = addDrawableChild(new TextFieldWidget(this.textRenderer, nwLayout.width, nwLayout.height, Text.of("")));
+		this.nameWidget.setText(macro.getName());
+		this.nameWidget.setPosition(nwLayout.x, nwLayout.y);
+	}
 
 	@Override
-	public List<ConfigOptionWrapper> getConfigs() {
-		List<? extends IConfigBase> configs = List.of(
-				this.configEnabled,
-				this.macro.hotkey,
-				this.commands,
-				this.configName
-		);
-		return ConfigOptionWrapper.createFor(configs);
+	public void mouseMoved(double mouseX, double mouseY) {
+		commandList.mouseMoved(mouseX, mouseY);
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (buttonKeybind.onMouseClicked((int) mouseX, (int) mouseY, button)) {
+			if (this.getFocused() != null) {
+				this.getFocused().setFocused(false);
+			}
+			return true;
+		}
+		else if (buttonEnabled.onMouseClicked((int) mouseX, (int) mouseY, button)) {
+			if (this.getFocused() != null) {
+				this.getFocused().setFocused(false);
+			}
+			return true;
+		}
+		else if (super.mouseClicked(mouseX, mouseY, button)) return true;
+		else return commandList.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		buttonKeybind.onMouseReleased((int) mouseX, (int) mouseY, button);
+		buttonEnabled.onMouseReleased((int) mouseX, (int) mouseY, button);
+		if (commandList.mouseReleased(mouseX, mouseY, button)) return true;
+		else return super.mouseReleased(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+		if (commandList.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true;
+		else return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		if (commandList.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) return true;
+		else if (buttonKeybind.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+			return true;
+		else if (buttonEnabled.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+			return true;
+		else return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+	}
+
+	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		if (commandList.keyReleased(keyCode, scanCode, modifiers)) return true;
+		else return super.keyReleased(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean charTyped(char chr, int modifiers) {
+		if (commandList.charTyped(chr, modifiers)) return true;
+		else if (buttonKeybind.onCharTyped(chr, modifiers)) return true;
+		else if (buttonEnabled.onCharTyped(chr, modifiers)) return true;
+		else return super.charTyped(chr, modifiers);
+	}
+
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
+		if (commandList.isMouseOver(mouseX, mouseY)) return true;
+		else if (buttonKeybind.isMouseOver((int) mouseX, (int) mouseY)) return true;
+		else if (buttonEnabled.isMouseOver((int) mouseX, (int) mouseY)) return true;
+		else return super.isMouseOver(mouseX, mouseY);
+	}
+
+	@Override
+	public void close() {
+		this.macro.actions.clear();
+		this.commandList.children().forEach(t -> this.macro.actions.add(t.command));
+		this.macro.setEnabled(this.configBoolean.getBooleanValue());
+		this.macro.setName(this.nameWidget.getText());
+		MacroManager.saveChanges();
+		assert client != null;
+		parent.initGui();
+		GuiBase.openGui(parent);
 	}
 }

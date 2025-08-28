@@ -10,17 +10,17 @@ import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
-import tools.redstone.redstonetools.malilib.GuiMacroEditor2;
+import tools.redstone.redstonetools.malilib.GuiMacroEditor;
 import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class CommandListWidget extends EntryListWidget<CommandListWidget.CommandEntry> {
-	private final GuiMacroEditor2 parent;
+	private final GuiMacroEditor parent;
 	private final MacroBase macro;
 
-	public CommandListWidget(GuiMacroEditor2 parent, MinecraftClient mc, int width, int height, int y, int itemHeight, MacroBase macro) {
+	public CommandListWidget(GuiMacroEditor parent, MinecraftClient mc, int width, int height, int y, int itemHeight, MacroBase macro) {
 		super(mc, width, height, y, itemHeight);
 		this.parent = parent;
 		this.macro = macro;

@@ -7,16 +7,16 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.malilib.GuiMacroEditor2;
+import tools.redstone.redstonetools.malilib.GuiMacroEditor;
 
 public class CommandEditScreen extends Screen {
 
 	private final TextFieldWidget commandField;
 	private final ChatInputSuggestor commandSuggester;
 	private boolean changed = false;
-	private final GuiMacroEditor2 parent;
+	private final GuiMacroEditor parent;
 
-	public CommandEditScreen(GuiMacroEditor2 parent, TextFieldWidget commandField) {
+	public CommandEditScreen(GuiMacroEditor parent, TextFieldWidget commandField) {
 		super(Text.of(""));
 		this.parent = parent;
 		this.commandField = commandField;
