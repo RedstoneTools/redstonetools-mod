@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
+import net.minecraft.client.gui.DrawContext;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
@@ -22,6 +23,13 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 		super(10, 68);
 
 		this.title = "Macro manager";
+	}
+
+	@Override
+	public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks) {
+		if (this.client != null && this.client.world == null) this.renderPanoramaBackground(drawContext, partialTicks);
+		this.applyBlur(drawContext);
+		super.render(drawContext, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

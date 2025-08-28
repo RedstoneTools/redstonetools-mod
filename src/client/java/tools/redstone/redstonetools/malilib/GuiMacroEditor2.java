@@ -88,7 +88,7 @@ public class GuiMacroEditor2 extends Screen {
 		this.commandList = this.addDrawableChild(
 			new CommandListWidget(this, this.client, this.width, this.height - 75, 0, 36, this.macro)
 		);
-		this.addDrawableChild(ButtonWidget.builder(Text.of("New command"), button ->
+		this.addDrawableChild(ButtonWidget.builder(Text.of("Add command"), button ->
 				this.commandList.addEntry())
 			.dimensions(ncLayout.x, ncLayout.y, ncLayout.width, ncLayout.height)
 			.build());
@@ -123,10 +123,20 @@ public class GuiMacroEditor2 extends Screen {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (buttonKeybind.onMouseClicked((int) mouseX, (int) mouseY, button)) return true;
-		else if (buttonEnabled.onMouseClicked((int) mouseX, (int) mouseY, button)) return true;
-		else if (commandList.mouseClicked(mouseX, mouseY, button)) return true;
-		return super.mouseClicked(mouseX, mouseY, button);
+		if (buttonKeybind.onMouseClicked((int) mouseX, (int) mouseY, button)) {
+			if (this.getFocused() != null) {
+				this.getFocused().setFocused(false);
+			}
+			return true;
+		}
+		else if (buttonEnabled.onMouseClicked((int) mouseX, (int) mouseY, button)) {
+			if (this.getFocused() != null) {
+				this.getFocused().setFocused(false);
+			}
+			return true;
+		}
+		else if (super.mouseClicked(mouseX, mouseY, button)) return true;
+		else return commandList.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
