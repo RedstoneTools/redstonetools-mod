@@ -199,4 +199,8 @@ public class MacroManager {
 	public static void addMacro(MacroBase macro) {
 		macros.add(macro);
 	}
+
+	public static void addMacroToTop(MacroBase macroBase) {
+		macros.addFirst(macroBase);
+	}
 }

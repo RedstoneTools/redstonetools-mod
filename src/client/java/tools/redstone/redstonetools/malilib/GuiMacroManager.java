@@ -91,7 +91,7 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 			if (MacroManager.nameExists(string, null)) {
 				string += " " + UUID.randomUUID();
 			}
-			MacroManager.addMacro(new MacroBase(string, "", new ArrayList<>()));
+			MacroManager.addMacroToTop(new MacroBase(string, "", new ArrayList<>()));
 			MacroManager.saveChanges();
 			this.getListWidget().refreshEntries();
 		});
