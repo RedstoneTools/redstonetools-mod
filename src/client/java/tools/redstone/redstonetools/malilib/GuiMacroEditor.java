@@ -27,6 +27,7 @@ public class GuiMacroEditor extends Screen {
 	private ConfigButtonBoolean buttonEnabled;
 	private IConfigBoolean configBoolean;
 	private TextFieldWidget nameWidget;
+	private float errorCountDown;
 
 	public GuiMacroEditor(Text title, MacroBase macro, GuiMacroManager parent) {
 		super(title);
@@ -61,6 +62,10 @@ public class GuiMacroEditor extends Screen {
 			} catch (IllegalAccessException | InvocationTargetException e) {
 				throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
 			}
+		}
+		if (errorCountDown > 0.0f) {
+			context.drawText(this.textRenderer, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
+			errorCountDown -= deltaTicks;
 		}
 	}
 
@@ -187,6 +192,10 @@ public class GuiMacroEditor extends Screen {
 
 	@Override
 	public void close() {
+		if (MacroManager.nameExists(this.nameWidget.getText(), this.macro)) {
+			errorCountDown = 50.0f;
+			return;
+		}
 		this.macro.actions.clear();
 		this.commandList.children().forEach(t -> this.macro.actions.add(t.command));
 		this.macro.setEnabled(this.configBoolean.getBooleanValue());
