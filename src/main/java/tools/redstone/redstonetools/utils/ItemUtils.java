@@ -8,6 +8,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class ItemUtils {
 	public static boolean isEmpty(ItemStack itemStack) {
 		return itemStack == null || itemStack.getItem() == Items.AIR || itemStack.getCount() == 0;
@@ -39,10 +42,27 @@ public class ItemUtils {
 		return state;
 	}
 
+	private static Method m;
+
 	public static String getCommand(ItemStack stack) {
 		if (stack.contains(DataComponentTypes.CUSTOM_DATA)) {
-			var data = stack.get(DataComponentTypes.CUSTOM_DATA).copyNbt();
-			return data.getString("command", "");
+			NbtCompound data = stack.get(DataComponentTypes.CUSTOM_DATA).copyNbt();
+			try {
+				return data.getString("command", "");
+			} catch (NoSuchMethodError ignored) {
+				if (m == null) {
+					try {
+						m = NbtCompound.class.getMethod("getString", String.class);
+					} catch (Exception e) {
+						throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
+					}
+				}
+				try {
+					return (String) m.invoke(data, "command");
+				} catch (IllegalAccessException | InvocationTargetException e) {
+					throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
+				}
+			}
 		}
 		return "";
 	}

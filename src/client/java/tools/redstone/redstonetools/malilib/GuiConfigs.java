@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.util.StringUtils;
+import net.minecraft.client.gui.DrawContext;
 import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.malilib.config.Configs;
 
@@ -68,6 +69,13 @@ public class GuiConfigs extends GuiConfigsBase {
 		}
 
 		return ConfigOptionWrapper.createFor(configs);
+	}
+
+	@Override
+	public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks) {
+		if (this.client != null && this.client.world == null) this.renderPanoramaBackground(drawContext, partialTicks);
+		this.applyBlur(drawContext);
+		super.render(drawContext, mouseX, mouseY, partialTicks);
 	}
 
 	static class ButtonListener implements IButtonActionListener {

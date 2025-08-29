@@ -4,7 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import tools.redstone.redstonetools.features.commands.argument.MacroArgumentType;
-import tools.redstone.redstonetools.malilib.widget.MacroBase;
+import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;

@@ -1,19 +1,30 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "tools.redstone.redstonetools.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "client": [
-    "blocks.RedstoneHitboxMixin",
-    "features.AirPlaceClientMixin",
-    "features.AutoRotateClientMixin",
-    "features.CommandSourceMixin",
-    "features.ItemBindItemStackMixin",
-    "features.WorldRendererInvoker",
-    "macros.AddMacroButtonMixin",
-    "macros.InitializeMacroManagerMixin"
-  ]
+	"required": true,
+	"minVersion": "0.8",
+	"package": "tools.redstone.redstonetools.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"comment": [
+		"keep blocks.RedstoneHitboxMixin as the first mixin listed here.",
+		"it checks if malilib exists, and if not show a message and throw.",
+		"",
+		"this is necessary because mixins get loaded before RedstoneToolsClient#onInitializeClient().",
+		"RedstoneHitboxMixin is the first mixin listed here, so it gets loaded first.",
+		"Other mixins (including this one) use malilib classes before onInitializeClient() gets run.",
+		"So, if malilib isn't present, the mixins will throw a ClassNotFoundException and we never",
+		"get to display the message telling the user to install malilib."
+	],
+	"client": [
+		"blocks.RedstoneHitboxMixin",
+		"features.AirPlaceClientMixin",
+		"features.AutoRotateClientMixin",
+		"features.ClientCommandInternalsMixin",
+		"features.CommandSourceMixin",
+		"features.ItemBindItemStackMixin",
+		"features.WorldRendererInvoker",
+		"macros.AddMacroButtonMixin",
+		"macros.InitializeMacroManagerMixin"
+	]
 }

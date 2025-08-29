@@ -1,4 +1,4 @@
-package tools.redstone.redstonetools.malilib.widget;
+package tools.redstone.redstonetools.malilib.widget.macro;
 
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;

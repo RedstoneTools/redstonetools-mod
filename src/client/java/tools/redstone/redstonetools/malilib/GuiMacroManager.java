@@ -6,11 +6,12 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
+import net.minecraft.client.gui.DrawContext;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
-import tools.redstone.redstonetools.malilib.widget.MacroBase;
-import tools.redstone.redstonetools.malilib.widget.WidgetListMacros;
-import tools.redstone.redstonetools.malilib.widget.WidgetMacroEntry;
+import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
+import tools.redstone.redstonetools.malilib.widget.macro.WidgetListMacros;
+import tools.redstone.redstonetools.malilib.widget.macro.WidgetMacroEntry;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -22,6 +23,13 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 		super(10, 68);
 
 		this.title = "Macro manager";
+	}
+
+	@Override
+	public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks) {
+		if (this.client != null && this.client.world == null) this.renderPanoramaBackground(drawContext, partialTicks);
+		this.applyBlur(drawContext);
+		super.render(drawContext, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -83,7 +91,7 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 			if (MacroManager.nameExists(string, null)) {
 				string += " " + UUID.randomUUID();
 			}
-			MacroManager.addMacro(new MacroBase(string, "", new ArrayList<>()));
+			MacroManager.addMacroToTop(new MacroBase(string, "", new ArrayList<>()));
 			MacroManager.saveChanges();
 			this.getListWidget().refreshEntries();
 		});
@@ -99,7 +107,7 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 
 	@Override
 	protected WidgetListMacros createListWidget(int listX, int listY) {
-		return new WidgetListMacros(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), 0, this);
+		return new WidgetListMacros(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this, this);
 	}
 
 	@Override

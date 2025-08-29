@@ -2,7 +2,7 @@ package tools.redstone.redstonetools.malilib.config;
 
 import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
-import tools.redstone.redstonetools.malilib.widget.MacroBase;
+import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -123,6 +123,15 @@ public class MacroManager {
 						"/gamerule doMobSpawning false",
 						"/gamerule doContainerDrops false",
 						"/time set noon",
+						"/time set noon",
+						"/time set noon",
+						"/time set noon",
+						"/time set noon",
+						"/time set noon",
+						"/time set noon",
+						"/time set noon",
+						"/time set noon",
+						"/time set noon",
 						"/weather clear"
 				}),
 				createCommandMacro("copystate", new String[]{"/copystate"}),
@@ -189,5 +198,9 @@ public class MacroManager {
 
 	public static void addMacro(MacroBase macro) {
 		macros.add(macro);
+	}
+
+	public static void addMacroToTop(MacroBase macroBase) {
+		macros.addFirst(macroBase);
 	}
 }

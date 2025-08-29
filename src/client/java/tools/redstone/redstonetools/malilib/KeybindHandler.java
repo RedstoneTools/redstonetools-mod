@@ -3,7 +3,7 @@ package tools.redstone.redstonetools.malilib;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.hotkeys.*;
 import tools.redstone.redstonetools.RedstoneTools;
-import tools.redstone.redstonetools.malilib.widget.MacroBase;
+import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
 public class KeybindHandler implements IKeybindProvider, IKeyboardInputHandler, IMouseInputHandler {
 	private final MacroBase macro;

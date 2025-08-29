@@ -10,7 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
-import tools.redstone.redstonetools.malilib.widget.MacroBase;
+import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
 import java.util.ArrayList;
 import java.util.Collection;
