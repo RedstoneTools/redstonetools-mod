@@ -5,6 +5,7 @@ import tools.redstone.redstonetools.features.commands.ClientDataFeature;
 import java.util.regex.Pattern;
 
 public class StringUtils {
+	public static String unmodifiedCommand;
 	public static String insertVariables(String command) {
 		boolean didSomething = true;
 		while (didSomething) {

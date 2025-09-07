@@ -26,6 +26,7 @@
 		"features.ClientPlayNetworkHandlerMixin",
 		"features.CommandSourceMixin",
 		"features.ItemBindItemStackMixin",
+		"features.SuggestionWindowMixin",
 		"features.WorldRendererInvoker",
 		"macros.AddMacroButtonMixin",
 		"macros.InitializeMacroManagerMixin"
