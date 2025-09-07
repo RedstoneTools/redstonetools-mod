@@ -10,7 +10,7 @@ public class StringUtils {
 		while (didSomething) {
 			didSomething = false;
 			for (String str : ClientDataFeature.INSTANCE.variables.keySet()) {
-				var key = "^{" + str + "}";
+				var key = "`" + str + "`";
 				if (command.contains(key)) {
 					command = command.replaceAll(Pattern.quote(key), ClientDataFeature.INSTANCE.variables.get(str));
 					didSomething = true;
