@@ -153,8 +153,8 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			this.parent = parent;
 			this.command = command;
 			this.commandWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 250, 50, Text.of(""));
-			this.commandWidget.setText(command.command);
 			this.commandWidget.setMaxLength(256);
+			this.commandWidget.setText(command.command);
 			var commandSuggester = new ChatInputSuggestor(MinecraftClient.getInstance(), this.parent.parent, this.commandWidget, MinecraftClient.getInstance().textRenderer, false, false, 0, 7, false, Integer.MIN_VALUE) {
 				@Override
 				public void refresh() {

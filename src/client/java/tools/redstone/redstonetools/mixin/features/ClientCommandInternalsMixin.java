@@ -10,12 +10,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ClientCommandInternalsMixin {
 	@Inject(method = "executeCommand", at = @At("HEAD"), remap = false, cancellable = true)
 	private static void executeCommand(String command, CallbackInfoReturnable<Boolean> cir) {
-		System.out.println(command);
 		// until fabric api fixes this (see the TODO comment in the method we're mixin in to) this is fine
 		if (command.startsWith("g ") ||
 			command.startsWith("base") ||
 			command.startsWith("quicktp") ||
-			command.startsWith("reach"))
+			command.startsWith("reach")) {
 			cir.setReturnValue(false);
+		}
 	}
 }

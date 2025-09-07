@@ -1,24 +1,81 @@
 package tools.redstone.redstonetools.mixin.features;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import tools.redstone.redstonetools.features.commands.ClientDataFeature;
 import tools.redstone.redstonetools.malilib.config.Configs;
+import tools.redstone.redstonetools.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static net.minecraft.command.CommandSource.SUGGESTION_MATCH_PREFIX;
 
 @Mixin(CommandSource.class)
 public interface CommandSourceMixin {
+	@ModifyVariable(method = "suggestMatching(Ljava/lang/Iterable;Lcom/mojang/brigadier/suggestion/SuggestionsBuilder;)Ljava/util/concurrent/CompletableFuture;", at = @At("HEAD"), argsOnly = true)
+	private static Iterable<String> mrow(Iterable<String> candidates, @Local(argsOnly = true) SuggestionsBuilder builder) {
+		String remaining = builder.getRemainingLowerCase();
+		if (remaining.startsWith("read"))
+			return mrrp();
+		else if (remaining.startsWith("m{"))
+			return meowww(remaining.substring(2));
+		return candidates;
+	}
+
+	@ModifyVariable(method = "suggestMatching([Ljava/lang/String;Lcom/mojang/brigadier/suggestion/SuggestionsBuilder;)Ljava/util/concurrent/CompletableFuture;", at = @At("HEAD"), argsOnly = true)
+	private static String[] mrawww(String[] candidates, @Local(argsOnly = true) SuggestionsBuilder builder) {
+		String remaining = builder.getRemainingLowerCase();
+		if (remaining.startsWith("read"))
+			return mrrp().toArray(new String[0]);
+		else if (remaining.startsWith("m{"))
+			return meowww(remaining.substring(2)).toArray(new String[0]);
+		return candidates;
+	}
+
+	@ModifyVariable(method = "suggestMatching(Ljava/util/stream/Stream;Lcom/mojang/brigadier/suggestion/SuggestionsBuilder;)Ljava/util/concurrent/CompletableFuture;", at = @At("HEAD"), argsOnly = true)
+	private static Stream<String> mewww(Stream<String> candidates, @Local(argsOnly = true) SuggestionsBuilder builder) {
+		String remaining = builder.getRemainingLowerCase();
+		if (remaining.startsWith("read"))
+			return mrrp().stream();
+		else if (remaining.startsWith("m{"))
+			return meowww(remaining.substring(2)).stream();
+		return candidates;
+	}
+
+	@Unique
+	private static List<String> meowww(String expression) {
+		List<String> list = new ArrayList<>();
+		list.add(MathUtils.handleMat(expression));
+		return list;
+	}
+
+	@Unique
+	private static List<String> mrrp() {
+		List<String> list = new ArrayList<>();
+		list.addAll(ClientDataFeature.INSTANCE.variables.keySet());
+		list.addAll(ClientDataFeature.INSTANCE.intVariables.keySet());
+		list.addAll(ClientDataFeature.INSTANCE.doubleVariables.keySet());
+		return list;
+	}
+
 	@Inject(method = "shouldSuggest", at = @At("HEAD"), cancellable = true)
 	private static void meow(String remaining, String candidate, CallbackInfoReturnable<Boolean> cir) {
+		if (remaining.startsWith("r,") ||
+			remaining.startsWith("m,")) {
+			cir.setReturnValue(true);
+			return;
+		}
 		if (!Configs.General.BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS.getBooleanValue()) return;
-		if (remaining == null || candidate == null) {
+		if (candidate == null) {
 			cir.setReturnValue(false);
 			return;
 		}

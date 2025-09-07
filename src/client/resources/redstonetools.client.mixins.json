@@ -19,8 +19,11 @@
 	"client": [
 		"blocks.RedstoneHitboxMixin",
 		"features.AirPlaceClientMixin",
+		"features.ArgumentTypeMixin",
 		"features.AutoRotateClientMixin",
+		"features.ChatInputSuggesterMixin",
 		"features.ClientCommandInternalsMixin",
+		"features.ClientPlayNetworkHandlerMixin",
 		"features.CommandSourceMixin",
 		"features.ItemBindItemStackMixin",
 		"features.WorldRendererInvoker",

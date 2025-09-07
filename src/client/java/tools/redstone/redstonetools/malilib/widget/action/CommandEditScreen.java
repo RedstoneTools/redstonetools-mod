@@ -20,6 +20,7 @@ public class CommandEditScreen extends Screen {
 		super(Text.of(""));
 		this.parent = parent;
 		this.commandField = commandField;
+		this.commandField.setMaxLength(256);
 		client = MinecraftClient.getInstance();
 		this.commandSuggester = new ChatInputSuggestor(client, this, commandField, client.textRenderer, true, false, commandField.getY() - 20, 5, false, -805306368) {
 			@Override

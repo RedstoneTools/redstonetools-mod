@@ -6,6 +6,7 @@ import tools.redstone.redstonetools.features.toggleable.*;
 public class ClientCommands {
 	public static void registerCommands() {
 		BaseConvertClient.INSTANCE.registerCommand();
+		ClientDataFeature.INSTANCE.registerCommand();
 		EditMacroFeature.INSTANCE.registerCommand();
 		MacroFeature.INSTANCE.registerCommand();
 		ReachClient.INSTANCE.registerCommand();

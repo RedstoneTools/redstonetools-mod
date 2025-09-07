@@ -93,8 +93,7 @@ public class GuiMacroEditor extends Screen {
 		GuiUtils.Layout beLayout = layouts.get(3);
 		GuiUtils.Layout nwLayout = layouts.get(4);
 		this.commandList = this.addDrawableChild(
-			new CommandListWidget(this, this.client, this.width, this.height - 75, 0, 36, this.macro)
-		);
+			new CommandListWidget(this, this.client, this.width, this.height - 75, 0, 36, this.macro));
 		this.addDrawableChild(ButtonWidget.builder(Text.of("Add command"), button ->
 				this.commandList.addEntry())
 			.dimensions(ncLayout.x(), ncLayout.y(), ncLayout.width(), ncLayout.height())
