@@ -53,7 +53,7 @@ public interface CommandSourceMixin {
 
 	@Inject(method = "shouldSuggest", at = @At("HEAD"), cancellable = true)
 	private static void meow(String remaining, String candidate, CallbackInfoReturnable<Boolean> cir) {
-		if (remaining.startsWith("m,")) {
+		if (remaining.startsWith("m{")) {
 			cir.setReturnValue(true);
 			return;
 		}
