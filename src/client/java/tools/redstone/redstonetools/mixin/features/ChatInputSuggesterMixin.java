@@ -29,13 +29,14 @@ public class ChatInputSuggesterMixin {
 			return;
 		}
 		justEntered = true;
-		unmodifiedCommand = textField.getText();
+		unmodifiedCommand.add(textField.getText());
 		textField.setText(StringUtils.insertVariables(textField.getText()));
 	}
 
 	@Inject(method = "refresh", at = @At("RETURN"))
 	private void mrawww(CallbackInfo ci) {
-		textField.setText(unmodifiedCommand);
+		textField.setText(unmodifiedCommand.getLast());
+		unmodifiedCommand.removeLast();
 		justEntered = false;
 	}
 }
