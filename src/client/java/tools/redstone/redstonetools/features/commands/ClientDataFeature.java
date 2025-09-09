@@ -24,7 +24,7 @@ public class ClientDataFeature {
 								String name = StringArgumentType.getString(context, "name");
 								String value = StringArgumentType.getString(context, "value");
 								variables.put(name, value);
-								context.getSource().sendFeedback(Text.of("Set " + name + " to " + value));
+								context.getSource().sendFeedback(Text.of("Set " + name + " to \"" + value + "\""));
 								return 1;
 							})
 						)))

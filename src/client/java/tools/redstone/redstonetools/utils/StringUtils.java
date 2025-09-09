@@ -3,8 +3,10 @@ package tools.redstone.redstonetools.utils;
 import tools.redstone.redstonetools.features.commands.ClientDataFeature;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils {
@@ -15,9 +17,12 @@ public class StringUtils {
 		while (didSomething) {
 			didSomething = false;
 			for (String str : ClientDataFeature.INSTANCE.variables.keySet()) {
-				var key = "`" + str + "`";
-				if (command.contains(key)) {
-					command = command.replaceAll(Pattern.quote(key), ClientDataFeature.INSTANCE.variables.get(str));
+				var key = "'" + str + "'";
+				if (command.contains("\\" + key)) {
+					command = command.replaceAll(Pattern.quote("\\" + key), key);
+				} else if (command.contains(key)) {
+					String toReplace = ClientDataFeature.INSTANCE.variables.get(str);
+					if (!(toReplace == null || toReplace.isEmpty())) command = command.replaceAll(Pattern.quote(key), toReplace);
 					didSomething = true;
 				}
 			}
@@ -25,55 +30,46 @@ public class StringUtils {
 		return command;
 	}
 
-	/**
-	 * Expand the partial argument from shortStr using a token from fullStr.
-	 * Examples:
-	 *   // gm = gamemode
-	 *   "`gm` c", "gamemode creative"  -> "`gm` creative"
-	 *   "`gm` ",  "gamemode spectator" -> "`gm` spectator"
-	 *   // g = give @s
-	 *   "`g` white_wo", "give @s white_wool" -> "`g` white_wool"
-	 *   // g = game
-	 *   "`g`mode c", "gamemode creative"  -> "`g`mode creative"
-	 */
-	public static String expand(String shortStr, String fullStr) {
-		if (shortStr == null || fullStr == null) return shortStr;
-		if (fullStr.trim().isEmpty()) return shortStr;
+	public static String expand(String shortStr, String expandedString) {
+		Pattern tokenPattern = Pattern.compile("'([^']*)'");
+		Pattern quotedValuePattern = Pattern.compile("^'([^']*)'$");
+		Matcher tokenMatcher = tokenPattern.matcher(shortStr);
 
-		boolean endsWithSpace = Character.isWhitespace(shortStr.charAt(shortStr.length() - 1));
-		String shortTrim = shortStr.trim();
-		String[] shortTokens = shortTrim.isEmpty() ? new String[0] : shortTrim.split("\\s+");
-		String[] fullTokens = fullStr.trim().split("\\s+");
+		String result = expandedString;
 
-		if (shortTokens.length == 0) return fullStr;
+		while (tokenMatcher.find()) {
+			String tokenWithQuotes = tokenMatcher.group(0);
+			String key = tokenMatcher.group(1);
 
-		if (endsWithSpace) {
-			String lastPrefix = shortTokens[shortTokens.length - 1];
+			Set<String> seen = new HashSet<>();
+			String currentKey = key;
+			String resolved;
 
-			int idx = -1;
-			for (int i = 0; i < fullTokens.length; i++) {
-				if (fullTokens[i].equals(lastPrefix) || fullTokens[i].startsWith(lastPrefix)) {
-					idx = i;
+			while (true) {
+				if (!seen.add(currentKey)) {
+					resolved = null;
+					break;
+				}
+				String val = ClientDataFeature.INSTANCE.variables.get(currentKey);
+				if (val == null) {
+					resolved = null;
+					break;
+				}
+				Matcher qm = quotedValuePattern.matcher(val);
+				if (qm.matches()) {
+					currentKey = qm.group(1);
+				} else {
+					resolved = val;
 					break;
 				}
 			}
 
-			if (idx != -1 && idx + 1 < fullTokens.length) {
-				return shortTrim + " " + fullTokens[idx + 1];
-			} else {
-				return shortTrim + " " + fullTokens[fullTokens.length - 1];
+			if (resolved == null || resolved.isEmpty()) {
+				continue;
 			}
-		} else {
-			if (shortTokens.length < 2) return shortStr;
-			String partial = shortTokens[shortTokens.length - 1];
-			String prefix = String.join(" ", Arrays.copyOf(shortTokens, shortTokens.length - 1));
-
-			for (String t : fullTokens) {
-				if (t.startsWith(partial)) {
-					return prefix.isEmpty() ? t : (prefix + " " + t);
-				}
-			}
-			return fullStr;
+			result = result.replaceFirst(Pattern.quote(resolved), Matcher.quoteReplacement(tokenWithQuotes));
 		}
+
+		return result;
 	}
 }
