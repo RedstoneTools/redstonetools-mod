@@ -11,8 +11,8 @@ public class MathUtils {
 		String result;
 		try {
 			result = calculate(components);
-		} catch (IllegalArgumentException e){
-			return "";
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e);
 		}
 		return result;
 	}

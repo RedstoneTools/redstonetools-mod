@@ -9,15 +9,17 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static tools.redstone.redstonetools.malilib.config.Configs.ClientData.*;
+
 public class StringUtils {
 	public static List<String> unmodifiedCommand = new ArrayList<>();
 
-	public static String insertVariables(String command) {
+	public static String insertVariablesAndMath(String command) {
 		boolean didSomething = true;
 		while (didSomething) {
 			didSomething = false;
 			for (String str : ClientDataFeature.INSTANCE.variables.keySet()) {
-				var key = "'" + str + "'";
+				var key = VARIABLE_BEGIN_STRING.getStringValue() + str + VARIABLE_END_STRING.getStringValue();
 				if (command.contains("\\" + key)) {
 					command = command.replaceAll(Pattern.quote("\\" + key), key);
 				} else if (command.contains(key)) {
@@ -27,6 +29,22 @@ public class StringUtils {
 				}
 			}
 		}
+		Pattern pattern = Pattern.compile(Pattern.quote(MATH_BEGIN_STRING.getStringValue()) + "(.*?)" + Pattern.quote(MATH_END_STRING.getStringValue()));
+		Matcher matcher = pattern.matcher(command);
+
+		StringBuilder result = new StringBuilder();
+
+		while (matcher.find()) {
+			String insideBraces = matcher.group(1);
+			try {
+				String replacement = MathUtils.handleMat(insideBraces);
+				matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
+			} catch (IllegalArgumentException ignored) {
+				matcher.appendReplacement(result, Matcher.quoteReplacement(""));
+			}
+		}
+		matcher.appendTail(result);
+		command = result.toString();
 		return command;
 	}
 

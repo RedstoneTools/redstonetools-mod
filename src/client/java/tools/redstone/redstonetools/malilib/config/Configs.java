@@ -1,16 +1,16 @@
 package tools.redstone.redstonetools.malilib.config;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.config.ConfigUtils;
-import fi.dy.masa.malilib.config.IConfigBase;
-import fi.dy.masa.malilib.config.IConfigHandler;
+import fi.dy.masa.malilib.config.*;
 import fi.dy.masa.malilib.config.options.*;
 import fi.dy.masa.malilib.util.JsonUtils;
 import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.RedstoneTools;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Configs implements IConfigHandler {
@@ -30,7 +30,6 @@ public class Configs implements IConfigHandler {
 			BIGDUST,
 			CLICKCONTAINERS
 		);
-
 
 		static {
 			AIRPLACE.getKeybind().setCallback((t, g) -> {
@@ -53,6 +52,28 @@ public class Configs implements IConfigHandler {
 				CLICKCONTAINERS.setBooleanValue(!CLICKCONTAINERS.getBooleanValue());
 				return true;
 			});
+		}
+	}
+
+	public static class ClientData {
+		public static final ConfigString VARIABLE_BEGIN_STRING = new ConfigString("Variable begin string", "'", "The string that should be used to denote the start of a variable. Can be empty");
+		public static final ConfigString VARIABLE_END_STRING = new ConfigString("Variable end string", "'", "The string that should be used to denote the start of a variable. Can be empty");
+		public static final ConfigString MATH_BEGIN_STRING = new ConfigString("Math begin string", "{", "The string that should be used to denote the start of a variable. Can be empty, unsure if you'd want that though.");
+		public static final ConfigString MATH_END_STRING = new ConfigString("Math begin string", "}", "The string that should be used to denote the start of a variable. Can be empty, unsure if you'd want that though.");
+		public static final ConfigStringList AUTORUN_FIRST_WORLD_ENTRY = new ConfigStringList("First world entry", ImmutableList.of(), "Commands that will be run the first time you join a world in this session");
+		public static final ConfigStringList AUTORUN_WORLD_ENTRY = new ConfigStringList("First world entry", ImmutableList.of(), "Commands that will be run when you join a world");
+		public static final ConfigStringList AUTORUN_DIMENSION_CHANGE = new ConfigStringList("First world entry", ImmutableList.of(), "Commands that will be run after you change dimensions");
+
+		public static final List<IConfigBase> OPTIONS = new ArrayList<>();
+
+		static {
+			OPTIONS.add(VARIABLE_BEGIN_STRING);
+			OPTIONS.add(VARIABLE_END_STRING);
+			OPTIONS.add(MATH_BEGIN_STRING);
+			OPTIONS.add(MATH_END_STRING);
+			OPTIONS.add(AUTORUN_FIRST_WORLD_ENTRY);
+			OPTIONS.add(AUTORUN_WORLD_ENTRY);
+			OPTIONS.add(AUTORUN_DIMENSION_CHANGE);
 		}
 	}
 
@@ -93,6 +114,7 @@ public class Configs implements IConfigHandler {
 
 				ConfigUtils.readConfigBase(root, "Generic", General.OPTIONS);
 				ConfigUtils.readConfigBase(root, "Toggles", Toggles.TOGGLES);
+				ConfigUtils.readConfigBase(root, "ClientData", ClientData.OPTIONS);
 			}
 		}
 	}
@@ -105,6 +127,7 @@ public class Configs implements IConfigHandler {
 
 			ConfigUtils.writeConfigBase(root, "Generic", General.OPTIONS);
 			ConfigUtils.writeConfigBase(root, "Toggles", Toggles.TOGGLES);
+			ConfigUtils.writeConfigBase(root, "ClientData", ClientData.OPTIONS);
 
 			JsonUtils.writeJsonToFile(root, new File(dir, CONFIG_FILE_NAME));
 		}

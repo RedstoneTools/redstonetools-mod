@@ -30,7 +30,7 @@ public class ChatInputSuggesterMixin {
 		}
 		justEntered = true;
 		unmodifiedCommand.add(textField.getText());
-		textField.setText(StringUtils.insertVariables(textField.getText()));
+		textField.setText(StringUtils.insertVariablesAndMath(textField.getText()));
 	}
 
 	@Inject(method = "refresh", at = @At("RETURN"))

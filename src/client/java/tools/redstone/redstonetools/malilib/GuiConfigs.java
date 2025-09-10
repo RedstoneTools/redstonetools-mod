@@ -64,6 +64,8 @@ public class GuiConfigs extends GuiConfigsBase {
 			configs = Configs.General.OPTIONS;
 		} else if (tab == ConfigGuiTab.TOGGLES) {
 			configs = Configs.Toggles.TOGGLES;
+		} else if (tab == ConfigGuiTab.CLIENTDATA) {
+			configs = Configs.ClientData.OPTIONS;
 		} else {
 			return Collections.emptyList();
 		}
@@ -91,15 +93,16 @@ public class GuiConfigs extends GuiConfigsBase {
 		public void actionPerformedWithButton(ButtonBase button, int mouseButton) {
 			GuiConfigs.tab = this.tab;
 			this.parent.reCreateListWidget(); // apply the new config width
-			this.parent.getListWidget().resetScrollbarPosition();
+			if (this.parent.getListWidget() != null) this.parent.getListWidget().resetScrollbarPosition();
 			this.parent.initGui();
 		}
 	}
 
 	public enum ConfigGuiTab {
 		GENERAL("General"),
-		MACROS("Macros"),
-		TOGGLES("Toggles");
+		TOGGLES("Toggles"),
+		CLIENTDATA("Chat"),
+		MACROS("Macros");
 
 		private final String translationKey;
 

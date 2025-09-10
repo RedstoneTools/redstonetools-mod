@@ -19,7 +19,7 @@ public class ClientDataFeature {
 			dispatcher.register(literal("clientdata")
 				.then(literal("set")
 					.then(argument("name", StringArgumentType.word())
-						.then(argument("value", StringArgumentType.string())
+						.then(argument("value", StringArgumentType.greedyString())
 							.executes(context -> {
 								String name = StringArgumentType.getString(context, "name");
 								String value = StringArgumentType.getString(context, "value");
