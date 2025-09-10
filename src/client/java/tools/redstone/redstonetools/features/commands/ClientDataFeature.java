@@ -15,7 +15,7 @@ public class ClientDataFeature {
 	public static final ClientDataFeature INSTANCE = new ClientDataFeature();
 
 	public void registerCommand() {
-		EVENT.register((dispatcher, registryAccess) -> {
+		EVENT.register((dispatcher, registryAccess) ->
 			dispatcher.register(literal("clientdata")
 				.then(literal("set")
 					.then(argument("name", StringArgumentType.word())
@@ -27,8 +27,19 @@ public class ClientDataFeature {
 								context.getSource().sendFeedback(Text.of("Set " + name + " to \"" + value + "\""));
 								return 1;
 							})
-						)))
-			);
-		});
+						)
+					)
+				)
+				.then(literal("delete")
+					.then(argument("name", StringArgumentType.word())
+						.executes(context -> {
+								variables.remove(StringArgumentType.getString(context, "name"));
+								return 1;
+							}
+						)
+					)
+				)
+			)
+		);
 	}
 }

@@ -11,9 +11,6 @@ public class ClientPlayNetworkHandlerMixin {
 	@ModifyVariable(method = "sendChatCommand", at = @At("HEAD"), argsOnly = true)
 	public String sendChatCommand(String command) {
 		if (command.startsWith("clientdata")) return command;
-		System.out.println("command = " + command);
-		String newCommand = StringUtils.insertVariablesAndMath(command);
-		System.out.println("new command = " + command);
-		return newCommand;
+		return StringUtils.insertVariablesAndMath(command);
 	}
 }

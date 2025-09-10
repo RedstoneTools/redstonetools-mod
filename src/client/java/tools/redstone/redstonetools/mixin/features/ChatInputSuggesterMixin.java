@@ -30,12 +30,16 @@ public class ChatInputSuggesterMixin {
 		}
 		justEntered = true;
 		unmodifiedCommand.add(textField.getText());
+		int cursor = textField.getCursor();
 		textField.setText(StringUtils.insertVariablesAndMath(textField.getText()));
+		textField.setCursor(cursor, false);
 	}
 
 	@Inject(method = "refresh", at = @At("RETURN"))
 	private void mrawww(CallbackInfo ci) {
+		int cursor = textField.getCursor();
 		textField.setText(unmodifiedCommand.getLast());
+		textField.setCursor(cursor, false);
 		unmodifiedCommand.removeLast();
 		justEntered = false;
 	}

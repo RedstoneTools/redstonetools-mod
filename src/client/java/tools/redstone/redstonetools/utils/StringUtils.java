@@ -15,9 +15,32 @@ public class StringUtils {
 	public static List<String> unmodifiedCommand = new ArrayList<>();
 
 	public static String insertVariablesAndMath(String command) {
-		boolean didSomething = true;
-		while (didSomething) {
-			didSomething = false;
+		int counter = 0;
+		String prevCommand = "";
+		while (!prevCommand.equals(command)) {
+			prevCommand = command;
+			if (counter++ > 10000) return command;
+
+			Pattern pattern = Pattern.compile(Pattern.quote(MATH_BEGIN_STRING.getStringValue()) + "(.*?)" + Pattern.quote(MATH_END_STRING.getStringValue()));
+			Matcher matcher = pattern.matcher(command);
+
+			StringBuilder result = new StringBuilder();
+			boolean mathReplaced = false;
+
+			while (matcher.find()) {
+				String insideBraces = matcher.group(1);
+				try {
+					String replacement = MathUtils.handleMat(insideBraces);
+					matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
+				} catch (IllegalArgumentException ignored) {}
+				mathReplaced = true;
+			}
+			matcher.appendTail(result);
+
+			if (mathReplaced) {
+				command = result.toString();
+			}
+
 			for (String str : ClientDataFeature.INSTANCE.variables.keySet()) {
 				var key = VARIABLE_BEGIN_STRING.getStringValue() + str + VARIABLE_END_STRING.getStringValue();
 				if (command.contains("\\" + key)) {
@@ -25,26 +48,9 @@ public class StringUtils {
 				} else if (command.contains(key)) {
 					String toReplace = ClientDataFeature.INSTANCE.variables.get(str);
 					if (!(toReplace == null || toReplace.isEmpty())) command = command.replaceAll(Pattern.quote(key), toReplace);
-					didSomething = true;
 				}
 			}
 		}
-		Pattern pattern = Pattern.compile(Pattern.quote(MATH_BEGIN_STRING.getStringValue()) + "(.*?)" + Pattern.quote(MATH_END_STRING.getStringValue()));
-		Matcher matcher = pattern.matcher(command);
-
-		StringBuilder result = new StringBuilder();
-
-		while (matcher.find()) {
-			String insideBraces = matcher.group(1);
-			try {
-				String replacement = MathUtils.handleMat(insideBraces);
-				matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
-			} catch (IllegalArgumentException ignored) {
-				matcher.appendReplacement(result, Matcher.quoteReplacement(""));
-			}
-		}
-		matcher.appendTail(result);
-		command = result.toString();
 		return command;
 	}
 
