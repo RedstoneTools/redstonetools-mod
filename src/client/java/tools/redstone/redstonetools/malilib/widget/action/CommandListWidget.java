@@ -183,6 +183,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			removeButton.setY(y + 6);
 
 			if (this.isFocused()) {
+				this.parent.parent.macro.setName(this.parent.parent.nameWidget.getText());
 				MinecraftClient.getInstance().setScreen(new CommandEditScreen(parent.parent, this.commandWidget));
 				this.parent.setSelected(null);
 			}

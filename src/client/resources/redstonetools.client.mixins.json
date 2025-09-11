@@ -22,7 +22,6 @@
 		"features.AutoRotateClientMixin",
 		"features.ChatInputSuggesterMixin",
 		"features.ChatInputSuggestorAccessor",
-		"features.ClientCommandInternalsMixin",
 		"features.ClientPlayNetworkHandlerMixin",
 		"features.CommandSourceMixin",
 		"features.ItemBindItemStackMixin",

@@ -14,7 +14,7 @@ public class CommandEditScreen extends Screen {
 	private final TextFieldWidget commandField;
 	private final ChatInputSuggestor commandSuggester;
 	private boolean changed = false;
-	private final GuiMacroEditor parent;
+	public final GuiMacroEditor parent;
 
 	public CommandEditScreen(GuiMacroEditor parent, TextFieldWidget commandField) {
 		super(Text.of(""));
@@ -22,7 +22,7 @@ public class CommandEditScreen extends Screen {
 		this.commandField = commandField;
 		this.commandField.setMaxLength(256);
 		client = MinecraftClient.getInstance();
-		this.commandSuggester = new ChatInputSuggestor(client, this, commandField, client.textRenderer, true, false, commandField.getY() - 20, 5, false, -805306368) {
+		this.commandSuggester = new ChatInputSuggestor(client, this, commandField, client.textRenderer, false, false, commandField.getY() - 20, 5, false, -805306368) {
 			@Override
 			public void refresh() {
 				if (client == null) return;

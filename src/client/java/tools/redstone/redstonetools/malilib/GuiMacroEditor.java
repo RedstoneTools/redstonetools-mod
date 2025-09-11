@@ -24,14 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiMacroEditor extends Screen {
-	private final MacroBase macro;
+	public final MacroBase macro;
 	private final GuiMacroManager parent;
 	private CommandListWidget commandList;
 	private ConfigButtonKeybind buttonKeybind;
 	private ConfigButtonBoolean buttonEnabled;
 	private WidgetKeybindSettings widgetAdvancedKeybindSettings;
 	private IConfigBoolean configBoolean;
-	private TextFieldWidget nameWidget;
+	public TextFieldWidget nameWidget;
 	private float errorCountDown;
 
 	public GuiMacroEditor(Text title, MacroBase macro, GuiMacroManager parent) {

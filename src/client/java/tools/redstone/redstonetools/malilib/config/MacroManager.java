@@ -144,7 +144,7 @@ public class MacroManager {
 		);
 	}
 
-	private static MacroBase createCommandMacro(String name, String[] commands) {
+	public static MacroBase createCommandMacro(String name, String[] commands) {
 		var actions = new CommandAction[commands.length];
 		for (int i = 0; i < commands.length; i++) {
 			actions[i] = new CommandAction(commands[i]);

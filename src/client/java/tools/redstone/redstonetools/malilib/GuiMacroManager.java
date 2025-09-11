@@ -13,7 +13,11 @@ import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 import tools.redstone.redstonetools.malilib.widget.macro.WidgetListMacros;
 import tools.redstone.redstonetools.malilib.widget.macro.WidgetMacroEntry;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, WidgetListMacros>
@@ -21,7 +25,6 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 
 	public GuiMacroManager() {
 		super(10, 68);
-
 		this.title = "Macro manager";
 	}
 
@@ -126,6 +129,24 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 		public void actionPerformedWithButton(ButtonBase button, int mouseButton) {
 			GuiConfigs.tab = this.tab;
 			GuiBase.openGui(new GuiConfigs());
+		}
+	}
+
+	@Override
+	public void onFilesDropped(List<Path> paths) {
+		for (Path path : paths) {
+			try {
+				String fileName = path.getFileName().toString().toLowerCase();
+				if (!fileName.endsWith(".txt")) {
+					throw new IllegalArgumentException("File is not a .txt file.");
+				}
+				List<String> commands = Files.readAllLines(path);
+				MacroBase macro = MacroManager.createCommandMacro(fileName.substring(0, fileName.length()-4), commands.toArray(new String[]{}));
+				MacroManager.addMacroToTop(macro);
+				this.getListWidget().refreshEntries();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
