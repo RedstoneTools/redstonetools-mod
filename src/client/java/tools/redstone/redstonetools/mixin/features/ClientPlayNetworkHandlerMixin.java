@@ -8,7 +8,7 @@ import tools.redstone.redstonetools.utils.StringUtils;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
-	@ModifyVariable(method = "sendChatCommand", at = @At("HEAD"), argsOnly = true, order = 2500)
+	@ModifyVariable(method = "sendChatCommand", at = @At("HEAD"), argsOnly = true, order = 750)
 	public String sendChatCommand(String command) {
 		return StringUtils.insertVariablesAndMath(command);
 	}
