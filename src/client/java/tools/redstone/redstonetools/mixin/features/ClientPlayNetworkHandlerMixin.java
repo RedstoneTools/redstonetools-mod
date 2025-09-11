@@ -10,7 +10,6 @@ import tools.redstone.redstonetools.utils.StringUtils;
 public class ClientPlayNetworkHandlerMixin {
 	@ModifyVariable(method = "sendChatCommand", at = @At("HEAD"), argsOnly = true)
 	public String sendChatCommand(String command) {
-		if (command.startsWith("clientdata")) return command;
 		return StringUtils.insertVariablesAndMath(command);
 	}
 }

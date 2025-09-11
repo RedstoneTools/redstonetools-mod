@@ -19,7 +19,6 @@
 	"client": [
 		"blocks.RedstoneHitboxMixin",
 		"features.AirPlaceClientMixin",
-		"features.ArgumentTypeMixin",
 		"features.AutoRotateClientMixin",
 		"features.ChatInputSuggesterMixin",
 		"features.ChatInputSuggestorAccessor",

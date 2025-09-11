@@ -20,7 +20,11 @@ public class ChatInputSuggesterMixin {
 	TextFieldWidget textField;
 
 	@Unique
-	boolean justEntered;
+	private boolean justEntered;
+	@Unique
+	private static String lastText;
+	@Unique
+	private int cursor;
 
 	@Inject(method = "refresh", at = @At("HEAD"), cancellable = true)
 	private void meowww(CallbackInfo ci) {
@@ -29,18 +33,21 @@ public class ChatInputSuggesterMixin {
 			return;
 		}
 		justEntered = true;
+		if (textField.getText().equals(lastText)) {
+			cursor = textField.getCursor();
+		}
 		unmodifiedCommand.add(textField.getText());
-		int cursor = textField.getCursor();
 		textField.setText(StringUtils.insertVariablesAndMath(textField.getText()));
-		textField.setCursor(cursor, false);
 	}
 
 	@Inject(method = "refresh", at = @At("RETURN"))
 	private void mrawww(CallbackInfo ci) {
-		int cursor = textField.getCursor();
 		textField.setText(unmodifiedCommand.getLast());
-		textField.setCursor(cursor, false);
+		if (textField.getText().equals(lastText)) {
+			textField.setCursor(cursor, false);
+		}
 		unmodifiedCommand.removeLast();
 		justEntered = false;
+		lastText = textField.getText();
 	}
 }

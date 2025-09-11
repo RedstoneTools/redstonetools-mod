@@ -28,8 +28,7 @@ public class SuggestionWindowMixin {
 	@Inject(method = "complete", at = @At("RETURN"))
 	private void mrawww(CallbackInfo ci) {
 		TextFieldWidget textField = ((ChatInputSuggestorAccessor) this.field_21615).getTextField();
-		int cursor = textField.getCursor();
+		if (StringUtils.expand(beforeComplete, textField.getText()).equals(textField.getText())) return;
 		textField.setText(StringUtils.expand(beforeComplete, textField.getText()));
-		textField.setCursor(cursor, false);
 	}
 }
