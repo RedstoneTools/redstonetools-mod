@@ -39,8 +39,8 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 	}
 
 	public void addEntry() {
-		this.macro.actions.add(new CommandAction(""));
-		this.addEntryToTop(new CommandEntry(this.macro.actions.getLast(), this));
+		this.macro.actions.addFirst(new CommandAction(""));
+		this.addEntryToTop(new CommandEntry(this.macro.actions.getFirst(), this));
 		this.centerScrollOn(this.getFirst());
 	}
 

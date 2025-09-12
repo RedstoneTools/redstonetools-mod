@@ -20,6 +20,7 @@
 		"blocks.RedstoneHitboxMixin",
 		"features.AirPlaceClientMixin",
 		"features.AutoRotateClientMixin",
+		"features.ChatHudMixin",
 		"features.ChatInputSuggesterMixin",
 		"features.ChatInputSuggestorAccessor",
 		"features.ClientPlayNetworkHandlerMixin",

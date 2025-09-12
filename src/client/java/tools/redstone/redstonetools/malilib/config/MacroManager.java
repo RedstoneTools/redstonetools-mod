@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MacroManager {
+	public static boolean shouldMute;
 	private static final Path MACROS_FILE_PATH = MinecraftClient.getInstance().runDirectory.toPath()
 			.resolve("config")
 			.resolve("redstonetools")

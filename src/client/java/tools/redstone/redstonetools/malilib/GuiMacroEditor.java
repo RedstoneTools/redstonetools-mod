@@ -29,8 +29,10 @@ public class GuiMacroEditor extends Screen {
 	private CommandListWidget commandList;
 	private ConfigButtonKeybind buttonKeybind;
 	private ConfigButtonBoolean buttonEnabled;
+	private ConfigButtonBoolean buttonMuted;
 	private WidgetKeybindSettings widgetAdvancedKeybindSettings;
 	private IConfigBoolean configBoolean;
+	private IConfigBoolean configBoolean2;
 	public TextFieldWidget nameWidget;
 	private float errorCountDown;
 
@@ -43,6 +45,7 @@ public class GuiMacroEditor extends Screen {
 
 	private static Method bkRenderMethod;
 	private static Method beRenderMethod;
+	private static Method bmRenderMethod;
 	private static Method waksRenderMethod;
 
 
@@ -50,15 +53,19 @@ public class GuiMacroEditor extends Screen {
 	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
 		buttonKeybind.updateDisplayString();
+		buttonEnabled.updateDisplayString();
+		buttonMuted.updateDisplayString();
 		try {
 			buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
 			buttonEnabled.render(context, mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY));
-			widgetAdvancedKeybindSettings.render(context, mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY));
+			buttonMuted.render(context, mouseX, mouseY, buttonMuted.isMouseOver(mouseX, mouseY));
+			widgetAdvancedKeybindSettings.render(context, mouseX, mouseY, widgetAdvancedKeybindSettings.isMouseOver(mouseX, mouseY));
 		} catch (NoSuchMethodError ignored) {
 			if (bkRenderMethod == null) {
 				try {
 					bkRenderMethod = ConfigButtonKeybind.class.getMethod("render", int.class, int.class, boolean.class, DrawContext.class);
 					beRenderMethod = ConfigButtonBoolean.class.getMethod("render", int.class, int.class, boolean.class, DrawContext.class);
+					bmRenderMethod = ConfigButtonBoolean.class.getMethod("render", int.class, int.class, boolean.class, DrawContext.class);
 					waksRenderMethod = WidgetKeybindSettings.class.getMethod("render", int.class, int.class, boolean.class, DrawContext.class);
 				} catch (Exception e) {
 					throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
@@ -67,6 +74,7 @@ public class GuiMacroEditor extends Screen {
 			try {
 				bkRenderMethod.invoke(buttonKeybind, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY), context);
 				beRenderMethod.invoke(buttonEnabled, mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY), context);
+				bmRenderMethod.invoke(buttonMuted, mouseX, mouseY, buttonMuted.isMouseOver(mouseX, mouseY), context);
 				waksRenderMethod.invoke(widgetAdvancedKeybindSettings, mouseX, mouseY, widgetAdvancedKeybindSettings.isMouseOver(mouseX, mouseY), context);
 			} catch (IllegalAccessException | InvocationTargetException e) {
 				throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
@@ -86,12 +94,14 @@ public class GuiMacroEditor extends Screen {
 		minMaxLayouts.add(new GuiUtils.MinMaxLayout(-1, 20, -1, -1)); // advanced keybinds option
 		minMaxLayouts.add(new GuiUtils.MinMaxLayout(-1, -1, -1, -1)); // button enabled
 		minMaxLayouts.add(new GuiUtils.MinMaxLayout(-1, -1, -1, -1)); // name widget
+		minMaxLayouts.add(new GuiUtils.MinMaxLayout(-1, -1, -1, -1)); // mute
 		List<GuiUtils.Layout> layouts = GuiUtils.betterGetWidgetLayout(minMaxLayouts, 10, this.width, true, 50, this.height - 52, 20);
 		GuiUtils.Layout ncLayout = layouts.get(0);
 		GuiUtils.Layout bkLayout = layouts.get(1);
 		GuiUtils.Layout akoLayout = layouts.get(2);
 		GuiUtils.Layout beLayout = layouts.get(3);
 		GuiUtils.Layout nwLayout = layouts.get(4);
+		GuiUtils.Layout bmLayout = layouts.get(5);
 		this.commandList = this.addDrawableChild(
 			new CommandListWidget(this, this.client, this.width, this.height - 75, 0, 36, this.macro));
 		this.addDrawableChild(ButtonWidget.builder(Text.of("Add command"), button ->
@@ -132,7 +142,24 @@ public class GuiMacroEditor extends Screen {
 		};
 		this.configBoolean = new ConfigBoolean("", true, "");
 		this.configBoolean.setBooleanValue(this.macro.isEnabled());
-		this.buttonEnabled = new ConfigButtonBoolean(beLayout.x(), beLayout.y(), beLayout.width(), beLayout.height(), this.configBoolean);
+		this.configBoolean2 = new ConfigBoolean("", true, "");
+		this.configBoolean2.setBooleanValue(this.macro.shouldMute);
+		final String beName = "Enabled: ";
+		final String bmName = "Muted: ";
+		this.buttonEnabled = new ConfigButtonBoolean(beLayout.x(), beLayout.y(), beLayout.width(), beLayout.height(), this.configBoolean) {
+			@Override
+			public void updateDisplayString() {
+				super.updateDisplayString();
+				this.displayString = beName + this.displayString;
+			}
+		};
+		this.buttonMuted = new ConfigButtonBoolean(bmLayout.x(), bmLayout.y(), bmLayout.width(), bmLayout.height(), this.configBoolean2) {
+			@Override
+			public void updateDisplayString() {
+				super.updateDisplayString();
+				this.displayString = bmName + this.displayString;
+			}
+		};
 		this.nameWidget = addDrawableChild(new TextFieldWidget(this.textRenderer, nwLayout.width(), nwLayout.height(), Text.of("")));
 		this.nameWidget.setText(macro.getName());
 		this.nameWidget.setPosition(nwLayout.x(), nwLayout.y());
@@ -141,6 +168,7 @@ public class GuiMacroEditor extends Screen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		buttonEnabled.onKeyTyped(keyCode, scanCode, modifiers);
+		buttonMuted.onKeyTyped(keyCode, scanCode, modifiers);
 		widgetAdvancedKeybindSettings.onKeyTyped(keyCode, scanCode, modifiers);
 		buttonKeybind.onKeyPressed(keyCode);
 		if (buttonKeybind.isSelected() && keyCode == 256) {
@@ -173,6 +201,12 @@ public class GuiMacroEditor extends Screen {
 			}
 			return true;
 		}
+		else if (buttonMuted.onMouseClicked((int) mouseX, (int) mouseY, button)) {
+			if (this.getFocused() != null) {
+				this.getFocused().setFocused(false);
+			}
+			return true;
+		}
 		else if (widgetAdvancedKeybindSettings.onMouseClicked((int) mouseX, (int) mouseY, button)) {
 			if (this.getFocused() != null) {
 				this.getFocused().setFocused(false);
@@ -187,6 +221,7 @@ public class GuiMacroEditor extends Screen {
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		buttonKeybind.onMouseReleased((int) mouseX, (int) mouseY, button);
 		buttonEnabled.onMouseReleased((int) mouseX, (int) mouseY, button);
+		buttonMuted.onMouseReleased((int) mouseX, (int) mouseY, button);
 		widgetAdvancedKeybindSettings.onMouseReleased((int) mouseX, (int) mouseY, button);
 		if (commandList.mouseReleased(mouseX, mouseY, button)) return true;
 		else return super.mouseReleased(mouseX, mouseY, button);
@@ -207,6 +242,8 @@ public class GuiMacroEditor extends Screen {
 			return true;
 		else if (buttonEnabled.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
 			return true;
+		else if (buttonMuted.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+			return true;
 		else return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
@@ -221,6 +258,7 @@ public class GuiMacroEditor extends Screen {
 		if (commandList.charTyped(chr, modifiers)) return true;
 		else if (buttonKeybind.onCharTyped(chr, modifiers)) return true;
 		else if (buttonEnabled.onCharTyped(chr, modifiers)) return true;
+		else if (buttonMuted.onCharTyped(chr, modifiers)) return true;
 		else if (widgetAdvancedKeybindSettings.onCharTyped(chr, modifiers)) return true;
 		else return super.charTyped(chr, modifiers);
 	}
@@ -230,6 +268,7 @@ public class GuiMacroEditor extends Screen {
 		if (commandList.isMouseOver(mouseX, mouseY)) return true;
 		else if (buttonKeybind.isMouseOver((int) mouseX, (int) mouseY)) return true;
 		else if (buttonEnabled.isMouseOver((int) mouseX, (int) mouseY)) return true;
+		else if (buttonMuted.isMouseOver((int) mouseX, (int) mouseY)) return true;
 		else if (widgetAdvancedKeybindSettings.isMouseOver((int) mouseX, (int) mouseY)) return true;
 		else return super.isMouseOver(mouseX, mouseY);
 	}
@@ -243,6 +282,7 @@ public class GuiMacroEditor extends Screen {
 		this.macro.actions.clear();
 		this.commandList.children().forEach(t -> this.macro.actions.add(t.command));
 		this.macro.setEnabled(this.configBoolean.getBooleanValue());
+		this.macro.shouldMute = this.configBoolean2.getBooleanValue();
 		this.macro.setName(this.nameWidget.getText());
 		MacroManager.saveChanges();
 		assert client != null;

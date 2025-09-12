@@ -1,7 +1,6 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -16,9 +15,7 @@ public class PrintFeature {
 			dispatcher.register(literal("print")
 				.then(argument("text", StringArgumentType.greedyString())
 					.executes((context -> {
-						MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of(
-							StringArgumentType.getString(context, "text")
-						));
+						context.getSource().sendFeedback(Text.of(StringArgumentType.getString(context, "text")));
 						return 1;
 						})
 					)
