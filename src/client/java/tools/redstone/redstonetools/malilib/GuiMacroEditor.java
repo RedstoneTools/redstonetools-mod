@@ -112,14 +112,7 @@ public class GuiMacroEditor extends Screen {
 			@Override
 			protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton) {
 				if (mouseButton == 0) {
-					GuiBase.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, fi.dy.masa.malilib.util.GuiUtils.getCurrentScreen()) {
-						@Override
-						public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks) {
-							if (this.client != null && this.client.world == null) this.renderPanoramaBackground(drawContext, partialTicks);
-							this.applyBlur(drawContext);
-							super.render(drawContext, mouseX, mouseY, partialTicks);
-						}
-					});
+					GuiBase.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, fi.dy.masa.malilib.util.GuiUtils.getCurrentScreen()));
 					return true;
 				} else return super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
 			}
