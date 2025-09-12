@@ -7,7 +7,6 @@ import tools.redstone.redstonetools.packets.RedstoneToolsPackets;
 
 public class RedstoneTools implements ModInitializer {
 	public static final String MOD_ID = "redstonetools";
-	public static final String MOD_VERSION = "v3.0.0";
 	public static final String MOD_NAME = "Redstone tools";
 	public static final Logger LOGGER = LoggerFactory.getLogger(RedstoneTools.MOD_ID);
 
