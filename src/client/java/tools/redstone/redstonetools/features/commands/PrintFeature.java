@@ -15,8 +15,8 @@ public class PrintFeature {
 			dispatcher.register(literal("print")
 				.then(argument("text", StringArgumentType.greedyString())
 					.executes((context -> {
-						context.getSource().sendFeedback(Text.of(StringArgumentType.getString(context, "text")));
-						return 1;
+							context.getSource().sendFeedback(Text.of(StringArgumentType.getString(context, "text")));
+							return 1;
 						})
 					)
 				)

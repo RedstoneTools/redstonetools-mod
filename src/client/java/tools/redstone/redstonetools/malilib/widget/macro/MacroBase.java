@@ -15,18 +15,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MacroBase {
 	public ConfigHotkey hotkey;
-
-	public boolean shouldMute;
+	public boolean muted;
 	protected String name;
 	protected boolean enabled;
 	public KeybindHandler handler;
 	public List<CommandAction> actions;
 
 	public MacroBase(String name, String keybind, List<CommandAction> actions) {
-		this(name, keybind, actions, true);
+		this(name, keybind, actions, true, false);
 	}
 
-	public MacroBase(String name, String keybind, List<CommandAction> actions, boolean enabled) {
+	public MacroBase(String name, String keybind, List<CommandAction> actions, boolean enabled, boolean muted) {
 		this.actions = new java.util.ArrayList<>(actions);
 		this.hotkey = new ConfigHotkey("Hotkey", keybind, KeybindSettings.PRESS_ALLOWEXTRA, "Pressing this hotkey will activate the macro");
 		this.hotkey.getKeybind().setCallback((t, g) -> {
@@ -35,6 +34,7 @@ public class MacroBase {
 		});
 		this.name = name;
 		this.enabled = enabled;
+		this.muted = muted;
 		this.handler = new KeybindHandler(this);
 		InputEventHandler.getKeybindManager().registerKeybindProvider(this.handler);
 		InputEventHandler.getInputManager().registerKeyboardInputHandler(this.handler);
@@ -60,7 +60,7 @@ public class MacroBase {
 	private final AtomicInteger layers = new AtomicInteger(0);
 
 	public void run() {
-		if (shouldMute) MacroManager.shouldMute = true;
+		if (muted) MacroManager.shouldMute = true;
 		if (!enabled) return;
 		if (layers.getAndSet(layers.get() + 1) > 100) {
 			MinecraftClient.getInstance().player.sendMessage(Text.of("Please don't cause a stackoverflow :("), false);
@@ -81,6 +81,6 @@ public class MacroBase {
 		} finally {
 			layers.set(0);
 		}
-		if (shouldMute) MacroManager.shouldMute = false;
+		if (muted) MacroManager.shouldMute = false;
 	}
 }

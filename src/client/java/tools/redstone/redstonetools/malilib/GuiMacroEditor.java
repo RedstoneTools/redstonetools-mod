@@ -143,7 +143,7 @@ public class GuiMacroEditor extends Screen {
 		this.configBoolean = new ConfigBoolean("", true, "");
 		this.configBoolean.setBooleanValue(this.macro.isEnabled());
 		this.configBoolean2 = new ConfigBoolean("", true, "");
-		this.configBoolean2.setBooleanValue(this.macro.shouldMute);
+		this.configBoolean2.setBooleanValue(this.macro.muted);
 		final String beName = "Enabled: ";
 		final String bmName = "Muted: ";
 		this.buttonEnabled = new ConfigButtonBoolean(beLayout.x(), beLayout.y(), beLayout.width(), beLayout.height(), this.configBoolean) {
@@ -282,7 +282,7 @@ public class GuiMacroEditor extends Screen {
 		this.macro.actions.clear();
 		this.commandList.children().forEach(t -> this.macro.actions.add(t.command));
 		this.macro.setEnabled(this.configBoolean.getBooleanValue());
-		this.macro.shouldMute = this.configBoolean2.getBooleanValue();
+		this.macro.muted = this.configBoolean2.getBooleanValue();
 		this.macro.setName(this.nameWidget.getText());
 		MacroManager.saveChanges();
 		assert client != null;
