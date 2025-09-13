@@ -158,11 +158,12 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 		for (Path path : paths) {
 			try {
 				String fileName = path.getFileName().toString().toLowerCase();
-				if (!fileName.endsWith(".txt")) {
-					throw new IllegalArgumentException("File is not a .txt file.");
-				}
+				if (!fileName.endsWith(".txt"))
+					continue;
 				List<String> commands = Files.readAllLines(path);
-				MacroBase macro = MacroManager.createCommandMacro(fileName.substring(0, fileName.length()-4), commands.toArray(new String[]{}));
+				String name = fileName.substring(0, fileName.length()-4);
+				if (MacroManager.nameExists(name, null)) name += " " + UUID.randomUUID();
+				MacroBase macro = MacroManager.createCommandMacro(name, commands.toArray(new String[]{}));
 				MacroManager.addMacroToTop(macro);
 				this.getListWidget().refreshEntries();
 			} catch (IOException e) {
