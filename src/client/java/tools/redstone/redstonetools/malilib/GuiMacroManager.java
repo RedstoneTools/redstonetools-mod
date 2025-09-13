@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, WidgetListMacros>
 		implements ISelectionListener<MacroBase> {
@@ -112,9 +111,6 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 		this.addButton(addMacroButton, (btn, mbtn) -> {
 			String string = "macro ";
 			string += MacroManager.getAllMacros().size();
-			if (MacroManager.nameExists(string, null)) {
-				string += " " + UUID.randomUUID();
-			}
 			MacroManager.addMacroToTop(new MacroBase(string, "", new ArrayList<>()));
 			MacroManager.saveChanges();
 			this.getListWidget().refreshEntries();
@@ -162,7 +158,6 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 					continue;
 				List<String> commands = Files.readAllLines(path);
 				String name = fileName.substring(0, fileName.length()-4);
-				if (MacroManager.nameExists(name, null)) name += " " + UUID.randomUUID();
 				MacroBase macro = MacroManager.createCommandMacro(name, commands.toArray(new String[]{}));
 				MacroManager.addMacroToTop(macro);
 				this.getListWidget().refreshEntries();

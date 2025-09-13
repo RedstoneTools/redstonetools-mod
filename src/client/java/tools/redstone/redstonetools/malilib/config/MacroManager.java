@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MacroManager {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -142,6 +143,9 @@ public class MacroManager {
 	}
 
 	public static void addMacroToTop(MacroBase macroBase) {
+		if (MacroManager.nameExists(macroBase.getName(), null)) {
+			macroBase.setName(macroBase.getName() + " " + UUID.randomUUID());
+		}
 		macros.addFirst(macroBase);
 	}
 
