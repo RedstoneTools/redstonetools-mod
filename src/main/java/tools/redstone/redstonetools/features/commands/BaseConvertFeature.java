@@ -1,17 +1,19 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
 import java.math.BigInteger;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import static net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT;
 
 public class BaseConvertFeature {
 	public static final BaseConvertFeature INSTANCE = new BaseConvertFeature();
@@ -19,8 +21,8 @@ public class BaseConvertFeature {
 	protected BaseConvertFeature() {
 	}
 
-	public void registerCommand() {
-		EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("base")
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+			dispatcher.register(CommandManager.literal("base")
 			.then(CommandManager.argument("inputNum", StringArgumentType.word())
 				.then(CommandManager.argument("toBase", IntegerArgumentType.integer(2, 16))
 					.executes(context -> BaseConvertFeature.INSTANCE.execute(
@@ -32,7 +34,7 @@ public class BaseConvertFeature {
 							} catch (CommandSyntaxException ignored) {
 							}
 						}
-					))))));
+					)))));
 	}
 
 	private static final SimpleCommandExceptionType INVALID_NUMBER =

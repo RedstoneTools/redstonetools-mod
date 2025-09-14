@@ -1,10 +1,13 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -13,7 +16,6 @@ import tools.redstone.redstonetools.utils.ItemUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class ItemBindFeature {
@@ -22,13 +24,12 @@ public class ItemBindFeature {
 	protected ItemBindFeature() {
 	}
 
-	public void registerCommand() {
-		EVENT.register((dispatcher, registryAccess, enviroment) ->
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 			dispatcher.register(literal("itembind")
 				.requires(source -> source.hasPermissionLevel(2))
 				.executes(this::execute)
 				.then(literal("reset")
-					.executes(ItemBindFeature::executeReset))));
+					.executes(ItemBindFeature::executeReset)));
 	}
 
 	private static int executeReset(CommandContext<ServerCommandSource> context) {

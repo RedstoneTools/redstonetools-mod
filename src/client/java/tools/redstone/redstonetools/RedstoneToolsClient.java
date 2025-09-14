@@ -44,7 +44,6 @@ public class RedstoneToolsClient implements ClientModInitializer {
 		});
 
 		RedstoneToolsClientPackets.registerPackets();
-		ClientCommands.registerCommands();
 		Commands.registerCommands();
 	}
 }

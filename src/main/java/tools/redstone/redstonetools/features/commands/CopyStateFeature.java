@@ -1,8 +1,9 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.block.BlockState;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BlockStateComponent;
 import net.minecraft.component.type.LoreComponent;
@@ -25,9 +26,8 @@ public class CopyStateFeature extends PickBlockFeature {
 	protected CopyStateFeature() {
 	}
 
-	public void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
-			dispatcher.register(CommandManager.literal("copystate").requires(source -> source.hasPermissionLevel(2)).executes(this::execute)));
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+			dispatcher.register(CommandManager.literal("copystate").requires(source -> source.hasPermissionLevel(2)).executes(this::execute));
 	}
 
 	@Override

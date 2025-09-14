@@ -1,13 +1,14 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.attribute.EntityAttributes;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT;
 
 public class ReachClient {
 	public static final ReachClient INSTANCE = new ReachClient();
@@ -15,8 +16,7 @@ public class ReachClient {
 	protected ReachClient() {
 	}
 
-	public void registerCommand() {
-		EVENT.register((dispatcher, registryAccess) ->
+	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
 			dispatcher.register(ClientCommandManager.literal("reach")
 				.requires(source -> source.getPlayer().hasPermissionLevel(2))
 				.then(ClientCommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
@@ -42,7 +42,7 @@ public class ReachClient {
 						})
 						.executes(context -> execute(context, false, true))
 					)
-				)));
+				));
 	}
 
 	private int execute(CommandContext<FabricClientCommandSource> context, boolean block, boolean entity) {

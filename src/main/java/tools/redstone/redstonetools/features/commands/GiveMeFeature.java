@@ -1,18 +1,20 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
-import static net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT;
 
 public class GiveMeFeature {
 	public static final GiveMeFeature INSTANCE = new GiveMeFeature();
@@ -20,8 +22,8 @@ public class GiveMeFeature {
 	protected GiveMeFeature() {
 	}
 
-	public void registerCommand() {
-		EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+		dispatcher.register(
 			literal("g")
 				.requires(source -> source.hasPermissionLevel(2))
 				.then(argument("item", ItemStackArgumentType.itemStack(registryAccess))
@@ -33,7 +35,7 @@ public class GiveMeFeature {
 						.executes(context -> this.execute(
 							context,
 							ItemStackArgumentType.getItemStackArgument(context, "item"),
-							IntegerArgumentType.getInteger(context, "count")))))));
+							IntegerArgumentType.getInteger(context, "count"))))));
 	}
 
 	private int execute(CommandContext<ServerCommandSource> context, ItemStackArgument itemArgument, int count) throws CommandSyntaxException {

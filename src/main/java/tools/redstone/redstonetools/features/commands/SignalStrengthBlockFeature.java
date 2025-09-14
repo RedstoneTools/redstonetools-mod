@@ -1,12 +1,14 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.ArgumentUtils;
@@ -25,14 +27,14 @@ public class SignalStrengthBlockFeature {
 	protected SignalStrengthBlockFeature() {
 	}
 
-	public void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("ssb")
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+			dispatcher.register(literal("ssb")
 				.requires(source -> source.hasPermissionLevel(2))
 				.executes(this::parseArguments)
 				.then(argument("signalStrength", IntegerArgumentType.integer())
 						.executes(this::parseArguments)
 						.then(argument("block", StringArgumentType.string()).suggests(ArgumentUtils.SIGNAL_BLOCK_SUGGESTION_PROVIDER)
-								.executes(this::parseArguments)))));
+								.executes(this::parseArguments))));
 	}
 
 	protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

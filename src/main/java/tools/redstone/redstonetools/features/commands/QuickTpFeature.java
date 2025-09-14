@@ -1,12 +1,14 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
@@ -27,8 +29,8 @@ public class QuickTpFeature {
 	protected QuickTpFeature() {
 	}
 
-	public void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("quicktp")
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+			dispatcher.register(literal("quicktp")
 				.requires(source -> source.hasPermissionLevel(2))
 				.executes(this::parseArguments)
 				.then(argument("distance", DoubleArgumentType.doubleArg())
@@ -36,7 +38,7 @@ public class QuickTpFeature {
 						.then(argument("throughFluids", BoolArgumentType.bool())
 								.executes(this::parseArguments)
 								.then(argument("resetVelocity", BoolArgumentType.bool())
-										.executes(this::parseArguments))))));
+										.executes(this::parseArguments)))));
 	}
 
 	protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
