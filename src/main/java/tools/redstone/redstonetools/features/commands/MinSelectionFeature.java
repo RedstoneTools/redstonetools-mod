@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -11,11 +12,10 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockTypes;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 import java.util.ArrayList;
@@ -24,10 +24,16 @@ import java.util.Objects;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class MinSelectionFeature extends AbstractFeature {
-	public static void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/minsel")
-				.executes(context -> FeatureUtils.getFeature(MinSelectionFeature.class).execute(context))));
+public class MinSelectionFeature {
+	public static final MinSelectionFeature INSTANCE = new MinSelectionFeature();
+
+	protected MinSelectionFeature() {
+	}
+
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+			dispatcher.register(literal("/minsel")
+				.requires(source -> source.hasPermissionLevel(2))
+				.executes(this::execute));
 	}
 
 	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

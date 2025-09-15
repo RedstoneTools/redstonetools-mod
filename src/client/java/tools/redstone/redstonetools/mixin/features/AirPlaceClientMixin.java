@@ -12,12 +12,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
-import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 @Mixin(MinecraftClient.class)
 public class AirPlaceClientMixin {
-	@Unique
-	private final AirPlaceFeature airPlaceFeature = ClientFeatureUtils.getFeature(AirPlaceFeature.class);
 	@Shadow
 	public HitResult crosshairTarget;
 
@@ -44,7 +41,7 @@ public class AirPlaceClientMixin {
 	@Unique
 	private boolean isAirPlaceAllowed() {
 		// If air place is disabled
-		if (!airPlaceFeature.isEnabled()) {
+		if (!AirPlaceFeature.INSTANCE.isEnabled()) {
 			return false;
 		}
 

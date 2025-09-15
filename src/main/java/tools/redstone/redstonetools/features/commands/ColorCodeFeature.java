@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -13,27 +15,32 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockType;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.commands.argument.BlockColorArgumentType;
+import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.ColoredBlock;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class ColorCodeFeature extends AbstractFeature {
-	public static void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/colorcode")
-				.then(argument("color", BlockColorArgumentType.blockcolor())
-						.executes(context -> FeatureUtils.getFeature(ColorCodeFeature.class).execute(context))
-						.then(argument("onlyColor", BlockColorArgumentType.blockcolor())
-								.executes(context -> FeatureUtils.getFeature(ColorCodeFeature.class).execute(context))))));
+public class ColorCodeFeature {
+	public static final ColorCodeFeature INSTANCE = new ColorCodeFeature();
+
+	protected ColorCodeFeature() {
+	}
+
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+		dispatcher.register(literal("/colorcode")
+			.requires(source -> source.hasPermissionLevel(2))
+			.then(argument("color", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
+				.executes(this::execute)
+				.then(argument("onlyColor", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
+					.executes(this::execute))));
 	}
 
 	public BlockColor color;
@@ -66,9 +73,9 @@ public class ColorCodeFeature extends AbstractFeature {
 	}
 
 	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		color = BlockColorArgumentType.getBlockColor(context, "color");
+		color = ArgumentUtils.parseBlockColor(context, "color");
 		try {
-			onlyColor = BlockColorArgumentType.getBlockColor(context, "onlyColor");
+			onlyColor = ArgumentUtils.parseBlockColor(context, "onlyColor");
 		} catch (Exception ignored) {
 			onlyColor = null;
 		}
@@ -86,24 +93,24 @@ public class ColorCodeFeature extends AbstractFeature {
 		try (EditSession session = worldEdit.newEditSession(FabricAdapter.adapt(player.getWorld()))) {
 			// create mask and pattern and execute block set
 			int blocksColored = session.replaceBlocks(selection,
-					new Mask() {
-						@Override
-						public boolean test(BlockVector3 vector) {
-							return shouldBeColored(world, vector, onlyColor);
-						}
-
-						@Nullable
-						@Override
-						public Mask2D toMask2D() {
-							return null;
-						}
-					},
-					new com.sk89q.worldedit.function.pattern.Pattern() {
-						@Override
-						public BaseBlock applyBlock(BlockVector3 position) {
-							return getColoredBlock(world, position, color);
-						}
+				new Mask() {
+					@Override
+					public boolean test(BlockVector3 vector) {
+						return shouldBeColored(world, vector, onlyColor);
 					}
+
+					@Nullable
+					@Override
+					public Mask2D toMask2D() {
+						return null;
+					}
+				},
+				new com.sk89q.worldedit.function.pattern.Pattern() {
+					@Override
+					public BaseBlock applyBlock(BlockVector3 position) {
+						return getColoredBlock(world, position, color);
+					}
+				}
 			);
 
 			Operations.complete(session.commit());

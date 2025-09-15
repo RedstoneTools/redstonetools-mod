@@ -6,12 +6,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.state.property.Properties;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import tools.redstone.redstonetools.features.toggleable.AutoRotateFeature;
-import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.BlockUtils;
 
 @Mixin(BlockItem.class)
 public abstract class AutoRotateMixin {
@@ -23,18 +22,17 @@ public abstract class AutoRotateMixin {
 		if (!(context.getPlayer() instanceof ServerPlayerEntity player))         return original;
 		if (player.getServer() == null)                                          return original;
 		if (!player.getServer().isDedicated())                                   return original;
-		if (!FeatureUtils.getFeature(AutoRotateFeature.class).isEnabled(player)) return original;
+		if (!AutoRotateFeature.INSTANCE.isEnabled(player)) return original;
 		if (original == null)                                                    return null;
 
-		if (original.contains(Properties.FACING))
-			original = original.with(Properties.FACING, original.get(Properties.FACING).getOpposite());
+		BlockState backup = original;
+		original = BlockUtils.rotate(original);
 
-		if (original.contains(Properties.HORIZONTAL_FACING))
-			original = original.with(Properties.HORIZONTAL_FACING, original.get(Properties.HORIZONTAL_FACING).getOpposite());
-
-		if (original.contains(Properties.HOPPER_FACING))
-			original = original.with(Properties.HOPPER_FACING, original.get(Properties.HOPPER_FACING).getOpposite());
-
-		return this.canPlace(context, original) ? original : null;
+		if (this.canPlace(context, original))
+			return original;
+		else if (this.canPlace(context, backup))
+			return backup;
+		else
+			return null;
 	}
 }

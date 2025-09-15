@@ -6,14 +6,13 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.packets.SetFeatureEnabledS2CPayload;
+import tools.redstone.redstonetools.packets.SetFeatureEnabledPayload;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public abstract class ToggleableFeature extends AbstractFeature {
+public abstract class ToggleableFeature {
 	private final Set<UUID> enabledFor = new HashSet<>(); // volatile for thread safety
 
 	public boolean isEnabled(ServerPlayerEntity player) {
@@ -39,7 +38,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
 
 	public void enable(ServerPlayerEntity player) {
 		enabledFor.add(player.getUuid());
-		var payload = new SetFeatureEnabledS2CPayload(this.getName() + "1");
+		var payload = new SetFeatureEnabledPayload(this.getName(), true);
 		ServerPlayNetworking.send(player, payload);
 		onEnable();
 	}
@@ -52,7 +51,7 @@ public abstract class ToggleableFeature extends AbstractFeature {
 
 	public void disable(ServerPlayerEntity player) {
 		enabledFor.remove(player.getUuid());
-		var payload = new SetFeatureEnabledS2CPayload(this.getName() + "0");
+		var payload = new SetFeatureEnabledPayload(this.getName(), false);
 		ServerPlayNetworking.send(player, payload);
 		onDisable();
 	}

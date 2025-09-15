@@ -1,7 +1,9 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.block.BlockState;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BlockStateComponent;
 import net.minecraft.component.type.LoreComponent;
@@ -13,27 +15,27 @@ import net.minecraft.text.Text;
 import tools.redstone.redstonetools.mixin.AbstractBlockMixin;
 import tools.redstone.redstonetools.mixin.features.ServerPlayNetworkHandlerAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 public class CopyStateFeature extends PickBlockFeature {
-	public static void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("copystate")
-				.executes(context -> FeatureUtils.getFeature(CopyStateFeature.class).execute(context))));
+	public static final CopyStateFeature INSTANCE = new CopyStateFeature();
+
+	protected CopyStateFeature() {
 	}
 
-	// all the warnings caused by this function should be fine. hopefully.
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+			dispatcher.register(CommandManager.literal("copystate").requires(source -> source.hasPermissionLevel(2)).executes(this::execute));
+	}
+
 	@Override
 	protected ItemStack getItemStack(CommandContext<ServerCommandSource> context, BlockInfo blockInfo) {
 		Objects.requireNonNull(blockInfo);
 		ItemStack stack = ((AbstractBlockMixin) blockInfo.state.getBlock()).callGetPickStack(context.getSource().getWorld(), blockInfo.pos, blockInfo.state, true);
 
-		// what is this :sob:
-		((ServerPlayNetworkHandlerAccessor) Objects.requireNonNull(context.getSource().getPlayer()).networkHandler).callCopyBlockDataToStack(blockInfo.state, context.getSource().getWorld(), blockInfo.pos, stack);
+		ServerPlayNetworkHandlerAccessor.callCopyBlockDataToStack(blockInfo.state, context.getSource().getWorld(), blockInfo.pos, stack);
 
 		List<Text> lore = new ArrayList<>();
 		if (blockInfo.entity != null) {
@@ -42,9 +44,8 @@ public class CopyStateFeature extends PickBlockFeature {
 
 		if (!blockInfo.state.getProperties().isEmpty()) {
 			BlockStateComponent component = BlockStateComponent.DEFAULT;
-			for (Property prop : blockInfo.state.getProperties()) {
-				lore.add(Text.of("   " + prop.getName() + ": " + blockInfo.state.get(prop)));
-				component = component.with(prop, blockInfo.state.get(prop));
+			for (Property<?> property : blockInfo.state.getProperties()) {
+				component = addToLoreAndComponent(lore, component, blockInfo.state, property);
 			}
 
 			stack.set(DataComponentTypes.BLOCK_STATE, component);
@@ -52,5 +53,10 @@ public class CopyStateFeature extends PickBlockFeature {
 		stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
 
 		return stack;
+	}
+
+	private static <T extends Comparable<T>> BlockStateComponent addToLoreAndComponent(List<Text> lore, BlockStateComponent component, BlockState state, Property<T> property) {
+		lore.add(Text.of("   " + property.getName() + ": " + state.get(property)));
+		return component.with(property, state.get(property));
 	}
 }

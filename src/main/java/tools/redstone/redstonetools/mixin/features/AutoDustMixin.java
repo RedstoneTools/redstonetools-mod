@@ -20,14 +20,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
 import tools.redstone.redstonetools.utils.ColoredBlock;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 @Mixin(Block.class)
 public abstract class AutoDustMixin {
 	@Inject(method = "onPlaced", at = @At("TAIL"))
 	private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
 		if (placer instanceof ServerPlayerEntity player) {
-			if (!FeatureUtils.getFeature(AutoDustFeature.class).isEnabled(player) || world.isClient) {
+			if (!AutoDustFeature.INSTANCE.isEnabled(player) || world.isClient) {
 				return;
 			}
 
@@ -35,11 +34,12 @@ public abstract class AutoDustMixin {
 			var block = world.getBlockState(pos).getBlock();
 			var blockAbove = world.getBlockState(dustPos).getBlock();
 
-			if (!blockAbove.equals(Blocks.AIR) || ColoredBlock.fromBlock(block) == null) {
+			if (blockAbove != Blocks.AIR || ColoredBlock.fromBlock(block) == null) {
 				return;
 			}
 
-			ItemPlacementContext context = new ItemPlacementContext(player, Hand.MAIN_HAND, new ItemStack(Items.REDSTONE), new BlockHitResult(new Vec3d(dustPos.getX(), dustPos.getY(), dustPos.getZ()), Direction.UP, dustPos, false));
+			ItemPlacementContext context = new ItemPlacementContext(player, Hand.MAIN_HAND, new ItemStack(Items.REDSTONE),
+				new BlockHitResult(new Vec3d(dustPos.getX(), dustPos.getY(), dustPos.getZ()), Direction.UP, dustPos, false));
 			placer.getWorld().setBlockState(dustPos, Blocks.REDSTONE_WIRE.getPlacementState(context));
 		}
 	}

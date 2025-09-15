@@ -7,18 +7,14 @@ import tools.redstone.redstonetools.features.toggleable.ClickContainerClient;
 
 public class RedstoneToolsClientPackets {
 	public static void registerPackets() {
-		ClientPlayNetworking.registerGlobalReceiver(SetFeatureEnabledS2CPayload.ID, ((payload, context) -> {
-			String feature = payload.featureAndToggle().substring(0, payload.featureAndToggle().length() - 1);
-			boolean enabled = payload.featureAndToggle().endsWith("1");
+		ClientPlayNetworking.registerGlobalReceiver(SetFeatureEnabledPayload.ID, ((payload, context) -> {
+			String feature = payload.feature();
+			boolean enabled = payload.enabled();
 
 			switch (feature) {
-				case "AutoDust":
-					AutoDustClient.isEnabled = enabled;
-				case "AutoRotate":
-					AutoRotateClient.isEnabled = enabled;
-				case "ClickContainer":
-					ClickContainerClient.isEnabled = enabled;
-				default:
+				case "AutoDust" -> AutoDustClient.isEnabled.setBooleanValue(enabled);
+				case "AutoRotate" -> AutoRotateClient.isEnabled.setBooleanValue(enabled);
+				case "ClickContainers" -> ClickContainerClient.isEnabled.setBooleanValue(enabled);
 			}
 		}));
 	}

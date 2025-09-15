@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -7,66 +9,53 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneLampBlock;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.BlockStateArgumentType;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class BinaryBlockReadFeature extends AbstractFeature {
-	public static void registerCommand() {
-		BinaryBlockReadFeature bbr = FeatureUtils.getFeature(BinaryBlockReadFeature.class);
-		CommandRegistrationCallback.EVENT.register(
-				(dispatcher, registryAccess, environment) -> dispatcher.register(
-						literal("/read")
-								.executes(bbr::parseArgs)
-								.then(argument("offset", IntegerArgumentType.integer(1))
-										.executes(bbr::parseArgs)
-										.then(argument("onBlock", BlockStateArgumentType.blockState(registryAccess))
-												.executes(bbr::parseArgs)
-												.then(argument("toBase", IntegerArgumentType.integer(2, 16))
-														.executes(bbr::parseArgs)
-														.then(argument("reverseBits", BoolArgumentType.bool())
-																.executes(bbr::parseArgs)
-														)))))
-		);
+public class BinaryBlockReadFeature {
+	public static final BinaryBlockReadFeature INSTANCE = new BinaryBlockReadFeature();
+
+	protected BinaryBlockReadFeature() {
 	}
 
-	// this is horrible, but it works
-	protected int parseArgs(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		int offset;
-		BlockState onBlock;
-		int toBase;
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+		dispatcher.register(
+			literal("/read")
+				.requires(source -> source.hasPermissionLevel(2))
+				.executes(getCommandForArgumentCount(0))
+				.then(argument("offset", IntegerArgumentType.integer(1))
+					.executes(getCommandForArgumentCount(1))
+					.then(argument("onBlock", BlockStateArgumentType.blockState(registryAccess))
+						.executes(getCommandForArgumentCount(2))
+						.then(argument("toBase", IntegerArgumentType.integer(2, 16))
+							.executes(getCommandForArgumentCount(3))
+							.then(argument("reverseBits", BoolArgumentType.bool())
+								.executes(getCommandForArgumentCount(4)))))));
+	}
+
+	protected Command<ServerCommandSource> getCommandForArgumentCount(int argNum) {
+		return context -> execute(context, argNum);
+	}
+
+	protected int execute(CommandContext<ServerCommandSource> context, int argCount) throws CommandSyntaxException {
 		boolean reverseBits;
-		try {
-			offset = IntegerArgumentType.getInteger(context, "offset");
-		} catch (Exception ignored) {
-			offset = 2;
-		}
-		try {
-			onBlock = BlockStateArgumentType.getBlockState(context, "onBlock").getBlockState();
-		} catch (Exception ignored) {
-			onBlock = Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true);
-		}
-		try {
-			toBase = IntegerArgumentType.getInteger(context, "toBase");
-		} catch (Exception ignored) {
-			toBase = 10;
-		}
-		try {
-			reverseBits = BoolArgumentType.getBool(context, "reverseBits");
-		} catch (Exception ignored) {
-			reverseBits = false;
-		}
+		int offset = argCount >= 1 ? IntegerArgumentType.getInteger(context, "offset") : 2;
+		BlockState onBlock = argCount >= 2 ?
+			BlockStateArgumentType.getBlockState(context, "onBlock").getBlockState() :
+			Blocks.REDSTONE_LAMP.getDefaultState().with(RedstoneLampBlock.LIT, true);
+		int toBase = argCount >= 3 ? IntegerArgumentType.getInteger(context, "toBase") : 10;
+		reverseBits = argCount >= 4 && BoolArgumentType.getBool(context, "reverseBits");
 		return execute(context, offset, onBlock, toBase, reverseBits);
 	}
 
@@ -94,25 +83,7 @@ public class BinaryBlockReadFeature extends AbstractFeature {
 		for (BlockVector3 point = pos1; boundingBox.contains(point); point = point.add(spacingVector)) {
 			var pos = new BlockPos(point.x(), point.y(), point.z());
 			var actualState = source.getWorld().getBlockState(pos);
-
-			var matches = actualState.equals(onBlock);
-			if (matches) {
-				for (var property : onBlock.getProperties()) {
-					try {
-						actualState.get(property);
-					} catch (Exception e) { // actualState doesn't have the same properties as onBlock
-						// so they dont match by default.
-						matches = false;
-						break;
-					}
-					var propertyValue = onBlock.get(property);
-
-					if (!actualState.get(property).equals(propertyValue)) {
-						matches = false;
-						break;
-					}
-				}
-			}
+			var matches = actualState.equals(onBlock) && actualState.getEntries().equals(onBlock.getEntries());
 
 			bits.append(matches ? 1 : 0);
 		}

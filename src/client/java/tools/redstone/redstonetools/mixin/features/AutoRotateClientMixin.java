@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.mixin.features;
 
-
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.block.BlockState;
@@ -19,10 +18,17 @@ public abstract class AutoRotateClientMixin {
 
 	@ModifyReturnValue(method = "getPlacementState", at = @At("RETURN"))
 	private BlockState changeRotation(BlockState original, @Local(argsOnly = true) ItemPlacementContext context) {
-		if (!AutoRotateClient.isEnabled
+		if (!AutoRotateClient.isEnabled.getBooleanValue()
 				|| original == null) return original;
+
+		BlockState backup = original;
 		original = BlockUtils.rotate(original);
 
-		return this.canPlace(context, original) ? original : null;
+		if (this.canPlace(context, original))
+			return original;
+		else if (this.canPlace(context, backup))
+			return backup;
+		else
+			return null;
 	}
 }

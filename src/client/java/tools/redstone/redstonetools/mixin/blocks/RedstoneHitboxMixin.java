@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.mixin.blocks;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RedstoneWireBlock;
@@ -7,6 +8,7 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
 import tools.redstone.redstonetools.malilib.config.Configs;
-import tools.redstone.redstonetools.utils.ClientFeatureUtils;
 
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneHitboxMixin {
@@ -24,7 +25,17 @@ public class RedstoneHitboxMixin {
 
 	@Inject(method = "getOutlineShape", at = @At("HEAD"), cancellable = true)
 	public void getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
-		if (ClientFeatureUtils.getFeature(BigDustFeature.class).isEnabled()) {
+		if (!FabricLoader.getInstance().isModLoaded("malilib")) {
+			TinyFileDialogs.tinyfd_messageBox(
+				"Error",
+				"MaLiLib not present!\nPlease install MaLiLib if you want to use redstonetools",
+				"ok",
+				"error",
+				false
+			);
+			throw new IllegalStateException("MaLiLib not present");
+		}
+		if (BigDustFeature.INSTANCE.isEnabled()) {
 			cir.setReturnValue(SHAPES[Configs.General.getHeightInPixels()]);
 		}
 	}

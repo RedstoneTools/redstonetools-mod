@@ -1,23 +1,27 @@
 package tools.redstone.redstonetools;
 
-import tools.redstone.redstonetools.features.commands.BaseConvertFeature;
-import tools.redstone.redstonetools.features.commands.EditMacroFeature;
-import tools.redstone.redstonetools.features.commands.MacroFeature;
-import tools.redstone.redstonetools.features.commands.ReachFeature;
-import tools.redstone.redstonetools.features.toggleable.*;
+import com.mojang.brigadier.CommandDispatcher;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.command.CommandRegistryAccess;
+import tools.redstone.redstonetools.features.commands.*;
+import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
+import tools.redstone.redstonetools.features.toggleable.BigDustFeature;
+import tools.redstone.redstonetools.utils.DependencyLookup;
 
 public class ClientCommands {
-	public static void registerCommands() {
-		BaseConvertFeature.registerCommand();
-		EditMacroFeature.registerCommand();
-		MacroFeature.registerCommand();
-		ReachFeature.registerCommand();
-		AirPlaceFeature.registerCommand();
-		AutoRotateFeature.registerCommand();
-		ClickContainerFeature.registerCommand();
-		BigDustFeature.registerCommand();
-		AutoDustClient.registerHandler();
-		AutoRotateClient.registerHandler();
-		ClickContainerClient.registerHandler();
+	public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+		if (!DependencyLookup.REDSTONE_TOOLS_SERVER_PRESENT) {
+			BaseConvertClient.INSTANCE.registerCommand(dispatcher, registryAccess);
+			ReachClient.INSTANCE.registerCommand(dispatcher, registryAccess);
+			GiveMeClient.INSTANCE.registerCommand(dispatcher, registryAccess);
+			QuickTpClient.INSTANCE.registerCommand(dispatcher, registryAccess);
+		}
+		ClientDataFeature.INSTANCE.registerCommand(dispatcher, registryAccess);
+		PrintFeature.INSTANCE.registerCommand(dispatcher, registryAccess);
+		EditMacroFeature.INSTANCE.registerCommand(dispatcher, registryAccess);
+		MacroFeature.INSTANCE.registerCommand(dispatcher, registryAccess);
+		AirPlaceFeature.INSTANCE.registerCommand(dispatcher, registryAccess);
+		RstFeature.INSTANCE.registerCommand(dispatcher, registryAccess);
+		BigDustFeature.INSTANCE.registerCommand(dispatcher, registryAccess);
 	}
 }

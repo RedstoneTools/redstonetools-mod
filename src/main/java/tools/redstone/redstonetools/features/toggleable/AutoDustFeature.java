@@ -1,17 +1,22 @@
 package tools.redstone.redstonetools.features.toggleable;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import tools.redstone.redstonetools.utils.FeatureUtils;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class AutoDustFeature extends ToggleableFeature {
-	public static void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("autodust")
-				.executes(context -> FeatureUtils.getFeature(AutoDustFeature.class).execute(context))));
+	public static final AutoDustFeature INSTANCE = new AutoDustFeature();
+
+	protected AutoDustFeature() {
+	}
+
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+			dispatcher.register(literal("autodust").executes(this::execute));
 	}
 
 	private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

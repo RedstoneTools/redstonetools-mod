@@ -1,33 +1,40 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.features.AbstractFeature;
-import tools.redstone.redstonetools.features.commands.argument.SignalBlockArgumentType;
-import tools.redstone.redstonetools.utils.FeatureUtils;
+import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.SignalBlock;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class SignalStrengthBlockFeature extends AbstractFeature {
-	public static void registerCommand() {
-		var ssb = FeatureUtils.getFeature(SignalStrengthBlockFeature.class);
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("ssb")
-				.executes(ssb::parseArguments)
+public class SignalStrengthBlockFeature {
+	public static final SignalStrengthBlockFeature INSTANCE = new SignalStrengthBlockFeature();
+
+	protected SignalStrengthBlockFeature() {
+	}
+
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+			dispatcher.register(literal("ssb")
+				.requires(source -> source.hasPermissionLevel(2))
+				.executes(this::parseArguments)
 				.then(argument("signalStrength", IntegerArgumentType.integer())
-						.executes(ssb::parseArguments)
-						.then(argument("block", SignalBlockArgumentType.signalblock())
-								.executes(ssb::parseArguments)))));
+						.executes(this::parseArguments)
+						.then(argument("block", StringArgumentType.string()).suggests(ArgumentUtils.SIGNAL_BLOCK_SUGGESTION_PROVIDER)
+								.executes(this::parseArguments))));
 	}
 
 	protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
@@ -39,7 +46,7 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
 			signalStrength = 15;
 		}
 		try {
-			block = SignalBlockArgumentType.getSignalBlock(context, "block");
+			block = ArgumentUtils.parseSignalBlock(context, "block");
 		} catch (Exception ignored) {
 			block = SignalBlock.AUTO;
 		}
@@ -51,7 +58,7 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
 			var playerInventory = Objects.requireNonNull(context.getSource().getPlayer()).getInventory();
 			ItemStack itemStack = block.getItemStack(signalStrength);
 			playerInventory.insertStack(itemStack);
-//            playerInventory.swapStackWithHotbar(itemStack);
+//			playerInventory.swapStackWithHotbar(itemStack);
 		} catch (IllegalArgumentException | IllegalStateException | NullPointerException e) {
 			throw new SimpleCommandExceptionType(Text.literal(e.getMessage())).create();
 		}
@@ -63,7 +70,7 @@ public class SignalStrengthBlockFeature extends AbstractFeature {
 					"Why would you want this??", "Wtf are you going to use this for?", "What for?",
 					"... Ok, if you're sure.", "I'm 99% sure you could just use any other block.",
 					"This seems unnecessary.", "Is that a typo?", "Do you just like the glint?",
-					"Wow, what a fancy but otherwise useless " + block.name().toLowerCase().replace("_", " ") + "."
+					"Wow, what a fancy but otherwise useless " + block.name().toLowerCase(Locale.ROOT).replace("_", " ") + "."
 					, "For decoration?"};
 			context.getSource().sendMessage(Text.literal(funny[new Random().nextInt(funny.length)]));
 			return 1;

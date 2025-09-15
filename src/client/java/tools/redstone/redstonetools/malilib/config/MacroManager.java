@@ -1,53 +1,87 @@
 package tools.redstone.redstonetools.malilib.config;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.MinecraftClient;
-import tools.redstone.redstonetools.features.AbstractFeature;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
-import tools.redstone.redstonetools.malilib.widget.MacroBase;
+import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class MacroManager extends AbstractFeature {
-	private static Path macrosFilePath;
+public class MacroManager {
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	public static boolean shouldMute;
+	private static final Path MACROS_FILE_PATH = MinecraftClient.getInstance().runDirectory.toPath()
+		.resolve("config")
+		.resolve("redstonetools")
+		.resolve("macros.json");
 	private static List<MacroBase> macros = new ArrayList<>();
 
 	public static List<MacroBase> getAllMacros() {
 		return macros;
 	}
 
-	public MacroManager() {
-		macrosFilePath = MinecraftClient.getInstance().runDirectory.toPath()
-				.resolve("config")
-				.resolve("redstonetools")
-				.resolve("macros.json");
 
+	private static final Type MACRO_LIST_TYPE = new TypeToken<List<MacroStructure>>() {
+	}.getType();
 
-		javax.json.JsonArray macrosJson = null;
-		try {
-			Files.createDirectories(macrosFilePath.getParent());
-			if (Files.exists(macrosFilePath)) {
-				var reader = Json.createReader(new FileReader(macrosFilePath.toFile()));
-				macrosJson = reader.readArray();
-				reader.close();
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+	public static void saveChanges() {
+		List<MacroStructure> macroStructure = new ArrayList<>();
+		for (MacroBase macro : macros) {
+			macroStructure.add(new MacroStructure(
+				macro.getName(),
+				macro.hotkey.getKeybind().getStringValue(),
+				macro.isEnabled(),
+				macro.muted,
+				macro.actions
+			));
 		}
+		try {
+			if (MACROS_FILE_PATH.getParent() != null) Files.createDirectories(MACROS_FILE_PATH.getParent());
 
-		if (macrosJson == null) {
-			macros = new ArrayList<>();
-			macros.addAll(getDefaultMacros());
-		} else {
-			macros = getMacrosFromJson(macrosJson);
+			Path tmp = MACROS_FILE_PATH.resolveSibling(MACROS_FILE_PATH.getFileName().toString() + ".tmp");
+			try (BufferedWriter writer = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8)) {
+				GSON.toJson(macroStructure, MACRO_LIST_TYPE, writer);
+			}
+			Files.move(tmp, MACROS_FILE_PATH, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+		} catch (IOException ignored) {
+		}
+	}
+
+	public static void loadMacros() {
+		if (!Files.exists(MACROS_FILE_PATH)) {
+			macros = getDefaultMacros();
+			return;
+		}
+		try (BufferedReader reader = Files.newBufferedReader(MACROS_FILE_PATH, StandardCharsets.UTF_8)) {
+			List<MacroStructure> list = GSON.fromJson(reader, MACRO_LIST_TYPE);
+			if (list == null) {
+				macros = getDefaultMacros();
+				return;
+			}
+			for (MacroStructure macro : list) {
+				macros.add(new MacroBase(
+					macro.name,
+					macro.key,
+					macro.actions,
+					macro.enabled,
+					macro.muted
+				));
+			}
+		} catch (
+			IOException ignored) {
+			macros = getDefaultMacros();
 		}
 	}
 
@@ -73,76 +107,29 @@ public class MacroManager extends AbstractFeature {
 		return false;
 	}
 
-	public static void saveChanges() {
-		try {
-			Files.createDirectories(macrosFilePath.getParent());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		var macrosJson = Json.createArrayBuilder();
-		for (MacroBase macro : macros) {
-			macrosJson.add(getMacroJson(macro));
-		}
-
-		try (var writer = Json.createWriter(new FileWriter(macrosFilePath.toFile()))) {
-			writer.writeArray(macrosJson.build());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static javax.json.JsonObject getMacroJson(MacroBase macro) {
-		var actionsJson = Json.createArrayBuilder();
-		for (CommandAction action : macro.actions) {
-			actionsJson.add(getActionJson(action));
-		}
-
-		return Json.createObjectBuilder()
-				.add("name", macro.getName())
-				.add("enabled", macro.isEnabled())
-				.add("key", macro.hotkey.getKeybind().getStringValue())
-				.add("actions", actionsJson)
-				.build();
-	}
-
-	private static javax.json.JsonObject getActionJson(CommandAction action) {
-		if (action instanceof CommandAction commandAction) {
-			return Json.createObjectBuilder()
-					.add("type", "command")
-					.add("command", commandAction.command)
-					.build();
-		}
-
-		throw new RuntimeException("Unknown action type: " + action.getClass().getName());
-	}
-
 	public static List<MacroBase> getDefaultMacros() {
 		return List.of(
-				createCommandMacro("redstoner", new String[]{
-						"/gamerule doTileDrops false",
-						"/gamerule doTraderSpawning false",
-						"/gamerule doWeatherCycle false",
-						"/gamerule doDaylightCycle false",
-						"/gamerule doMobSpawning false",
-						"/gamerule doContainerDrops false",
-						"/time set noon",
-						"/weather clear"
-				}),
-				createCommandMacro("airplace", new String[]{"/airplace"}),
-				createCommandMacro("autodust", new String[]{"/autodust"}),
-				createCommandMacro("bigdust", new String[]{"/bigdust 3"}),
-				createCommandMacro("copystate", new String[]{"/copystate"}),
-				createCommandMacro("itembind", new String[]{"/itembind"}),
-				createCommandMacro("minsel", new String[]{"//minsel"}),
-				createCommandMacro("quicktp", new String[]{"/quicktp"}),
-				createCommandMacro("binaryblockread", new String[]{"//binaryblockread"}),
-				createCommandMacro("rstack", new String[]{"//rstack"}),
-				createCommandMacro("update", new String[]{"//update"})
+			createCommandMacro("redstoner", new String[]{
+				"/gamerule doTileDrops false",
+				"/gamerule doTraderSpawning false",
+				"/gamerule doWeatherCycle false",
+				"/gamerule doDaylightCycle false",
+				"/gamerule doMobSpawning false",
+				"/gamerule doContainerDrops false",
+				"/time set noon",
+				"/weather clear"
+			}),
+			createCommandMacro("copystate", new String[]{"/copystate" }),
+			createCommandMacro("itembind", new String[]{"/itembind" }),
+			createCommandMacro("minsel", new String[]{"//minsel" }),
+			createCommandMacro("quicktp", new String[]{"/quicktp" }),
+			createCommandMacro("binaryblockread", new String[]{"//binaryblockread" }),
+			createCommandMacro("rstack", new String[]{"//rstack" }),
+			createCommandMacro("update", new String[]{"//update" })
 		);
 	}
 
-	private static MacroBase createCommandMacro(String name, String[] commands) {
+	public static MacroBase createCommandMacro(String name, String[] commands) {
 		var actions = new CommandAction[commands.length];
 		for (int i = 0; i < commands.length; i++) {
 			actions[i] = new CommandAction(commands[i]);
@@ -151,50 +138,24 @@ public class MacroManager extends AbstractFeature {
 		return new MacroBase(name, "", List.of(actions));
 	}
 
-	private static List<MacroBase> getMacrosFromJson(javax.json.JsonArray macrosJson) {
-		List<MacroBase> macros = new ArrayList<>();
-
-		for (int i = 0; i < macrosJson.size(); i++) {
-			macros.add(getMacroFromJson(macrosJson.getJsonObject(i)));
-		}
-
-		return macros;
-	}
-
-	private static MacroBase getMacroFromJson(javax.json.JsonObject macroJson) {
-		String name = macroJson.getString("name");
-		boolean enabled = macroJson.getBoolean("enabled");
-		String key = macroJson.getString("key");
-		var actions = getActionsFromJson(macroJson.getJsonArray("actions"));
-
-		return new MacroBase(name, key, actions, enabled);
-	}
-
-	private static List<CommandAction> getActionsFromJson(JsonArray actionsJson) {
-		List<CommandAction> actions = new ArrayList<>();
-
-		for (int i = 0; i < actionsJson.size(); i++) {
-			actions.add(getActionFromJson(actionsJson.getJsonObject(i)));
-		}
-
-		return actions;
-	}
-
-	private static CommandAction getActionFromJson(JsonObject actionJson) {
-		var type = actionJson.getString("type");
-
-		if ("command".equals(type)) {
-			return new CommandAction(actionJson.getString("command"));
-		}
-
-		throw new RuntimeException("Unknown action type: " + type);
-	}
-
 	public static void removeMacro(MacroBase macro) {
 		macros.remove(macro);
 	}
 
-	public static void addMacro(MacroBase macro) {
-		macros.add(macro);
+	public static void addMacroToTop(MacroBase macroBase) {
+		if (MacroManager.nameExists(macroBase.getName(), null)) {
+			macroBase.setName(macroBase.getName() + " " + UUID.randomUUID());
+		}
+		macros.addFirst(macroBase);
+	}
+
+	record MacroStructure(
+		String name,
+		String key,
+		boolean enabled,
+		boolean muted,
+		List<CommandAction> actions
+	) {
+
 	}
 }

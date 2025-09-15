@@ -6,22 +6,53 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
-import tools.redstone.redstonetools.malilib.widget.MacroBase;
-import tools.redstone.redstonetools.malilib.widget.WidgetListMacros;
-import tools.redstone.redstonetools.malilib.widget.WidgetMacroEntry;
+import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
+import tools.redstone.redstonetools.malilib.widget.macro.WidgetListMacros;
+import tools.redstone.redstonetools.malilib.widget.macro.WidgetMacroEntry;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.List;
 
 public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, WidgetListMacros>
 		implements ISelectionListener<MacroBase> {
 
 	public GuiMacroManager() {
 		super(10, 68);
-
 		this.title = "Macro manager";
+	}
+
+	Method m;
+
+	@Override
+	public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks) {
+		if (this.client != null && this.client.world == null) this.renderPanoramaBackground(drawContext, partialTicks);
+		try {
+			this.applyBlur(drawContext);
+		} catch (NoSuchMethodError ignored) {
+			if (m == null) {
+				try {
+					m = Screen.class.getDeclaredMethod("method_57734");
+				} catch (Exception e) {
+					throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
+				}
+			}
+			try {
+				m.setAccessible(true);
+				m.invoke(this);
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
+			}
+		}
+		super.render(drawContext, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -80,10 +111,7 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 		this.addButton(addMacroButton, (btn, mbtn) -> {
 			String string = "macro ";
 			string += MacroManager.getAllMacros().size();
-			if (MacroManager.nameExists(string, null)) {
-				string += " " + UUID.randomUUID();
-			}
-			MacroManager.addMacro(new MacroBase(string, "", new ArrayList<>()));
+			MacroManager.addMacroToTop(new MacroBase(string, "", new ArrayList<>()));
 			MacroManager.saveChanges();
 			this.getListWidget().refreshEntries();
 		});
@@ -99,7 +127,7 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 
 	@Override
 	protected WidgetListMacros createListWidget(int listX, int listY) {
-		return new WidgetListMacros(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), 0, this);
+		return new WidgetListMacros(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this, this);
 	}
 
 	@Override
@@ -118,6 +146,24 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 		public void actionPerformedWithButton(ButtonBase button, int mouseButton) {
 			GuiConfigs.tab = this.tab;
 			GuiBase.openGui(new GuiConfigs());
+		}
+	}
+
+	@Override
+	public void onFilesDropped(List<Path> paths) {
+		for (Path path : paths) {
+			try {
+				String fileName = path.getFileName().toString().toLowerCase();
+				if (!fileName.endsWith(".txt"))
+					continue;
+				List<String> commands = Files.readAllLines(path);
+				String name = fileName.substring(0, fileName.length()-4);
+				MacroBase macro = MacroManager.createCommandMacro(name, commands.toArray(new String[]{}));
+				MacroManager.addMacroToTop(macro);
+				this.getListWidget().refreshEntries();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
