@@ -39,8 +39,8 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 	}
 
 	public void addEntry() {
-		this.macro.actions.add(new CommandAction(""));
-		this.addEntryToTop(new CommandEntry(this.macro.actions.getLast(), this));
+		this.macro.actions.addFirst(new CommandAction(""));
+		this.addEntryToTop(new CommandEntry(this.macro.actions.getFirst(), this));
 		this.centerScrollOn(this.getFirst());
 	}
 
@@ -153,8 +153,8 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			this.parent = parent;
 			this.command = command;
 			this.commandWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 250, 50, Text.of(""));
-			this.commandWidget.setText(command.command);
 			this.commandWidget.setMaxLength(256);
+			this.commandWidget.setText(command.command);
 			var commandSuggester = new ChatInputSuggestor(MinecraftClient.getInstance(), this.parent.parent, this.commandWidget, MinecraftClient.getInstance().textRenderer, false, false, 0, 7, false, Integer.MIN_VALUE) {
 				@Override
 				public void refresh() {
@@ -183,6 +183,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			removeButton.setY(y + 6);
 
 			if (this.isFocused()) {
+				this.parent.parent.macro.setName(this.parent.parent.nameWidget.getText());
 				MinecraftClient.getInstance().setScreen(new CommandEditScreen(parent.parent, this.commandWidget));
 				this.parent.setSelected(null);
 			}

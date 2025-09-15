@@ -8,8 +8,10 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.ItemStack;
@@ -23,23 +25,23 @@ import net.minecraft.text.Text;
 
 import java.util.Objects;
 
-import static net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT;
-
 public class ItemComponentsFeature {
 	public static final ItemComponentsFeature INSTANCE = new ItemComponentsFeature();
 
 	protected ItemComponentsFeature() {
 	}
+
 	private final SimpleCommandExceptionType NO_COMPONENTS_EXCEPTION = new SimpleCommandExceptionType(Text.literal("No components!"));
 
-	public void registerCommand() {
-		EVENT.register((dispatcher, registryAccess, enviroment) -> dispatcher.register(CommandManager.literal("components")
-			.requires(source -> source.hasPermissionLevel(2))
-			.executes(context -> components(Objects.requireNonNull(context.getSource().getPlayer()).getMainHandStack(), context.getSource()))
-			.then(CommandManager.argument("target", EntityArgumentType.player())
-				.executes(context -> components(EntityArgumentType.getPlayer(context, "target").getMainHandStack(), context.getSource()))
-			)
-		));
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+		dispatcher.register(
+			CommandManager.literal("components")
+				.requires(source -> source.hasPermissionLevel(2))
+				.executes(context -> components(Objects.requireNonNull(context.getSource().getPlayer()).getMainHandStack(), context.getSource()))
+				.then(CommandManager.argument("target", EntityArgumentType.player())
+					.executes(context -> components(EntityArgumentType.getPlayer(context, "target").getMainHandStack(), context.getSource()))
+				)
+		);
 	}
 
 	private int components(ItemStack stack, ServerCommandSource source) throws CommandSyntaxException {

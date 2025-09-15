@@ -1,13 +1,14 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
-import static net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT;
 
 public class ReachFeature {
 	public static final ReachFeature INSTANCE = new ReachFeature();
@@ -15,8 +16,7 @@ public class ReachFeature {
 	protected ReachFeature() {
 	}
 
-	public void registerCommand() {
-		EVENT.register((dispatcher, registryAccess, environment) ->
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 			dispatcher.register(CommandManager.literal("reach")
 				.requires(source -> source.hasPermissionLevel(2))
 				.then(CommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
@@ -42,7 +42,7 @@ public class ReachFeature {
 						})
 						.executes(context -> execute(context, false, true))
 					)
-				)));
+				));
 	}
 
 	private int execute(CommandContext<ServerCommandSource> context, boolean block, boolean entity) throws CommandSyntaxException {

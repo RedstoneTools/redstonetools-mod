@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -18,7 +19,8 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.util.Direction;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -38,8 +40,7 @@ public class RStackFeature {
 	protected RStackFeature() {
 	}
 
-	public void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 			dispatcher.register(
 				literal("/rstack")
 					.requires(source -> source.hasPermissionLevel(2))
@@ -51,7 +52,7 @@ public class RStackFeature {
 							.then(argument("offset", IntegerArgumentType.integer())
 								.executes(getCommandForArgumentCount(3))
 								.then(argument("moveSelection", BoolArgumentType.bool())
-									.executes(getCommandForArgumentCount(4))))))));
+									.executes(getCommandForArgumentCount(4)))))));
 	}
 
 	protected Command<ServerCommandSource> getCommandForArgumentCount(int argNum) {

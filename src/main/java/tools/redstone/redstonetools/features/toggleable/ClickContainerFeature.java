@@ -1,11 +1,14 @@
 package tools.redstone.redstonetools.features.toggleable;
 
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
@@ -88,9 +91,8 @@ public class ClickContainerFeature extends ToggleableFeature {
 		player.sendMessage(Text.of("§2[ClickContainers] §6Increased level!"));
 	}
 
-	public void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
-			dispatcher.register(literal("clickcontainers").executes(this::toggle)));
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+			dispatcher.register(literal("clickcontainers").executes(this::toggle));
 	}
 
 	@Override

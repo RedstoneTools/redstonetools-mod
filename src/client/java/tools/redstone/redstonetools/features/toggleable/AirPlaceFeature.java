@@ -1,12 +1,14 @@
 package tools.redstone.redstonetools.features.toggleable;
 
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import com.mojang.brigadier.CommandDispatcher;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,10 +34,10 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 		super(Configs.Toggles.AIRPLACE);
 	}
 
-	public void registerCommand() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(literal("airplace")
+	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+			dispatcher.register(literal("airplace")
 			.requires(source -> source.getPlayer().hasPermissionLevel(2))
-			.executes(this::toggle)));
+			.executes(this::toggle));
 	}
 
 	public static float reach;
@@ -43,7 +45,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 	public static boolean canAirPlace(PlayerEntity player) {
 		if (player.isSpectator())
 			return false;
-		ItemStack itemStack = ItemUtils.getMainItem(player);
+		ItemStack itemStack = player.getMainHandStack();
 
 		// empty slot
 		if (itemStack == null || itemStack.getItem() == Items.AIR)
@@ -91,7 +93,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 				return true;
 
 			BlockState blockState = ItemUtils.getUseState(client.player,
-					ItemUtils.getMainItem(client.player),
+					client.player.getMainHandStack(),
 					reach);
 			if (AutoRotateClient.isEnabled.getBooleanValue()) {
 				blockState = BlockUtils.rotate(blockState);

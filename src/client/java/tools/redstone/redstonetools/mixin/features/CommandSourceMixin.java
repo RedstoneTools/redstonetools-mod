@@ -18,7 +18,7 @@ public interface CommandSourceMixin {
 	@Inject(method = "shouldSuggest", at = @At("HEAD"), cancellable = true)
 	private static void meow(String remaining, String candidate, CallbackInfoReturnable<Boolean> cir) {
 		if (!Configs.General.BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS.getBooleanValue()) return;
-		if (remaining == null || candidate == null) {
+		if (candidate == null) {
 			cir.setReturnValue(false);
 			return;
 		}

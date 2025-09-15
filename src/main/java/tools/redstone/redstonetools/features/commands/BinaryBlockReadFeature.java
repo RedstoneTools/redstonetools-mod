@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -8,11 +9,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneLampBlock;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.BlockStateArgumentType;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -27,20 +29,19 @@ public class BinaryBlockReadFeature {
 	protected BinaryBlockReadFeature() {
 	}
 
-	public void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
-			dispatcher.register(
-				literal("/read")
-					.requires(source -> source.hasPermissionLevel(2))
-					.executes(getCommandForArgumentCount(0))
-					.then(argument("offset", IntegerArgumentType.integer(1))
-						.executes(getCommandForArgumentCount(1))
-						.then(argument("onBlock", BlockStateArgumentType.blockState(registryAccess))
-							.executes(getCommandForArgumentCount(2))
-							.then(argument("toBase", IntegerArgumentType.integer(2, 16))
-								.executes(getCommandForArgumentCount(3))
-								.then(argument("reverseBits", BoolArgumentType.bool())
-										.executes(getCommandForArgumentCount(4))))))));
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+		dispatcher.register(
+			literal("/read")
+				.requires(source -> source.hasPermissionLevel(2))
+				.executes(getCommandForArgumentCount(0))
+				.then(argument("offset", IntegerArgumentType.integer(1))
+					.executes(getCommandForArgumentCount(1))
+					.then(argument("onBlock", BlockStateArgumentType.blockState(registryAccess))
+						.executes(getCommandForArgumentCount(2))
+						.then(argument("toBase", IntegerArgumentType.integer(2, 16))
+							.executes(getCommandForArgumentCount(3))
+							.then(argument("reverseBits", BoolArgumentType.bool())
+								.executes(getCommandForArgumentCount(4)))))));
 	}
 
 	protected Command<ServerCommandSource> getCommandForArgumentCount(int argNum) {

@@ -15,7 +15,7 @@ public class CommandAction extends Action {
 		assert player != null;
 		if (command.startsWith("/"))
 			player.networkHandler.sendChatCommand(command.substring(1));
-		else
+		else if (!command.isEmpty())
 			player.networkHandler.sendChatMessage(command);
 	}
 

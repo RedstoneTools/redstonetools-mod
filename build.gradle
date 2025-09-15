@@ -54,15 +54,6 @@ repositories {
 }
 
 dependencies {
-	include implementation("javax.inject:javax.inject:1")
-
-	// Json
-	include implementation("javax.json:javax.json-api:1.1.4")
-	include implementation("org.glassfish:javax.json:1.1.4")
-
-	// AutoService
-	annotationProcessor implementation("com.google.auto.service:auto-service:1.1.0")
-
 	// To change the versions see the gradle.properties file
 	minecraft("com.mojang:minecraft:${project.minecraft_version}")
 	mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")

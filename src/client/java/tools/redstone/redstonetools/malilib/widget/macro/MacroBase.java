@@ -8,67 +8,33 @@ import net.minecraft.text.Text;
 import tools.redstone.redstonetools.macros.actions.Action;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
 import tools.redstone.redstonetools.malilib.KeybindHandler;
+import tools.redstone.redstonetools.malilib.config.MacroManager;
 
-import java.util.AbstractList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MacroBase {
-	protected final MinecraftClient mc;
 	public ConfigHotkey hotkey;
-
+	public boolean muted;
 	protected String name;
 	protected boolean enabled;
 	public KeybindHandler handler;
 	public List<CommandAction> actions;
-	public List<String> actionsAsStringList = new AbstractList<>() {
-		@Override
-		public String get(int index) {
-			return actions.get(index).command;
-		}
-
-		@Override
-		public String set(int index, String element) {
-			CommandAction action = actions.get(index);
-			String old = action.command;
-			action.command = element;
-			return old;
-		}
-
-		@Override
-		public int size() {
-			return actions.size();
-		}
-
-		@Override
-		public void add(int index, String element) {
-			actions.add(index, new CommandAction(element));
-		}
-
-		@Override
-		public String remove(int index) {
-			String old = actions.get(index).command;
-			actions.remove(index);
-			return old;
-		}
-	};
-	transient protected boolean needsUpdate;
 
 	public MacroBase(String name, String keybind, List<CommandAction> actions) {
-		this(name, keybind, actions, true);
+		this(name, keybind, actions, true, false);
 	}
 
-	public MacroBase(String name, String keybind, List<CommandAction> actions, boolean enabled) {
+	public MacroBase(String name, String keybind, List<CommandAction> actions, boolean enabled, boolean muted) {
 		this.actions = new java.util.ArrayList<>(actions);
 		this.hotkey = new ConfigHotkey("Hotkey", keybind, KeybindSettings.PRESS_ALLOWEXTRA, "Pressing this hotkey will activate the macro");
 		this.hotkey.getKeybind().setCallback((t, g) -> {
 			this.run();
 			return true;
 		});
-		this.mc = MinecraftClient.getInstance();
 		this.name = name;
-		this.needsUpdate = true;
 		this.enabled = enabled;
+		this.muted = muted;
 		this.handler = new KeybindHandler(this);
 		InputEventHandler.getKeybindManager().registerKeybindProvider(this.handler);
 		InputEventHandler.getInputManager().registerKeyboardInputHandler(this.handler);
@@ -94,6 +60,7 @@ public class MacroBase {
 	private final AtomicInteger layers = new AtomicInteger(0);
 
 	public void run() {
+		if (muted) MacroManager.shouldMute = true;
 		if (!enabled) return;
 		if (layers.getAndSet(layers.get() + 1) > 100) {
 			MinecraftClient.getInstance().player.sendMessage(Text.of("Please don't cause a stackoverflow :("), false);
@@ -114,5 +81,6 @@ public class MacroBase {
 		} finally {
 			layers.set(0);
 		}
+		if (muted) MacroManager.shouldMute = false;
 	}
 }

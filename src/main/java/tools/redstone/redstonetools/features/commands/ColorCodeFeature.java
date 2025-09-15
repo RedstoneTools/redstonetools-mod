@@ -1,5 +1,6 @@
 package tools.redstone.redstonetools.features.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -14,7 +15,8 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockType;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -32,13 +34,13 @@ public class ColorCodeFeature {
 	protected ColorCodeFeature() {
 	}
 
-	public void registerCommand() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("/colorcode")
+	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+		dispatcher.register(literal("/colorcode")
 			.requires(source -> source.hasPermissionLevel(2))
-				.then(argument("color", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
-						.executes(this::execute)
-						.then(argument("onlyColor", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
-								.executes(this::execute)))));
+			.then(argument("color", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
+				.executes(this::execute)
+				.then(argument("onlyColor", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
+					.executes(this::execute))));
 	}
 
 	public BlockColor color;
@@ -91,24 +93,24 @@ public class ColorCodeFeature {
 		try (EditSession session = worldEdit.newEditSession(FabricAdapter.adapt(player.getWorld()))) {
 			// create mask and pattern and execute block set
 			int blocksColored = session.replaceBlocks(selection,
-					new Mask() {
-						@Override
-						public boolean test(BlockVector3 vector) {
-							return shouldBeColored(world, vector, onlyColor);
-						}
-
-						@Nullable
-						@Override
-						public Mask2D toMask2D() {
-							return null;
-						}
-					},
-					new com.sk89q.worldedit.function.pattern.Pattern() {
-						@Override
-						public BaseBlock applyBlock(BlockVector3 position) {
-							return getColoredBlock(world, position, color);
-						}
+				new Mask() {
+					@Override
+					public boolean test(BlockVector3 vector) {
+						return shouldBeColored(world, vector, onlyColor);
 					}
+
+					@Nullable
+					@Override
+					public Mask2D toMask2D() {
+						return null;
+					}
+				},
+				new com.sk89q.worldedit.function.pattern.Pattern() {
+					@Override
+					public BaseBlock applyBlock(BlockVector3 position) {
+						return getColoredBlock(world, position, color);
+					}
+				}
 			);
 
 			Operations.complete(session.commit());
