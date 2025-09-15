@@ -45,7 +45,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 	public static boolean canAirPlace(PlayerEntity player) {
 		if (player.isSpectator())
 			return false;
-		ItemStack itemStack = ItemUtils.getMainItem(player);
+		ItemStack itemStack = player.getMainHandStack();
 
 		// empty slot
 		if (itemStack == null || itemStack.getItem() == Items.AIR)
@@ -93,7 +93,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 				return true;
 
 			BlockState blockState = ItemUtils.getUseState(client.player,
-					ItemUtils.getMainItem(client.player),
+					client.player.getMainHandStack(),
 					reach);
 			if (AutoRotateClient.isEnabled.getBooleanValue()) {
 				blockState = BlockUtils.rotate(blockState);
