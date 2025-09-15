@@ -38,7 +38,7 @@ public class CommandEditScreen extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-
+		parent.render(context, mouseX, mouseY, delta);
 		commandField.render(context, mouseX, mouseY, delta);
 
 		commandSuggester.render(context, mouseX, mouseY);
@@ -46,8 +46,6 @@ public class CommandEditScreen extends Screen {
 			commandSuggester.refresh();
 			changed = false;
 		}
-		super.render(context, mouseX, mouseY, delta);
-		parent.render(context, mouseX, mouseY, delta);
 	}
 
 	@Override
