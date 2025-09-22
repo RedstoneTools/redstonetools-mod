@@ -108,7 +108,7 @@ public class MacroManager {
 	}
 
 	public static List<MacroBase> getDefaultMacros() {
-		return List.of(
+		return new ArrayList<>(List.of(
 			createCommandMacro("redstoner", new String[]{
 				"/gamerule doTileDrops false",
 				"/gamerule doTraderSpawning false",
@@ -126,7 +126,7 @@ public class MacroManager {
 			createCommandMacro("binaryblockread", new String[]{"//binaryblockread" }),
 			createCommandMacro("rstack", new String[]{"//rstack" }),
 			createCommandMacro("update", new String[]{"//update" })
-		);
+		));
 	}
 
 	public static MacroBase createCommandMacro(String name, String[] commands) {
