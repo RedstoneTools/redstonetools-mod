@@ -27,6 +27,7 @@
 		"features.CommandSourceMixin",
 		"features.ItemBindItemStackMixin",
 		"features.SuggestionWindowMixin",
+		"features.TextFieldAccessor",
 		"features.WorldRendererInvoker",
 		"macros.AddMacroButtonMixin",
 		"macros.InitializeMacroManagerMixin"

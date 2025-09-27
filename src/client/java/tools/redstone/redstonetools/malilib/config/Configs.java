@@ -57,6 +57,12 @@ public class Configs implements IConfigHandler {
 	}
 
 	public static class ClientData {
+		public static final ConfigBoolean ENABLE_MATH_VARIABLES = new ConfigBoolean("Enable math and variables for the chat input suggester", true,
+			"""
+				Whether or not to try to inject variables and math expressions into the command input suggester.
+				
+				With this enabled, Redstone tools will attempt to prevent chat suggestion from breaking if you're using variables and or math expressions inside of a command.
+				With this disabled, variables and math expressions will still be inserted upon sending a chat command""");
 		public static final ConfigString VARIABLE_BEGIN_STRING = new ConfigString("Variable begin string", "'", "The string that should be used to denote the start of a variable. Can be empty");
 		public static final ConfigString VARIABLE_END_STRING = new ConfigString("Variable end string", "'", "The string that should be used to denote the end of a variable. Can be empty");
 		public static final ConfigString MATH_BEGIN_STRING = new ConfigString("Math begin string", "{", "The string that should be used to denote the start of a math expression. Can be empty, unsure if you'd want that though.");
@@ -68,6 +74,7 @@ public class Configs implements IConfigHandler {
 		public static final List<IConfigBase> OPTIONS = new ArrayList<>();
 
 		static {
+			OPTIONS.add(ENABLE_MATH_VARIABLES);
 			OPTIONS.add(VARIABLE_BEGIN_STRING);
 			OPTIONS.add(VARIABLE_END_STRING);
 			OPTIONS.add(MATH_BEGIN_STRING);
