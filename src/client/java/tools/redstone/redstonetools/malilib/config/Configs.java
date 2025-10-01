@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.config.options.*;
 import fi.dy.masa.malilib.util.JsonUtils;
 import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.RedstoneTools;
+import tools.redstone.redstonetools.features.toggleable.AutoDustClient;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +39,10 @@ public class Configs implements IConfigHandler {
 				return true;
 			});
 			AUTODUST.getKeybind().setCallback((t, g) -> {
+				System.out.println("Current value: ");
 				AUTODUST.setBooleanValue(!AUTODUST.getBooleanValue());
+				System.out.println(AUTODUST);
+				System.out.println(AutoDustClient.isEnabled);
 				return true;
 			});
 			AUTOROTATE.getKeybind().setCallback((t, g) -> {
