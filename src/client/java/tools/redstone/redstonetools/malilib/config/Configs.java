@@ -39,10 +39,7 @@ public class Configs implements IConfigHandler {
 				return true;
 			});
 			AUTODUST.getKeybind().setCallback((t, g) -> {
-				System.out.println("Current value: ");
 				AUTODUST.setBooleanValue(!AUTODUST.getBooleanValue());
-				System.out.println(AUTODUST);
-				System.out.println(AutoDustClient.isEnabled);
 				return true;
 			});
 			AUTOROTATE.getKeybind().setCallback((t, g) -> {
