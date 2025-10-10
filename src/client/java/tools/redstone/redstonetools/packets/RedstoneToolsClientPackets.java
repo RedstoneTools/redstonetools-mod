@@ -7,6 +7,10 @@ import tools.redstone.redstonetools.features.toggleable.ClickContainerClient;
 
 public class RedstoneToolsClientPackets {
 	public static void registerPackets() {
+		AutoDustClient.registerHandler();
+		AutoRotateClient.registerHandler();
+		ClickContainerClient.registerHandler();
+
 		ClientPlayNetworking.registerGlobalReceiver(SetFeatureEnabledPayload.ID, ((payload, context) -> {
 			String feature = payload.feature();
 			boolean enabled = payload.enabled();

@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.config.options.*;
 import fi.dy.masa.malilib.util.JsonUtils;
 import net.minecraft.client.MinecraftClient;
 import tools.redstone.redstonetools.RedstoneTools;
+import tools.redstone.redstonetools.features.toggleable.AutoDustClient;
 
 import java.io.File;
 import java.util.ArrayList;
