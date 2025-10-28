@@ -11,9 +11,9 @@ public class EntityMixin implements HasWorld {
 	public World getWorld() {
 		Entity self = (Entity) (Object) this;
 		//? if <1.21.10 {
-		return self.getWorld();
-		//?} else {
-		/*return self.getEntityWorld();
-		*///?}
+		/*return self.getWorld();
+		*///?} else {
+		return self.getEntityWorld();
+		//?}
 	}
 }

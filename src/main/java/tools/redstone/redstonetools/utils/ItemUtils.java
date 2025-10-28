@@ -34,10 +34,10 @@ public class ItemUtils {
 		if (stack.contains(DataComponentTypes.CUSTOM_DATA)) {
 			NbtCompound data = getCustomData(stack);
 			//? if >=1.21.5 {
-			/*return data.getString("command", "");
-			*///?} else {
-			return data.getString("command");
-			//?}
+			return data.getString("command", "");
+			//?} else {
+			/*return data.getString("command");
+			*///?}
 		}
 		return "";
 	}

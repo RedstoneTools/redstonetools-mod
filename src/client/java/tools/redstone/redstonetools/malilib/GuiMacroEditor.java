@@ -16,7 +16,10 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 
 
 
-/*$}*/
+//
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.input.CharInput;/*$}*/
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 import tools.redstone.redstonetools.malilib.widget.action.CommandListWidget;
@@ -53,16 +56,16 @@ public class GuiMacroEditor extends Screen {
 		buttonEnabled.updateDisplayString();
 		buttonMuted.updateDisplayString();
 		//? if <=1.21.5 {
-		buttonKeybind.render(mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY), context);
+		/*buttonKeybind.render(mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY), context);
 		buttonEnabled.render(mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY), context);
 		buttonMuted.render(mouseX, mouseY, buttonMuted.isMouseOver(mouseX, mouseY), context);
 		widgetAdvancedKeybindSettings.render(mouseX, mouseY, widgetAdvancedKeybindSettings.isMouseOver(mouseX, mouseY), context);
-		//?} else {
-		/*buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
+		*///?} else {
+		buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
 		buttonEnabled.render(context, mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY));
 		buttonMuted.render(context, mouseX, mouseY, buttonMuted.isMouseOver(mouseX, mouseY));
 		widgetAdvancedKeybindSettings.render(context, mouseX, mouseY, widgetAdvancedKeybindSettings.isMouseOver(mouseX, mouseY));
-		*///?}
+		//?}
 		if (errorCountDown > 0.0f) {
 			context.drawText(this.textRenderer, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
 			errorCountDown -= deltaTicks;
@@ -93,24 +96,24 @@ public class GuiMacroEditor extends Screen {
 			.build());
 		this.widgetAdvancedKeybindSettings = new WidgetKeybindSettings(akoLayout.x(), akoLayout.y(), akoLayout.width(), akoLayout.height(), macro.hotkey.getKeybind(), "", null, null) {
 			@Override
-			protected boolean onMouseClickedImpl(/*$ click_params {*/ int mouseX, int mouseY, int button/*$}*/) {
+			protected boolean onMouseClickedImpl(/*? if >=1.21.10 {*/Click click, boolean doubleClick/*?} else {*//*int mouseX, int mouseY, int button*//*?}*/) {
 				//? if >=1.21.10 {
-				/*int button = click.button();
-				*///?}
+				int button = click.button();
+				//?}
 				if (button == 0) {
 					GuiBase.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, fi.dy.masa.malilib.util.GuiUtils.getCurrentScreen()));
 					return true;
-				} else return super.onMouseClickedImpl(/*$ click_args {*/mouseX, mouseY, button/*$}*/);
+				} else return super.onMouseClickedImpl(/*? if >=1.21.10 {*/click, doubleClick/*?} else {*//*mouseX, mouseY, button*//*?}*/);
 			}
 		};
 		this.buttonKeybind = new ConfigButtonKeybind(bkLayout.x(), bkLayout.y(), bkLayout.width(), bkLayout.height(), macro.hotkey.getKeybind(), null) {
 			@Override
-			public boolean onMouseClicked(/*$ click_params {*/int mouseX, int mouseY, int button/*$}*/) {
-				if (!this.isMouseOver(/*? if >=1.21.10 {*/ /*(int) click.x(), (int) click.y() *//*?} else {*/ mouseX, mouseY /*?}*/)) {
+			public boolean onMouseClicked(/*? if >=1.21.10 {*/Click click, boolean doubleClick/*?} else {*//*int mouseX, int mouseY, int button*//*?}*/) {
+				if (!this.isMouseOver(/*? if >=1.21.10 {*/(int) click.x(), (int) click.y()/*?} else {*//*mouseX, mouseY*//*?}*/)) {
 					this.selected = false;
 					return false;
 				} else {
-					return super.onMouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/);
+					return super.onMouseClicked(/*? if >=1.21.10 {*/click, doubleClick/*?} else {*//*mouseX, mouseY, button*//*?}*/);
 				}
 			}
 			@Override
@@ -145,20 +148,23 @@ public class GuiMacroEditor extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(/*$ keyinput_params_vars2 {*/int keyCode, int scanCode, int modifiers) {/*$}*/
-		buttonEnabled.onKeyTyped(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
-		buttonMuted.onKeyTyped(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
-		widgetAdvancedKeybindSettings.onKeyTyped(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
+	public boolean keyPressed(/*$ keyinput_params {*/KeyInput input/*$}*/) {
+		//? if >=1.21.10 {
+		int keyCode = input.key();
+		//?}
+		buttonEnabled.onKeyTyped(/*$ keyinput_args {*/input/*$}*/);
+		buttonMuted.onKeyTyped(/*$ keyinput_args {*/input/*$}*/);
+		widgetAdvancedKeybindSettings.onKeyTyped(/*$ keyinput_args {*/input/*$}*/);
 		buttonKeybind.onKeyPressed(keyCode);
 		if (buttonKeybind.isSelected() && keyCode == 256) {
 			this.macro.hotkey.getKeybind().clearKeys();
 			buttonKeybind.onClearSelection();
 			return true;
 		}
-		if (this.commandList.keyPressed(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/))
+		if (this.commandList.keyPressed(/*$ keyinput_args {*/input/*$}*/))
 			return true;
 		else
-			return super.keyPressed(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
+			return super.keyPressed(/*$ keyinput_args {*/input/*$}*/);
 	}
 
 	@Override
@@ -167,79 +173,79 @@ public class GuiMacroEditor extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(/*$ click_params {*/int mouseX, int mouseY, int button/*$}*/) {
-		if (buttonKeybind.onMouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/)) {
+	public boolean mouseClicked(/*$ mouse_clicked_params {*/Click click, boolean doubleClick/*$}*/) {
+		if (buttonKeybind.onMouseClicked(/*$ on_mouse_clicked_args {*/click, doubleClick/*$}*/)) {
 			if (this.getFocused() != null) {
 				this.getFocused().setFocused(false);
 			}
 			return true;
 		}
-		else if (buttonEnabled.onMouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/)) {
+		else if (buttonEnabled.onMouseClicked(/*$ on_mouse_clicked_args {*/click, doubleClick/*$}*/)) {
 			if (this.getFocused() != null) {
 				this.getFocused().setFocused(false);
 			}
 			return true;
 		}
-		else if (buttonMuted.onMouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/)) {
+		else if (buttonMuted.onMouseClicked(/*$ on_mouse_clicked_args {*/click, doubleClick/*$}*/)) {
 			if (this.getFocused() != null) {
 				this.getFocused().setFocused(false);
 			}
 			return true;
 		}
-		else if (widgetAdvancedKeybindSettings.onMouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/)) {
+		else if (widgetAdvancedKeybindSettings.onMouseClicked(/*$ on_mouse_clicked_args {*/click, doubleClick/*$}*/)) {
 			if (this.getFocused() != null) {
 				this.getFocused().setFocused(false);
 			}
 			return true;
 		}
-		else if (super.mouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/)) return true;
-		else return commandList.mouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/);
+		else if (super.mouseClicked(/*$ mouse_clicked_args {*/click, doubleClick/*$}*/)) return true;
+		else return commandList.mouseClicked(/*$ mouse_clicked_args {*/click, doubleClick/*$}*/);
 	}
 
 	@Override
-	public boolean mouseReleased(/*$ click_nodouble_params {*/double mouseX, double mouseY, int button/*$}*/) {
-		buttonKeybind.onMouseReleased(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/);
-		buttonEnabled.onMouseReleased(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/);
-		buttonMuted.onMouseReleased(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/);
-		widgetAdvancedKeybindSettings.onMouseReleased(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/);
-		if (commandList.mouseReleased(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/)) return true;
-		else return super.mouseReleased(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/);
+	public boolean mouseReleased(/*$ dragged_released_params {*/Click click/*$}*/) {
+		buttonKeybind.onMouseReleased(/*$ on_released_args {*/click/*$}*/);
+		buttonEnabled.onMouseReleased(/*$ on_released_args {*/click/*$}*/);
+		buttonMuted.onMouseReleased(/*$ on_released_args {*/click/*$}*/);
+		widgetAdvancedKeybindSettings.onMouseReleased(/*$ on_released_args {*/click/*$}*/);
+		if (commandList.mouseReleased(/*$ dragged_released_args {*/click/*$}*/)) return true;
+		else return super.mouseReleased(/*$ dragged_released_args {*/click/*$}*/);
 	}
 
 	@Override
-	public boolean mouseDragged(/*$ click_nodouble_params {*/double mouseX, double mouseY, int button/*$}*/, double deltaX, double deltaY) {
-		if (commandList.mouseDragged(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/, deltaX, deltaY)) return true;
-		else return super.mouseDragged(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/, deltaX, deltaY);
+	public boolean mouseDragged(/*$ dragged_released_params {*/Click click/*$}*/, double deltaX, double deltaY) {
+		if (commandList.mouseDragged(/*$ dragged_released_args {*/click/*$}*/, deltaX, deltaY)) return true;
+		else return super.mouseDragged(/*$ dragged_released_args {*/click/*$}*/, deltaX, deltaY);
 	}
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
 		if (commandList.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) return true;
-		else if (buttonKeybind.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+		else if (buttonKeybind.onMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount))
 			return true;
-		else if (widgetAdvancedKeybindSettings.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+		else if (widgetAdvancedKeybindSettings.onMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount))
 			return true;
-		else if (buttonEnabled.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+		else if (buttonEnabled.onMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount))
 			return true;
-		else if (buttonMuted.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+		else if (buttonMuted.onMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount))
 			return true;
 		else return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
 	@Override
-	public boolean keyReleased(/*$ keyinput_params {*/int keyCode, int scanCode, int modifiers/*$}*/) {
-		if (commandList.keyReleased(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/)) return true;
-		else return super.keyReleased(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
+	public boolean keyReleased(/*$ keyinput_params {*/KeyInput input/*$}*/) {
+		if (commandList.keyReleased(/*$ keyinput_args {*/input/*$}*/)) return true;
+		else return super.keyReleased(/*$ keyinput_args {*/input/*$}*/);
 	}
 
 	@Override
-	public boolean charTyped(/*$ charinput_params {*/char chr, int modifiers/*$}*/) {
-		if (commandList.charTyped(/*$ charinput_args {*/chr, modifiers/*$}*/)) return true;
-		else if (buttonKeybind.onCharTyped(/*$ charinput_args {*/chr, modifiers/*$}*/)) return true;
-		else if (buttonEnabled.onCharTyped(/*$ charinput_args {*/chr, modifiers/*$}*/)) return true;
-		else if (buttonMuted.onCharTyped(/*$ charinput_args {*/chr, modifiers/*$}*/)) return true;
-		else if (widgetAdvancedKeybindSettings.onCharTyped(/*$ charinput_args {*/chr, modifiers/*$}*/)) return true;
-		else return super.charTyped(/*$ charinput_args {*/chr, modifiers/*$}*/);
+	public boolean charTyped(/*$ charinput_params {*/CharInput input/*$}*/) {
+		if (commandList.charTyped(/*$ charinput_args {*/input/*$}*/)) return true;
+		else if (buttonKeybind.onCharTyped(/*$ charinput_args {*/input/*$}*/)) return true;
+		else if (buttonEnabled.onCharTyped(/*$ charinput_args {*/input/*$}*/)) return true;
+		else if (buttonMuted.onCharTyped(/*$ charinput_args {*/input/*$}*/)) return true;
+		else if (widgetAdvancedKeybindSettings.onCharTyped(/*$ charinput_args {*/input/*$}*/)) return true;
+		else return super.charTyped(/*$ charinput_args {*/input/*$}*/);
 	}
 
 	@Override

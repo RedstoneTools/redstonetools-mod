@@ -77,10 +77,10 @@ public class GuiConfigs extends GuiConfigsBase {
 	public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks) {
 		if (this.client != null && this.client.world == null) this.renderPanoramaBackground(drawContext, partialTicks);
 		//? if <=1.21.5 {
-		this.applyBlur();
-		//?} else {
-		/*this.applyBlur(drawContext);
-		*///?}
+		/*this.applyBlur();
+		*///?} else {
+		this.applyBlur(drawContext);
+		//?}
 		super.render(drawContext, mouseX, mouseY, partialTicks);
 	}
 

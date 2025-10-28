@@ -12,7 +12,10 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 
 
 
-/*$}*/
+//
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.input.CharInput;/*$}*/
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
@@ -81,27 +84,27 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 	}
 
 	@Override
-	public boolean mouseClicked(/*$ click_params {*/int mouseX, int mouseY, int button/*$}*/) {
+	public boolean mouseClicked(/*$ mouse_clicked_params {*/Click click, boolean doubleClick/*$}*/) {
 		if (this.getSelectedOrNull() != null) {
-			this.getSelectedOrNull().mouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/);
+			this.getSelectedOrNull().mouseClicked(/*$ mouse_clicked_args {*/click, doubleClick/*$}*/);
 		}
-		return super.mouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/);
+		return super.mouseClicked(/*$ mouse_clicked_args {*/click, doubleClick/*$}*/);
 	}
 
 	@Override
-	public boolean mouseReleased(/*$ click_nodouble_params {*/double mouseX, double mouseY, int button/*$}*/) {
+	public boolean mouseReleased(/*$ dragged_released_params {*/Click click/*$}*/) {
 		if (this.getSelectedOrNull() != null) {
-			return this.getSelectedOrNull().mouseReleased(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/);
+			return this.getSelectedOrNull().mouseReleased(/*$ dragged_released_args {*/click/*$}*/);
 		}
-		return super.mouseReleased(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/);
+		return super.mouseReleased(/*$ dragged_released_args {*/click/*$}*/);
 	}
 
 	@Override
-	public boolean mouseDragged(/*$ click_nodouble_params {*/double mouseX, double mouseY, int button/*$}*/, double deltaX, double deltaY) {
+	public boolean mouseDragged(/*$ dragged_released_params {*/Click click/*$}*/, double deltaX, double deltaY) {
 		if (this.getSelectedOrNull() != null) {
-			return this.getSelectedOrNull().mouseDragged(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/, deltaX, deltaY);
+			return this.getSelectedOrNull().mouseDragged(/*$ dragged_released_args {*/click/*$}*/, deltaX, deltaY);
 		}
-		return super.mouseDragged(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/, deltaX, deltaY);
+		return super.mouseDragged(/*$ dragged_released_args {*/click/*$}*/, deltaX, deltaY);
 	}
 
 	@Override
@@ -113,27 +116,27 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 	}
 
 	@Override
-	public boolean keyPressed(/*$ keyinput_params {*/int keyCode, int scanCode, int modifiers/*$}*/) {
+	public boolean keyPressed(/*$ keyinput_params {*/KeyInput input/*$}*/) {
 		if (this.getSelectedOrNull() != null) {
-			return this.getSelectedOrNull().keyPressed(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
+			return this.getSelectedOrNull().keyPressed(/*$ keyinput_args {*/input/*$}*/);
 		}
-		return super.keyPressed(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
+		return super.keyPressed(/*$ keyinput_args {*/input/*$}*/);
 	}
 
 	@Override
-	public boolean keyReleased(/*$ keyinput_params {*/int keyCode, int scanCode, int modifiers/*$}*/) {
+	public boolean keyReleased(/*$ keyinput_params {*/KeyInput input/*$}*/) {
 		if (this.getSelectedOrNull() != null) {
-			return this.getSelectedOrNull().keyReleased(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
+			return this.getSelectedOrNull().keyReleased(/*$ keyinput_args {*/input/*$}*/);
 		}
-		return super.keyReleased(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
+		return super.keyReleased(/*$ keyinput_args {*/input/*$}*/);
 	}
 
 	@Override
-	public boolean charTyped(/*$ charinput_params {*/char chr, int modifiers/*$}*/) {
+	public boolean charTyped(/*$ charinput_params {*/CharInput input/*$}*/) {
 		if (this.getSelectedOrNull() != null) {
-			return this.getSelectedOrNull().charTyped(/*$ charinput_args {*/chr, modifiers/*$}*/);
+			return this.getSelectedOrNull().charTyped(/*$ charinput_args {*/input/*$}*/);
 		}
-		return super.charTyped(/*$ charinput_args {*/chr, modifiers/*$}*/);
+		return super.charTyped(/*$ charinput_args {*/input/*$}*/);
 	}
 
 	@Override
@@ -170,7 +173,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 		}
 
 		@Override
-		public void render(DrawContext context, /*? if <1.21.10 {*/ int index, int y, int x, int entryWidth, int entryHeight, /*?}*/ int mouseX, int mouseY, boolean hovered, float tickProgress) {
+		public void render(DrawContext context, /*? if <1.21.10 {*/ /*int index, int y, int x, int entryWidth, int entryHeight, *//*?}*/ int mouseX, int mouseY, boolean hovered, float tickProgress) {
 			if (isFirst) {
 				isFirst = false;
 				this.removeButton = new ButtonGeneric(x + entryWidth, y, -1, 20, "Remove");
@@ -195,10 +198,10 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			commandWidget.render(context, mouseX, mouseY, tickProgress);
 
 			//? if <=1.21.5 {
-			removeButton.render(mouseX, mouseY, removeButton.isMouseOver(), context);
-			//?} else {
-			/*removeButton.render(context, mouseX, mouseY, removeButton.isMouseOver());
-			*///?}
+			/*removeButton.render(mouseX, mouseY, removeButton.isMouseOver(), context);
+			*///?} else {
+			removeButton.render(context, mouseX, mouseY, removeButton.isMouseOver());
+			//?}
 
 			command.command = commandWidget.getText();
 		}
@@ -210,19 +213,19 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 		}
 
 		@Override
-		public boolean mouseClicked(/*$ click_params {*/int mouseX, int mouseY, int button/*$}*/) {
-			if (commandWidget.mouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/)) return true;
-			else return removeButton.onMouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/);
+		public boolean mouseClicked(/*$ mouse_clicked_params {*/Click click, boolean doubleClick/*$}*/) {
+			if (commandWidget.mouseClicked(/*$ mouse_clicked_args {*/click, doubleClick/*$}*/)) return true;
+			else return removeButton.onMouseClicked(/*$ on_mouse_clicked_args {*/click, doubleClick/*$}*/);
 		}
 
 		@Override
-		public boolean mouseReleased(/*$ click_nodouble_params {*/double mouseX, double mouseY, int button/*$}*/) {
-			return commandWidget.mouseReleased(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/);
+		public boolean mouseReleased(/*$ dragged_released_params {*/Click click/*$}*/) {
+			return commandWidget.mouseReleased(/*$ dragged_released_args {*/click/*$}*/);
 		}
 
 		@Override
-		public boolean mouseDragged(/*$ click_nodouble_params {*/double mouseX, double mouseY, int button/*$}*/, double deltaX, double deltaY) {
-			return commandWidget.mouseDragged(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/, deltaX, deltaY);
+		public boolean mouseDragged(/*$ dragged_released_params {*/Click click/*$}*/, double deltaX, double deltaY) {
+			return commandWidget.mouseDragged(/*$ dragged_released_args {*/click/*$}*/, deltaX, deltaY);
 		}
 
 		@Override
@@ -231,18 +234,18 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 		}
 
 		@Override
-		public boolean keyPressed(/*$ keyinput_params {*/int keyCode, int scanCode, int modifiers/*$}*/) {
-			return commandWidget.keyPressed(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
+		public boolean keyPressed(/*$ keyinput_params {*/KeyInput input/*$}*/) {
+			return commandWidget.keyPressed(/*$ keyinput_args {*/input/*$}*/);
 		}
 
 		@Override
-		public boolean keyReleased(/*$ keyinput_params {*/int keyCode, int scanCode, int modifiers/*$}*/) {
-			return commandWidget.keyReleased(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
+		public boolean keyReleased(/*$ keyinput_params {*/KeyInput input/*$}*/) {
+			return commandWidget.keyReleased(/*$ keyinput_args {*/input/*$}*/);
 		}
 
 		@Override
-		public boolean charTyped(/*$ charinput_params {*/char chr, int modifiers/*$}*/) {
-			return commandWidget.charTyped(/*$ charinput_args {*/chr, modifiers/*$}*/);
+		public boolean charTyped(/*$ charinput_params {*/CharInput input/*$}*/) {
+			return commandWidget.charTyped(/*$ charinput_args {*/input/*$}*/);
 		}
 
 		@Override

@@ -23,18 +23,12 @@ loom {
 }
 
 stonecutter {
-	for (i in 1..<7) {
-		def keyInputParamsVars = """\
-			KeyInput input) {
-			${'\t' * i}int keyCode = input.key();""".stripIndent()
-//			${'\t' * i}int scanCode = input.scanCode();
-//			${'\t' * i}int modifiers = input.modifiers();
-		swaps["keyinput_params_vars$i"] = eval(current.version, "<1.21.10") ? "int keyCode, int scanCode, int modifiers) {" : keyInputParamsVars
-	}
-	swaps["click_params"] = eval(current.version, "<1.21.10") ? "int mouseX, int mouseY, int button" : "Click click, boolean doubleClick" // mouseClicked
-	swaps["click_args"] = eval(current.version, "<1.21.10") ? "mouseX, mouseY, button" : "click, doubleClick"
-	swaps["click_nodouble_params"] = eval(current.version, "<1.21.10") ? "double mouseX, double mouseY, int button" : "Click click" // mouseDragged, mouseReleased
-	swaps["click_nodouble_args"] = eval(current.version, "<1.21.10") ? "mouseX, mouseY, button" : "click"
+	swaps["mouse_clicked_params"] = eval(current.version, "<1.21.10") ? "double mouseX, double mouseY, int button" : "Click click, boolean doubleClick" // mouseClicked
+	swaps["mouse_clicked_args"] = eval(current.version, "<1.21.10") ? "mouseX, mouseY, button" : "click, doubleClick"
+	swaps["on_mouse_clicked_args"] = eval(current.version, "<1.21.10") ? "(int) mouseX, (int) mouseY, button" : "click, doubleClick" // onMouseClicked
+	swaps["dragged_released_params"] = eval(current.version, "<1.21.10") ? "double mouseX, double mouseY, int button" : "Click click" // mouseDragged, mouseReleased
+	swaps["dragged_released_args"] = eval(current.version, "<1.21.10") ? "mouseX, mouseY, button" : "click"
+	swaps["on_released_args"] = eval(current.version, "<1.21.10") ? "(int) mouseX, (int) mouseY, button" : "click" // onMouseReleased
 	swaps["keyinput_params"] = eval(current.version, "<1.21.10") ? "int keyCode, int scanCode, int modifiers" : "KeyInput input" // keyPressed, keyReleased
 	swaps["keyinput_args"] = eval(current.version, "<1.21.10") ? "keyCode, scanCode, modifiers" : "input"
 	swaps["charinput_params"] = eval(current.version, "<1.21.10") ? "char chr, int modifiers" : "CharInput input" // charTyped

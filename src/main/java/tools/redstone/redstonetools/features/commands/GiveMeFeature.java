@@ -41,7 +41,7 @@ public class GiveMeFeature {
 		MinecraftServer server = context.getSource().getServer();
 		ItemStack stack = itemArgument.createStack(1, false);
 		stack.setCount(count);
-		server.getCommandManager()./*? if <1.21.10 {*/ executeWithPrefix /*?} else {*/ /*parseAndExecute *//*?}*/(
+		server.getCommandManager()./*? if <1.21.10 {*//*executeWithPrefix*//*?} else {*/parseAndExecute/*?}*/(
 			server.getCommandSource(), "/give @s " + itemArgument.asString(server.getRegistryManager()) + " " + count);
 		return 0;
 	}

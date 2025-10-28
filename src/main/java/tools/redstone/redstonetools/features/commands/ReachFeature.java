@@ -58,6 +58,6 @@ public class ReachFeature {
 
 	private static void execute(CommandContext<ServerCommandSource> context, String command) {
 		context.getSource().getServer().getCommandManager()
-				./*? if <1.21.10 {*/ executeWithPrefix /*?} else {*//*parseAndExecute*//*?}*/(context.getSource(), command);
+				./*? if <1.21.10 {*//*executeWithPrefix*//*?} else {*/parseAndExecute/*?}*/(context.getSource(), command);
 	}
 }

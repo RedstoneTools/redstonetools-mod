@@ -13,8 +13,8 @@ import net.minecraft.text.Text;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 //? if >=1.21.10 {
-/*import net.minecraft.client.gui.Click;
-*///?}
+import net.minecraft.client.gui.Click;
+//?}
 
 public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	private final WidgetListMacros parent;
@@ -23,20 +23,20 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	protected final int buttonsStartX;
 
 	//? if <1.21.10 {
-	@Override
+	/*@Override
 	public boolean canSelectAt(int mouseX, int mouseY, int mouseButton) {
 		return super.canSelectAt(mouseX, mouseY, mouseButton) && mouseX < this.buttonsStartX;
 	}
-	//?} else {
-	/*@Override
+	*///?} else {
+	@Override
 	public boolean canSelectAt(Click click) {
 		return super.canSelectAt(click) && click.x() < this.buttonsStartX;
 	}
-	*///?}
+	//?}
 
 
 	//? if >=1.21.8 {
-	/*@Override
+	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, boolean selected) {
 		if (selected || this.isMouseOver(mouseX, mouseY)) {
 			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x70FFFFFF);
@@ -54,8 +54,8 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	public void postRenderHovered(DrawContext context, int mouseX, int mouseY, boolean selected) {
 		super.postRenderHovered(context, mouseX, mouseY, selected);
 	}
-	*///?} else {
-	@Override
+	//?} else {
+	/*@Override
 	public void render(int mouseX, int mouseY, boolean selected, DrawContext context) {
 		if (selected || this.isMouseOver(mouseX, mouseY)) {
 			RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x70FFFFFF);
@@ -73,7 +73,7 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	public void postRenderHovered(int mouseX, int mouseY, boolean selected, DrawContext context) {
 		super.postRenderHovered(mouseX, mouseY, selected, context);
 	}
-	//?}
+	*///?}
 
 	public WidgetMacroEntry(int x, int y, int width, int height, boolean isOdd,
 							MacroBase macro, int listIndex, WidgetListMacros parent) {
