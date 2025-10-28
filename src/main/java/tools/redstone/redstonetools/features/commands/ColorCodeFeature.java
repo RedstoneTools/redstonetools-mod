@@ -90,7 +90,7 @@ public class ColorCodeFeature {
 
 		// for each block in the selection
 		final World world = FabricAdapter.adapt(player.getWorld());
-		try (EditSession session = worldEdit.newEditSession(FabricAdapter.adapt(player.getWorld()))) {
+		try (EditSession session = worldEdit.newEditSession(world)) {
 			// create mask and pattern and execute block set
 			int blocksColored = session.replaceBlocks(selection,
 				new Mask() {

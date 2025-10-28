@@ -24,14 +24,7 @@ public class WidgetListMacros extends WidgetListBase<MacroBase, WidgetMacroEntry
 
 	@Override
 	protected WidgetMacroEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, MacroBase entry) {
-		WidgetMacroEntry temp;
-		try {
-			temp = new WidgetMacroEntry8(x, y, this.browserEntryWidth,
-					this.getBrowserEntryHeightFor(entry), isOdd, entry, listIndex, this);
-		} catch (NoSuchMethodError ignored) {
-			temp = new WidgetMacroEntry4(x, y, this.browserEntryWidth,
-					this.getBrowserEntryHeightFor(entry), isOdd, entry, listIndex, this);
-		}
-		return temp;
+		return new WidgetMacroEntry(x, y, this.browserEntryWidth,
+			this.getBrowserEntryHeightFor(entry), isOdd, entry, listIndex, this);
 	}
 }

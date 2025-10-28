@@ -14,6 +14,9 @@
       "links": {
         "modmenu.discord": "https://discord.gg/nXWmrAsJQ8"
       }
+    },
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1297": ["tools/redstone/redstonetools/utils/HasWorld"]
     }
   },
   "license": "GPL-3.0",

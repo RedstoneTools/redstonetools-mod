@@ -7,7 +7,6 @@ import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
 import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
@@ -15,8 +14,6 @@ import tools.redstone.redstonetools.malilib.widget.macro.WidgetListMacros;
 import tools.redstone.redstonetools.malilib.widget.macro.WidgetMacroEntry;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -30,28 +27,14 @@ public class GuiMacroManager extends GuiListBase<MacroBase, WidgetMacroEntry, Wi
 		this.title = "Macro manager";
 	}
 
-	Method m;
-
 	@Override
 	public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks) {
 		if (this.client != null && this.client.world == null) this.renderPanoramaBackground(drawContext, partialTicks);
-		try {
-			this.applyBlur(drawContext);
-		} catch (NoSuchMethodError ignored) {
-			if (m == null) {
-				try {
-					m = Screen.class.getDeclaredMethod("method_57734");
-				} catch (Exception e) {
-					throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
-				}
-			}
-			try {
-				m.setAccessible(true);
-				m.invoke(this);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				throw new RuntimeException("Something went wrong. Contact a redstonetools developer", e);
-			}
-		}
+		//? if <=1.21.5 {
+		this.applyBlur();
+		//?} else {
+		/*this.applyBlur(drawContext);
+		 *///?}
 		super.render(drawContext, mouseX, mouseY, partialTicks);
 	}
 

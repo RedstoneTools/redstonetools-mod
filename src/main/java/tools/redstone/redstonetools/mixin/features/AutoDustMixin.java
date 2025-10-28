@@ -26,7 +26,7 @@ public abstract class AutoDustMixin {
 	@Inject(method = "onPlaced", at = @At("TAIL"))
 	private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
 		if (placer instanceof ServerPlayerEntity player) {
-			if (!AutoDustFeature.INSTANCE.isEnabled(player) || world.isClient) {
+			if (!AutoDustFeature.INSTANCE.isEnabled(player) || world.isClient()) {
 				return;
 			}
 

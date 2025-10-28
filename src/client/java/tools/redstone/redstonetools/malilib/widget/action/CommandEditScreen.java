@@ -5,6 +5,11 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatInputSuggestor;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+/*$ click_and_inputs_imports {*/
+
+
+
+/*$}*/
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
@@ -63,16 +68,16 @@ public class CommandEditScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (!commandField.mouseClicked(mouseX, mouseY, button)) {
-			if (!commandSuggester.mouseClicked(mouseX, mouseY, button)) {
+	public boolean mouseClicked(/*$ click_params {*/int mouseX, int mouseY, int button/*$}*/) {
+		if (!commandField.mouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/)) {
+			if (!commandSuggester.mouseClicked(/*$ click_nodouble_args {*/mouseX, mouseY, button/*$}*/)) {
 				close();
 			} else {
 				commandField.setFocused(true);
 			}
 			return false;
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(/*$ click_args {*/mouseX, mouseY, button/*$}*/);
 	}
 
 	@Override
@@ -81,23 +86,23 @@ public class CommandEditScreen extends Screen {
 	}
 
 	@Override
-	public boolean charTyped(char chr, int modifiers) {
-		return commandField.charTyped(chr, modifiers);
+	public boolean charTyped(/*$ charinput_params {*/char chr, int modifiers/*$}*/) {
+		return commandField.charTyped(/*$ charinput_args {*/chr, modifiers/*$}*/);
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(/*$ keyinput_params_vars2 {*/int keyCode, int scanCode, int modifiers) {/*$}*/
 		if (keyCode == InputUtil.GLFW_KEY_ESCAPE || keyCode == InputUtil.GLFW_KEY_ENTER || keyCode == InputUtil.GLFW_KEY_KP_ENTER) {
 			close();
 			return true;
 		}
-		commandSuggester.keyPressed(keyCode, scanCode, modifiers);
+		commandSuggester.keyPressed(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
 
-		return commandField.keyPressed(keyCode, scanCode, modifiers);
+		return commandField.keyPressed(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
 	}
 
 	@Override
-	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-		return commandField.keyReleased(keyCode, scanCode, modifiers);
+	public boolean keyReleased(/*$ keyinput_params {*/int keyCode, int scanCode, int modifiers/*$}*/) {
+		return commandField.keyReleased(/*$ keyinput_args {*/keyCode, scanCode, modifiers/*$}*/);
 	}
 }

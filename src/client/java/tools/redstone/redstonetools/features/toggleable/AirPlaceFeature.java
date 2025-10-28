@@ -2,7 +2,10 @@ package tools.redstone.redstonetools.features.toggleable;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+//? if <1.21.10 {
+// we need to wait for WorldRenderEvents in 1.21.10 as they temporarily removed it
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+//?}
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
@@ -68,6 +71,8 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 	}
 
 	{
+		// we need to wait for WorldRenderEvents in 1.21.10 as they temporarily removed it
+		//? if <1.21.10 {
 		// register ghost block renderer
 		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, blockOutlineContext) -> {
 			if (!isEnabled())
@@ -119,6 +124,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 
 			return true;
 		});
+		//?}
 	}
 
 }
