@@ -45,6 +45,12 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 		this.centerScrollOn(this.getFirst());
 	}
 
+	//? if >=1.21.10 {
+	private CommandEntry getFirst() {
+		return this.children().getFirst();
+	}
+	//?}
+
 	CommandEntry previousSelected = this.getSelectedOrNull();
 
 	@Override
@@ -172,14 +178,14 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 		public void render(DrawContext context, /*? if <1.21.10 {*/ /*int index, int y, int x, int entryWidth, int entryHeight, *//*?}*/ int mouseX, int mouseY, boolean hovered, float tickProgress) {
 			if (isFirst) {
 				isFirst = false;
-				this.removeButton = new ButtonGeneric(x + entryWidth, y, -1, 20, "Remove");
+				this.removeButton = new ButtonGeneric(/*$ get_x {*/getX()/*$}*/ + /*$ get_width {*/getWidth()/*$}*/, /*$ get_y {*/getY()/*$}*/, -1, 20, "Remove");
 				this.removeButton.setActionListener((t, g) -> {
 					this.parent.macro.actions.remove(this.parent.children().indexOf(this));
 					this.parent.removeEntry(this);
 				});
 				this.removeButton.setX(removeButton.getX() - (removeButton.getWidth() + 10));
 			}
-			removeButton.setY(y + 6);
+			removeButton.setY(/*$ get_y {*/getY()/*$}*/ + 6);
 
 			if (this.isFocused()) {
 				this.parent.parent.macro.setName(this.parent.parent.nameWidget.getText());
@@ -188,8 +194,8 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			}
 
 			commandWidget.setFocused(this.isFocused());
-			commandWidget.setPosition(x + 4, y + 3);
-			commandWidget.setWidth(entryWidth - 100);
+			commandWidget.setPosition(/*$ get_x {*/getX()/*$}*/ + 4, /*$ get_y {*/getY()/*$}*/ + 3);
+			commandWidget.setWidth(/*$ get_width {*/getWidth()/*$}*/ - 100);
 			commandWidget.setHeight(26);
 			commandWidget.render(context, mouseX, mouseY, tickProgress);
 

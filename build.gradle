@@ -35,6 +35,10 @@ stonecutter {
 	swaps["charinput_args"] = eval(current.version, "<1.21.10") ? "chr, modifiers" : "input"
 	swaps["click_and_inputs_imports"] = eval(current.version, "<1.21.10") ? "" :
 		"//\nimport net.minecraft.client.gui.Click;\nimport net.minecraft.client.input.KeyInput;\nimport net.minecraft.client.input.CharInput;"
+
+	swaps["get_x"] = eval(current.version, "<1.21.10") ? "x" : "getX()"
+	swaps["get_y"] = eval(current.version, "<1.21.10") ? "y" : "getY()"
+	swaps["get_width"] = eval(current.version, "<1.21.10") ? "entryWidth" : "getWidth()"
 }
 
 repositories {

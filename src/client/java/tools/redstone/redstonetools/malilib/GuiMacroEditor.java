@@ -217,6 +217,17 @@ public class GuiMacroEditor extends Screen {
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
 		if (commandList.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) return true;
+
+		//? if <1.21.10 {
+		/*else if (buttonKeybind.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+			return true;
+		else if (widgetAdvancedKeybindSettings.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+			return true;
+		else if (buttonEnabled.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+			return true;
+		else if (buttonMuted.onMouseScrolled((int) mouseX, (int) mouseY, horizontalAmount, verticalAmount))
+			return true;
+		*///?} else {
 		else if (buttonKeybind.onMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount))
 			return true;
 		else if (widgetAdvancedKeybindSettings.onMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount))
@@ -225,6 +236,7 @@ public class GuiMacroEditor extends Screen {
 			return true;
 		else if (buttonMuted.onMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount))
 			return true;
+		//?}
 		else return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
