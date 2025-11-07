@@ -8,7 +8,7 @@ import tools.redstone.redstonetools.utils.HasWorld;
 @Mixin(Entity.class)
 public class EntityMixin implements HasWorld {
 	@Override
-	public World getWorld() {
+	public World world() {
 		Entity self = (Entity) (Object) this;
 		//? if <1.21.10 {
 		/*return self.getWorld();

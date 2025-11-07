@@ -40,7 +40,7 @@ public abstract class AutoDustMixin {
 
 			ItemPlacementContext context = new ItemPlacementContext(player, Hand.MAIN_HAND, new ItemStack(Items.REDSTONE),
 				new BlockHitResult(new Vec3d(dustPos.getX(), dustPos.getY(), dustPos.getZ()), Direction.UP, dustPos, false));
-			placer.getWorld().setBlockState(dustPos, Blocks.REDSTONE_WIRE.getPlacementState(context));
+			placer.world().setBlockState(dustPos, Blocks.REDSTONE_WIRE.getPlacementState(context));
 		}
 	}
 }
