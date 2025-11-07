@@ -1,12 +1,15 @@
 package tools.redstone.redstonetools.mixin.features;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.state.OutlineRenderState;
-import net.minecraft.client.util.math.MatrixStack;
+//? if <1.21.10 {
+/*import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+/^^/*///?} else {
+import net.minecraft.client.render.state.OutlineRenderState;
+//?}
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 

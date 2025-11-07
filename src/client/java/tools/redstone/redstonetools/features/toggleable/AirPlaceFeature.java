@@ -3,17 +3,17 @@ package tools.redstone.redstonetools.features.toggleable;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 //? if <1.21.10 {
-/*// we need to wait for WorldRenderEvents in 1.21.10 as they temporarily removed it
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-*///?}
+/*import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+*///?} else {
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.minecraft.client.render.state.OutlineRenderState;
+//?}
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
