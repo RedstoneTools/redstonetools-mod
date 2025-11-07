@@ -6,11 +6,14 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 /*// we need to wait for WorldRenderEvents in 1.21.10 as they temporarily removed it
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 *///?}
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -55,7 +58,8 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			return false;
 
 		// itembind in hand
-		if (ItemUtils.containsCommand(itemStack)) return false;
+		if (ItemUtils.containsCommand(itemStack))
+			return false;
 
 		// TODO: shouldn't offhand also be checked?
 		// rocket boost for elytra
@@ -71,7 +75,6 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 	}
 
 	{
-		// we need to wait for WorldRenderEvents in 1.21.10 as they temporarily removed it
 		//? if <1.21.10 {
 		/*// register ghost block renderer
 		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, blockOutlineContext) -> {
@@ -124,7 +127,65 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 
 			return true;
 		});
-		*///?}
+		*///?} else {
+		WorldRenderEvents.END_MAIN.register(new WorldRenderEvents.EndMain() {
+			@Override
+			public void endMain(WorldRenderContext context) {
+				if (!AirPlaceFeature.this.isEnabled())
+					return;
+				if (!Configs.General.AIRPLACE_SHOW_OUTLINE.getBooleanValue())
+					return;
+
+				MinecraftClient client = MinecraftClient.getInstance();
+				if (client.player == null || client.interactionManager == null)
+					return;
+				if (MinecraftClient.getInstance().crosshairTarget == null)
+					return;
+				if (MinecraftClient.getInstance().crosshairTarget.getType() != HitResult.Type.MISS)
+					return;
+
+				if (!canAirPlace(client.player))
+					return;
+
+				BlockHitResult hitResult = findAirPlaceBlockHit(client.player);
+				BlockPos blockPos = hitResult.getBlockPos();
+				if (MinecraftClient.getInstance().world == null)
+					return;
+				if (!MinecraftClient.getInstance().world.getBlockState(blockPos).isAir())
+					return;
+
+				if (blockPos.getY() > 319 || blockPos.getY() < -64)
+					return;
+
+				BlockState blockState = ItemUtils.getUseState(client.player,
+					client.player.getMainHandStack(),
+					reach);
+				if (AutoRotateClient.isEnabled.getBooleanValue()) {
+					blockState = BlockUtils.rotate(blockState);
+				}
+				if (blockState == null)
+					return;
+
+				Camera camera = client.gameRenderer.getCamera();
+				Vec3d camPos = camera.getPos();
+
+				VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.getLines());
+
+				((WorldRendererInvoker) (context.worldRenderer())).invokeDrawBlockOutline(
+					context.matrices(),
+					consumer,
+					camPos.x, camPos.y, camPos.z,
+					new OutlineRenderState(
+						blockPos,
+						false,
+						false,
+						blockState.getOutlineShape(MinecraftClient.getInstance().world, blockPos)
+					),
+					Colors.BLACK
+				);
+			}
+		});
+		//?}
 	}
 
 }

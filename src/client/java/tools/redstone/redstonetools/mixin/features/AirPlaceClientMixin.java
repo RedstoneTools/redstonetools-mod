@@ -50,6 +50,11 @@ public class AirPlaceClientMixin {
 			return false;
 		}
 
+		// If blockpos isn't air
+		if (getMinecraftClient().world != null && !getMinecraftClient().world.getBlockState(AirPlaceFeature.findAirPlaceBlockHit(getPlayer()).getBlockPos()).isAir()) {
+			return false;
+		}
+
 		// If the player or interactionManager not initialized
 		if (getPlayer() == null || getInteractionManager() == null) {
 			return false;
