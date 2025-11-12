@@ -1,42 +1,33 @@
 name: Publish Mod
-on:
-  workflow_dispatch:
-    inputs:
-      mod-version:
-        description: 'Mod version:'
-        required: true
+on: [workflow_dispatch] # Manual trigger
+
+permissions:
+    contents: write
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
+    publish:
+        runs-on: ubuntu-22.04
+        container:
+            image: mcr.microsoft.com/openjdk/jdk:21-ubuntu
+            options: --user root
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+        strategy:
+            matrix:
+                version: [ "1.21.4", "1.21.5", "1.21.8", "1.21.10" ]
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'adopt'
+        steps:
+            - uses: actions/checkout@v4
 
-      - name: Build
-        run: ./gradlew build
+            - name: Cache Gradle
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
 
-      - name: Publish
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          name: Redstone Tools ${{ github.event.inputs.mod-version }}
-
-          modrinth-id: 9ySQVrz2
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          # curseforge-id: 849609
-          # curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          github-tag: ${{ github.event.inputs.mod-version }}
-          github-generate-changelog: false
-          github-token: ${{ secrets.RELEASE_TOKEN }}
-
-          files-primary: build/libs/redstonetools-${{ github.event.inputs.mod-version }}.jar
-          files-secondary: ''
+            - name: Build & publish for ${{ matrix.version }}
+              run: ./gradlew :${{ matrix.version }}:publishMods --no-daemon --stacktrace
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}

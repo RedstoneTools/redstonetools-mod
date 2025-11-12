@@ -17,6 +17,11 @@ plugins {
 
 rootProject.name = "redstonetools-mod"
 
+include "1.21.4"
+include "1.21.5"
+include "1.21.8"
+include "1.21.10"
+
 stonecutter {
     kotlinController = false
     centralScript = "build.gradle"
