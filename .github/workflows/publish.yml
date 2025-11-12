@@ -5,29 +5,15 @@ permissions:
     contents: write
 
 jobs:
-    publish:
+    build:
         runs-on: ubuntu-22.04
         container:
             image: mcr.microsoft.com/openjdk/jdk:21-ubuntu
             options: --user root
-
-        strategy:
-            matrix:
-                version: [ "1.21.4", "1.21.5", "1.21.8", "1.21.10" ]
-
         steps:
             - uses: actions/checkout@v4
-
-            - name: Cache Gradle
-              uses: actions/cache@v4
-              with:
-                  path: |
-                      ~/.gradle/caches
-                      ~/.gradle/wrapper
-                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
-
-            - name: Build & publish for ${{ matrix.version }}
-              run: ./gradlew :${{ matrix.version }}:publishMods --no-daemon --stacktrace
+            - run: ./gradlew build publishMods
               env:
+                  # modrinth-id: 9ySQVrz2
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
