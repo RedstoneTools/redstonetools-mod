@@ -3,12 +3,10 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-
 
 public class ReachFeature {
 	public static final ReachFeature INSTANCE = new ReachFeature();
@@ -45,18 +43,21 @@ public class ReachFeature {
 				));
 	}
 
-	private int execute(CommandContext<ServerCommandSource> context, boolean block, boolean entity) throws CommandSyntaxException {
-		String playerName = context.getSource().getPlayerOrThrow().getName().getString();
+	private int execute(CommandContext<ServerCommandSource> context, boolean block, boolean entity) {
 		float reach = FloatArgumentType.getFloat(context, "reach");
-		if (block) context.getSource().getServer().getCommandManager().executeWithPrefix(context.getSource(), "/attribute " + playerName + " minecraft:block_interaction_range base set " + reach);
-		if (entity) context.getSource().getServer().getCommandManager().executeWithPrefix(context.getSource(), "/attribute " + playerName + " minecraft:entity_interaction_range base set " + reach);
+		if (block) execute(context, "/attribute @s minecraft:block_interaction_range base set " + reach);
+		if (entity) execute(context, "/attribute @s minecraft:entity_interaction_range base set " + reach);
 		return 0;
 	}
 
-	private int reset(CommandContext<ServerCommandSource> context, boolean block, boolean entity) throws CommandSyntaxException {
-		String playerName = context.getSource().getPlayerOrThrow().getName().getString();
-		if (block) context.getSource().getServer().getCommandManager().executeWithPrefix(context.getSource(), "/attribute " + playerName + " minecraft:block_interaction_range base reset");
-		if (entity) context.getSource().getServer().getCommandManager().executeWithPrefix(context.getSource(), "/attribute " + playerName + " minecraft:entity_interaction_range base reset");
+	private int reset(CommandContext<ServerCommandSource> context, boolean block, boolean entity) {
+		if (block) execute(context, "/attribute @s minecraft:block_interaction_range base reset");
+		if (entity) execute(context, "/attribute @s minecraft:entity_interaction_range base reset");
 		return 0;
+	}
+
+	private static void execute(CommandContext<ServerCommandSource> context, String command) {
+		context.getSource().getServer().getCommandManager()
+				./*? if <1.21.10 {*//*executeWithPrefix*//*?} else {*/parseAndExecute/*?}*/(context.getSource(), command);
 	}
 }
