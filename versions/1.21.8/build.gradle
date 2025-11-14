@@ -6,6 +6,7 @@ publishMods {
 	file = remapJar.archiveFile
 	type = STABLE
 	modLoaders.add("fabric")
+    changelog = ""
 
 	modrinth {
 		projectId = "9ySQVrz2"
