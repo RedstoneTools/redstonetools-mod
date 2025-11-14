@@ -119,12 +119,23 @@ processResources {
 	}
 }
 
-/*register("buildAndCollect") {
+tasks.register("collectFile") {
 	group = "build"
-	from(remapJar.map { it.archiveFile }, remapSourcesJar.map { it.archiveFile })
-	into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
-	dependsOn("build")
-}*/
+	mustRunAfter("build")
+
+	doLast {
+//		println "build/libs/${project.archives_base_name}-${project.mod_version}+${project.minecraft_version}.jar"
+		copy {
+			from file("build/libs/${project.archives_base_name}-${project.mod_version}+${project.minecraft_version}.jar")
+			into rootProject.file("build/libs")
+		}
+	}
+}
+
+tasks.register("buildAndCollect") {
+	group = "build"
+	dependsOn(tasks.named("build"), tasks.named("collectFile"))
+}
 
 tasks.withType(JavaCompile).configureEach {
 	// ensure that the encoding is set to UTF-8, no matter what the system default is
