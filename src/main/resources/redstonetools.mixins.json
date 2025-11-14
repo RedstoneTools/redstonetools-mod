@@ -8,7 +8,6 @@
   },
   "mixins": [
     "AbstractBlockMixin",
-    "EntityMixin",
     "features.AutoDustMixin",
     "features.AutoRotateMixin",
     "features.CommandManagerMixin",

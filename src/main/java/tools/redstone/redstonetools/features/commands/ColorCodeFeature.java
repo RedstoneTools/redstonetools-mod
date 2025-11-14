@@ -20,10 +20,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
-import tools.redstone.redstonetools.utils.ArgumentUtils;
-import tools.redstone.redstonetools.utils.BlockColor;
-import tools.redstone.redstonetools.utils.ColoredBlock;
-import tools.redstone.redstonetools.utils.WorldEditUtils;
+import tools.redstone.redstonetools.utils.*;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -89,7 +86,7 @@ public class ColorCodeFeature {
 		var playerSession = worldEdit.getSessionManager().get(wePlayer);
 
 		// for each block in the selection
-		final World world = FabricAdapter.adapt(player.world());
+		final World world = FabricAdapter.adapt(PlayerUtils.getWorld(player));
 		try (EditSession session = worldEdit.newEditSession(world)) {
 			// create mask and pattern and execute block set
 			int blocksColored = session.replaceBlocks(selection,
