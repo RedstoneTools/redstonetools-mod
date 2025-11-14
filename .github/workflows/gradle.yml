@@ -3,5 +3,5 @@ name: Build & test
 on: [ pull_request ]
 
 jobs:
-  build:
-    uses: ./.github/workflows/build_reusable.yml
+    build:
+        uses: ./.github/workflows/build_reusable.yml

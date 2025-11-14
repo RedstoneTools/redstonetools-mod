@@ -1,10 +1,11 @@
 plugins {
-	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id 'fabric-loom' version '1.11-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.github.johnrengelman.shadow' version '8.+'
+	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
 
-version = project.mod_version
+version = project.mod_version + "+" + stonecutter.current.version
 group = project.maven_group
 
 base {
@@ -20,6 +21,25 @@ loom {
 			sourceSet sourceSets.client
 		}
 	}
+}
+
+stonecutter {
+	swaps["mouse_clicked_params"] = eval(current.version, "<1.21.10") ? "double mouseX, double mouseY, int button" : "Click click, boolean doubleClick" // mouseClicked
+	swaps["mouse_clicked_args"] = eval(current.version, "<1.21.10") ? "mouseX, mouseY, button" : "click, doubleClick"
+	swaps["on_mouse_clicked_args"] = eval(current.version, "<1.21.10") ? "(int) mouseX, (int) mouseY, button" : "click, doubleClick" // onMouseClicked
+	swaps["dragged_released_params"] = eval(current.version, "<1.21.10") ? "double mouseX, double mouseY, int button" : "Click click" // mouseDragged, mouseReleased
+	swaps["dragged_released_args"] = eval(current.version, "<1.21.10") ? "mouseX, mouseY, button" : "click"
+	swaps["on_released_args"] = eval(current.version, "<1.21.10") ? "(int) mouseX, (int) mouseY, button" : "click" // onMouseReleased
+	swaps["keyinput_params"] = eval(current.version, "<1.21.10") ? "int keyCode, int scanCode, int modifiers" : "KeyInput input" // keyPressed, keyReleased
+	swaps["keyinput_args"] = eval(current.version, "<1.21.10") ? "keyCode, scanCode, modifiers" : "input"
+	swaps["charinput_params"] = eval(current.version, "<1.21.10") ? "char chr, int modifiers" : "CharInput input" // charTyped
+	swaps["charinput_args"] = eval(current.version, "<1.21.10") ? "chr, modifiers" : "input"
+	swaps["click_and_inputs_imports"] = eval(current.version, "<1.21.10") ? "" :
+		"//\nimport net.minecraft.client.gui.Click;\nimport net.minecraft.client.input.KeyInput;\nimport net.minecraft.client.input.CharInput;"
+
+	swaps["get_x"] = eval(current.version, "<1.21.10") ? "x" : "getX()"
+	swaps["get_y"] = eval(current.version, "<1.21.10") ? "y" : "getY()"
+	swaps["get_width"] = eval(current.version, "<1.21.10") ? "entryWidth" : "getWidth()"
 }
 
 repositories {
@@ -68,6 +88,18 @@ dependencies {
 	modApi "maven.modrinth:malilib:${project.malilib_version}"
 }
 
+loom {
+	decompilerOptions.named("vineflower") {
+		options.put("mark-corresponding-synthetics", "1") // Adds names to lambdas - useful for mixins
+	}
+
+	runConfigs.configureEach {
+		ideConfigGenerated(true)
+//		vmArgs("-Dmixin.debug.export=true") // Exports transformed classes for debugging
+		runDir = "../../run" // Shares the run directory between versions
+	}
+}
+
 processResources {
 	inputs.property "version", project.version
 	inputs.property "minecraft_version", project.minecraft_version
@@ -77,31 +109,45 @@ processResources {
 	filteringCharset "UTF-8"
 
 	filesMatching("fabric.mod.json") {
-		expand  "version": project.version,
+		expand(
+				"version": project.version,
 				"minecraft_version": project.minecraft_version,
 				"minecraft_version_out": project.minecraft_version_out,
 				"malilib_version": project.minecraft_version_out,
 				"loader_version": project.loader_version
+		)
 	}
 }
 
-def targetJavaVersion = 21
+tasks.register("collectFile") {
+	group = "build"
+	mustRunAfter("build")
+
+	doLast {
+//		println "build/libs/${project.archives_base_name}-${project.mod_version}+${project.minecraft_version}.jar"
+		copy {
+			from file("build/libs/${project.archives_base_name}-${project.mod_version}+${project.minecraft_version}.jar")
+			into rootProject.file("build/libs")
+		}
+	}
+}
+
+tasks.register("buildAndCollect") {
+	group = "build"
+	dependsOn(tasks.named("build"), tasks.named("collectFile"))
+}
+
 tasks.withType(JavaCompile).configureEach {
 	// ensure that the encoding is set to UTF-8, no matter what the system default is
 	// this fixes some edge cases with special characters not displaying correctly
 	// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 	// If Javadoc is generated, this must be specified in that task too.
 	it.options.encoding = "UTF-8"
-	if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-		it.options.release.set(targetJavaVersion)
-	}
+	it.options.release.set(21)
 }
 
 java {
-	def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-	if (JavaVersion.current() < javaVersion) {
-		toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-	}
+	toolchain.languageVersion = JavaLanguageVersion.of(21)
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.
 	// If you remove this line, sources will not be generated.
@@ -129,5 +175,15 @@ publishing {
 		// Notice: This block does NOT have the same function as the block in the top level.
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
+	}
+}
+
+publishMods {
+	github {
+		accessToken = providers.environmentVariable("GITHUB_TOKEN")
+		repository = "RedstoneTools/redstonetools-mod"
+		commitish = "main"
+		tagName = "v${project.mod_version}"
+		allowEmptyFiles = true
 	}
 }

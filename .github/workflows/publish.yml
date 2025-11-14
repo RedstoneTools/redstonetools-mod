@@ -1,42 +1,19 @@
 name: Publish Mod
-on:
-  workflow_dispatch:
-    inputs:
-      mod-version:
-        description: 'Mod version:'
-        required: true
+on: [workflow_dispatch] # Manual trigger
+
+permissions:
+    contents: write
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'adopt'
-
-      - name: Build
-        run: ./gradlew build
-
-      - name: Publish
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          name: Redstone Tools ${{ github.event.inputs.mod-version }}
-
-          modrinth-id: 9ySQVrz2
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          # curseforge-id: 849609
-          # curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          github-tag: ${{ github.event.inputs.mod-version }}
-          github-generate-changelog: false
-          github-token: ${{ secrets.RELEASE_TOKEN }}
-
-          files-primary: build/libs/redstonetools-${{ github.event.inputs.mod-version }}.jar
-          files-secondary: ''
+    build:
+        runs-on: ubuntu-22.04
+        container:
+            image: mcr.microsoft.com/openjdk/jdk:21-ubuntu
+            options: --user root
+        steps:
+            - uses: actions/checkout@v4
+            - run: ./gradlew build publishMods
+              env:
+                  # modrinth-id: 9ySQVrz2
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}

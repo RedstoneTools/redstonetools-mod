@@ -8,10 +8,9 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -39,16 +38,11 @@ public class GiveMeFeature {
 	}
 
 	private int execute(CommandContext<ServerCommandSource> context, ItemStackArgument itemArgument, int count) throws CommandSyntaxException {
-		ServerPlayerEntity player = context.getSource().getPlayer();
+		MinecraftServer server = context.getSource().getServer();
 		ItemStack stack = itemArgument.createStack(1, false);
 		stack.setCount(count);
-		if (player != null && player.getServer() != null) {
-			player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource()
-				, "/give " +
-					player.getName().getString() + " " +
-					itemArgument.asString(player.getServer().getRegistryManager()) + " " + count);
-		} else
-			context.getSource().sendMessage(Text.of("Player not found."));
+		server.getCommandManager()./*? if <1.21.10 {*//*executeWithPrefix*//*?} else {*/parseAndExecute/*?}*/(
+			server.getCommandSource(), "/give @s " + itemArgument.asString(server.getRegistryManager()) + " " + count);
 		return 0;
 	}
 }

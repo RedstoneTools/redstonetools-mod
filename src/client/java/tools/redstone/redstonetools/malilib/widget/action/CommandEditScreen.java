@@ -5,6 +5,10 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatInputSuggestor;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+/*$ click_and_inputs_imports {*///
+import net.minecraft.client.gui.Click;
+import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.input.CharInput;/*$}*/
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
@@ -63,16 +67,16 @@ public class CommandEditScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (!commandField.mouseClicked(mouseX, mouseY, button)) {
-			if (!commandSuggester.mouseClicked(mouseX, mouseY, button)) {
+	public boolean mouseClicked(/*$ mouse_clicked_params {*/Click click, boolean doubleClick/*$}*/) {
+		if (!commandField.mouseClicked(/*$ mouse_clicked_args {*/click, doubleClick/*$}*/)) {
+			if (!commandSuggester.mouseClicked(/*? if >=1.21.10 {*/click/*?} else {*//*mouseX, mouseY, button*//*?}*/)) {
 				close();
 			} else {
 				commandField.setFocused(true);
 			}
 			return false;
 		}
-		return super.mouseClicked(mouseX, mouseY, button);
+		return super.mouseClicked(/*$ mouse_clicked_args {*/click, doubleClick/*$}*/);
 	}
 
 	@Override
@@ -81,23 +85,26 @@ public class CommandEditScreen extends Screen {
 	}
 
 	@Override
-	public boolean charTyped(char chr, int modifiers) {
-		return commandField.charTyped(chr, modifiers);
+	public boolean charTyped(/*$ charinput_params {*/CharInput input/*$}*/) {
+		return commandField.charTyped(/*$ charinput_args {*/input/*$}*/);
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(/*$ keyinput_params {*/KeyInput input/*$}*/) {
+		//? if >=1.21.10 {
+		int keyCode = input.key();
+		//?}
 		if (keyCode == InputUtil.GLFW_KEY_ESCAPE || keyCode == InputUtil.GLFW_KEY_ENTER || keyCode == InputUtil.GLFW_KEY_KP_ENTER) {
 			close();
 			return true;
 		}
-		commandSuggester.keyPressed(keyCode, scanCode, modifiers);
+		commandSuggester.keyPressed(/*$ keyinput_args {*/input/*$}*/);
 
-		return commandField.keyPressed(keyCode, scanCode, modifiers);
+		return commandField.keyPressed(/*$ keyinput_args {*/input/*$}*/);
 	}
 
 	@Override
-	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-		return commandField.keyReleased(keyCode, scanCode, modifiers);
+	public boolean keyReleased(/*$ keyinput_params {*/KeyInput input/*$}*/) {
+		return commandField.keyReleased(/*$ keyinput_args {*/input/*$}*/);
 	}
 }

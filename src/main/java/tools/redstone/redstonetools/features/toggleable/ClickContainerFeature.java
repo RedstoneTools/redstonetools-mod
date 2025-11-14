@@ -30,7 +30,7 @@ public class ClickContainerFeature extends ToggleableFeature {
 	static {
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 			if (world == null) return ActionResult.PASS;
-			if (world.isClient) return ActionResult.PASS;
+			if (world.isClient()) return ActionResult.PASS;
 			if (!ClickContainerFeature.INSTANCE.isEnabled((ServerPlayerEntity) player)) return ActionResult.PASS;
 
 			ItemStack stack = player.getStackInHand(hand);
