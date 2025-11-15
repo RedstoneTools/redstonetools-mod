@@ -184,7 +184,7 @@ publishMods {
 		repository = "RedstoneTools/redstonetools-mod"
 		commitish = "main"
 		type = STABLE
-		tagName = "v${project.mod_version}"
+		tagName = "${project.mod_version}"
 		changelog = ""
 		allowEmptyFiles = true
 	}
