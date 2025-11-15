@@ -179,9 +179,11 @@ publishing {
 }
 
 subprojects {
-	github {
-		accessToken = providers.environmentVariable("GITHUB_TOKEN")
-		parent project(":").tasks.named("publishGithub")
+	publishMods {
+		github {
+			accessToken = providers.environmentVariable("GITHUB_TOKEN")
+			parent project(":").tasks.named("publishGithub")
+		}
 	}
 }
 
