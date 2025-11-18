@@ -178,15 +178,6 @@ publishing {
 	}
 }
 
-subprojects {
-	publishMods {
-		github {
-			accessToken = providers.environmentVariable("GITHUB_TOKEN")
-			parent project(":").tasks.named("publishGithub")
-		}
-	}
-}
-
 publishMods {
 	file = remapJar.archiveFile
 	type = STABLE
@@ -194,14 +185,6 @@ publishMods {
 
     changelog = ""
 	displayName = "${project.mod_version}"
-
-	github {
-        accessToken = providers.environmentVariable("GITHUB_TOKEN")
-        repository = "RedstoneTools/redstonetools-mod"
-        commitish = "main"
-        tagName = "${project.mod_version}"
-        allowEmptyFiles = true
-    }
 
 	modrinth {
 		accessToken = providers.environmentVariable("MODRINTH_TOKEN")
