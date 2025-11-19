@@ -4,6 +4,8 @@ plugins {
 }
 stonecutter.active "1.21.10"
 
+version = project.mod_version + "+" + stonecutter.current.version
+
 publishMods {
 	if (providers.environmentVariable("RELEASE_MODRINTH").getOrElse("false").toBoolean()) {
 		if (!providers.environmentVariable("MODRINTH_TOKEN").isPresent() || providers.environmentVariable("MODRINTH_TOKEN").get() == "") {
