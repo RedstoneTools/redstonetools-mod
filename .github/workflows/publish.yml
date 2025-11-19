@@ -1,6 +1,20 @@
 name: Publish Mod
-on: [workflow_dispatch] # Manual trigger
-
+#on: [workflow_dispatch] # Manual trigger
+on:
+    workflow_dispatch:
+        inputs:
+            release_github:
+                type: boolean
+                description: 'Github Release'
+                default: false
+            github_repo:
+                type: string
+                description: 'Github repo'
+                default: "RedstoneTools/redstonetools-mod"
+            release_modrinth:
+                type: boolean
+                description: 'Modrinth Release'
+                default: false
 permissions:
     contents: write
 
@@ -17,3 +31,6 @@ jobs:
                   # modrinth-id: 9ySQVrz2
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+                  RELEASE_GITHUB: ${{ inputs.release_github }}
+                  RELEASE_MODRINTH: ${{ inputs.release_modrinth }}
+                  GITHUB_REPO: ${{ inputs.github_repo }}
