@@ -22,6 +22,7 @@ publishMods {
 			accessToken = providers.environmentVariable("GITHUB_TOKEN")
 			repository = providers.environmentVariable("GITHUB_REPO")
 			commitish = "main"
+			changelog = ""
 			tagName = "${project.mod_version}"
 			displayName = "Redstone Tools ${rootProject.mod_version}"
 			allowEmptyFiles = true
