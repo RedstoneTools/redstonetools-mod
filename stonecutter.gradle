@@ -1,4 +1,28 @@
 plugins {
     id "dev.kikugie.stonecutter"
+	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
 stonecutter.active "1.21.10"
+
+publishMods {
+	if (providers.environmentVariable("RELEASE_MODRINTH").getOrElse("false").toBoolean()) {
+		if (!providers.environmentVariable("MODRINTH_TOKEN").isPresent() || providers.environmentVariable("MODRINTH_TOKEN").get() == "") {
+			throw new GradleException('Missing MODRINTH_TOKEN')
+		}
+	}
+
+	if (providers.environmentVariable("RELEASE_GITHUB").getOrElse("false").toBoolean()) {
+		if (!providers.environmentVariable("GITHUB_TOKEN").isPresent() || providers.environmentVariable("GITHUB_TOKEN").get() == "") {
+			throw new GradleException('Missing GITHUB_TOKEN')
+		}
+
+		github {
+			accessToken = providers.environmentVariable("GITHUB_TOKEN")
+			repository = providers.environmentVariable("GITHUB_REPO")
+			commitish = "main"
+			tagName = "${project.mod_version}"
+			displayName = "Redstone Tools ${rootProject.mod_version}"
+			allowEmptyFiles = true
+		}
+	}
+}
