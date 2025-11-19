@@ -1,7 +1,6 @@
 plugins {
 	id 'fabric-loom' version '1.11-SNAPSHOT'
 	id 'maven-publish'
-	id 'com.github.johnrengelman.shadow' version '8.+'
 	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
 
@@ -178,38 +177,32 @@ publishing {
 	}
 }
 
-subprojects {
-	publishMods {
-		github {
-			accessToken = providers.environmentVariable("GITHUB_TOKEN")
-			parent project(":").tasks.named("publishGithub")
-		}
-	}
-}
-
 publishMods {
 	file = remapJar.archiveFile
 	type = STABLE
 	modLoaders.add("fabric")
 
-    changelog = ""
+	changelog = ""
 	displayName = "${project.mod_version}"
 
-	github {
-        accessToken = providers.environmentVariable("GITHUB_TOKEN")
-        repository = "RedstoneTools/redstonetools-mod"
-        commitish = "main"
-        tagName = "${project.mod_version}"
-        allowEmptyFiles = true
-    }
+	if (providers.environmentVariable("RELEASE_MODRINTH").getOrElse("false").toBoolean()) {
+		modrinth {
+			accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+			projectId = "9ySQVrz2"
+			minecraftVersions.add(project.minecraft_version)
 
-	modrinth {
-		accessToken = providers.environmentVariable("MODRINTH_TOKEN")
-		projectId = "9ySQVrz2"
-		minecraftVersions.add(project.minecraft_version)
+			requires("fabric-api")
+			requires("malilib")
+			optional("worldedit")
+		}
+	}
 
-		requires("fabric-api")
-		requires("malilib")
-		optional("worldedit")
+
+	if (providers.environmentVariable("RELEASE_GITHUB").getOrElse("false").toBoolean()) {
+		github {
+			accessToken = providers.environmentVariable("GITHUB_TOKEN")
+
+			parent rootProject.tasks.named("publishGithub")
+		}
 	}
 }

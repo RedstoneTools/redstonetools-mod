@@ -25,7 +25,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 		super(mc, width, height, y, itemHeight);
 		this.parent = parent;
 		this.macro = macro;
-		this.macro.actions.forEach((t) -> this.children().add(new CommandEntry(t, this)));
+		this.macro.actions.forEach((t) -> this.addEntry(new CommandEntry(t, this)));
 	}
 
 	@Override
