@@ -25,7 +25,9 @@ public class CommandEditScreen extends Screen {
 		this.parent = parent;
 		this.commandField = commandField;
 		this.commandField.setMaxLength(256);
-		client = MinecraftClient.getInstance();
+		//? if <1.21.11 {
+		/*client = MinecraftClient.getInstance();
+		*///?}
 		this.commandSuggester = new ChatInputSuggestor(client, this, commandField, client.textRenderer, false, false, commandField.getY() - 20, 5, false, -805306368) {
 			@Override
 			public void refresh() {
@@ -52,10 +54,17 @@ public class CommandEditScreen extends Screen {
 		}
 	}
 
-	@Override
+	//? if <1.21.11 {
+	/*@Override
 	public void resize(MinecraftClient client, int width, int height) {
 		parent.resize(client, width, height);
 	}
+	*///?} else {
+	@Override
+	public void resize(int width, int height) {
+		parent.resize(width, height);
+	}
+	//?}
 
 	@Override
 	public void close() {

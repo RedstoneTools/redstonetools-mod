@@ -18,7 +18,10 @@ public class ReachClient {
 
 	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
 			dispatcher.register(ClientCommandManager.literal("reach")
-				.requires(source -> source.getPlayer().hasPermissionLevel(2))
+				//? if <1.21.11
+				/*.requires(source -> source.getPlayer().hasPermissionLevel(2))*/
+				//? if >=1.21.11
+				.requires(source -> true) // Permission enforced server-side
 				.then(ClientCommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
 					.executes(context -> execute(context, true, true))
 				)

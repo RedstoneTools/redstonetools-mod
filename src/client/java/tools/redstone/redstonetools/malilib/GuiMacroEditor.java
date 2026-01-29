@@ -10,6 +10,9 @@ import fi.dy.masa.malilib.gui.widgets.WidgetKeybindSettings;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+//? if >=1.21.11 {
+import fi.dy.masa.malilib.render.GuiContext;
+//?}
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 /*$ click_and_inputs_imports {*///
@@ -41,7 +44,9 @@ public class GuiMacroEditor extends Screen {
 	public GuiMacroEditor(Text title, MacroBase macro, GuiMacroManager parent) {
 		super(title);
 		this.parent = parent;
-		this.client = MinecraftClient.getInstance();
+		//? if <1.21.11 {
+		/*this.client = MinecraftClient.getInstance();
+		*///?}
 		this.macro = macro;
 	}
 
@@ -56,11 +61,17 @@ public class GuiMacroEditor extends Screen {
 		buttonEnabled.render(mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY), context);
 		buttonMuted.render(mouseX, mouseY, buttonMuted.isMouseOver(mouseX, mouseY), context);
 		widgetAdvancedKeybindSettings.render(mouseX, mouseY, widgetAdvancedKeybindSettings.isMouseOver(mouseX, mouseY), context);
-		*///?} else {
-		buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
+		*///?} else if <1.21.11 {
+		/*buttonKeybind.render(context, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
 		buttonEnabled.render(context, mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY));
 		buttonMuted.render(context, mouseX, mouseY, buttonMuted.isMouseOver(mouseX, mouseY));
 		widgetAdvancedKeybindSettings.render(context, mouseX, mouseY, widgetAdvancedKeybindSettings.isMouseOver(mouseX, mouseY));
+		*///?} else {
+		GuiContext guiContext = GuiContext.fromGuiGraphics(context);
+		buttonKeybind.render(guiContext, mouseX, mouseY, buttonKeybind.isMouseOver(mouseX, mouseY));
+		buttonEnabled.render(guiContext, mouseX, mouseY, buttonEnabled.isMouseOver(mouseX, mouseY));
+		buttonMuted.render(guiContext, mouseX, mouseY, buttonMuted.isMouseOver(mouseX, mouseY));
+		widgetAdvancedKeybindSettings.render(guiContext, mouseX, mouseY, widgetAdvancedKeybindSettings.isMouseOver(mouseX, mouseY));
 		//?}
 		if (errorCountDown > 0.0f) {
 			context.drawText(this.textRenderer, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);

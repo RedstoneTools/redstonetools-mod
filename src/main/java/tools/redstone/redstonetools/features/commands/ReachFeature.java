@@ -7,6 +7,8 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//? if >=1.21.11
+import net.minecraft.command.DefaultPermissions;
 
 public class ReachFeature {
 	public static final ReachFeature INSTANCE = new ReachFeature();
@@ -16,7 +18,10 @@ public class ReachFeature {
 
 	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 			dispatcher.register(CommandManager.literal("reach")
-				.requires(source -> source.hasPermissionLevel(2))
+				//? if >=1.21.11
+				.requires(source -> source.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+				//? if <1.21.11
+				/*.requires(source -> source.hasPermissionLevel(2))*/
 				.then(CommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
 					.executes(context -> execute(context, true, true))
 				)

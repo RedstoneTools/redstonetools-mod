@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//? if >=1.21.11
+import net.minecraft.command.DefaultPermissions;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -24,7 +26,10 @@ public class GiveMeFeature {
 	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 		dispatcher.register(
 			literal("g")
-				.requires(source -> source.hasPermissionLevel(2))
+				//? if >=1.21.11
+				.requires(source -> source.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+				//? if <1.21.11
+				/*.requires(source -> source.hasPermissionLevel(2))*/
 				.then(argument("item", ItemStackArgumentType.itemStack(registryAccess))
 					.executes(context -> this.execute(
 						context,

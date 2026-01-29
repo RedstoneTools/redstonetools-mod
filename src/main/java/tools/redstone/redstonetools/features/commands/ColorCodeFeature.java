@@ -18,6 +18,8 @@ import com.sk89q.worldedit.world.block.BlockType;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//? if >=1.21.11
+import net.minecraft.command.DefaultPermissions;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.utils.*;
@@ -33,7 +35,10 @@ public class ColorCodeFeature {
 
 	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 		dispatcher.register(literal("/colorcode")
-			.requires(source -> source.hasPermissionLevel(2))
+			//? if >=1.21.11
+			.requires(source -> source.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+			//? if <1.21.11
+			/*.requires(source -> source.hasPermissionLevel(2))*/
 			.then(argument("color", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
 				.executes(this::execute)
 				.then(argument("onlyColor", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)

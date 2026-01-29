@@ -18,9 +18,11 @@ public interface WorldRendererInvoker {
 	//? if <1.21.10 {
 	/*@Invoker
 	void invokeDrawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos pos, BlockState state, int color);
-	*///?} else {
-
-	@Invoker
+	*///?} else if <1.21.11 {
+	/*@Invoker
 	void invokeDrawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, double x, double y, double z, OutlineRenderState state, int i);
+	*///?} else {
+	@Invoker
+	void invokeDrawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, double x, double y, double z, OutlineRenderState state, int i, float tickDelta);
 	//?}
 }

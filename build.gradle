@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.11-SNAPSHOT'
+	id 'fabric-loom' version '1.14-SNAPSHOT'
 	id 'maven-publish'
 	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
@@ -39,6 +39,16 @@ stonecutter {
 	swaps["get_x"] = eval(current.version, "<1.21.10") ? "x" : "getX()"
 	swaps["get_y"] = eval(current.version, "<1.21.10") ? "y" : "getY()"
 	swaps["get_width"] = eval(current.version, "<1.21.10") ? "entryWidth" : "getWidth()"
+
+	// 1.21.11 permission system changes
+	swaps["has_permission_level_2"] = eval(current.version, "<1.21.11") ? "hasPermissionLevel(2)" : "hasPermission(Permission.GAMEMASTERS)"
+	swaps["permission_import"] = eval(current.version, "<1.21.11") ? "" : "//\nimport net.minecraft.command.permission.Permission;"
+
+	// 1.21.11 GameRules moved
+	swaps["gamerules_import"] = eval(current.version, "<1.21.11") ? "net.minecraft.world.GameRules" : "net.minecraft.world.rule.GameRules"
+
+	// 1.21.11 velocity field rename
+	swaps["velocity_dirty"] = eval(current.version, "<1.21.11") ? "velocityModified" : "velocityDirty"
 }
 
 repositories {
@@ -146,7 +156,8 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	toolchain.languageVersion = JavaLanguageVersion.of(21)
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.
 	// If you remove this line, sources will not be generated.

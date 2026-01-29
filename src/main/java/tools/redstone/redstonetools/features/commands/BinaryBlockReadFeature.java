@@ -16,6 +16,8 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//? if >=1.21.11
+import net.minecraft.command.DefaultPermissions;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
@@ -32,7 +34,10 @@ public class BinaryBlockReadFeature {
 	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 		dispatcher.register(
 			literal("/read")
-				.requires(source -> source.hasPermissionLevel(2))
+				//? if >=1.21.11
+				.requires(source -> source.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+				//? if <1.21.11
+				/*.requires(source -> source.hasPermissionLevel(2))*/
 				.executes(getCommandForArgumentCount(0))
 				.then(argument("offset", IntegerArgumentType.integer(1))
 					.executes(getCommandForArgumentCount(1))

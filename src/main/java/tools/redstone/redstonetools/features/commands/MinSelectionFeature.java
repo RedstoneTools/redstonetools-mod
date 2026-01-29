@@ -15,6 +15,8 @@ import com.sk89q.worldedit.world.block.BlockTypes;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//? if >=1.21.11
+import net.minecraft.command.DefaultPermissions;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
@@ -32,7 +34,10 @@ public class MinSelectionFeature {
 
 	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 			dispatcher.register(literal("/minsel")
-				.requires(source -> source.hasPermissionLevel(2))
+				//? if >=1.21.11
+				.requires(source -> source.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+				//? if <1.21.11
+				/*.requires(source -> source.hasPermissionLevel(2))*/
 				.executes(this::execute));
 	}
 

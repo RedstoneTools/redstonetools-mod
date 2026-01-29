@@ -10,6 +10,8 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//? if >=1.21.11
+import net.minecraft.command.DefaultPermissions;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -31,7 +33,10 @@ public class QuickTpFeature {
 
 	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 			dispatcher.register(literal("quicktp")
-				.requires(source -> source.hasPermissionLevel(2))
+				//? if >=1.21.11
+				.requires(source -> source.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+				//? if <1.21.11
+				/*.requires(source -> source.hasPermissionLevel(2))*/
 				.executes(this::parseArguments)
 				.then(argument("distance", DoubleArgumentType.doubleArg())
 						.executes(this::parseArguments)
@@ -103,7 +108,10 @@ public class QuickTpFeature {
 			player.requestTeleport(targetPosition.x, targetPosition.y, targetPosition.z);
 			if (resetVelocity) player.setVelocity(Vec3d.ZERO);
 			player.fallDistance = 0;
-			player.velocityModified = true; // guh
+			//? if >=1.21.11
+			player.velocityDirty = true; // guh
+			//? if <1.21.11
+			/*player.velocityModified = true; // guh*/
 		} finally {
 			quicktpingForPlayer.remove(player);
 		}

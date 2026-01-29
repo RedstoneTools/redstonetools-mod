@@ -8,7 +8,11 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.DrawContext;
+//? if <1.21.11 {
+/*import net.minecraft.client.gui.DrawContext;
+*///?} else {
+import fi.dy.masa.malilib.render.GuiContext;
+//?}
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
 import tools.redstone.redstonetools.malilib.config.MacroManager;
@@ -35,8 +39,27 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	//?}
 
 
-	//? if >=1.21.8 {
+	//? if >=1.21.11 {
 	@Override
+	public void render(GuiContext context, int mouseX, int mouseY, boolean selected) {
+		if (selected || this.isMouseOver(mouseX, mouseY)) {
+			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x70FFFFFF);
+		} else if (this.isOdd) {
+			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x20FFFFFF);
+		} else {
+			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x50FFFFFF);
+		}
+		this.drawString(context, this.x + 4, this.y + 7, 0xFFFFFFFF, this.macro.getName());
+
+		super.render(context, mouseX, mouseY, selected);
+	}
+
+	@Override
+	public void postRenderHovered(GuiContext context, int mouseX, int mouseY, boolean selected) {
+		super.postRenderHovered(context, mouseX, mouseY, selected);
+	}
+	//?} else if >=1.21.8 {
+	/*@Override
 	public void render(DrawContext context, int mouseX, int mouseY, boolean selected) {
 		if (selected || this.isMouseOver(mouseX, mouseY)) {
 			RenderUtils.drawRect(context, this.x, this.y, this.width, this.height, 0x70FFFFFF);
@@ -54,7 +77,7 @@ public class WidgetMacroEntry extends WidgetListEntryBase<MacroBase> {
 	public void postRenderHovered(DrawContext context, int mouseX, int mouseY, boolean selected) {
 		super.postRenderHovered(context, mouseX, mouseY, selected);
 	}
-	//?} else {
+	*///?} else {
 	/*@Override
 	public void render(int mouseX, int mouseY, boolean selected, DrawContext context) {
 		if (selected || this.isMouseOver(mouseX, mouseY)) {

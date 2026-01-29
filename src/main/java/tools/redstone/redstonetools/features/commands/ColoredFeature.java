@@ -8,6 +8,8 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//? if >=1.21.11
+import net.minecraft.command.DefaultPermissions;
 import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.BlockInfo;
@@ -22,7 +24,10 @@ public class ColoredFeature extends PickBlockFeature {
 
 	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 			dispatcher.register(CommandManager.literal("colored")
-				.requires(source -> source.hasPermissionLevel(2))
+				//? if >=1.21.11
+				.requires(source -> source.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+				//? if <1.21.11
+				/*.requires(source -> source.hasPermissionLevel(2))*/
 				.executes(this::execute)
 				.then(CommandManager.argument("blockType", StringArgumentType.string()).suggests(ArgumentUtils.COLORED_BLOCK_TYPE_SUGGESTION_PROVIDER)
 					.executes(this::execute)));

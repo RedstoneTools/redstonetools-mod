@@ -9,6 +9,8 @@ import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//? if >=1.21.11
+import net.minecraft.command.DefaultPermissions;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import tools.redstone.redstonetools.utils.ItemUtils;
@@ -26,7 +28,10 @@ public class ItemBindFeature {
 
 	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 			dispatcher.register(literal("itembind")
-				.requires(source -> source.hasPermissionLevel(2))
+				//? if >=1.21.11
+				.requires(source -> source.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+				//? if <1.21.11
+				/*.requires(source -> source.hasPermissionLevel(2))*/
 				.executes(this::execute)
 				.then(literal("reset")
 					.executes(ItemBindFeature::executeReset)));

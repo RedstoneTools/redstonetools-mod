@@ -21,6 +21,8 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//? if >=1.21.11
+import net.minecraft.command.DefaultPermissions;
 import net.minecraft.text.Text;
 
 import java.util.Objects;
@@ -36,7 +38,10 @@ public class ItemComponentsFeature {
 	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 		dispatcher.register(
 			CommandManager.literal("components")
-				.requires(source -> source.hasPermissionLevel(2))
+				//? if >=1.21.11
+				.requires(source -> source.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+				//? if <1.21.11
+				/*.requires(source -> source.hasPermissionLevel(2))*/
 				.executes(context -> components(Objects.requireNonNull(context.getSource().getPlayer()).getMainHandStack(), context.getSource()))
 				.then(CommandManager.argument("target", EntityArgumentType.player())
 					.executes(context -> components(EntityArgumentType.getPlayer(context, "target").getMainHandStack(), context.getSource()))

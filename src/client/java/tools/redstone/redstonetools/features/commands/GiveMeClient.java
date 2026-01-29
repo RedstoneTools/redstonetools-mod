@@ -20,7 +20,10 @@ public class GiveMeClient {
 	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
 			dispatcher.register(
 			literal("g")
-				.requires(source -> source.getPlayer().hasPermissionLevel(2))
+				//? if <1.21.11
+				/*.requires(source -> source.getPlayer().hasPermissionLevel(2))*/
+				//? if >=1.21.11
+				.requires(source -> true) // Permission enforced server-side
 				.then(argument("item", ItemStackArgumentType.itemStack(registryAccess))
 					.executes(context -> this.execute(
 						context,

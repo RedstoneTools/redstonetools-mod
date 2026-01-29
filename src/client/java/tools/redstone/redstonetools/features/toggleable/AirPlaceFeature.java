@@ -13,6 +13,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
+//? if >=1.21.11 {
+import net.minecraft.client.render.RenderLayers;
+//?}
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.EquipmentSlot;
@@ -42,7 +45,10 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 
 	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
 			dispatcher.register(literal("airplace")
-			.requires(source -> source.getPlayer().hasPermissionLevel(2))
+			//? if <1.21.11
+				/*.requires(source -> source.getPlayer().hasPermissionLevel(2))*/
+				//? if >=1.21.11
+				.requires(source -> true) // Permission enforced server-side
 			.executes(this::toggle));
 	}
 
@@ -167,11 +173,20 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 					return;
 
 				Camera camera = client.gameRenderer.getCamera();
-				Vec3d camPos = camera.getPos();
+				//? if <1.21.11 {
+				/*Vec3d camPos = camera.getPos();
+				*///?} else {
+				Vec3d camPos = camera.getCameraPos();
+				//?}
 
-				VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.getLines());
+				//? if <1.21.11 {
+				/*VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.getLines());
+				*///?} else {
+				VertexConsumer consumer = context.consumers().getBuffer(RenderLayers.LINES);
+				//?}
 
-				((WorldRendererInvoker) (context.worldRenderer())).invokeDrawBlockOutline(
+				//? if <1.21.11 {
+				/*((WorldRendererInvoker) (context.worldRenderer())).invokeDrawBlockOutline(
 					context.matrices(),
 					consumer,
 					camPos.x, camPos.y, camPos.z,
@@ -183,6 +198,21 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 					),
 					Colors.BLACK
 				);
+				*///?} else {
+				((WorldRendererInvoker) (context.worldRenderer())).invokeDrawBlockOutline(
+					context.matrices(),
+					consumer,
+					camPos.x, camPos.y, camPos.z,
+					new OutlineRenderState(
+						blockPos,
+						false,
+						false,
+						blockState.getOutlineShape(MinecraftClient.getInstance().world, blockPos)
+					),
+					Colors.BLACK,
+					1.0f
+				);
+				//?}
 			}
 		});
 		//?}

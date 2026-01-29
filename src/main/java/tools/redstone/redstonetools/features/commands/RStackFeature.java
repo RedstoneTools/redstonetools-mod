@@ -22,6 +22,8 @@ import com.sk89q.worldedit.util.Direction;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//? if >=1.21.11
+import net.minecraft.command.DefaultPermissions;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.utils.ArgumentUtils;
@@ -43,7 +45,10 @@ public class RStackFeature {
 	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
 			dispatcher.register(
 				literal("/rstack")
-					.requires(source -> source.hasPermissionLevel(2))
+					//? if >=1.21.11
+					.requires(source -> source.getPermissions().hasPermission(DefaultPermissions.GAMEMASTERS))
+					//? if <1.21.11
+					/*.requires(source -> source.hasPermissionLevel(2))*/
 					.executes(getCommandForArgumentCount(0))
 					.then(argument("count", IntegerArgumentType.integer())
 						.executes(getCommandForArgumentCount(1))

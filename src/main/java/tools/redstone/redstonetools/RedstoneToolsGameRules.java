@@ -1,21 +1,27 @@
 package tools.redstone.redstonetools;
 
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
+//? if <1.21.11 {
+/*import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.minecraft.world.GameRules;
+*/
+//?}
 
 public class RedstoneToolsGameRules {
 	private RedstoneToolsGameRules() {
 	}
 
-	public static GameRules.Key<GameRules.BooleanRule> DO_CONTAINER_DROPS;
-//	public static GameRules.Key<GameRules.BooleanRule> DO_BLOCK_UPDATES_AFTER_EDIT;
+	//? if <1.21.11 {
+	/*public static GameRules.Key<GameRules.BooleanRule> DO_CONTAINER_DROPS;
 
 	public static void register() {
 		DO_CONTAINER_DROPS = GameRuleRegistry.register("doContainerDrops", GameRules.Category.DROPS, GameRuleFactory.createBooleanRule(true));
-
-//		if (DependencyLookup.WORLDEDIT_PRESENT) {
-//			DO_BLOCK_UPDATES_AFTER_EDIT = GameRuleRegistry.register("doBlockUpdatesAfterEdit", GameRules.Category.UPDATES, GameRuleFactory.createBooleanRule(false));
-//		}
 	}
+	*/
+	//?} else {
+	// Game rules are now a registry in 1.21.11 - this feature is not yet ported
+	public static void register() {
+		// TODO: Port to new game rule registry system
+	}
+	//?}
 }
