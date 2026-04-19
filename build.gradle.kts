@@ -54,6 +54,18 @@ repositories {
 		name = "WorldEdit Maven"
 		url = uri("https://maven.enginehub.org/repo/")
 	}
+	maven {
+		name = "kr1v"
+		url = uri("https://repo.repsy.io/kr1v/maven/")
+	}
+	maven {
+		name = "Sakura Ryoko"
+		url = uri("https://masa.dy.fi/maven/sakura-ryoko/")
+	}
+	maven {
+		name = "Fallen Breath"
+		url = uri("https://maven.fallenbreath.me/releases/")
+	}
 }
 
 dependencies {
@@ -62,7 +74,15 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
 	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc${project.property("worldedit_version")}")
-	modApi("maven.modrinth:malilib:${project.property("malilib_version")}")
+	modImplementation("fi.dy.masa.malilib:malilib-fabric-${project.property("malilib_version")}")
+	modImplementation("net.kr1v:malilib-api:${project.property("malilib_api_version")}")
+	modImplementation("net.kr1v:malilib-api-processor:1.0.0")
+}
+
+configurations.all {
+	resolutionStrategy {
+		force("com.google.code.gson:gson:2.13.2")
+	}
 }
 
 loom {
