@@ -42,6 +42,7 @@ public class GuiMacroEditor extends Screen {
 	public TextFieldWidget nameWidget;
 	private float errorCountDown;
 	private IKeybind keybind;
+	private ConfigButtonKeybind buttonKeybind;
 
 	public GuiMacroEditor(Text title, ConfigMacro macro, Screen parent) {
 		super(title);
@@ -87,7 +88,7 @@ public class GuiMacroEditor extends Screen {
 
 		this.keybind = KeybindMulti.fromStorageString(this.macro.getKeybind(), this.macro.getSettings());
 		WidgetKeybindSettings widgetAdvancedKeybindSettings = new WidgetKeybindSettings(keybindSettingsLayout.x(), keybindSettingsLayout.y(), keybindSettingsLayout.width(), keybindSettingsLayout.height(), keybind, "", null, null);
-		ConfigButtonKeybind buttonKeybind = new ConfigButtonKeybind(buttonKeybindLayout.x(), buttonKeybindLayout.y(), buttonKeybindLayout.width(), buttonKeybindLayout.height(), keybind, null);
+		this.buttonKeybind = new ConfigButtonKeybind(buttonKeybindLayout.x(), buttonKeybindLayout.y(), buttonKeybindLayout.width(), buttonKeybindLayout.height(), keybind, null);
 
 		ConfigButtonBoolean buttonEnabled = new ConfigButtonBoolean(buttonEnabledLayout.x(), buttonEnabledLayout.y(), buttonEnabledLayout.width(), buttonEnabledLayout.height(), this.enabledConfigBoolean) {
 			@Override
@@ -112,6 +113,24 @@ public class GuiMacroEditor extends Screen {
 		this.nameWidget.setText(macro.getMacroName());
 		this.nameWidget.setPosition(nameWidgetLayout.x(), nameWidgetLayout.y());
 	}
+
+	//? if <=1.21.8 {
+	/*@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (!this.buttonKeybind.isMouseOver((int) mouseX, (int) mouseY)) {
+			this.buttonKeybind.onClearSelection();
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+	*///? } else {
+	@Override
+	public boolean mouseClicked(Click click, boolean doubled) {
+		if (!this.buttonKeybind.isMouseOver((int) click.x(), (int) click.y())) {
+			this.buttonKeybind.onClearSelection();
+		}
+		return super.mouseClicked(click, doubled);
+	}
+	//? }
 
 	@Override
 	public void close() {
