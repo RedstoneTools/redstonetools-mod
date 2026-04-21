@@ -30,7 +30,6 @@
 		"features.SuggestionWindowMixin",
 		"features.TextFieldWidgetAccessor",
 		"features.WorldRendererInvoker",
-		"macros.AddMacroButtonMixin",
-		"macros.InitializeMacroManagerMixin"
+		"macros.AddMacroButtonMixin"
 	]
 }

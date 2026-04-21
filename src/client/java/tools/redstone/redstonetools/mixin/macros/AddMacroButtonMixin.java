@@ -1,5 +1,7 @@
 package tools.redstone.redstonetools.mixin.macros;
 
+import kr1v.malilibApi.InternalMalilibApi;
+import kr1v.malilibApi.MalilibApi;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.ControlsOptionsScreen;
@@ -11,8 +13,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tools.redstone.redstonetools.malilib.GuiConfigs;
-import tools.redstone.redstonetools.malilib.GuiMacroManager;
+import tools.redstone.redstonetools.RedstoneTools;
+import tools.redstone.redstonetools.config.Macros;
 
 @Mixin(ControlsOptionsScreen.class)
 public abstract class AddMacroButtonMixin extends GameOptionsScreen {
@@ -23,10 +25,8 @@ public abstract class AddMacroButtonMixin extends GameOptionsScreen {
 	@Inject(method = "addOptions", at = @At("TAIL"))
 	public void addMacroButton(CallbackInfo ci) {
 		this.body.addWidgetEntry(new ButtonWidget.Builder(Text.of("Macros..."), button -> {
-
-			GuiConfigs.tab = GuiConfigs.ConfigGuiTab.MACROS;
-			MinecraftClient.getInstance().setScreen(
-					new GuiMacroManager());
+			InternalMalilibApi.getMod(RedstoneTools.MOD_ID).setActiveTab(Macros.getTab());
+			MalilibApi.openScreenFor(RedstoneTools.MOD_ID);
 		}).build(), null);
 	}
 }

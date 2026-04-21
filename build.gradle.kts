@@ -39,6 +39,7 @@ stonecutter {
 }
 
 repositories {
+	mavenCentral()
 	exclusiveContent {
 		forRepository {
 			maven {
@@ -76,7 +77,7 @@ dependencies {
 	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc${project.property("worldedit_version")}")
 	modImplementation("fi.dy.masa.malilib:malilib-fabric-${project.property("malilib_version")}")
 	modImplementation("net.kr1v:malilib-api:${project.property("malilib_api_version")}")
-	modImplementation("net.kr1v:malilib-api-processor:1.0.0")
+	annotationProcessor("net.kr1v:malilib-api-processor:1.0.0")
 }
 
 configurations.all {

@@ -1,10 +1,8 @@
 package tools.redstone.redstonetools.macros.actions;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.client.MinecraftClient;
 
 public class CommandAction extends Action {
-	public static final Codec<CommandAction> CODEC = Codec.STRING.xmap(CommandAction::new, action -> action.command);
 	public String command;
 
 	public CommandAction(String command) {
