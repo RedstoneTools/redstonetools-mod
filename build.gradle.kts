@@ -115,20 +115,11 @@ tasks.processResources {
 	}
 }
 
-tasks.register<DefaultTask>("collectFile") {
+tasks.register<Copy>("collectFile") {
 	group = "build"
-	mustRunAfter("build")
 
-	doLast {
-		copy {
-			from(
-				file(
-					"build/libs/${project.property("archives_base_name")}-${project.property("mod_version")}+${project.property("minecraft_version")}.jar"
-				)
-			)
-			into(rootProject.file("build/libs/${project.property("mod_version")}"))
-		}
-	}
+	from(tasks.remapJar)
+	into(rootProject.layout.buildDirectory.dir("libs/${project.property("mod_version")}"))
 }
 
 tasks.register<DefaultTask>("buildAndCollect") {
