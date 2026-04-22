@@ -37,17 +37,24 @@ public class GuiMacroEditor extends Screen {
 	public final ConfigMacro macro;
 	private final Screen parent;
 	public CommandListWidget commandList;
-	private IConfigBoolean enabledConfigBoolean;
-	private IConfigBoolean mutedConfigBoolean;
+	private final IConfigBoolean enabledConfigBoolean;
+	private final IConfigBoolean mutedConfigBoolean;
 	public TextFieldWidget nameWidget;
 	private float errorCountDown;
-	private IKeybind keybind;
+	private final IKeybind keybind;
 	private ConfigButtonKeybind buttonKeybind;
 
 	public GuiMacroEditor(Text title, ConfigMacro macro, Screen parent) {
 		super(title);
 		this.parent = parent;
 		this.macro = macro;
+
+		// todo: swap the booleans to be normal buttons
+		this.enabledConfigBoolean = new ConfigBoolean("", true, "");
+		this.enabledConfigBoolean.setBooleanValue(this.macro.isEnabled());
+		this.mutedConfigBoolean = new ConfigBoolean("", true, "");
+		this.mutedConfigBoolean.setBooleanValue(this.macro.isMuted());
+		this.keybind = KeybindMulti.fromStorageString(this.macro.getKeybind(), this.macro.getSettings());
 	}
 
 	@Override
@@ -76,17 +83,11 @@ public class GuiMacroEditor extends Screen {
 		GuiUtils.Layout nameWidgetLayout = layouts.get(4);
 		GuiUtils.Layout buttonMutedLayout = layouts.get(5);
 
-		this.enabledConfigBoolean = new ConfigBoolean("", true, "");
-		this.enabledConfigBoolean.setBooleanValue(this.macro.isEnabled());
-		this.mutedConfigBoolean = new ConfigBoolean("", true, "");
-		this.mutedConfigBoolean.setBooleanValue(this.macro.isMuted());
-
 		this.commandList = this.addDrawableChild(new CommandListWidget(this, this.client, this.width, this.height - 75, 0, 36, this.macro));
 		this.addDrawableChild(ButtonWidget.builder(Text.of("Add command"), button -> this.commandList.addEntry())
 			.dimensions(addCommandLayout.x(), addCommandLayout.y(), addCommandLayout.width(), addCommandLayout.height())
 			.build());
 
-		this.keybind = KeybindMulti.fromStorageString(this.macro.getKeybind(), this.macro.getSettings());
 		WidgetKeybindSettings widgetAdvancedKeybindSettings = new WidgetKeybindSettings(keybindSettingsLayout.x(), keybindSettingsLayout.y(), keybindSettingsLayout.width(), keybindSettingsLayout.height(), keybind, "", null, null);
 		this.buttonKeybind = new ConfigButtonKeybind(buttonKeybindLayout.x(), buttonKeybindLayout.y(), buttonKeybindLayout.width(), buttonKeybindLayout.height(), keybind, null);
 

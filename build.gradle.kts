@@ -126,7 +126,7 @@ tasks.register<DefaultTask>("collectFile") {
 					"build/libs/${project.property("archives_base_name")}-${project.property("mod_version")}+${project.property("minecraft_version")}.jar"
 				)
 			)
-			into(rootProject.file("build/libs"))
+			into(rootProject.file("build/libs/${project.property("mod_version")}"))
 		}
 	}
 }
@@ -147,6 +147,7 @@ java {
 }
 
 tasks.jar {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	from("LICENSE") {
 		rename { "${it}_${project.property("archives_base_name")}" }
 	}
