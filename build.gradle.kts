@@ -77,7 +77,7 @@ dependencies {
 	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc${project.property("worldedit_version")}")
 	modImplementation("fi.dy.masa.malilib:malilib-fabric-${project.property("malilib_version")}")
 	modImplementation("net.kr1v:malilib-api:${project.property("malilib_api_version")}") {
-		exclude(group = "net.fabricmc.fabric-api")
+		exclude(group = "net.fabricmc.fabric-api") // prevent 1.21.5 fabric api modules used by malilib from leaking into 1.21.4
 	}
 	annotationProcessor("net.kr1v:malilib-api-processor:1.0.0")
 }
