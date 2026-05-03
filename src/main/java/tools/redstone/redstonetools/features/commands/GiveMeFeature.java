@@ -43,7 +43,7 @@ public class GiveMeFeature {
 		ItemStack stack = itemArgument.createStack(1, false);
 		stack.setCount(count);
 		server.getCommandManager()./*? if <1.21.10 {*//*executeWithPrefix*//*?} else {*/parseAndExecute/*?}*/(
-			server.getCommandSource(), "/give @s " + itemArgument.asString(server.getRegistryManager()) + " " + count);
+			server.getCommandSource(), "/give " + context.getSource().getName() + " " + itemArgument.asString(server.getRegistryManager()) + " " + count);
 		return 0;
 	}
 }
