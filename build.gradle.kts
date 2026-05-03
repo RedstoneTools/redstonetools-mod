@@ -138,7 +138,7 @@ java {
 }
 
 tasks.jar {
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	from("LICENSE") {
 		rename { "${it}_${project.property("archives_base_name")}" }
 	}
