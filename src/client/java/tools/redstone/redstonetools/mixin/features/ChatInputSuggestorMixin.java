@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import tools.redstone.redstonetools.config.ClientData;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
-import tools.redstone.redstonetools.malilib.config.Configs;
 import tools.redstone.redstonetools.utils.StringUtils;
 
 @Mixin(ChatInputSuggestor.class)
@@ -26,7 +26,7 @@ public class ChatInputSuggestorMixin {
 
 	@WrapMethod(method = "refresh")
 	private void makeMethodSeeReplacedVariables(Operation<Void> original) {
-		boolean shouldReturn = !Configs.ClientData.ENABLE_MATH_VARIABLES.getBooleanValue() || StringUtils.insertVariablesAndMath(textField.getText()).length() < textField.getText().length();
+		boolean shouldReturn = !ClientData.ENABLE_MATH_VARIABLES.getBooleanValue() || StringUtils.insertVariablesAndMath(textField.getText()).length() < textField.getText().length();
 		if (shouldReturn) return;
 		String originalCommand = textField.getText();
 		((TextFieldWidgetAccessor) textField).setTextDirectly(StringUtils.insertVariablesAndMath(textField.getText()));

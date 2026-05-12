@@ -9,16 +9,16 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
-import tools.redstone.redstonetools.malilib.config.MacroManager;
-import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
+import tools.redstone.redstonetools.config.MacroManager;
+import tools.redstone.redstonetools.config.Macros;
+import tools.redstone.redstonetools.config.option.ConfigMacro;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class MacroArgumentType implements ArgumentType<MacroBase> {
-
+public class MacroArgumentType implements ArgumentType<ConfigMacro> {
 	private static final Collection<String> EXAMPLES = List.of(" ");
 
 	public MacroArgumentType() {
@@ -28,16 +28,16 @@ public class MacroArgumentType implements ArgumentType<MacroBase> {
 		return new MacroArgumentType();
 	}
 
-	public static MacroBase getMacro(final CommandContext<?> context, final String name) throws CommandSyntaxException {
-		return context.getArgument(name, MacroBase.class);
+	public static ConfigMacro getMacro(final CommandContext<?> context, final String name) throws CommandSyntaxException {
+		return context.getArgument(name, ConfigMacro.class);
 	}
 
 	@Override
-	public MacroBase parse(final StringReader reader) throws CommandSyntaxException {
+	public ConfigMacro parse(final StringReader reader) throws CommandSyntaxException {
 		final int start = reader.getCursor();
 		final String result = reader.getRemaining();
 		reader.setCursor(reader.getTotalLength());
-		final MacroBase macro = MacroManager.getMacro(result);
+		final ConfigMacro macro = MacroManager.getMacro(result);
 		if (macro == null) {
 			reader.setCursor(start);
 			throw new SimpleCommandExceptionType(Text.literal("Macro '" + result + "' doesn't exist!")).create();
@@ -58,7 +58,7 @@ public class MacroArgumentType implements ArgumentType<MacroBase> {
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
 		List<String> macroNamesList = new ArrayList<>();
-		MacroManager.getMacros().forEach(macro -> macroNamesList.add(macro.getName()));
+		Macros.getMacros().forEach(macro -> macroNamesList.add(macro.getMacroName()));
 		macroNamesList.sort(String.CASE_INSENSITIVE_ORDER);
 		return CommandSource.suggestMatching(macroNamesList, builder);
 	}

@@ -5,8 +5,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
+import tools.redstone.redstonetools.config.option.ConfigMacro;
 import tools.redstone.redstonetools.features.commands.argument.MacroArgumentType;
-import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -27,7 +27,7 @@ public class MacroFeature {
 	}
 
 	protected int execute(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		MacroBase macro = MacroArgumentType.getMacro(context, "macro");
+		ConfigMacro macro = MacroArgumentType.getMacro(context, "macro");
 		macro.run();
 		return 1;
 	}
