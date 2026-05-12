@@ -23,9 +23,9 @@ import net.minecraft.client.input.CharInput;/*$}*/
 import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
+import tools.redstone.redstonetools.config.option.ConfigMacro;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
-import tools.redstone.redstonetools.malilib.widget.macro.MacroBase;
 import tools.redstone.redstonetools.mixin.features.ChatInputSuggestorAccessor;
 import tools.redstone.redstonetools.mixin.features.SuggestionWindowAccessor;
 //? if >=1.21.10 {
@@ -37,13 +37,13 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 	private final GuiMacroEditor parent;
 	@Nullable
 	private ChatInputSuggestor commandSuggester;
-	private final MacroBase macro;
+	private final ConfigMacro macro;
 
-	public CommandListWidget(GuiMacroEditor parent, MinecraftClient mc, int width, int height, int y, int itemHeight, MacroBase macro) {
+	public CommandListWidget(GuiMacroEditor parent, MinecraftClient mc, int width, int height, int y, int itemHeight, ConfigMacro macro) {
 		super(mc, width, height, y, itemHeight);
 		this.parent = parent;
 		this.macro = macro;
-		for (CommandAction commandAction : this.macro.actions) {
+		for (CommandAction commandAction : this.macro.getActions()) {
 			CommandEntry entry = new CommandEntry(commandAction);
 			this.addEntry(entry);
 			this.setSelected(entry);
@@ -88,7 +88,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 				//? if >=1.21.8 {
 				context.getMatrices().pushMatrix();
 				//?} else
-				/*context.getMatrices().push();*/
+				//context.getMatrices().push();
 				var x = 0;
 				var y = entry.commandWidget.getY() + 20 - 72;
 				context.getMatrices().translate(x, y/*? if <1.21.8 {*//*, 0*//*?}*/);
@@ -96,7 +96,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 				//? if >=1.21.8 {
 				context.getMatrices().popMatrix();
 				//?} else
-				/*context.getMatrices().pop();*/
+				//context.getMatrices().pop();
 			}
 		};
 		this.commandSuggester.setWindowActive(true);
@@ -180,8 +180,8 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 	}
 
 	public void addEntry() {
-		this.macro.actions.addFirst(new CommandAction(""));
-		CommandEntry entry = new CommandEntry(this.macro.actions.getFirst());
+		this.macro.getActions().addFirst(new CommandAction(""));
+		CommandEntry entry = new CommandEntry(this.macro.getActions().getFirst());
 		this.addEntryToTop(entry);
 		this.centerScrollOn(this.getFirst());
 		recalculateAllActionsPositions();
@@ -226,7 +226,7 @@ public class CommandListWidget extends EntryListWidget<CommandListWidget.Command
 			this.removeButton = new ButtonGeneric(0, 0, -1, 20, "Remove");
 			this.removeButton.setX(CommandListWidget.this.getX() + CommandListWidget.this.getRowWidth() - this.removeButton.getWidth() - 10 + 25);
 			this.removeButton.setActionListener((button, mouseButton) -> {
-				CommandListWidget.this.macro.actions.remove(CommandListWidget.this.children().indexOf(this));
+				CommandListWidget.this.macro.getActions().remove(CommandListWidget.this.children().indexOf(this));
 				CommandListWidget.this.removeEntryWithoutScrolling(this);
 				recalculateAllActionsPositions();
 			});

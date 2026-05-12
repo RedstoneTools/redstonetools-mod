@@ -32,7 +32,8 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import tools.redstone.redstonetools.ClientCommands;
-import tools.redstone.redstonetools.malilib.config.Configs;
+import tools.redstone.redstonetools.config.General;
+import tools.redstone.redstonetools.config.Toggles;
 import tools.redstone.redstonetools.mixin.features.WorldRendererInvoker;
 import tools.redstone.redstonetools.utils.ItemUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
@@ -45,7 +46,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 	public static final AirPlaceFeature INSTANCE = new AirPlaceFeature();
 
 	protected AirPlaceFeature() {
-		super(Configs.Toggles.AIRPLACE);
+		super(Toggles.AIRPLACE);
 	}
 
 	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -87,7 +88,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 		BiConsumer<WorldRenderContext, HitResult> listener = (context, crosshairTarget) -> {
 			if (!isEnabled())
 				return;
-			if (!Configs.General.AIRPLACE_SHOW_OUTLINE.getBooleanValue())
+			if (!General.AIRPLACE_SHOW_OUTLINE.getBooleanValue())
 				return;
 
 			MinecraftClient client = MinecraftClient.getInstance();
