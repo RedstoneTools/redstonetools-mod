@@ -22,11 +22,11 @@ public abstract class AutoRotateMixin {
 	private BlockState changeRotation(BlockState original, @Local(argsOnly = true) BlockPlaceContext context) {
 		if (!(context.getPlayer() instanceof ServerPlayer player))         return original;
 		//? if <1.21.10 {
-		MinecraftServer server = player.getServer();
+		/*MinecraftServer server = player.getServer();
 		if (server == null)                                                      return original;
-		//?} else {
-		/*MinecraftServer server = player.level().getServer();
-		*///?}
+		*///?} else {
+		MinecraftServer server = player.level().getServer();
+		//?}
 		if (!server.isDedicatedServer())                                               return original;
 		if (!AutoRotateFeature.INSTANCE.isEnabled(player)) return original;
 		if (original == null)                                                    return null;

@@ -114,8 +114,8 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 	static {
 		MalilibApi.registerButtonBasedConfigType(ConfigMacro.class, (widgetConfigOption, configMacro, x, y, configWidth, configHeight) -> new ButtonGeneric(x, y, configWidth, configHeight, configMacro.getMacroName()) {
 			@Override
-			protected boolean onMouseClickedImpl(/*? if >=1.21.10 {*//*net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick*//*? } else {*/int mouseX, int mouseY, int mouseButton/*? }*/) {
-				super.onMouseClickedImpl(/*? if >=1.21.10 {*//*click, doubleClick*//*? } else {*/mouseX, mouseY, mouseButton/*? }*/);
+			protected boolean onMouseClickedImpl(/*? if >=1.21.10 {*/net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick/*? } else {*//*int mouseX, int mouseY, int mouseButton*//*? }*/) {
+				super.onMouseClickedImpl(/*? if >=1.21.10 {*/click, doubleClick/*? } else {*//*mouseX, mouseY, mouseButton*//*? }*/);
 				GuiBase.openGui(new GuiMacroEditor(Component.nullToEmpty(configMacro.macroName), configMacro, Minecraft.getInstance().screen));
 				return true;
 			}

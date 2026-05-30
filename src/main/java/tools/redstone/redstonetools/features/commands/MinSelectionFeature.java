@@ -40,7 +40,10 @@ public class MinSelectionFeature {
 		var selection = WorldEditUtils.getSelection(context.getSource().getPlayer());
 		var selectionWorld = selection.getWorld();
 
-		var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
+		//? if <26.1 {
+		/*var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
+		 *///? } else
+		var actor = FabricAdapter.get().fromNativePlayer(Objects.requireNonNull(context.getSource().getPlayer()));
 
 		var localSession = WorldEdit.getInstance()
 				.getSessionManager()

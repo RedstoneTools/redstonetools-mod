@@ -8,8 +8,8 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.widgets.WidgetKeybindSettings;
 //? if >=1.21.11 {
-/*import fi.dy.masa.malilib.render.GuiContext;
-*///?}
+import fi.dy.masa.malilib.render.GuiContext;
+//?}
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import kr1v.malilibApi.InternalMalilibApi;
@@ -112,22 +112,22 @@ public class GuiMacroEditor extends Screen {
 	}
 
 	//? if <=1.21.8 {
-	@Override
+	/*@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (!this.buttonKeybind.isMouseOver((int) mouseX, (int) mouseY)) {
 			this.buttonKeybind.onClearSelection();
 		}
 		return super.mouseClicked(mouseX, mouseY, button);
 	}
-	//? } else {
-	/*@Override
+	*///? } else {
+	@Override
 	public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubled) {
 		if (!this.buttonKeybind.isMouseOver((int) click.x(), (int) click.y())) {
 			this.buttonKeybind.onClearSelection();
 		}
 		return super.mouseClicked(click, doubled);
 	}
-	*///? }
+	//? }
 
 	@Override
 	public void onClose() {

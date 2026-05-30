@@ -31,9 +31,9 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
 		if (i != -1) {
 			if (Inventory.isHotbarSlot(i)) {
 				//? if <=1.21.4 {
-				playerInventory.setSelectedHotbarSlot(i);
-				//? } else
-//				playerInventory.setSelectedSlot(i);
+				/*playerInventory.setSelectedHotbarSlot(i);
+				*///? } else
+				playerInventory.setSelectedSlot(i);
 			} else {
 				playerInventory.pickSlot(i);
 			}
@@ -50,17 +50,17 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
 		int i = pi.findSlotMatchingItem(stack);
 		if (Inventory.isHotbarSlot(i)) {
 			//? if <=1.21.4 {
-			pi.setSelectedHotbarSlot(i);
-			//? } else
-//			pi.setSelectedSlot(i);
+			/*pi.setSelectedHotbarSlot(i);
+			*///? } else
+			pi.setSelectedSlot(i);
 			return;
 		}
 		if (i == -1) {
 			int j;
 			//? if <=1.21.4 {
-			pi.setSelectedHotbarSlot(pi.getSuitableHotbarSlot());
-			//? } else
-//			pi.setSelectedSlot(pi.getSuitableHotbarSlot());
+			/*pi.setSelectedHotbarSlot(pi.getSuitableHotbarSlot());
+			*///? } else
+			pi.setSelectedSlot(pi.getSuitableHotbarSlot());
 			if (!((PlayerInventoryAccessor)pi).getItems().get(((PlayerInventoryAccessor)pi).getSelected()).isEmpty() && (j = pi.getFreeSlot()) != -1) {
 				((PlayerInventoryAccessor)pi).getItems().set(j, ((PlayerInventoryAccessor)pi).getItems().get(((PlayerInventoryAccessor)pi).getSelected()));
 			}

@@ -37,7 +37,7 @@ public class MacroManager {
 				"/gamerule doDaylightCycle false",
 				"/gamerule doMobSpawning false",
 				//? if <1.21.11
-				"/gamerule doContainerDrops false",
+				//"/gamerule doContainerDrops false",
 				"/time set noon",
 				"/weather clear"
 			}),

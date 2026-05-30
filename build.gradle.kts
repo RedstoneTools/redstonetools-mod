@@ -1,11 +1,13 @@
 plugins {
-	id("fabric-loom") version "1.15-SNAPSHOT"
 	id("maven-publish")
 	id("me.modmuss50.mod-publish-plugin") version "1.1.0"
+	id("dev.kikugie.loom-back-compat")
 }
 
 version = "${project.property("mod_version")}+${stonecutter.current.version}"
 group = project.property("maven_group")!!
+
+val lastTask: Task = (if (sc.current.parsed.matches("<26.1")) tasks.named<Task>("remapJar") else tasks.jar).get()
 
 base {
 	archivesName.set(project.property("archives_base_name") as String)
@@ -71,13 +73,21 @@ repositories {
 
 dependencies {
 	minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-	mappings(loom.officialMojangMappings())
-	modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
-	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
-	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc${project.property("worldedit_version")}")
-	modImplementation("fi.dy.masa.malilib:malilib-fabric-${project.property("malilib_version")}")
-	modImplementation("net.kr1v:malilib-api:${project.property("malilib_api_version")}") {
-		exclude(group = "net.fabricmc.fabric-api") // prevent 1.21.5 fabric api modules used by malilib from leaking into 1.21.4
+	if (sc.current.parsed.matches("<26.1")) {
+		mappings(loom.officialMojangMappings())
+		modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
+		modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
+		modImplementation("com.sk89q.worldedit:worldedit-fabric-mc${project.property("worldedit_version")}")
+		modImplementation("fi.dy.masa.malilib:malilib-fabric-${project.property("malilib_version")}")
+		modImplementation("net.kr1v:malilib-api:${project.property("malilib_api_version")}") {
+			exclude(group = "net.fabricmc.fabric-api") // prevent 1.21.5 fabric api modules used by malilib from leaking into 1.21.4
+		}
+	}  else {
+		implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
+		implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
+		implementation("com.sk89q.worldedit:worldedit-fabric-mc${project.property("worldedit_version")}")
+		implementation("fi.dy.masa.malilib:malilib-fabric-${project.property("malilib_version")}")
+		implementation("net.kr1v:malilib-api:${project.property("malilib_api_version")}")
 	}
 	annotationProcessor("net.kr1v:malilib-api-processor:1.0.0")
 }
@@ -118,7 +128,7 @@ tasks.processResources {
 tasks.register<Copy>("collectFile") {
 	group = "build"
 
-	from(tasks.remapJar)
+	from(lastTask)
 	into(rootProject.layout.buildDirectory.dir("libs/${project.property("mod_version")}"))
 }
 
@@ -129,11 +139,17 @@ tasks.register<DefaultTask>("buildAndCollect") {
 
 tasks.withType<JavaCompile>().configureEach {
 	options.encoding = "UTF-8"
-	options.release = 21
+	if (sc.current.parsed.matches("<26.1"))
+		options.release = 21
+	else
+		options.release = 25
 }
 
 java {
-	toolchain.languageVersion = JavaLanguageVersion.of(21)
+	if (sc.current.parsed.matches("<26.1"))
+		toolchain.languageVersion = JavaLanguageVersion.of(21)
+	else
+		toolchain.languageVersion = JavaLanguageVersion.of(25)
 	withSourcesJar()
 }
 
@@ -156,7 +172,7 @@ publishing {
 }
 
 publishMods {
-	file.set(tasks.remapJar.get().archiveFile)
+	file.set((lastTask as AbstractArchiveTask).archiveFile)
 	type.set(STABLE)
 	modLoaders.add("fabric")
 

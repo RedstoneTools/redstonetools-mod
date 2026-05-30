@@ -3,17 +3,17 @@ package tools.redstone.redstonetools.malilib.widget;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 //? if >=1.21.11
-//import fi.dy.masa.malilib.render.GuiContext;
+import fi.dy.masa.malilib.render.GuiContext;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 //? if >=1.21.10 {
-/*import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-*///? }
+//? }
 import java.util.Collection;
 
 public class WidgetBaseWrapper implements GuiEventListener, Renderable, NarratableEntry {
@@ -24,7 +24,7 @@ public class WidgetBaseWrapper implements GuiEventListener, Renderable, Narratab
 	}
 
 	//? if <=1.21.8 {
-	@Override
+	/*@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.wrapped instanceof ConfigButtonKeybind configButtonKeybind) {
 			if (configButtonKeybind.isMouseOver((int) mouseX, (int) mouseY)) {
@@ -57,8 +57,8 @@ public class WidgetBaseWrapper implements GuiEventListener, Renderable, Narratab
 	public boolean charTyped(char chr, int modifiers) {
 		return wrapped.onCharTyped(chr, modifiers);
 	}
-	//? } else {
-	/*@Override
+	*///? } else {
+	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (this.wrapped instanceof ConfigButtonKeybind configButtonKeybind) {
 			if (configButtonKeybind.isMouseOver((int) click.x(), (int) click.y())) {
@@ -92,7 +92,7 @@ public class WidgetBaseWrapper implements GuiEventListener, Renderable, Narratab
 		if (wrapped instanceof ConfigButtonKeybind configButtonKeybind) configButtonKeybind.onKeyPressed(input.input());
 		return wrapped.onKeyTyped(input);
 	}
-	*///? }
+	//? }
 
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
@@ -126,12 +126,12 @@ public class WidgetBaseWrapper implements GuiEventListener, Renderable, Narratab
 	@Override
 	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		//? if <=1.21.5 {
-		wrapped.render(mouseX, mouseY, this.isFocused(), context);
-		//? } else if <=1.21.10 {
+		/*wrapped.render(mouseX, mouseY, this.isFocused(), context);
+		*///? } else if <=1.21.10 {
 		/*wrapped.render(context, mouseX, mouseY, this.isFocused());
 		*///? } else {
-		/*wrapped.render(GuiContext.fromGuiGraphics(context), mouseX, mouseY, this.isFocused());
-		*///? }
+		wrapped.render(GuiContext.fromGuiGraphics(context), mouseX, mouseY, this.isFocused());
+		//? }
 	}
 
 	@Override

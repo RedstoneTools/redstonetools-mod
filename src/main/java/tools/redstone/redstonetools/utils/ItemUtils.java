@@ -38,10 +38,10 @@ public class ItemUtils {
 		if (stack.has(DataComponents.CUSTOM_DATA)) {
 			CompoundTag data = getCustomData(stack);
 			//? if >=1.21.5 {
-			/*return data.getStringOr("command", "");
-			*///?} else {
-			return data.getString("command");
-			//?}
+			return data.getStringOr("command", "");
+			//?} else {
+			/*return data.getString("command");
+			*///?}
 		}
 		return "";
 	}

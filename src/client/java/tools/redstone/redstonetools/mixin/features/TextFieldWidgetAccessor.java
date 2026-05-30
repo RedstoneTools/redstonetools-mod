@@ -12,7 +12,7 @@ public interface TextFieldWidgetAccessor {
 	void setTextDirectly(String s);
 
 	//? if >=1.21.10 {
-	/*@Accessor
+	@Accessor
 	List<EditBox.TextFormatter> getFormatters();
-	*///?}
+	//?}
 }

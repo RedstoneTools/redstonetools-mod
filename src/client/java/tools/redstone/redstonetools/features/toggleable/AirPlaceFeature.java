@@ -4,20 +4,20 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 //? if <1.21.10 {
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+/*import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
- //?} else {
-/*import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+ *///?} else {
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
-*///?}
+//?}
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 //? if <=1.21.10  {
-import net.minecraft.client.renderer.RenderType;
-//? } else {
-/*import net.minecraft.client.renderer.rendertype.RenderTypes;
+/*import net.minecraft.client.renderer.RenderType;
+*///? } else {
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.BlockOutlineRenderState;
-*///? }
+//? }
 //? if =1.21.10
 //import net.minecraft.client.renderer.state.BlockOutlineRenderState;
 import net.minecraft.commands.CommandBuildContext;
@@ -124,23 +124,23 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			Camera camera = client.gameRenderer.getMainCamera();
 			Vec3 camPos = camera
 				//? if <=1.21.5 {
-				.getPosition();
-				//? } else if <=1.21.10 {
+				/*.getPosition();
+				*///? } else if <=1.21.10 {
 				/*.position();
 			    *///?} else {
-			    /*.position();
-			    *///?}
+			    .position();
+			    //?}
 
 			VertexConsumer consumer = context.consumers().getBuffer(
 				//? if <=1.21.10 {
-				RenderType.lines()
-				//?} else {
-				/*RenderTypes.lines()
-				*///?}
+				/*RenderType.lines()
+				*///?} else {
+				RenderTypes.lines()
+				//?}
 			);
 
 			//? if <1.21.10 {
-			((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
+			/*((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
 				context.matrixStack(),
 				consumer,
 				client.player,
@@ -149,8 +149,8 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 				blockState,
 				CommonColors.BLACK
 			);
-			//?} else {
-			/*((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
+			*///?} else {
+			((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
 				context.matrices(),
 				consumer,
 				camPos.x, camPos.y, camPos.z,
@@ -160,18 +160,18 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 					false,
 					blockState.getShape(client.level, blockPos)
 				),
-				CommonColors.BLACK/^? if >=1.21.11 {^//^, client.getWindow().getAppropriateLineWidth()^//^?}^/
+				CommonColors.BLACK/*? if >=1.21.11 {*/, client.getWindow().getAppropriateLineWidth()/*?}*/
 			);
-			*///?}
+			//?}
 		};
 
 		//? if <1.21.10 {
-		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
+		/*WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, hitResult) -> {
 			listener.accept(context, hitResult);
 			return true;
 		});
-		//?} else {
-		/*WorldRenderEvents.END_MAIN.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
-		*///?}
+		*///?} else {
+		WorldRenderEvents.END_MAIN.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
+		//?}
 	}
 }

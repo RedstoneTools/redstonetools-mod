@@ -8,8 +8,13 @@ import tools.redstone.redstonetools.features.toggleable.ClickContainerFeature;
 
 public class RedstoneToolsPackets {
 	public static void registerPackets() {
-		PayloadTypeRegistry.playS2C().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
+		//? if <26.1 {
+		/*PayloadTypeRegistry.playS2C().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
 		PayloadTypeRegistry.playC2S().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
+		*///? } else {
+		PayloadTypeRegistry.serverboundPlay().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
+		//? }
 
 		ServerPlayNetworking.registerGlobalReceiver(SetFeatureEnabledPayload.ID, (payload, context) -> {
 			String feature = payload.feature();

@@ -15,7 +15,10 @@ public class WorldEditUtils {
 			throw new IllegalStateException("WorldEdit is not loaded.");
 		}
 
-		var actor = FabricAdapter.adaptPlayer(player);
+		//? if <26.1 {
+		/*var actor = FabricAdapter.adaptPlayer(player);
+		*///? } else
+		var actor = FabricAdapter.get().fromNativePlayer(player);
 
 		var localSession = WorldEdit.getInstance()
 				.getSessionManager()

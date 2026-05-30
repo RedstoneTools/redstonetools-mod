@@ -11,6 +11,10 @@ import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import tools.redstone.redstonetools.Commands;
+import tools.redstone.redstonetools.mixin.accessor.GiveCommandAccessor;
+
+import java.util.List;
+import java.util.Objects;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -38,11 +42,18 @@ public class GiveMeFeature {
 	}
 
 	private int execute(CommandContext<CommandSourceStack> context, ItemInput itemArgument, int count) throws CommandSyntaxException {
-		MinecraftServer server = context.getSource().getServer();
-		ItemStack stack = itemArgument.createItemStack(1, false);
+		//? if <26.1 {
+		/*MinecraftServer server = context.getSource().getServer();
+		//? if <26.1 {
+		/^ItemStack stack = itemArgument.createItemStack(1, false);
+		^///? } else
+		ItemStack stack = itemArgument.createItemStack(1);
 		stack.setCount(count);
 		server.getCommands().performPrefixedCommand(
 			server.createCommandSourceStack(), "/give " + context.getSource().getTextName() + " " + itemArgument.serialize(server.registryAccess()) + " " + count);
+		*///? } else {
+		GiveCommandAccessor.invokeGiveItem(context.getSource(), itemArgument, List.of(Objects.requireNonNull(context.getSource().getPlayer())), count);
+		//? }
 		return 0;
 	}
 }

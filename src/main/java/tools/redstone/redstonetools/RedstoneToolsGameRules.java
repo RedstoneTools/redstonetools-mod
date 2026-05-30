@@ -1,7 +1,7 @@
 package tools.redstone.redstonetools;
 
 //? if <=1.21.10 {
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
+/*import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.minecraft.world.level.GameRules;
 
@@ -20,8 +20,8 @@ public class RedstoneToolsGameRules {
 //		}
 	}
 }
-//?} else {
-/*import com.mojang.brigadier.arguments.ArgumentType;
+*///?} else {
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
@@ -80,4 +80,4 @@ public class RedstoneToolsGameRules {
 		);
 	}
 }
-*///?}
+//?}
