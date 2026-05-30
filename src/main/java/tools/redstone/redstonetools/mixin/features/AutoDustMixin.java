@@ -1,19 +1,19 @@
 package tools.redstone.redstonetools.mixin.features;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,14 +24,14 @@ import tools.redstone.redstonetools.utils.PlayerUtils;
 
 @Mixin(Block.class)
 public abstract class AutoDustMixin {
-	@Inject(method = "onPlaced", at = @At("TAIL"))
-	private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-		if (placer instanceof ServerPlayerEntity player) {
-			if (!AutoDustFeature.INSTANCE.isEnabled(player) || world.isClient()) {
+	@Inject(method = "setPlacedBy", at = @At("TAIL"))
+	private void onPlaced(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
+		if (placer instanceof ServerPlayer player) {
+			if (!AutoDustFeature.INSTANCE.isEnabled(player) || world.isClientSide()) {
 				return;
 			}
 
-			var dustPos = pos.up();
+			var dustPos = pos.above();
 			var block = world.getBlockState(pos).getBlock();
 			var blockAbove = world.getBlockState(dustPos).getBlock();
 
@@ -39,9 +39,9 @@ public abstract class AutoDustMixin {
 				return;
 			}
 
-			ItemPlacementContext context = new ItemPlacementContext(player, Hand.MAIN_HAND, new ItemStack(Items.REDSTONE),
-				new BlockHitResult(new Vec3d(dustPos.getX(), dustPos.getY(), dustPos.getZ()), Direction.UP, dustPos, false));
-			PlayerUtils.getWorld(placer).setBlockState(dustPos, Blocks.REDSTONE_WIRE.getPlacementState(context));
+			BlockPlaceContext context = new BlockPlaceContext(player, InteractionHand.MAIN_HAND, new ItemStack(Items.REDSTONE),
+				new BlockHitResult(new Vec3(dustPos.getX(), dustPos.getY(), dustPos.getZ()), Direction.UP, dustPos, false));
+			PlayerUtils.getWorld(placer).setBlockAndUpdate(dustPos, Blocks.REDSTONE_WIRE.getStateForPlacement(context));
 		}
 	}
 }

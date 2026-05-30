@@ -1,23 +1,30 @@
 package tools.redstone.redstonetools.packets;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+//? if >=1.21.11 {
+/*import net.minecraft.resources.Identifier;
+*///? } else
+import net.minecraft.resources.ResourceLocation;
 import tools.redstone.redstonetools.RedstoneTools;
 
-public record SetFeatureEnabledPayload(String feature, boolean enabled) implements CustomPayload {
-	public static final Identifier SET_ENABLED_PAYLOAD_ID = Identifier.of(RedstoneTools.MOD_ID, "set_enabled");
-	public static final CustomPayload.Id<SetFeatureEnabledPayload> ID = new CustomPayload.Id<>(SET_ENABLED_PAYLOAD_ID);
-	public static final PacketCodec<RegistryByteBuf, SetFeatureEnabledPayload> CODEC = PacketCodec.tuple(
-		PacketCodecs.STRING, SetFeatureEnabledPayload::feature,
-		PacketCodecs.BOOLEAN, SetFeatureEnabledPayload::enabled,
+public record SetFeatureEnabledPayload(String feature, boolean enabled) implements CustomPacketPayload {
+	//? if >=1.21.11 {
+	/*public static final Identifier SET_ENABLED_PAYLOAD_ID = Identifier.fromNamespaceAndPath(RedstoneTools.MOD_ID, "set_enabled");
+	*///? } else
+	public static final ResourceLocation SET_ENABLED_PAYLOAD_ID = ResourceLocation.fromNamespaceAndPath(RedstoneTools.MOD_ID, "set_enabled");
+
+	public static final CustomPacketPayload.Type<SetFeatureEnabledPayload> ID = new CustomPacketPayload.Type<>(SET_ENABLED_PAYLOAD_ID);
+	public static final StreamCodec<RegistryFriendlyByteBuf, SetFeatureEnabledPayload> CODEC = StreamCodec.composite(
+		ByteBufCodecs.STRING_UTF8, SetFeatureEnabledPayload::feature,
+		ByteBufCodecs.BOOL, SetFeatureEnabledPayload::enabled,
 		SetFeatureEnabledPayload::new
 	);
 
 	@Override
-	public CustomPayload.Id<? extends CustomPayload> getId() {
+	public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
 		return ID;
 	}
 }

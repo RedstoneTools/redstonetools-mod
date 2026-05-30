@@ -1,8 +1,11 @@
 package tools.redstone.redstonetools.utils;
 
-import net.minecraft.block.Block;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+//? if >=1.21.11 {
+/*import net.minecraft.resources.Identifier;
+*///? } else
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 
 public enum ColoredBlockType {
 	// TODO: Merge some things with the ColoredBlock class so we don't have to repeat the formats and stuff
@@ -34,6 +37,9 @@ public enum ColoredBlockType {
 	}
 
 	public Block toBlock() {
-		return Registries.BLOCK.get(Identifier.tryParse(toBlockId()));
+		//? if >=1.21.11 {
+		/*return BuiltInRegistries.BLOCK.getValue(Identifier.tryParse(toBlockId()));
+		*///? } else
+		return BuiltInRegistries.BLOCK.getValue(ResourceLocation.tryParse(toBlockId()));
 	}
 }

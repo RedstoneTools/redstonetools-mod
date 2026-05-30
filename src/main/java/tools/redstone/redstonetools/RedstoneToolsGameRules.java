@@ -1,15 +1,15 @@
 package tools.redstone.redstonetools;
 
 //? if <=1.21.10 {
-/*import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
-import net.minecraft.world.GameRules;
+import net.minecraft.world.level.GameRules;
 
 public class RedstoneToolsGameRules {
 	private RedstoneToolsGameRules() {
 	}
 
-	public static GameRules.Key<GameRules.BooleanRule> DO_CONTAINER_DROPS;
+	public static GameRules.Key<GameRules.BooleanValue> DO_CONTAINER_DROPS;
 //	public static GameRules.Key<GameRules.BooleanRule> DO_BLOCK_UPDATES_AFTER_EDIT;
 
 	public static void register() {
@@ -20,15 +20,18 @@ public class RedstoneToolsGameRules {
 //		}
 	}
 }
-*///?} else {
-import com.mojang.brigadier.arguments.ArgumentType;
+//?} else {
+/*import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.serialization.Codec;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.rule.*;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleCategory;
+import net.minecraft.world.level.gamerules.GameRuleType;
+import net.minecraft.world.level.gamerules.GameRuleTypeVisitor;
 
 import java.util.function.ToIntFunction;
 
@@ -55,8 +58,8 @@ public class RedstoneToolsGameRules {
 			BoolArgumentType.bool(),
 			Codec.BOOL,
 			defaultValue,
-			FeatureSet.empty(),
-			GameRuleVisitor::visitBoolean,
+			FeatureFlagSet.of(),
+			GameRuleTypeVisitor::visitBoolean,
 			value -> value ? 1 : 0
 		);
 	}
@@ -68,13 +71,13 @@ public class RedstoneToolsGameRules {
 		ArgumentType<T> argumentType,
 		Codec<T> codec,
 		T defaultValue,
-		FeatureSet requiredFeatures,
-		net.minecraft.world.rule.GameRules.Acceptor<T> acceptor,
+		FeatureFlagSet requiredFeatures,
+		net.minecraft.world.level.gamerules.GameRules.VisitorCaller<T> acceptor,
 		ToIntFunction<T> commandResultSupplier
 	) {
 		return Registry.register(
-			Registries.GAME_RULE, Identifier.of(RedstoneTools.MOD_ID, name), new GameRule<>(category, type, argumentType, acceptor, codec, commandResultSupplier, defaultValue, requiredFeatures)
+			BuiltInRegistries.GAME_RULE, Identifier.fromNamespaceAndPath(RedstoneTools.MOD_ID, name), new GameRule<>(category, type, argumentType, acceptor, codec, commandResultSupplier, defaultValue, requiredFeatures)
 		);
 	}
 }
-//?}
+*///?}

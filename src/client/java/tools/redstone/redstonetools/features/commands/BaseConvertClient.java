@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.commands.CommandBuildContext;
 
 
 public class BaseConvertClient {
@@ -13,7 +13,7 @@ public class BaseConvertClient {
 
 	protected BaseConvertClient() {
 	}
-	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 			dispatcher.register(
 			ClientCommandManager.literal("base")
 				.then(ClientCommandManager.argument("inputNum", StringArgumentType.word())

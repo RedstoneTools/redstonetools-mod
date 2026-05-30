@@ -23,15 +23,15 @@ loom {
 }
 
 stonecutter {
-	swaps["mouse_clicked_params"] = if (current.parsed < "1.21.10") "double mouseX, double mouseY, int button" else "Click click, boolean doubleClick" // mouseClicked
+	swaps["mouse_clicked_params"] = if (current.parsed < "1.21.10") "double mouseX, double mouseY, int button" else "MouseButtonEvent click, boolean doubleClick" // mouseClicked
 	swaps["mouse_clicked_args"] = if (current.parsed < "1.21.10") "mouseX, mouseY, button" else "click, doubleClick"
 	swaps["on_mouse_clicked_args"] = if (current.parsed < "1.21.10") "(int) mouseX, (int) mouseY, button" else "click, doubleClick" // onMouseClicked
-	swaps["dragged_released_params"] = if (current.parsed < "1.21.10") "double mouseX, double mouseY, int button" else "Click click" // mouseDragged, mouseReleased
+	swaps["dragged_released_params"] = if (current.parsed < "1.21.10") "double mouseX, double mouseY, int button" else "MouseButtonEvent click" // mouseDragged, mouseReleased
 	swaps["dragged_released_args"] = if (current.parsed < "1.21.10") "mouseX, mouseY, button" else "click"
 	swaps["on_released_args"] = if (current.parsed < "1.21.10") "(int) mouseX, (int) mouseY, button" else "click" // onMouseReleased
-	swaps["keyinput_params"] = if (current.parsed < "1.21.10") "int keyCode, int scanCode, int modifiers" else "KeyInput input" // keyPressed, keyReleased
+	swaps["keyinput_params"] = if (current.parsed < "1.21.10") "int keyCode, int scanCode, int modifiers" else "KeyEvent input" // keyPressed, keyReleased
 	swaps["keyinput_args"] = if (current.parsed < "1.21.10") "keyCode, scanCode, modifiers" else "input"
-	swaps["charinput_params"] = if (current.parsed < "1.21.10") "char chr, int modifiers" else "CharInput input" // charTyped
+	swaps["charinput_params"] = if (current.parsed < "1.21.10") "char chr, int modifiers" else "CharacterEvent input" // charTyped
 	swaps["charinput_args"] = if (current.parsed < "1.21.10") "chr, modifiers" else "input"
 	swaps["click_and_inputs_imports"] = if (current.parsed < "1.21.10") "" else
 		"//\nimport net.minecraft.client.gui.Click;\nimport net.minecraft.client.input.KeyInput;\nimport net.minecraft.client.input.CharInput;"
@@ -71,7 +71,7 @@ repositories {
 
 dependencies {
 	minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-	mappings("net.fabricmc:yarn:${project.property("yarn_mappings")}:v2")
+	mappings(loom.officialMojangMappings())
 	modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
 	modImplementation("com.sk89q.worldedit:worldedit-fabric-mc${project.property("worldedit_version")}")

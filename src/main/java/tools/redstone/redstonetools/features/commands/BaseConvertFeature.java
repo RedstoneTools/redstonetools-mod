@@ -5,14 +5,13 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
 import java.math.BigInteger;
 import java.util.Locale;
 import java.util.function.Consumer;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 
 
 public class BaseConvertFeature {
@@ -21,16 +20,16 @@ public class BaseConvertFeature {
 	protected BaseConvertFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-			dispatcher.register(CommandManager.literal("base")
-			.then(CommandManager.argument("inputNum", StringArgumentType.word())
-				.then(CommandManager.argument("toBase", IntegerArgumentType.integer(2, 16))
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection registrationEnvironment) {
+			dispatcher.register(Commands.literal("base")
+			.then(Commands.argument("inputNum", StringArgumentType.word())
+				.then(Commands.argument("toBase", IntegerArgumentType.integer(2, 16))
 					.executes(context -> BaseConvertFeature.INSTANCE.execute(
 						StringArgumentType.getString(context, "inputNum"),
 						IntegerArgumentType.getInteger(context, "toBase"),
 						(t) -> {
 							try {
-								context.getSource().getPlayerOrThrow().sendMessage(t);
+								context.getSource().getPlayerOrException().sendSystemMessage(t);
 							} catch (CommandSyntaxException ignored) {
 							}
 						}
@@ -38,9 +37,9 @@ public class BaseConvertFeature {
 	}
 
 	private static final SimpleCommandExceptionType INVALID_NUMBER =
-		new SimpleCommandExceptionType(Text.literal("Invalid number"));
+		new SimpleCommandExceptionType(Component.literal("Invalid number"));
 
-	protected int execute(String number, int toBase, Consumer<Text> printToChat)
+	protected int execute(String number, int toBase, Consumer<Component> printToChat)
 		throws com.mojang.brigadier.exceptions.CommandSyntaxException {
 
 		int base = 10;
@@ -74,9 +73,9 @@ public class BaseConvertFeature {
 			toPrefix = "0b";
 		}
 		if (!toPrefix.isEmpty()) {
-			printToChat.accept(Text.literal("%s = %s".formatted(prefix + number, toPrefix + output)));
+			printToChat.accept(Component.literal("%s = %s".formatted(prefix + number, toPrefix + output)));
 		} else {
-			printToChat.accept(Text.literal("%s = %s in base %s".formatted(prefix + number, output, toBase)));
+			printToChat.accept(Component.literal("%s = %s in base %s".formatted(prefix + number, output, toBase)));
 		}
 		return 1;
 	}

@@ -1,12 +1,15 @@
 package tools.redstone.redstonetools.utils;
 
-import net.minecraft.block.Block;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
+import net.minecraft.core.registries.BuiltInRegistries;
+//? if >=1.21.11 {
+/*import net.minecraft.resources.Identifier;
+*///? } else
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 
 public class ColoredBlock {
 	private static final Pattern COLORED_BLOCK_REGEX = Pattern.compile(
@@ -59,7 +62,7 @@ public class ColoredBlock {
 	}
 
 	public static ColoredBlock fromBlock(@NotNull Block block) {
-		var blockId = Registries.BLOCK.getId(block).toString();
+		var blockId = BuiltInRegistries.BLOCK.getKey(block).toString();
 		if (COLORED_BLOCK_CACHE.containsKey(blockId)) {
 			return COLORED_BLOCK_CACHE.get(blockId);
 		}
@@ -75,7 +78,10 @@ public class ColoredBlock {
 	}
 
 	public Block toBlock() {
-		return Registries.BLOCK.get(Identifier.tryParse(toBlockId()));
+		//? if >=1.21.11 {
+		/*return BuiltInRegistries.BLOCK.getValue(Identifier.tryParse(toBlockId()));
+		*///? } else
+		return BuiltInRegistries.BLOCK.getValue(ResourceLocation.tryParse(toBlockId()));
 	}
 
 	@Override

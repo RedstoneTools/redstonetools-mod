@@ -2,24 +2,24 @@ package tools.redstone.redstonetools.features.toggleable;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import tools.redstone.redstonetools.RedstoneTools;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class ClickContainerFeature extends ToggleableFeature {
 	public static final ClickContainerFeature INSTANCE = new ClickContainerFeature();
@@ -31,68 +31,68 @@ public class ClickContainerFeature extends ToggleableFeature {
 
 	static {
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			if (world == null) return ActionResult.PASS;
-			if (world.isClient()) return ActionResult.PASS;
-			if (!ClickContainerFeature.INSTANCE.isEnabled((ServerPlayerEntity) player)) return ActionResult.PASS;
+			if (world == null) return InteractionResult.PASS;
+			if (world.isClientSide()) return InteractionResult.PASS;
+			if (!ClickContainerFeature.INSTANCE.isEnabled((ServerPlayer) player)) return InteractionResult.PASS;
 
-			ItemStack stack = player.getStackInHand(hand);
-			if (!stack.isEmpty() || stack.getItem() instanceof BlockItem) return ActionResult.PASS;
+			ItemStack stack = player.getItemInHand(hand);
+			if (!stack.isEmpty() || stack.getItem() instanceof BlockItem) return InteractionResult.PASS;
 
 			BlockPos pos = hitResult.getBlockPos();
 			BlockState state = world.getBlockState(pos);
 
-			if (world.getTime() == lasttime) {
-				return ActionResult.PASS;
+			if (world.getGameTime() == lasttime) {
+				return InteractionResult.PASS;
 			}
-			lasttime = world.getTime();
+			lasttime = world.getGameTime();
 
-			if (state.isOf(Blocks.WATER_CAULDRON) || state.isOf(Blocks.LAVA_CAULDRON) || state.isOf(Blocks.POWDER_SNOW_CAULDRON)) {
-				if (state.contains(Properties.LEVEL_3)) {
-					handleIntLevelProperty(world, pos, state, Properties.LEVEL_3, Blocks.CAULDRON, (ServerPlayerEntity) player);
-					return ActionResult.SUCCESS;
+			if (state.is(Blocks.WATER_CAULDRON) || state.is(Blocks.LAVA_CAULDRON) || state.is(Blocks.POWDER_SNOW_CAULDRON)) {
+				if (state.hasProperty(BlockStateProperties.LEVEL_CAULDRON)) {
+					handleIntLevelProperty(world, pos, state, BlockStateProperties.LEVEL_CAULDRON, Blocks.CAULDRON, (ServerPlayer) player);
+					return InteractionResult.SUCCESS;
 				}
 			}
 
-			if (state.isOf(Blocks.CAULDRON)) {
-				BlockState newState = Blocks.WATER_CAULDRON.getDefaultState().with(Properties.LEVEL_3, 1);
-				world.setBlockState(pos, newState);
-				return ActionResult.SUCCESS;
+			if (state.is(Blocks.CAULDRON)) {
+				BlockState newState = Blocks.WATER_CAULDRON.defaultBlockState().setValue(BlockStateProperties.LEVEL_CAULDRON, 1);
+				world.setBlockAndUpdate(pos, newState);
+				return InteractionResult.SUCCESS;
 			}
 
-			if (state.isOf(Blocks.COMPOSTER)) {
-				handleIntLevelProperty(world, pos, state, Properties.LEVEL_8, Blocks.COMPOSTER, (ServerPlayerEntity) player);
-				return ActionResult.SUCCESS;
+			if (state.is(Blocks.COMPOSTER)) {
+				handleIntLevelProperty(world, pos, state, BlockStateProperties.LEVEL_COMPOSTER, Blocks.COMPOSTER, (ServerPlayer) player);
+				return InteractionResult.SUCCESS;
 			}
 
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		});
 	}
 
-	public static void handleIntLevelProperty(World world, BlockPos pos, BlockState state, IntProperty prop, Block resetBlock, ServerPlayerEntity player) {
+	public static void handleIntLevelProperty(Level world, BlockPos pos, BlockState state, IntegerProperty prop, Block resetBlock, ServerPlayer player) {
 		if (prop == null) return;
 		Integer current;
 		try {
-			current = state.get(prop);
+			current = state.getValue(prop);
 		} catch (Exception e) {
 			RedstoneTools.LOGGER.error("[ClickContainerFeature] Failed to read property " + prop.getName() + " for block " + state.getBlock() + " at " + pos + ": " + e);
 			return;
 		}
 		if (current == null) return;
 
-		int max = prop.getValues().stream().max(Integer::compareTo).orElse(current);
+		int max = prop.getPossibleValues().stream().max(Integer::compareTo).orElse(current);
 
 		if (current >= max) {
-			world.setBlockState(pos, resetBlock.getDefaultState());
+			world.setBlockAndUpdate(pos, resetBlock.defaultBlockState());
 			return;
 		}
 
 		int next = current + 1;
-		world.setBlockState(pos, state.with(prop, next), 3);
+		world.setBlock(pos, state.setValue(prop, next), 3);
 
-		player.sendMessage(Text.of("§2[ClickContainers] §6Increased level!"));
+		player.sendSystemMessage(Component.nullToEmpty("§2[ClickContainers] §6Increased level!"));
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection registrationEnvironment) {
 		dispatcher.register(literal("clickcontainers").executes(this::toggle));
 	}
 

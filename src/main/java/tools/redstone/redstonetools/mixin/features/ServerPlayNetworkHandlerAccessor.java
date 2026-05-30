@@ -1,17 +1,17 @@
 package tools.redstone.redstonetools.mixin.features;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(ServerPlayNetworkHandler.class)
+@Mixin(ServerGamePacketListenerImpl.class)
 public interface ServerPlayNetworkHandlerAccessor {
 	@Invoker
-	static void callCopyBlockDataToStack(BlockState state, ServerWorld world, BlockPos pos, ItemStack stack) {
+	static void callAddBlockDataToItem(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack) {
 		throw new IllegalStateException();
 	}
 }

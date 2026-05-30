@@ -5,8 +5,8 @@ import kr1v.malilibApi.InternalMalilibApi;
 import kr1v.malilibApi.MalilibApi;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.config.Macros;
 
@@ -17,10 +17,10 @@ public class RstFeature {
 	protected RstFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 			dispatcher.register(ClientCommandManager.literal("rst")
 				.executes(commandContext -> {
-					MinecraftClient.getInstance().send(() -> {
+					Minecraft.getInstance().execute(() -> {
 						if (InternalMalilibApi.getMod(RedstoneTools.MOD_ID).activeTab() == Macros.getTab()) {
 							InternalMalilibApi.getMod(RedstoneTools.MOD_ID).setActiveTab(null);
 						}

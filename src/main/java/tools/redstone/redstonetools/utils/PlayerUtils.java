@@ -1,14 +1,10 @@
 package tools.redstone.redstonetools.utils;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 
 public class PlayerUtils {
-	public static World getWorld(Entity player) {
-		//? if <1.21.10 {
-		/*return player.getWorld();
-		 *///?} else {
-		return player.getEntityWorld();
-		//?}
+	public static Level getWorld(Entity player) {
+		return player.level();
 	}
 }

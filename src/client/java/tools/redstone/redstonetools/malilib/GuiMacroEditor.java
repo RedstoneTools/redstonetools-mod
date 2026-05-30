@@ -8,21 +8,17 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.widgets.WidgetKeybindSettings;
 //? if >=1.21.11 {
-import fi.dy.masa.malilib.render.GuiContext;
-//?}
+/*import fi.dy.masa.malilib.render.GuiContext;
+*///?}
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import kr1v.malilibApi.InternalMalilibApi;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-/*$ click_and_inputs_imports {*///
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.input.CharInput;/*$}*/
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.config.MacroManager;
 import tools.redstone.redstonetools.config.option.ConfigMacro;
@@ -39,12 +35,12 @@ public class GuiMacroEditor extends Screen {
 	public CommandListWidget commandList;
 	private final IConfigBoolean enabledConfigBoolean;
 	private final IConfigBoolean mutedConfigBoolean;
-	public TextFieldWidget nameWidget;
+	public EditBox nameWidget;
 	private float errorCountDown;
 	private final IKeybind keybind;
 	private ConfigButtonKeybind buttonKeybind;
 
-	public GuiMacroEditor(Text title, ConfigMacro macro, Screen parent) {
+	public GuiMacroEditor(Component title, ConfigMacro macro, Screen parent) {
 		super(title);
 		this.parent = parent;
 		this.macro = macro;
@@ -58,10 +54,10 @@ public class GuiMacroEditor extends Screen {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
 		if (errorCountDown > 0.0f) {
-			context.drawText(this.textRenderer, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
+			context.drawString(this.font, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
 			errorCountDown -= deltaTicks;
 		}
 	}
@@ -83,9 +79,9 @@ public class GuiMacroEditor extends Screen {
 		GuiUtils.Layout nameWidgetLayout = layouts.get(4);
 		GuiUtils.Layout buttonMutedLayout = layouts.get(5);
 
-		this.commandList = this.addDrawableChild(new CommandListWidget(this, this.client, this.width, this.height - 75, 0, 36, this.macro));
-		this.addDrawableChild(ButtonWidget.builder(Text.of("Add command"), button -> this.commandList.addEntry())
-			.dimensions(addCommandLayout.x(), addCommandLayout.y(), addCommandLayout.width(), addCommandLayout.height())
+		this.commandList = this.addRenderableWidget(new CommandListWidget(this, this.minecraft, this.width, this.height - 75, 0, 36, this.macro));
+		this.addRenderableWidget(Button.builder(Component.nullToEmpty("Add command"), button -> this.commandList.addEntry())
+			.bounds(addCommandLayout.x(), addCommandLayout.y(), addCommandLayout.width(), addCommandLayout.height())
 			.build());
 
 		WidgetKeybindSettings widgetAdvancedKeybindSettings = new WidgetKeybindSettings(keybindSettingsLayout.x(), keybindSettingsLayout.y(), keybindSettingsLayout.width(), keybindSettingsLayout.height(), keybind, "", null, null);
@@ -106,36 +102,36 @@ public class GuiMacroEditor extends Screen {
 			}
 		};
 
-		this.addDrawableChild(new WidgetBaseWrapper(buttonMuted));
-		this.addDrawableChild(new WidgetBaseWrapper(widgetAdvancedKeybindSettings));
-		this.addDrawableChild(new WidgetBaseWrapper(buttonKeybind));
-		this.addDrawableChild(new WidgetBaseWrapper(buttonEnabled));
-		this.nameWidget = addDrawableChild(new TextFieldWidget(this.textRenderer, nameWidgetLayout.width(), nameWidgetLayout.height(), Text.of("")));
-		this.nameWidget.setText(macro.getMacroName());
+		this.addRenderableWidget(new WidgetBaseWrapper(buttonMuted));
+		this.addRenderableWidget(new WidgetBaseWrapper(widgetAdvancedKeybindSettings));
+		this.addRenderableWidget(new WidgetBaseWrapper(buttonKeybind));
+		this.addRenderableWidget(new WidgetBaseWrapper(buttonEnabled));
+		this.nameWidget = addRenderableWidget(new EditBox(this.font, nameWidgetLayout.width(), nameWidgetLayout.height(), Component.nullToEmpty("")));
+		this.nameWidget.setValue(macro.getMacroName());
 		this.nameWidget.setPosition(nameWidgetLayout.x(), nameWidgetLayout.y());
 	}
 
 	//? if <=1.21.8 {
-	/*@Override
+	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (!this.buttonKeybind.isMouseOver((int) mouseX, (int) mouseY)) {
 			this.buttonKeybind.onClearSelection();
 		}
 		return super.mouseClicked(mouseX, mouseY, button);
 	}
-	*///? } else {
-	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	//? } else {
+	/*@Override
+	public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent click, boolean doubled) {
 		if (!this.buttonKeybind.isMouseOver((int) click.x(), (int) click.y())) {
 			this.buttonKeybind.onClearSelection();
 		}
 		return super.mouseClicked(click, doubled);
 	}
-	//? }
+	*///? }
 
 	@Override
-	public void close() {
-		if (MacroManager.nameExists(this.nameWidget.getText(), this.macro)) {
+	public void onClose() {
+		if (MacroManager.nameExists(this.nameWidget.getValue(), this.macro)) {
 			errorCountDown = 50.0f;
 			return;
 		}
@@ -143,7 +139,7 @@ public class GuiMacroEditor extends Screen {
 		macro.setActions(this.commandList.children().stream().map(m -> m.command).toList());
 		macro.setEnabled(this.enabledConfigBoolean.getBooleanValue());
 		macro.setMuted(this.mutedConfigBoolean.getBooleanValue());
-		macro.setMacroName(this.nameWidget.getText());
+		macro.setMacroName(this.nameWidget.getValue());
 		macro.setKeybind(this.keybind.getStringValue());
 		macro.setSettings(this.keybind.getSettings());
 
@@ -154,6 +150,6 @@ public class GuiMacroEditor extends Screen {
 		// if settings are changed while on the title screen, the settings are never saved
 		// hmmm... this also happens with normal configs, not just macros
 		// I'll just hope nobody notices
-		MinecraftClient.getInstance().send(() -> InternalMalilibApi.getMod(RedstoneTools.MOD_ID).configHandler.save());
+		Minecraft.getInstance().schedule(() -> InternalMalilibApi.getMod(RedstoneTools.MOD_ID).configHandler.save());
 	}
 }

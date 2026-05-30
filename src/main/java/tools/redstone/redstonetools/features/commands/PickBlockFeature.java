@@ -3,63 +3,72 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 
 import javax.annotation.Nullable;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetHeldSlotPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class PickBlockFeature extends BlockRaycastFeature {
 	@Override
-	protected int execute(CommandContext<ServerCommandSource> context, BlockInfo blockInfo) throws CommandSyntaxException {
-		ServerPlayerEntity player = context.getSource().getPlayer();
+	protected int execute(CommandContext<CommandSourceStack> context, BlockInfo blockInfo) throws CommandSyntaxException {
+		ServerPlayer player = context.getSource().getPlayer();
 		if (player == null) {
-			throw new SimpleCommandExceptionType(Text.literal("Failed to get player.")).create();
+			throw new SimpleCommandExceptionType(Component.literal("Failed to get player.")).create();
 		}
 
 		var stack = getItemStack(context, blockInfo);
 
-		PlayerInventory playerInventory = player.getInventory();
+		Inventory playerInventory = player.getInventory();
 		addPickBlock(playerInventory, stack);
 
-		int i = playerInventory.getSlotWithStack(stack);
+		int i = playerInventory.findSlotMatchingItem(stack);
 		if (i != -1) {
-			if (PlayerInventory.isValidHotbarIndex(i)) {
-				playerInventory.setSelectedSlot(i);
+			if (Inventory.isHotbarSlot(i)) {
+				//? if <=1.21.4 {
+				playerInventory.setSelectedHotbarSlot(i);
+				//? } else
+//				playerInventory.setSelectedSlot(i);
 			} else {
-				playerInventory.swapSlotWithHotbar(i);
+				playerInventory.pickSlot(i);
 			}
-		} else if (player.isInCreativeMode()) {
-			playerInventory.swapStackWithHotbar(stack);
+		} else if (player.hasInfiniteMaterials()) {
+			playerInventory.addAndPickItem(stack);
 		}
-		context.getSource().getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotS2CPacket(((PlayerInventoryAccessor)playerInventory).getSelectedSlot()));
-		player.playerScreenHandler.sendContentUpdates();
+		context.getSource().getPlayer().connection.send(new ClientboundSetHeldSlotPacket(((PlayerInventoryAccessor)playerInventory).getSelected()));
+		player.inventoryMenu.broadcastChanges();
 		return 1;
 	}
 
 	// reimplementation from 1.18.2
-	public void addPickBlock(PlayerInventory pi, ItemStack stack) {
-		int i = pi.getSlotWithStack(stack);
-		if (PlayerInventory.isValidHotbarIndex(i)) {
-			pi.setSelectedSlot(i);
+	public void addPickBlock(Inventory pi, ItemStack stack) {
+		int i = pi.findSlotMatchingItem(stack);
+		if (Inventory.isHotbarSlot(i)) {
+			//? if <=1.21.4 {
+			pi.setSelectedHotbarSlot(i);
+			//? } else
+//			pi.setSelectedSlot(i);
 			return;
 		}
 		if (i == -1) {
 			int j;
-			pi.setSelectedSlot(pi.getSwappableHotbarSlot());
-			if (!((PlayerInventoryAccessor)pi).getMain().get(((PlayerInventoryAccessor)pi).getSelectedSlot()).isEmpty() && (j = pi.getEmptySlot()) != -1) {
-				((PlayerInventoryAccessor)pi).getMain().set(j, ((PlayerInventoryAccessor)pi).getMain().get(((PlayerInventoryAccessor)pi).getSelectedSlot()));
+			//? if <=1.21.4 {
+			pi.setSelectedHotbarSlot(pi.getSuitableHotbarSlot());
+			//? } else
+//			pi.setSelectedSlot(pi.getSuitableHotbarSlot());
+			if (!((PlayerInventoryAccessor)pi).getItems().get(((PlayerInventoryAccessor)pi).getSelected()).isEmpty() && (j = pi.getFreeSlot()) != -1) {
+				((PlayerInventoryAccessor)pi).getItems().set(j, ((PlayerInventoryAccessor)pi).getItems().get(((PlayerInventoryAccessor)pi).getSelected()));
 			}
-			((PlayerInventoryAccessor)pi).getMain().set(((PlayerInventoryAccessor)pi).getSelectedSlot(), stack);
+			((PlayerInventoryAccessor)pi).getItems().set(((PlayerInventoryAccessor)pi).getSelected(), stack);
 		} else {
-			pi.swapSlotWithHotbar(i);
+			pi.pickSlot(i);
 		}
 	}
 
-	protected abstract ItemStack getItemStack(CommandContext<ServerCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
+	protected abstract ItemStack getItemStack(CommandContext<CommandSourceStack> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException;
 }
