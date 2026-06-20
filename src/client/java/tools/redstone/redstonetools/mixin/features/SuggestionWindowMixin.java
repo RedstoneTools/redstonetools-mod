@@ -13,11 +13,17 @@ import tools.redstone.redstonetools.utils.StringUtils;
 public class SuggestionWindowMixin {
 	@Shadow
 	@Final
-	CommandSuggestions field_21615;
+	//? if <26.1 {
+	/*CommandSuggestions field_21615;
+	*///? } else
+	CommandSuggestions this$0;
 
 	@WrapMethod(method = "useSuggestion")
 	private void expandVariablesToo(Operation<Void> original) {
-		EditBox textField = ((ChatInputSuggestorAccessor) this.field_21615).getInput();
+		//? if <26.1 {
+		/*EditBox textField = ((ChatInputSuggestorAccessor) this.field_21615).getInput();
+		*///? } else
+		EditBox textField = ((ChatInputSuggestorAccessor) this.this$0).getInput();
 		String beforeComplete = textField.getValue();
 		original.call();
 		if (StringUtils.expand(beforeComplete, textField.getValue()).equals(textField.getValue())) return;

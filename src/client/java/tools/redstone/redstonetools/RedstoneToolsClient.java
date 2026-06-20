@@ -2,7 +2,11 @@ package tools.redstone.redstonetools;
 
 import kr1v.malilibApi.MalilibApi;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+//? if >=26.1 {
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
+//? } else {
+/*import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
+*///? }
 import tools.redstone.redstonetools.config.ClientData;
 import tools.redstone.redstonetools.packets.RedstoneToolsClientPackets;
 
@@ -16,7 +20,11 @@ public class RedstoneToolsClient implements ClientModInitializer {
 		LOGGER.info("Initializing Redstone Tools");
 		MalilibApi.registerMod(MOD_ID, MOD_NAME);
 
-		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, clientWorld) -> {
+		//? if >=26.1 {
+		ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((client, clientWorld) -> {
+		//? } else {
+		/*ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, clientWorld) -> {
+		*///? }
 			if (client.getConnection() != null) { // dimension change
 				String dimensionChange = ClientData.AUTORUN_DIMENSION_CHANGE.getStringValue();
 				if (dimensionChange.startsWith("/")) {

@@ -9,8 +9,13 @@ import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
 import tools.redstone.redstonetools.ClientCommands;
 
+//? if >=26.1 {
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+//? } else {
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+*///? }
 
 public class GiveMeClient {
 	public static final GiveMeClient INSTANCE = new GiveMeClient();
@@ -27,7 +32,7 @@ public class GiveMeClient {
 						context,
 						registryAccess,
 						ItemArgument.getItem(context, "item"),
-						1))
+						null))
 					.then(argument("count", IntegerArgumentType.integer(1))
 						.executes(context -> this.execute(
 							context,
@@ -36,9 +41,22 @@ public class GiveMeClient {
 							IntegerArgumentType.getInteger(context, "count"))))));
 	}
 
-	private int execute(CommandContext<FabricClientCommandSource> context, CommandBuildContext registryAccess, ItemInput itemArgument, int count) {
+	private int execute(CommandContext<FabricClientCommandSource> context, CommandBuildContext registryAccess, ItemInput itemArgument, Integer count) {
+		//? if <26.1 {
+		/*String itemString = itemArgument.serialize(registryAccess);
+		*///? } else {
+		String itemString;
+		if (count != null) {
+			itemString = context.getInput().substring(2, context.getInput().length() - 1 - Integer.toString(count).length());
+		} else {
+			itemString = context.getInput().substring(2);
+		}
+		//? }
+
+		if (count == null) count = 1;
+
 		context.getSource().getPlayer().connection.sendCommand(
-			"give @s " + itemArgument.serialize(registryAccess) + " " + count
+			"give @s " + itemString + " " + count
 		);
 		return 0;
 	}

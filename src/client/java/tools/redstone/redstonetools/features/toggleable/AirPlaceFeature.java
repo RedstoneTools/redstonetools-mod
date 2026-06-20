@@ -6,17 +6,23 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 //? if <1.21.10 {
 /*import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
- *///?} else {
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+ *///?} else if <26.1 {
+/*import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
-//?}
+*///?} else {
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+//? }
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 //? if <=1.21.10  {
 /*import net.minecraft.client.renderer.RenderType;
 *///? } else {
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+//? if <26.1 {
+/*import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+*///? } else
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 //? }
 //? if =1.21.10
 //import net.minecraft.client.renderer.state.BlockOutlineRenderState;
@@ -42,7 +48,11 @@ import tools.redstone.redstonetools.utils.RaycastUtils;
 
 import java.util.function.BiConsumer;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+//? if >=26.1 {
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+//? } else {
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+*///? }
 
 public class AirPlaceFeature extends ClientToggleableFeature {
 	public static final AirPlaceFeature INSTANCE = new AirPlaceFeature();
@@ -87,7 +97,10 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 
 	{
 
-		BiConsumer<WorldRenderContext, HitResult> listener = (context, crosshairTarget) -> {
+		//? if <26.1 {
+		/*BiConsumer<WorldRenderContext, HitResult> listener = (context, crosshairTarget) -> {
+		*///? } else
+		BiConsumer<LevelRenderContext, HitResult> listener = (context, crosshairTarget) -> {
 			if (!isEnabled())
 				return;
 			if (!General.AIRPLACE_SHOW_OUTLINE.getBooleanValue())
@@ -131,7 +144,10 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			    .position();
 			    //?}
 
-			VertexConsumer consumer = context.consumers().getBuffer(
+			//? if <26.1 {
+			/*VertexConsumer consumer = context.consumers().getBuffer(
+			*///? } else
+			VertexConsumer consumer = context.bufferSource().getBuffer(
 				//? if <=1.21.10 {
 				/*RenderType.lines()
 				*///?} else {
@@ -150,8 +166,14 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 				CommonColors.BLACK
 			);
 			*///?} else {
-			((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
-				context.matrices(),
+			//? if <26.1 {
+			/*((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
+			*///? } else
+			((WorldRendererInvoker) context.levelRenderer()).invokeRenderHitOutline(
+				//? if <26.1 {
+				/*context.matrices(),
+				*///? } else
+				context.poseStack(),
 				consumer,
 				camPos.x, camPos.y, camPos.z,
 				new BlockOutlineRenderState(
@@ -170,8 +192,10 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			listener.accept(context, hitResult);
 			return true;
 		});
+		*///?} else if <26.1 {
+		/*WorldRenderEvents.END_MAIN.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
 		*///?} else {
-		WorldRenderEvents.END_MAIN.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
-		//?}
+		LevelRenderEvents.END_MAIN.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
+		//? }
 	}
 }

@@ -3,12 +3,19 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import tools.redstone.redstonetools.ClientCommands;
+
+//? if >=26.1 {
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+//? } else {
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+*///? }
 
 
 public class ReachClient {
@@ -18,16 +25,16 @@ public class ReachClient {
 	}
 
 	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-			dispatcher.register(ClientCommandManager.literal("reach")
+			dispatcher.register(literal("reach")
 				.requires(ClientCommands.PERMISSION_LEVEL_2)
-				.then(ClientCommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
+				.then(argument("reach", FloatArgumentType.floatArg(0.0f))
 					.executes(context -> execute(context, true, true))
 				)
-				.then(ClientCommandManager.literal("reset")
+				.then(literal("reset")
 					.executes(context -> reset(context, true, true))
 				)
-				.then(ClientCommandManager.literal("block")
-					.then(ClientCommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
+				.then(literal("block")
+					.then(argument("reach", FloatArgumentType.floatArg(0.0f))
 						.suggests((context, builder) -> {
 							builder.suggest(String.valueOf(Attributes.BLOCK_INTERACTION_RANGE.value().getDefaultValue()));
 							return builder.buildFuture();
@@ -35,8 +42,8 @@ public class ReachClient {
 						.executes(context -> execute(context, true, false))
 					)
 				)
-				.then(ClientCommandManager.literal("entity")
-					.then(ClientCommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
+				.then(literal("entity")
+					.then(argument("reach", FloatArgumentType.floatArg(0.0f))
 						.suggests((context, builder) -> {
 							builder.suggest(String.valueOf(Attributes.ENTITY_INTERACTION_RANGE.value().getDefaultValue()));
 							return builder.buildFuture();

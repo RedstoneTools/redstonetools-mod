@@ -182,7 +182,10 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 		if (!enabled) return;
 		if (layers.getAndSet(layers.get() + 1) > 100) {
 			assert Minecraft.getInstance().player != null;
-			Minecraft.getInstance().player.displayClientMessage(Component.nullToEmpty("Please don't cause a stackoverflow :("), false);
+			//? if <26.1 {
+			/*Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
+			 *///? } else
+			Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
 			return;
 		}
 		try {
@@ -192,7 +195,10 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 		} catch (StackOverflowError ignored) {
 			try {
 				assert Minecraft.getInstance().player != null;
-				Minecraft.getInstance().player.displayClientMessage(Component.nullToEmpty("Please don't cause a stackoverflow :("), false);
+				//? if <26.1 {
+				/*Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
+				 *///? } else
+				Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
 			} catch (NoClassDefFoundError e) {
 				// yeah we are absolutely cooked, there is no way to recover from this. I'm not even sure this can happen
 				// actually there's probably a better throwable to be thrown here. whatever.

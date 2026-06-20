@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.mixin.blocks;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -8,7 +7,6 @@ import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,16 +23,6 @@ public class RedstoneHitboxMixin {
 
 	@Inject(method = "getShape", at = @At("HEAD"), cancellable = true)
 	public void getOutlineShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context, CallbackInfoReturnable<VoxelShape> cir) {
-		if (!FabricLoader.getInstance().isModLoaded("malilib")) {
-			TinyFileDialogs.tinyfd_messageBox(
-				"Error",
-				"MaLiLib not present!\nPlease install MaLiLib if you want to use redstonetools",
-				"ok",
-				"error",
-				false
-			);
-			throw new IllegalStateException("MaLiLib not present");
-		}
 		if (BigDustFeature.INSTANCE.isEnabled()) {
 			cir.setReturnValue(SHAPES[General.BIGDUST_HEIGHT_IN_PIXELS.getIntegerValue()]);
 		}

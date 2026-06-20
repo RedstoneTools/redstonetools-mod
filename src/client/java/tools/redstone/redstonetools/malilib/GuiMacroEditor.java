@@ -7,14 +7,10 @@ import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.widgets.WidgetKeybindSettings;
-//? if >=1.21.11 {
-import fi.dy.masa.malilib.render.GuiContext;
-//?}
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import kr1v.malilibApi.InternalMalilibApi;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -54,10 +50,19 @@ public class GuiMacroEditor extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+	//? if <26.1 {
+	/*public void render(net.minecraft.client.gui.GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
+	*///? } else {
+	public void extractRenderState(net.minecraft.client.gui.GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
+		super.extractRenderState(context, mouseX, mouseY, deltaTicks);
+	//? }
 		if (errorCountDown > 0.0f) {
-			context.drawString(this.font, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
+			//? if <26.1 {
+			/*context.drawString(this.font, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
+			*///? } else {
+			context.text(this.font, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
+			//? }
 			errorCountDown -= deltaTicks;
 		}
 	}
