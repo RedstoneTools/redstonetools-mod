@@ -7,12 +7,12 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.commands.CommandBuildContext;
 
 //? if >=26.1 {
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-//? } else {
-/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+*///? } else {
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-*///? }
+//? }
 
 public class BaseConvertClient {
 	public static final BaseConvertClient INSTANCE = new BaseConvertClient();

@@ -43,17 +43,17 @@ public class GiveMeFeature {
 
 	private int execute(CommandContext<CommandSourceStack> context, ItemInput itemArgument, int count) throws CommandSyntaxException {
 		//? if <26.1 {
-		/*MinecraftServer server = context.getSource().getServer();
+		MinecraftServer server = context.getSource().getServer();
 		//? if <26.1 {
-		/^ItemStack stack = itemArgument.createItemStack(1, false);
-		^///? } else
-		ItemStack stack = itemArgument.createItemStack(1);
+		ItemStack stack = itemArgument.createItemStack(1, false);
+		//? } else
+		//ItemStack stack = itemArgument.createItemStack(1);
 		stack.setCount(count);
 		server.getCommands().performPrefixedCommand(
 			server.createCommandSourceStack(), "/give " + context.getSource().getTextName() + " " + itemArgument.serialize(server.registryAccess()) + " " + count);
-		*///? } else {
-		GiveCommandAccessor.invokeGiveItem(context.getSource(), itemArgument, List.of(Objects.requireNonNull(context.getSource().getPlayer())), count);
-		//? }
+		//? } else {
+		/*GiveCommandAccessor.invokeGiveItem(context.getSource(), itemArgument, List.of(Objects.requireNonNull(context.getSource().getPlayer())), count);
+		*///? }
 		return 0;
 	}
 }

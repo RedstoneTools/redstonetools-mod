@@ -44,9 +44,9 @@ public abstract class ClientToggleableFeature {
 	public int enable(FabricClientCommandSource source) throws CommandSyntaxException {
 		enable();
 		//? if <26.1 {
-		/*source.getPlayer().displayClientMessage(Component.literal("Enabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))), false);
-		*///? } else
-		source.getPlayer().sendSystemMessage(Component.literal("Enabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))));
+		source.getPlayer().displayClientMessage(Component.literal("Enabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))), false);
+		//? } else
+		//source.getPlayer().sendSystemMessage(Component.literal("Enabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))));
 		return 0;
 	}
 
@@ -58,9 +58,9 @@ public abstract class ClientToggleableFeature {
 	public int disable(FabricClientCommandSource source) throws CommandSyntaxException {
 		disable();
 		//? if <26.1 {
-		/*source.getPlayer().displayClientMessage(Component.literal("Disabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))), false);
-        *///? } else
-		source.getPlayer().sendSystemMessage(Component.literal("Disabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))));
+		source.getPlayer().displayClientMessage(Component.literal("Disabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))), false);
+        //? } else
+		//source.getPlayer().sendSystemMessage(Component.literal("Disabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))));
 		return 0;
 	}
 

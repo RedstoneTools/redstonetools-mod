@@ -124,22 +124,22 @@ public class WidgetBaseWrapper implements GuiEventListener, Renderable, Narratab
 	}
 
 	//? if <26.1 {
-	/*@Override
+	@Override
 	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		//? if <=1.21.5 {
-		/^wrapped.render(mouseX, mouseY, this.isFocused(), context);
-		^///? } else if <=1.21.10 {
-		/^wrapped.render(context, mouseX, mouseY, this.isFocused());
-		^///? } else {
+		/*wrapped.render(mouseX, mouseY, this.isFocused(), context);
+		*///? } else if <=1.21.10 {
+		/*wrapped.render(context, mouseX, mouseY, this.isFocused());
+		*///? } else {
 		wrapped.render(GuiContext.fromGuiGraphics(context), mouseX, mouseY, this.isFocused());
 		//? }
 	}
-	*///? } else {
-	@Override
+	//? } else {
+	/*@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		wrapped.render(GuiContext.fromGuiGraphics(graphics), mouseX, mouseY, this.isFocused());
 	}
-	//? }
+	*///? }
 
 	@Override
 	public NarrationPriority narrationPriority() {

@@ -16,9 +16,9 @@ public class WorldEditUtils {
 		}
 
 		//? if <26.1 {
-		/*var actor = FabricAdapter.adaptPlayer(player);
-		*///? } else
-		var actor = FabricAdapter.get().fromNativePlayer(player);
+		var actor = FabricAdapter.adaptPlayer(player);
+		//? } else
+		//var actor = FabricAdapter.get().fromNativePlayer(player);
 
 		var localSession = WorldEdit.getInstance()
 				.getSessionManager()

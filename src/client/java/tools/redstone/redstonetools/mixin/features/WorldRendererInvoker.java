@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LevelRenderer;
 //? if >=26.1.2 {
-import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
-//? } else if >=1.21.10
-//import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+/*import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
+*///? } else if >=1.21.10
+import net.minecraft.client.renderer.state.BlockOutlineRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;

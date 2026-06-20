@@ -51,18 +51,18 @@ public class GuiMacroEditor extends Screen {
 
 	@Override
 	//? if <26.1 {
-	/*public void render(net.minecraft.client.gui.GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+	public void render(net.minecraft.client.gui.GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
-	*///? } else {
-	public void extractRenderState(net.minecraft.client.gui.GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
+	//? } else {
+	/*public void extractRenderState(net.minecraft.client.gui.GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
 		super.extractRenderState(context, mouseX, mouseY, deltaTicks);
-	//? }
+	*///? }
 		if (errorCountDown > 0.0f) {
 			//? if <26.1 {
-			/*context.drawString(this.font, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
-			*///? } else {
-			context.text(this.font, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
-			//? }
+			context.drawString(this.font, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
+			//? } else {
+			/*context.text(this.font, "Name already exists!", mouseX, mouseY - 10, 0xFFFFFFFF, true);
+			*///? }
 			errorCountDown -= deltaTicks;
 		}
 	}

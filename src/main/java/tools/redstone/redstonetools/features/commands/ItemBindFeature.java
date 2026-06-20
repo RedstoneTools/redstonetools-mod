@@ -44,18 +44,18 @@ public class ItemBindFeature {
 			mainhand = false;
 		} else {
 			//? if <26.1 {
-			/*context.getSource().getPlayer().displayClientMessage(Component.nullToEmpty("You need to be holding an item with a command in one of your hands!"), false);
-			*///? } else
-			context.getSource().getPlayer().sendSystemMessage(Component.nullToEmpty("You need to be holding an item with a command in one of your hands!"), false);
+			context.getSource().getPlayer().displayClientMessage(Component.nullToEmpty("You need to be holding an item with a command in one of your hands!"), false);
+			//? } else
+			//context.getSource().getPlayer().sendSystemMessage(Component.nullToEmpty("You need to be holding an item with a command in one of your hands!"), false);
 			return 0;
 		}
 		ItemStack stack = mainhand ? player.getMainHandItem() : player.getOffhandItem();
 		ItemUtils.removeCommand(stack);
 		stack.set(DataComponents.LORE, stack.getItem().getDefaultInstance().get(DataComponents.LORE));
 		//? if <26.1 {
-		/*context.getSource().getPlayer().displayClientMessage(Component.nullToEmpty("Successfully removed command from the item in your " + (mainhand ? "mainhand" : "offhand")), false);
-		*///? } else
-		context.getSource().getPlayer().sendSystemMessage(Component.nullToEmpty("Successfully removed command from the item in your " + (mainhand ? "mainhand" : "offhand")), false);
+		context.getSource().getPlayer().displayClientMessage(Component.nullToEmpty("Successfully removed command from the item in your " + (mainhand ? "mainhand" : "offhand")), false);
+		//? } else
+		//context.getSource().getPlayer().sendSystemMessage(Component.nullToEmpty("Successfully removed command from the item in your " + (mainhand ? "mainhand" : "offhand")), false);
 		return 1;
 	}
 
@@ -88,9 +88,9 @@ public class ItemBindFeature {
 
 		playersWaitingForCommand.remove(playerI);
 		//? if <26.1 {
-		/*playerI.displayClientMessage(Component.literal("Successfully bound command: '/%s' to this item (%s)!".formatted(command, stack.getItem().getName().getString())), false);
-		*///? } else
-		playerI.sendSystemMessage(Component.literal("Successfully bound command: '/%s' to this item (%s)!".formatted(command, stack.getItem().getName(stack).getString())), false);
+		playerI.displayClientMessage(Component.literal("Successfully bound command: '/%s' to this item (%s)!".formatted(command, stack.getItem().getName().getString())), false);
+		//? } else
+		//playerI.sendSystemMessage(Component.literal("Successfully bound command: '/%s' to this item (%s)!".formatted(command, stack.getItem().getName(stack).getString())), false);
 
 	}
 

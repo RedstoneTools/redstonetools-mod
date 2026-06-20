@@ -85,11 +85,11 @@ public class CommandListWidget extends AbstractSelectionList<CommandListWidget.C
 
 			@Override
 			//? if <26.1 {
-			/*public void renderUsage(net.minecraft.client.gui.GuiGraphics context) {
-			*///? } else {
-			public void extractUsage(net.minecraft.client.gui.GuiGraphicsExtractor context) {
+			public void renderUsage(net.minecraft.client.gui.GuiGraphics context) {
+			//? } else {
+			/*public void extractUsage(net.minecraft.client.gui.GuiGraphicsExtractor context) {
 
-				//? }
+				*///? }
 				//? if >=1.21.8 {
 				context.pose().pushMatrix();
 				//?} else
@@ -98,10 +98,10 @@ public class CommandListWidget extends AbstractSelectionList<CommandListWidget.C
 				var y = entry.commandWidget.getY() + 20 - 72;
 				context.pose().translate(x, y/*? if <1.21.8 {*//*, 0*//*?}*/);
 				//? if <26.1 {
-				/*super.renderUsage(context);
-				*///? } else {
-				super.extractUsage(context);
-				//? }
+				super.renderUsage(context);
+				//? } else {
+				/*super.extractUsage(context);
+				*///? }
 				//? if >=1.21.8 {
 				context.pose().popMatrix();
 				//?} else
@@ -132,7 +132,7 @@ public class CommandListWidget extends AbstractSelectionList<CommandListWidget.C
 		if (!this.isFocused()) {
 			return ComponentPath.leaf(this);
 		}
-		if (!(navigation instanceof FocusNavigationEvent.ArrowNavigation(ScreenDirection navigationDirection/*? if >=26.1 {*/, ScreenRectangle previousFocus/*? }*/))) {
+		if (!(navigation instanceof FocusNavigationEvent.ArrowNavigation(ScreenDirection navigationDirection/*? if >=26.1 {*//*, ScreenRectangle previousFocus*//*? }*/))) {
 			return super.nextFocusPath(navigation);
 		}
 		if (navigationDirection.getAxis() == ScreenAxis.HORIZONTAL) {
@@ -166,22 +166,22 @@ public class CommandListWidget extends AbstractSelectionList<CommandListWidget.C
 	}
 
 	//? if >=26.1 {
-	@Override
+	/*@Override
 	protected void extractListItems(net.minecraft.client.gui.GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractListItems(graphics, mouseX, mouseY, a);
 		if (this.commandSuggester != null) {
 			this.commandSuggester.extractRenderState(graphics, mouseX, mouseY);
 		}
 	}
-	//? } else {
-	/*@Override
+	*///? } else {
+	@Override
 	protected void renderListItems(net.minecraft.client.gui.GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		super.renderListItems(context, mouseX, mouseY, deltaTicks);
 		if (this.commandSuggester != null) {
 			this.commandSuggester.render(context, mouseX, mouseY);
 		}
 	}
-	*///? }
+	//? }
 
 	@Override
 	//? if >=1.21.10 {
@@ -264,12 +264,12 @@ public class CommandListWidget extends AbstractSelectionList<CommandListWidget.C
 		}
 
 		@Override
-		public void /*? if >=26.1 {*/extractContent/*? } else if <=1.21.8 {*//*render*//*? } else {*//*renderContent*//*? }*/(/*? if <26.1 {*//*net.minecraft.client.gui.GuiGraphics*//*? } else {*/net.minecraft.client.gui.GuiGraphicsExtractor/*? }*/ context, /*? if <1.21.10 {*/ /*int index, int argY, int argX, int entryWidth, int entryHeight, *//*?}*/ int mouseX, int mouseY, boolean hovered, float tickProgress) {
+		public void /*? if >=26.1 {*//*extractContent*//*? } else if <=1.21.8 {*//*render*//*? } else {*/renderContent/*? }*/(/*? if <26.1 {*/net.minecraft.client.gui.GuiGraphics/*? } else {*//*net.minecraft.client.gui.GuiGraphicsExtractor*//*? }*/ context, /*? if <1.21.10 {*/ /*int index, int argY, int argX, int entryWidth, int entryHeight, *//*?}*/ int mouseX, int mouseY, boolean hovered, float tickProgress) {
 			//? if <26.1 {
-			/*commandWidget.render(context, mouseX, mouseY, tickProgress);
-			*///? } else {
-			commandWidget.extractRenderState(context, mouseX, mouseY, tickProgress);
-			//? }
+			commandWidget.render(context, mouseX, mouseY, tickProgress);
+			//? } else {
+			/*commandWidget.extractRenderState(context, mouseX, mouseY, tickProgress);
+			*///? }
 
 			//? if <=1.21.5 {
 			/*removeButton.render(mouseX, mouseY, removeButton.isMouseOver(), context);

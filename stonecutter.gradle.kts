@@ -2,7 +2,7 @@ plugins {
     id("dev.kikugie.stonecutter")
 	id("me.modmuss50.mod-publish-plugin") version "1.1.0"
 }
-stonecutter.active("26.1.2")
+stonecutter.active("1.21.11")
 
 version = "${project.property("mod_version")}+${stonecutter.current?.version}"
 

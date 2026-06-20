@@ -10,10 +10,10 @@ import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.config.Macros;
 
 //? if >=26.1 {
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-//? } else {
-/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-*///? }
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+*///? } else {
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+//? }
 
 public class EditMacroFeature {
 	public static final EditMacroFeature INSTANCE = new EditMacroFeature();

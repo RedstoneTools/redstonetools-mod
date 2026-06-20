@@ -84,16 +84,16 @@ public class ColorCodeFeature {
 		assert player != null;
 
 		//? if <26.1 {
-		/*var wePlayer = FabricAdapter.adaptPlayer(player);
-		*///? } else
-		var wePlayer = FabricAdapter.get().fromNativePlayer(player);
+		var wePlayer = FabricAdapter.adaptPlayer(player);
+		//? } else
+		//var wePlayer = FabricAdapter.get().fromNativePlayer(player);
 		var playerSession = worldEdit.getSessionManager().get(wePlayer);
 
 		// for each block in the selection
 		//? if <26.1 {
-		/*final World world = FabricAdapter.adapt(PlayerUtils.getWorld(player));
-		*///? } else
-		final World world = FabricAdapter.get().fromNativeWorld(PlayerUtils.getWorld(player));
+		final World world = FabricAdapter.adapt(PlayerUtils.getWorld(player));
+		//? } else
+		//final World world = FabricAdapter.get().fromNativeWorld(PlayerUtils.getWorld(player));
 		try (EditSession session = worldEdit.newEditSession(world)) {
 			// create mask and pattern and execute block set
 			int blocksColored = session.replaceBlocks(selection,

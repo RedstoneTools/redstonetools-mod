@@ -10,12 +10,12 @@ import net.minecraft.commands.arguments.item.ItemInput;
 import tools.redstone.redstonetools.ClientCommands;
 
 //? if >=26.1 {
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-//? } else {
-/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+*///? } else {
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-*///? }
+//? }
 
 public class GiveMeClient {
 	public static final GiveMeClient INSTANCE = new GiveMeClient();
@@ -43,15 +43,15 @@ public class GiveMeClient {
 
 	private int execute(CommandContext<FabricClientCommandSource> context, CommandBuildContext registryAccess, ItemInput itemArgument, Integer count) {
 		//? if <26.1 {
-		/*String itemString = itemArgument.serialize(registryAccess);
-		*///? } else {
-		String itemString;
+		String itemString = itemArgument.serialize(registryAccess);
+		//? } else {
+		/*String itemString;
 		if (count != null) {
 			itemString = context.getInput().substring(2, context.getInput().length() - 1 - Integer.toString(count).length());
 		} else {
 			itemString = context.getInput().substring(2);
 		}
-		//? }
+		*///? }
 
 		if (count == null) count = 1;
 
