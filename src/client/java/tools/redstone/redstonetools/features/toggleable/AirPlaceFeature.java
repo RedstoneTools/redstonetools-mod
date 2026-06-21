@@ -39,7 +39,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import tools.redstone.redstonetools.ClientCommands;
 import tools.redstone.redstonetools.config.General;
 import tools.redstone.redstonetools.config.Toggles;
@@ -185,12 +184,11 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 					blockState.getShape(client.level, blockPos)
 				),
 				//? } else {
-				/*// tODO: bug here i cannot figure it out bwaaaaaaaaaaaaaaa
-				new BlockOutlineRenderState(
+				/*new BlockOutlineRenderState(
 					blockPos,
 					false,
 					false,
-					blockState.getShape(client.level, blockPos, CollisionContext.of(camera.entity()))
+					blockState.getShape(client.level, blockPos, net.minecraft.world.phys.shapes.CollisionContext.of(camera.entity()))
 				),
 				*///? }
 				CommonColors.BLACK/*? if >=1.21.11 {*/, client.getWindow().getAppropriateLineWidth()/*?}*/
@@ -206,7 +204,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 		*///?} else if <26.1 {
 		WorldRenderEvents.END_MAIN.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
 		//?} else {
-		/*LevelRenderEvents.END_MAIN.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
+		/*LevelRenderEvents.BEFORE_GIZMOS.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
 		*///? }
 	}
 }
