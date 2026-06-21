@@ -190,6 +190,7 @@ publishMods {
 
 			requires("fabric-api")
 			requires("malilib")
+			requires("malilib-api")
 			optional("worldedit")
 		}
 	}
