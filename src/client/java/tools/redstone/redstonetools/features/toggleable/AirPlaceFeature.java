@@ -1,36 +1,44 @@
 package tools.redstone.redstonetools.features.toggleable;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 //? if <1.21.10 {
 /*import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-*///?} else {
+ *///?} else if <26.1 {
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
-import net.minecraft.client.render.state.OutlineRenderState;
-//?}
-//? if <=1.21.10 {
-/*import net.minecraft.client.render.RenderLayer;
-*///?} else {
-import net.minecraft.client.render.RenderLayers;
-//?}
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Colors;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+//?} else {
+/*import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+*///? }
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+//? if <=1.21.10  {
+/*import net.minecraft.client.renderer.RenderType;
+*///? } else {
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+//? if <26.1 {
+import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+//? } else
+//import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
+//? }
+//? if =1.21.10
+//import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import tools.redstone.redstonetools.ClientCommands;
 import tools.redstone.redstonetools.config.General;
 import tools.redstone.redstonetools.config.Toggles;
@@ -40,7 +48,11 @@ import tools.redstone.redstonetools.utils.RaycastUtils;
 
 import java.util.function.BiConsumer;
 
+//? if >=26.1 {
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+*///? } else {
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+//? }
 
 public class AirPlaceFeature extends ClientToggleableFeature {
 	public static final AirPlaceFeature INSTANCE = new AirPlaceFeature();
@@ -49,7 +61,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 		super(Toggles.AIRPLACE);
 	}
 
-	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		dispatcher.register(literal("airplace")
 			.requires(ClientCommands.PERMISSION_LEVEL_2)
 			.executes(this::toggle));
@@ -57,10 +69,10 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 
 	public static float reach;
 
-	public static boolean canAirPlace(PlayerEntity player) {
+	public static boolean canAirPlace(Player player) {
 		if (player.isSpectator())
 			return false;
-		ItemStack itemStack = player.getMainHandStack();
+		ItemStack itemStack = player.getMainHandItem();
 
 		// empty slot
 		if (itemStack == null || itemStack.getItem() == Items.AIR)
@@ -73,26 +85,29 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 		// TODO: shouldn't offhand also be checked?
 		// rocket boost for elytra
 		return itemStack.getItem() != Items.FIREWORK_ROCKET ||
-				player.getEquippedStack(EquipmentSlot.CHEST).getItem() != Items.ELYTRA ||
-				!player.isGliding();
+				player.getItemBySlot(EquipmentSlot.CHEST).getItem() != Items.ELYTRA ||
+				!player.isFallFlying();
 	}
 
-	public static BlockHitResult findAirPlaceBlockHit(PlayerEntity playerEntity) {
-		reach = (float) playerEntity.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).getBaseValue();
+	public static BlockHitResult findAirPlaceBlockHit(Player playerEntity) {
+		reach = (float) playerEntity.getAttribute(Attributes.BLOCK_INTERACTION_RANGE).getBaseValue();
 		var hit = RaycastUtils.rayCastFromEye(playerEntity, reach);
-		return new BlockHitResult(hit.getPos(), hit.getSide(), hit.getBlockPos(), false);
+		return new BlockHitResult(hit.getLocation(), hit.getDirection(), hit.getBlockPos(), false);
 	}
 
 	{
 
+		//? if <26.1 {
 		BiConsumer<WorldRenderContext, HitResult> listener = (context, crosshairTarget) -> {
+		//? } else
+		//BiConsumer<LevelRenderContext, HitResult> listener = (context, crosshairTarget) -> {
 			if (!isEnabled())
 				return;
 			if (!General.AIRPLACE_SHOW_OUTLINE.getBooleanValue())
 				return;
 
-			MinecraftClient client = MinecraftClient.getInstance();
-			if (client.player == null || client.interactionManager == null)
+			Minecraft client = Minecraft.getInstance();
+			if (client.player == null || client.gameMode == null)
 				return;
 			if (crosshairTarget == null)
 				return;
@@ -105,58 +120,78 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			BlockHitResult hitResult = findAirPlaceBlockHit(client.player);
 			BlockPos blockPos = hitResult.getBlockPos();
 
-			if (!client.world.getBlockState(blockPos).isAir())
+			if (!client.level.getBlockState(blockPos).isAir())
 				return;
 
 			if (blockPos.getY() > 319 || blockPos.getY() < -64)
 				return;
 
-			BlockState blockState = ItemUtils.getUseState(client.player, client.player.getMainHandStack(), reach);
+			BlockState blockState = ItemUtils.getUseState(client.player, client.player.getMainHandItem(), reach);
 			if (AutoRotateClient.isEnabled.getBooleanValue()) {
-				blockState = blockState.rotate(BlockRotation.CLOCKWISE_180);
+				blockState = blockState.rotate(Rotation.CLOCKWISE_180);
 			}
 			if (blockState == null)
 				return;
 
 			/* render block outline */
-			Camera camera = client.gameRenderer.getCamera();
-			Vec3d camPos = camera
-				//? if <=1.21.10 {
-				/*.getPos();
+			Camera camera = client.gameRenderer.getMainCamera();
+			Vec3 camPos = camera
+				//? if <=1.21.5 {
+				/*.getPosition();
+				*///? } else if <=1.21.10 {
+				/*.position();
 			    *///?} else {
-			    .getCameraPos();
+			    .position();
 			    //?}
 
+			//? if <26.1 {
 			VertexConsumer consumer = context.consumers().getBuffer(
+			//? } else
+			//VertexConsumer consumer = context.bufferSource().getBuffer(
 				//? if <=1.21.10 {
-				/*RenderLayer.getLines()
+				/*RenderType.lines()
 				*///?} else {
-				RenderLayers.lines()
+				RenderTypes.lines()
 				//?}
 			);
 
 			//? if <1.21.10 {
-			/*((WorldRendererInvoker) context.worldRenderer()).invokeDrawBlockOutline(
+			/*((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
 				context.matrixStack(),
 				consumer,
 				client.player,
 				camPos.x, camPos.y, camPos.z,
 				blockPos,
 				blockState,
-				Colors.BLACK
+				CommonColors.BLACK
 			);
 			*///?} else {
-			((WorldRendererInvoker) context.worldRenderer()).invokeDrawBlockOutline(
+			//? if <26.1 {
+			((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
+			//? } else
+			//((WorldRendererInvoker) context.levelRenderer()).invokeRenderHitOutline(
+				//? if <26.1 {
 				context.matrices(),
+				//? } else
+				//context.poseStack(),
 				consumer,
 				camPos.x, camPos.y, camPos.z,
-				new OutlineRenderState(
+				//? if <26.1 {
+				new BlockOutlineRenderState(
 					blockPos,
 					false,
 					false,
-					blockState.getOutlineShape(client.world, blockPos)
+					blockState.getShape(client.level, blockPos)
 				),
-				Colors.BLACK/*? if >=1.21.11 {*/, client.getWindow().getMinimumLineWidth()/*?}*/
+				//? } else {
+				/*new BlockOutlineRenderState(
+					blockPos,
+					false,
+					false,
+					blockState.getShape(client.level, blockPos, net.minecraft.world.phys.shapes.CollisionContext.of(camera.entity()))
+				),
+				*///? }
+				CommonColors.BLACK/*? if >=1.21.11 {*/, client.getWindow().getAppropriateLineWidth()/*?}*/
 			);
 			//?}
 		};
@@ -166,8 +201,10 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			listener.accept(context, hitResult);
 			return true;
 		});
-		*///?} else {
-		WorldRenderEvents.END_MAIN.register(context -> listener.accept(context, MinecraftClient.getInstance().crosshairTarget));
-		//?}
+		*///?} else if <26.1 {
+		WorldRenderEvents.END_MAIN.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
+		//?} else {
+		/*LevelRenderEvents.BEFORE_GIZMOS.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
+		*///? }
 	}
 }

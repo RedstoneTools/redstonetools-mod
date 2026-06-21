@@ -5,15 +5,18 @@ import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 //? if >=1.21.11
 import fi.dy.masa.malilib.render.GuiContext;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-//? if >1.21.8 {
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+//? if >=1.21.10 {
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 //? }
-
 import java.util.Collection;
 
-public class WidgetBaseWrapper implements Element, Drawable, Selectable {
+public class WidgetBaseWrapper implements GuiEventListener, Renderable, NarratableEntry {
 	private final WidgetBase wrapped;
 
 	public WidgetBaseWrapper(WidgetBase wrapped) {
@@ -42,7 +45,7 @@ public class WidgetBaseWrapper implements Element, Drawable, Selectable {
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		wrapped.onMouseReleased((int) mouseX, (int) mouseY, button);
-		return Element.super.mouseReleased(mouseX, mouseY, button);
+		return GuiEventListener.super.mouseReleased(mouseX, mouseY, button);
 	}
 
 	@Override
@@ -56,7 +59,7 @@ public class WidgetBaseWrapper implements Element, Drawable, Selectable {
 	}
 	*///? } else {
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
 		if (this.wrapped instanceof ConfigButtonKeybind configButtonKeybind) {
 			if (configButtonKeybind.isMouseOver((int) click.x(), (int) click.y())) {
 				boolean selectedPre = configButtonKeybind.isSelected();
@@ -74,19 +77,19 @@ public class WidgetBaseWrapper implements Element, Drawable, Selectable {
 	}
 
 	@Override
-	public boolean mouseReleased(Click click) {
+	public boolean mouseReleased(MouseButtonEvent click) {
 		wrapped.onMouseReleased(click);
-		return Element.super.mouseReleased(click);
+		return GuiEventListener.super.mouseReleased(click);
 	}
 
 	@Override
-	public boolean charTyped(CharInput input) {
+	public boolean charTyped(CharacterEvent input) {
 		return wrapped.onCharTyped(input);
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput input) {
-		if (wrapped instanceof ConfigButtonKeybind configButtonKeybind) configButtonKeybind.onKeyPressed(input.getKeycode());
+	public boolean keyPressed(KeyEvent input) {
+		if (wrapped instanceof ConfigButtonKeybind configButtonKeybind) configButtonKeybind.onKeyPressed(input.input());
 		return wrapped.onKeyTyped(input);
 	}
 	//? }
@@ -120,8 +123,9 @@ public class WidgetBaseWrapper implements Element, Drawable, Selectable {
 		return false;
 	}
 
+	//? if <26.1 {
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		//? if <=1.21.5 {
 		/*wrapped.render(mouseX, mouseY, this.isFocused(), context);
 		*///? } else if <=1.21.10 {
@@ -130,20 +134,26 @@ public class WidgetBaseWrapper implements Element, Drawable, Selectable {
 		wrapped.render(GuiContext.fromGuiGraphics(context), mouseX, mouseY, this.isFocused());
 		//? }
 	}
+	//? } else {
+	/*@Override
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+		wrapped.render(GuiContext.fromGuiGraphics(graphics), mouseX, mouseY, this.isFocused());
+	}
+	*///? }
 
 	@Override
-	public SelectionType getType() {
-		if (this.isFocused()) return SelectionType.FOCUSED;
-		return SelectionType.NONE;
+	public NarrationPriority narrationPriority() {
+		if (this.isFocused()) return NarrationPriority.FOCUSED;
+		return NarrationPriority.NONE;
 	}
 
 	@Override
-	public Collection<? extends Selectable> getNarratedParts() {
-		return Selectable.super.getNarratedParts();
+	public Collection<? extends NarratableEntry> getNarratables() {
+		return NarratableEntry.super.getNarratables();
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder builder) {
+	public void updateNarration(NarrationElementOutput builder) {
 
 	}
 }

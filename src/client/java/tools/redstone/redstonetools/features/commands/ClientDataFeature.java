@@ -3,20 +3,25 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.network.chat.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+//? if >=26.1 {
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+*///? } else {
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+//? }
 
 public class ClientDataFeature {
 	public Map<String, String> variables = new HashMap<>();
 	public static final ClientDataFeature INSTANCE = new ClientDataFeature();
 
-	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
 		dispatcher.register(literal("clientdata")
 			.then(literal("set")
 				.then(argument("name", StringArgumentType.word())
@@ -25,7 +30,7 @@ public class ClientDataFeature {
 								String name = StringArgumentType.getString(context, "name");
 								String value = StringArgumentType.getString(context, "value");
 								variables.put(name, value);
-								context.getSource().sendFeedback(Text.of("Set " + name + " to \"" + value + "\""));
+								context.getSource().sendFeedback(Component.literal("Set " + name + " to \"" + value + "\""));
 								return 1;
 							}
 						)

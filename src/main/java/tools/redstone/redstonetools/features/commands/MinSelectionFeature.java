@@ -12,18 +12,17 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockTypes;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import tools.redstone.redstonetools.Commands;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class MinSelectionFeature {
 	public static final MinSelectionFeature INSTANCE = new MinSelectionFeature();
@@ -31,17 +30,20 @@ public class MinSelectionFeature {
 	protected MinSelectionFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 			dispatcher.register(literal("/minsel")
 				.requires(Commands.PERMISSION_LEVEL_2)
 				.executes(this::execute));
 	}
 
-	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+	protected int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		var selection = WorldEditUtils.getSelection(context.getSource().getPlayer());
 		var selectionWorld = selection.getWorld();
 
+		//? if <26.1 {
 		var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
+		 //? } else
+		//var actor = FabricAdapter.get().fromNativePlayer(Objects.requireNonNull(context.getSource().getPlayer()));
 
 		var localSession = WorldEdit.getInstance()
 				.getSessionManager()
@@ -60,7 +62,7 @@ public class MinSelectionFeature {
 		}
 
 		if (isEmpty) {
-			throw new SimpleCommandExceptionType(Text.of("Cannot minimize empty selections.")).create();
+			throw new SimpleCommandExceptionType(Component.nullToEmpty("Cannot minimize empty selections.")).create();
 		}
 
 		minimiseSelection(selectionWorld, selection);
@@ -68,7 +70,7 @@ public class MinSelectionFeature {
 		selector.learnChanges();
 		selector.explainRegionAdjust(actor, localSession);
 
-		context.getSource().sendMessage(Text.literal("Minimized selection."));
+		context.getSource().sendSystemMessage(Component.literal("Minimized selection."));
 		return 1;
 	}
 
@@ -98,7 +100,7 @@ public class MinSelectionFeature {
 		try {
 			selection.contract(changes.toArray(new BlockVector3[0]));
 		} catch (RegionOperationException e) {
-			throw new CommandSyntaxException(null, Text.literal("There was an error modifying the region."));
+			throw new CommandSyntaxException(null, Component.literal("There was an error modifying the region."));
 		}
 
 		if (!finished)

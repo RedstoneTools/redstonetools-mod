@@ -11,17 +11,16 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtHelper;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.item.ItemStack;
 import tools.redstone.redstonetools.Commands;
 
 import java.util.Objects;
@@ -32,28 +31,28 @@ public class ItemComponentsFeature {
 	protected ItemComponentsFeature() {
 	}
 
-	private final SimpleCommandExceptionType NO_COMPONENTS_EXCEPTION = new SimpleCommandExceptionType(Text.literal("No components!"));
+	private final SimpleCommandExceptionType NO_COMPONENTS_EXCEPTION = new SimpleCommandExceptionType(Component.literal("No components!"));
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 		dispatcher.register(
-			CommandManager.literal("components")
+			net.minecraft.commands.Commands.literal("components")
 				.requires(Commands.PERMISSION_LEVEL_2)
-				.executes(context -> components(Objects.requireNonNull(context.getSource().getPlayer()).getMainHandStack(), context.getSource()))
-				.then(CommandManager.argument("target", EntityArgumentType.player())
-					.executes(context -> components(EntityArgumentType.getPlayer(context, "target").getMainHandStack(), context.getSource()))
+				.executes(context -> components(Objects.requireNonNull(context.getSource().getPlayer()).getMainHandItem(), context.getSource()))
+				.then(net.minecraft.commands.Commands.argument("target", EntityArgument.player())
+					.executes(context -> components(EntityArgument.getPlayer(context, "target").getMainHandItem(), context.getSource()))
 				)
 		);
 	}
 
-	private int components(ItemStack stack, ServerCommandSource source) throws CommandSyntaxException {
-		ComponentChanges components = stack.getComponentChanges();
+	private int components(ItemStack stack, CommandSourceStack source) throws CommandSyntaxException {
+		DataComponentPatch components = stack.getComponentsPatch();
 		if (components.isEmpty())
 			throw NO_COMPONENTS_EXCEPTION.create();
 
-		RegistryOps<NbtElement> ops = source.getRegistryManager().getOps(NbtOps.INSTANCE);
-		NbtElement output = ComponentChanges.CODEC.encodeStart(ops, components).getOrThrow();
+		RegistryOps<Tag> ops = source.registryAccess().createSerializationContext(NbtOps.INSTANCE);
+		Tag output = DataComponentPatch.CODEC.encodeStart(ops, components).getOrThrow();
 
-		source.sendFeedback(() -> NbtHelper.toPrettyPrintedText(output), false);
+		source.sendSuccess(() -> NbtUtils.toPrettyComponent(output), false);
 
 		return Command.SINGLE_SUCCESS;
 	}

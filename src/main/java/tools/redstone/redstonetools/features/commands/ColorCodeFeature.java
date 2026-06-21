@@ -15,16 +15,15 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockType;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.Commands;
 import tools.redstone.redstonetools.utils.*;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class ColorCodeFeature {
 	public static final ColorCodeFeature INSTANCE = new ColorCodeFeature();
@@ -32,7 +31,7 @@ public class ColorCodeFeature {
 	protected ColorCodeFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 		dispatcher.register(literal("/colorcode")
 			.requires(Commands.PERMISSION_LEVEL_2)
 			.then(argument("color", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
@@ -70,7 +69,7 @@ public class ColorCodeFeature {
 		return blockType.getDefaultState().toBaseBlock();
 	}
 
-	protected int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+	protected int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		color = ArgumentUtils.parseBlockColor(context, "color");
 		try {
 			onlyColor = ArgumentUtils.parseBlockColor(context, "onlyColor");
@@ -83,11 +82,18 @@ public class ColorCodeFeature {
 
 		var worldEdit = WorldEdit.getInstance();
 		assert player != null;
+
+		//? if <26.1 {
 		var wePlayer = FabricAdapter.adaptPlayer(player);
+		//? } else
+		//var wePlayer = FabricAdapter.get().fromNativePlayer(player);
 		var playerSession = worldEdit.getSessionManager().get(wePlayer);
 
 		// for each block in the selection
+		//? if <26.1 {
 		final World world = FabricAdapter.adapt(PlayerUtils.getWorld(player));
+		//? } else
+		//final World world = FabricAdapter.get().fromNativeWorld(PlayerUtils.getWorld(player));
 		try (EditSession session = worldEdit.newEditSession(world)) {
 			// create mask and pattern and execute block set
 			int blocksColored = session.replaceBlocks(selection,
@@ -117,9 +123,9 @@ public class ColorCodeFeature {
 			playerSession.remember(session);
 
 
-			context.getSource().sendMessage(Text.literal("Successfully colored %s block(s) %s.".formatted(blocksColored, color)));
+			context.getSource().sendSystemMessage(Component.literal("Successfully colored %s block(s) %s.".formatted(blocksColored, color)));
 		} catch (Exception e) {
-			throw new SimpleCommandExceptionType(Text.literal("An error occurred while coloring the block(s).")).create();
+			throw new SimpleCommandExceptionType(Component.literal("An error occurred while coloring the block(s).")).create();
 		}
 		return 1;
 	}

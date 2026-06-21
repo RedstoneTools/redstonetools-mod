@@ -3,10 +3,9 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import tools.redstone.redstonetools.Commands;
 
 public class ReachFeature {
@@ -15,28 +14,28 @@ public class ReachFeature {
 	protected ReachFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-			dispatcher.register(CommandManager.literal("reach")
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
+			dispatcher.register(net.minecraft.commands.Commands.literal("reach")
 				.requires(Commands.PERMISSION_LEVEL_2)
-				.then(CommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
+				.then(net.minecraft.commands.Commands.argument("reach", FloatArgumentType.floatArg(0.0f))
 					.executes(context -> execute(context, true, true))
 				)
-				.then(CommandManager.literal("reset")
+				.then(net.minecraft.commands.Commands.literal("reset")
 					.executes(context -> reset(context, true, true))
 				)
-				.then(CommandManager.literal("block")
-					.then(CommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
+				.then(net.minecraft.commands.Commands.literal("block")
+					.then(net.minecraft.commands.Commands.argument("reach", FloatArgumentType.floatArg(0.0f))
 						.suggests((context, builder) -> {
-							builder.suggest(String.valueOf(EntityAttributes.BLOCK_INTERACTION_RANGE.value().getDefaultValue()));
+							builder.suggest(String.valueOf(Attributes.BLOCK_INTERACTION_RANGE.value().getDefaultValue()));
 							return builder.buildFuture();
 						})
 						.executes(context -> execute(context, true, false))
 					)
 				)
-				.then(CommandManager.literal("entity")
-					.then(CommandManager.argument("reach", FloatArgumentType.floatArg(0.0f))
+				.then(net.minecraft.commands.Commands.literal("entity")
+					.then(net.minecraft.commands.Commands.argument("reach", FloatArgumentType.floatArg(0.0f))
 						.suggests((context, builder) -> {
-							builder.suggest(String.valueOf(EntityAttributes.ENTITY_INTERACTION_RANGE.value().getDefaultValue()));
+							builder.suggest(String.valueOf(Attributes.ENTITY_INTERACTION_RANGE.value().getDefaultValue()));
 							return builder.buildFuture();
 						})
 						.executes(context -> execute(context, false, true))
@@ -44,21 +43,21 @@ public class ReachFeature {
 				));
 	}
 
-	private int execute(CommandContext<ServerCommandSource> context, boolean block, boolean entity) {
+	private int execute(CommandContext<CommandSourceStack> context, boolean block, boolean entity) {
 		float reach = FloatArgumentType.getFloat(context, "reach");
 		if (block) execute(context, "/attribute @s minecraft:block_interaction_range base set " + reach);
 		if (entity) execute(context, "/attribute @s minecraft:entity_interaction_range base set " + reach);
 		return 0;
 	}
 
-	private int reset(CommandContext<ServerCommandSource> context, boolean block, boolean entity) {
+	private int reset(CommandContext<CommandSourceStack> context, boolean block, boolean entity) {
 		if (block) execute(context, "/attribute @s minecraft:block_interaction_range base reset");
 		if (entity) execute(context, "/attribute @s minecraft:entity_interaction_range base reset");
 		return 0;
 	}
 
-	private static void execute(CommandContext<ServerCommandSource> context, String command) {
-		context.getSource().getServer().getCommandManager()
-				./*? if <1.21.10 {*//*executeWithPrefix*//*?} else {*/parseAndExecute/*?}*/(context.getSource(), command);
+	private static void execute(CommandContext<CommandSourceStack> context, String command) {
+		context.getSource().getServer().getCommands()
+				.performPrefixedCommand(context.getSource(), command);
 	}
 }

@@ -6,24 +6,23 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Vec3d;
 import tools.redstone.redstonetools.Commands;
 import tools.redstone.redstonetools.utils.PositionUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class QuickTpFeature {
 	public static final QuickTpFeature INSTANCE = new QuickTpFeature();
@@ -31,7 +30,7 @@ public class QuickTpFeature {
 	protected QuickTpFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 			dispatcher.register(literal("quicktp")
 				.requires(Commands.PERMISSION_LEVEL_2)
 				.executes(this::parseArguments)
@@ -43,10 +42,10 @@ public class QuickTpFeature {
 										.executes(this::parseArguments)))));
 	}
 
-	protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+	protected int parseArguments(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		var player = context.getSource().getPlayer();
 
-		if (quicktpingForPlayer.contains(player)) throw new SimpleCommandExceptionType(Text.literal("Already doing a quicktp!")).create();
+		if (quicktpingForPlayer.contains(player)) throw new SimpleCommandExceptionType(Component.literal("Already doing a quicktp!")).create();
 		quicktpingForPlayer.add(player);
 		double distance;
 		boolean includeFluids;
@@ -83,7 +82,7 @@ public class QuickTpFeature {
 			} catch (InterruptedException ignored) {
 			}
 			if (thread.isAlive()) {
-				player.sendMessage(Text.literal("Quicktp still running after 10 seconds. Canceling quicktp!"));
+				player.sendSystemMessage(Component.literal("Quicktp still running after 10 seconds. Canceling quicktp!"));
 				quicktpingForPlayer.remove(player);
 			}
 			thread.interrupt();
@@ -92,28 +91,28 @@ public class QuickTpFeature {
 		return 1;
 	}
 
-	public static List<PlayerEntity> quicktpingForPlayer = new ArrayList<>();
+	public static List<Player> quicktpingForPlayer = new ArrayList<>();
 
-	protected static void execute(CommandContext<ServerCommandSource> context, double distance, boolean includeFluids, boolean resetVelocity) throws CommandSyntaxException {
+	protected static void execute(CommandContext<CommandSourceStack> context, double distance, boolean includeFluids, boolean resetVelocity) throws CommandSyntaxException {
 		var player = context.getSource().getPlayer();
 		assert player != null;
 		try {
-			var hit = player.raycast(distance, 0, includeFluids);
+			var hit = player.pick(distance, 0, includeFluids);
 
 			var targetPosition = clampHitPosition(hit);
 
-			player.requestTeleport(targetPosition.x, targetPosition.y, targetPosition.z);
-			if (resetVelocity) player.setVelocity(Vec3d.ZERO);
+			player.teleportTo(targetPosition.x, targetPosition.y, targetPosition.z);
+			if (resetVelocity) player.setDeltaMovement(Vec3.ZERO);
 			player.fallDistance = 0;
-			player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player));
+			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		} finally {
 			quicktpingForPlayer.remove(player);
 		}
 	}
 
-	private static Vec3d clampHitPosition(HitResult hit) {
+	private static Vec3 clampHitPosition(HitResult hit) {
 		if (hit.getType() != HitResult.Type.BLOCK) {
-			return hit.getPos().subtract(0, 0.5, 0);
+			return hit.getLocation().subtract(0, 0.5, 0);
 		}
 
 		var blockHit = (BlockHitResult) hit;

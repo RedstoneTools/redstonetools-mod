@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.config.options.ConfigString;
 import kr1v.malilibApi.annotation.Config;
 import tools.redstone.redstonetools.RedstoneTools;
 
-@Config(RedstoneTools.MOD_ID)
+@Config(value = RedstoneTools.MOD_ID, name = "Chat")
 public class ClientData {
 	public static final ConfigBoolean ENABLE_MATH_VARIABLES = new ConfigBoolean("Enable math and variables for the chat input suggester", true,
 		"""

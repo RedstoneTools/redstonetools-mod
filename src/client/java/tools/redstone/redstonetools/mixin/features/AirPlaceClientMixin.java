@@ -1,9 +1,9 @@
 package tools.redstone.redstonetools.mixin.features;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.phys.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -13,21 +13,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tools.redstone.redstonetools.features.toggleable.AirPlaceFeature;
 
-@Mixin(MinecraftClient.class)
+@Mixin(Minecraft.class)
 public class AirPlaceClientMixin {
 	@Shadow
-	public HitResult crosshairTarget;
+	public HitResult hitResult;
 
-	@Inject(method = "doItemUse", at = @At(value = "HEAD"))
+	@Inject(method = "startUseItem", at = @At(value = "HEAD"))
 	public void doItemUse(CallbackInfo callbackInfo) {
 		if (!isAirPlaceAllowed()) {
 			return;
 		}
 
-		crosshairTarget = AirPlaceFeature.findAirPlaceBlockHit(getPlayer());
+		hitResult = AirPlaceFeature.findAirPlaceBlockHit(getPlayer());
 	}
 
-	@Inject(method = "doAttack", at = @At(value = "HEAD"))
+	@Inject(method = "startAttack", at = @At(value = "HEAD"))
 	public void doAttack(CallbackInfoReturnable<Boolean> cir) {
 		if (!isAirPlaceAllowed()) {
 			return;
@@ -35,7 +35,7 @@ public class AirPlaceClientMixin {
 
 		// Call interactionManager directly because the block is air, with which the player cannot interact
 		var hit = AirPlaceFeature.findAirPlaceBlockHit(getPlayer());
-		getInteractionManager().attackBlock(hit.getBlockPos(), hit.getSide());
+		getInteractionManager().startDestroyBlock(hit.getBlockPos(), hit.getDirection());
 	}
 
 	@Unique
@@ -46,12 +46,12 @@ public class AirPlaceClientMixin {
 		}
 
 		// If the hit result is already set
-		if (crosshairTarget != null && crosshairTarget.getType() != HitResult.Type.MISS) {
+		if (hitResult != null && hitResult.getType() != HitResult.Type.MISS) {
 			return false;
 		}
 
 		// If blockpos isn't air
-		if (getMinecraftClient().world != null && !getMinecraftClient().world.getBlockState(AirPlaceFeature.findAirPlaceBlockHit(getPlayer()).getBlockPos()).isAir()) {
+		if (getMinecraftClient().level != null && !getMinecraftClient().level.getBlockState(AirPlaceFeature.findAirPlaceBlockHit(getPlayer()).getBlockPos()).isAir()) {
 			return false;
 		}
 
@@ -66,18 +66,18 @@ public class AirPlaceClientMixin {
 	}
 
 	@Unique
-	private MinecraftClient getMinecraftClient() {
-		return (MinecraftClient) (Object) this;
+	private Minecraft getMinecraftClient() {
+		return (Minecraft) (Object) this;
 	}
 
 	@Unique
-	private ClientPlayerEntity getPlayer() {
+	private LocalPlayer getPlayer() {
 		return getMinecraftClient().player;
 	}
 
 	@Unique
-	private ClientPlayerInteractionManager getInteractionManager() {
-		return getMinecraftClient().interactionManager;
+	private MultiPlayerGameMode getInteractionManager() {
+		return getMinecraftClient().gameMode;
 	}
 
 }

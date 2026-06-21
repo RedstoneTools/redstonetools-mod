@@ -1,8 +1,7 @@
 package tools.redstone.redstonetools.utils;
 
-import net.minecraft.block.Block;
-
 import java.util.Arrays;
+import net.minecraft.world.level.block.Block;
 
 public enum BlockColor {
 	WHITE("white"),

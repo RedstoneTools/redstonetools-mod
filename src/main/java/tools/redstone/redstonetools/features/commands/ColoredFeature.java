@@ -4,16 +4,15 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
 import tools.redstone.redstonetools.Commands;
 import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.BlockColor;
 import tools.redstone.redstonetools.utils.BlockInfo;
 import tools.redstone.redstonetools.utils.ColoredBlockType;
 import javax.annotation.Nullable;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.item.ItemStack;
 
 public class ColoredFeature extends PickBlockFeature {
 	public static final ColoredFeature INSTANCE = new ColoredFeature();
@@ -21,11 +20,11 @@ public class ColoredFeature extends PickBlockFeature {
 	protected ColoredFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-		dispatcher.register(CommandManager.literal("colored")
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
+		dispatcher.register(net.minecraft.commands.Commands.literal("colored")
 			.requires(Commands.PERMISSION_LEVEL_2)
 			.executes(this::execute)
-			.then(CommandManager.argument("blockType", StringArgumentType.string()).suggests(ArgumentUtils.COLORED_BLOCK_TYPE_SUGGESTION_PROVIDER)
+			.then(net.minecraft.commands.Commands.argument("blockType", StringArgumentType.string()).suggests(ArgumentUtils.COLORED_BLOCK_TYPE_SUGGESTION_PROVIDER)
 				.executes(this::execute)));
 	}
 
@@ -37,7 +36,7 @@ public class ColoredFeature extends PickBlockFeature {
 	}
 
 	@Override
-	protected ItemStack getItemStack(CommandContext<ServerCommandSource> context, @Nullable BlockInfo blockInfo) {
+	protected ItemStack getItemStack(CommandContext<CommandSourceStack> context, @Nullable BlockInfo blockInfo) {
 		var color = blockInfo == null
 				? BlockColor.WHITE
 				: BlockColor.fromBlock(blockInfo.block);
@@ -48,7 +47,7 @@ public class ColoredFeature extends PickBlockFeature {
 	}
 
 	@Override
-	protected int execute(CommandContext<ServerCommandSource> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
+	protected int execute(CommandContext<CommandSourceStack> context, @Nullable BlockInfo blockInfo) throws CommandSyntaxException {
 		try {
 			blockType = ArgumentUtils.parseColoredBlockType(context, "blockType");
 		} catch (Exception e) {

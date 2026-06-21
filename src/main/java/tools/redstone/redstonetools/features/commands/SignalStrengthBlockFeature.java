@@ -6,11 +6,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import tools.redstone.redstonetools.Commands;
 import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.SignalBlock;
@@ -18,9 +13,13 @@ import tools.redstone.redstonetools.utils.SignalBlock;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class SignalStrengthBlockFeature {
 	public static final SignalStrengthBlockFeature INSTANCE = new SignalStrengthBlockFeature();
@@ -28,7 +27,7 @@ public class SignalStrengthBlockFeature {
 	protected SignalStrengthBlockFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 			dispatcher.register(literal("ssb")
 				.requires(Commands.PERMISSION_LEVEL_2)
 				.executes(this::parseArguments)
@@ -38,7 +37,7 @@ public class SignalStrengthBlockFeature {
 								.executes(this::parseArguments))));
 	}
 
-	protected int parseArguments(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+	protected int parseArguments(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		int signalStrength;
 		SignalBlock block;
 		try {
@@ -54,14 +53,14 @@ public class SignalStrengthBlockFeature {
 		return execute(context, signalStrength, block);
 	}
 
-	protected int execute(CommandContext<ServerCommandSource> context, int signalStrength, SignalBlock block) throws CommandSyntaxException {
+	protected int execute(CommandContext<CommandSourceStack> context, int signalStrength, SignalBlock block) throws CommandSyntaxException {
 		try {
 			var playerInventory = Objects.requireNonNull(context.getSource().getPlayer()).getInventory();
 			ItemStack itemStack = block.getItemStack(signalStrength);
-			playerInventory.insertStack(itemStack);
+			playerInventory.add(itemStack);
 //			playerInventory.swapStackWithHotbar(itemStack);
 		} catch (IllegalArgumentException | IllegalStateException | NullPointerException e) {
-			throw new SimpleCommandExceptionType(Text.literal(e.getMessage())).create();
+			throw new SimpleCommandExceptionType(Component.literal(e.getMessage())).create();
 		}
 
 		// who intentionally doesnt put a space between the last / and the message??
@@ -73,7 +72,7 @@ public class SignalStrengthBlockFeature {
 					"This seems unnecessary.", "Is that a typo?", "Do you just like the glint?",
 					"Wow, what a fancy but otherwise useless " + block.name().toLowerCase(Locale.ROOT).replace("_", " ") + "."
 					, "For decoration?"};
-			context.getSource().sendMessage(Text.literal(funny[new Random().nextInt(funny.length)]));
+			context.getSource().sendSystemMessage(Component.literal(funny[new Random().nextInt(funny.length)]));
 			return 1;
 		}
 
