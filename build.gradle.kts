@@ -146,11 +146,14 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 java {
-	if (sc.current.parsed.matches("<26.1"))
-		toolchain.languageVersion = JavaLanguageVersion.of(21)
-	else
-		toolchain.languageVersion = JavaLanguageVersion.of(25)
 	withSourcesJar()
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    if (sc.current.parsed.matches("<26.1"))
+        options.release = 21
+    else
+        options.release = 25
 }
 
 tasks.jar {
