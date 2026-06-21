@@ -12,8 +12,8 @@ import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import kr1v.malilibApi.MalilibApi;
 import kr1v.malilibApi.config._new.CustomConfigBase;
 import kr1v.malilibApi.interfaces.IHotkeyContainer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import tools.redstone.redstonetools.config.MacroManager;
 import tools.redstone.redstonetools.macros.actions.Action;
 import tools.redstone.redstonetools.macros.actions.CommandAction;
@@ -114,9 +114,9 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 	static {
 		MalilibApi.registerButtonBasedConfigType(ConfigMacro.class, (widgetConfigOption, configMacro, x, y, configWidth, configHeight) -> new ButtonGeneric(x, y, configWidth, configHeight, configMacro.getMacroName()) {
 			@Override
-			protected boolean onMouseClickedImpl(/*? if >=1.21.10 {*/net.minecraft.client.gui.Click click, boolean doubleClick/*? } else {*//*int mouseX, int mouseY, int mouseButton*//*? }*/) {
+			protected boolean onMouseClickedImpl(/*? if >=1.21.10 {*/net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick/*? } else {*//*int mouseX, int mouseY, int mouseButton*//*? }*/) {
 				super.onMouseClickedImpl(/*? if >=1.21.10 {*/click, doubleClick/*? } else {*//*mouseX, mouseY, mouseButton*//*? }*/);
-				GuiBase.openGui(new GuiMacroEditor(Text.of(configMacro.macroName), configMacro, MinecraftClient.getInstance().currentScreen));
+				GuiBase.openGui(new GuiMacroEditor(Component.nullToEmpty(configMacro.macroName), configMacro, Minecraft.getInstance().screen));
 				return true;
 			}
 		});
@@ -181,8 +181,11 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 		if (muted) MacroManager.shouldMute = true;
 		if (!enabled) return;
 		if (layers.getAndSet(layers.get() + 1) > 100) {
-			assert MinecraftClient.getInstance().player != null;
-			MinecraftClient.getInstance().player.sendMessage(Text.of("Please don't cause a stackoverflow :("), false);
+			assert Minecraft.getInstance().player != null;
+			//? if <26.1 {
+			Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
+			 //? } else
+			//Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
 			return;
 		}
 		try {
@@ -191,8 +194,11 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 			}
 		} catch (StackOverflowError ignored) {
 			try {
-				assert MinecraftClient.getInstance().player != null;
-				MinecraftClient.getInstance().player.sendMessage(Text.of("Please don't cause a stackoverflow :("), false);
+				assert Minecraft.getInstance().player != null;
+				//? if <26.1 {
+				Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
+				 //? } else
+				//Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
 			} catch (NoClassDefFoundError e) {
 				// yeah we are absolutely cooked, there is no way to recover from this. I'm not even sure this can happen
 				// actually there's probably a better throwable to be thrown here. whatever.

@@ -19,19 +19,18 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.util.Direction;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import tools.redstone.redstonetools.Commands;
 import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.DirectionArgument;
 
 import java.util.Objects;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 import static tools.redstone.redstonetools.utils.DirectionUtils.directionToBlock;
 import static tools.redstone.redstonetools.utils.DirectionUtils.matchDirection;
 
@@ -41,7 +40,7 @@ public class RStackFeature {
 	protected RStackFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 			dispatcher.register(
 				literal("/rstack")
 					.requires(Commands.PERMISSION_LEVEL_2)
@@ -56,11 +55,11 @@ public class RStackFeature {
 									.executes(getCommandForArgumentCount(4)))))));
 	}
 
-	protected Command<ServerCommandSource> getCommandForArgumentCount(int argNum) {
+	protected Command<CommandSourceStack> getCommandForArgumentCount(int argNum) {
 		return context -> execute(context, argNum);
 	}
 
-	protected int execute(CommandContext<ServerCommandSource> context, int argCount) throws CommandSyntaxException {
+	protected int execute(CommandContext<CommandSourceStack> context, int argCount) throws CommandSyntaxException {
 		int count = argCount >= 1 ? IntegerArgumentType.getInteger(context, "count") : 1;
 		DirectionArgument direction = argCount >= 2 ? ArgumentUtils.parseDirection(context, "direction") : DirectionArgument.ME;
 		int offset = argCount >= 3 ? IntegerArgumentType.getInteger(context, "offset") : 2;
@@ -68,8 +67,11 @@ public class RStackFeature {
 		return execute(context, count, offset, direction, moveSelection);
 	}
 
-	protected int execute(CommandContext<ServerCommandSource> context, int count, int offset, DirectionArgument direction, boolean moveSelection) throws CommandSyntaxException {
+	protected int execute(CommandContext<CommandSourceStack> context, int count, int offset, DirectionArgument direction, boolean moveSelection) throws CommandSyntaxException {
+		//? if <26.1 {
 		var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
+		 //? } else
+		//var actor = FabricAdapter.get().fromNativePlayer(Objects.requireNonNull(context.getSource().getPlayer()));
 
 		var localSession = WorldEdit.getInstance()
 				.getSessionManager()
@@ -82,7 +84,7 @@ public class RStackFeature {
 		try {
 			selection = localSession.getSelection(selectionWorld);
 		} catch (IncompleteRegionException ex) {
-			throw new SimpleCommandExceptionType(Text.literal("Please make a selection with WorldEdit first.")).create();
+			throw new SimpleCommandExceptionType(Component.literal("Please make a selection with WorldEdit first.")).create();
 		}
 
 		final Mask airFilter = new Mask() {
@@ -103,7 +105,7 @@ public class RStackFeature {
 		try {
 			stackDirection = matchDirection(direction, playerFacing);
 		} catch (Exception e) {
-			throw new SimpleCommandExceptionType(Text.literal(e.getMessage().formatted(e))).create();
+			throw new SimpleCommandExceptionType(Component.literal(e.getMessage().formatted(e))).create();
 		}
 		var stackVector = directionToBlock(stackDirection);
 
@@ -129,7 +131,7 @@ public class RStackFeature {
 			throw new RuntimeException(e);
 		}
 
-		context.getSource().sendMessage(Text.literal("Stacked %s time(s).".formatted(count)));
+		context.getSource().sendSystemMessage(Component.literal("Stacked %s time(s).".formatted(count)));
 		return 1;
 	}
 }

@@ -3,13 +3,17 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import kr1v.malilibApi.InternalMalilibApi;
 import kr1v.malilibApi.MalilibApi;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandBuildContext;
 import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.config.Macros;
 
+//? if >=26.1 {
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+*///? } else {
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+//? }
 
 public class EditMacroFeature {
 	public static final EditMacroFeature INSTANCE = new EditMacroFeature();
@@ -17,10 +21,10 @@ public class EditMacroFeature {
 	protected EditMacroFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
-			dispatcher.register(ClientCommandManager.literal("edit-macros")
+	public void registerCommand(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
+			dispatcher.register(literal("edit-macros")
 				.executes(commandContext -> {
-					MinecraftClient.getInstance().send(() -> {
+					Minecraft.getInstance().execute(() -> {
 						InternalMalilibApi.getMod(RedstoneTools.MOD_ID).setActiveTab(Macros.getTab());
 						MalilibApi.openScreenFor(RedstoneTools.MOD_ID);
 					});

@@ -4,7 +4,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 public abstract class ClientToggleableFeature {
 	private final ConfigBoolean enabled; // volatile for thread safety
@@ -43,7 +43,10 @@ public abstract class ClientToggleableFeature {
 
 	public int enable(FabricClientCommandSource source) throws CommandSyntaxException {
 		enable();
-		source.getPlayer().sendMessage(Text.literal("Enabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))), false);
+		//? if <26.1 {
+		source.getPlayer().displayClientMessage(Component.literal("Enabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))), false);
+		//? } else
+		//source.getPlayer().sendSystemMessage(Component.literal("Enabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))));
 		return 0;
 	}
 
@@ -54,7 +57,10 @@ public abstract class ClientToggleableFeature {
 
 	public int disable(FabricClientCommandSource source) throws CommandSyntaxException {
 		disable();
-		source.getPlayer().sendMessage(Text.literal("Disabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))), false);
+		//? if <26.1 {
+		source.getPlayer().displayClientMessage(Component.literal("Disabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))), false);
+        //? } else
+		//source.getPlayer().sendSystemMessage(Component.literal("Disabled %s".formatted(this.getClass().getSimpleName().replace("Feature", ""))));
 		return 0;
 	}
 

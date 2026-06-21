@@ -1,6 +1,5 @@
 package tools.redstone.redstonetools.mixin.features;
 
-import net.minecraft.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,12 +9,13 @@ import tools.redstone.redstonetools.config.General;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.commands.SharedSuggestionProvider;
 
-import static net.minecraft.command.CommandSource.SUGGESTION_MATCH_PREFIX;
+import static net.minecraft.commands.SharedSuggestionProvider.MATCH_SPLITTER;
 
-@Mixin(CommandSource.class)
+@Mixin(SharedSuggestionProvider.class)
 public interface CommandSourceMixin {
-	@Inject(method = "shouldSuggest", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "matchesSubStr", at = @At("HEAD"), cancellable = true)
 	private static void meow(String remaining, String candidate, CallbackInfoReturnable<Boolean> cir) {
 		if (!General.BOOLEAN_IMPROVED_COMMAND_SUGGESTIONS.getBooleanValue()) return;
 		if (candidate == null) {
@@ -31,7 +31,7 @@ public interface CommandSourceMixin {
 		List<Integer> starts = new ArrayList<>();
 		starts.add(0);
 		for (int i = 0; i < n; i++) {
-			if (SUGGESTION_MATCH_PREFIX.matches(candidate.charAt(i))) {
+			if (MATCH_SPLITTER.matches(candidate.charAt(i))) {
 				starts.add(i + 1);
 			}
 		}

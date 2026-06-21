@@ -3,11 +3,11 @@ package tools.redstone.redstonetools.features.toggleable;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class AutoDustFeature extends ToggleableFeature {
 	public static final AutoDustFeature INSTANCE = new AutoDustFeature();
@@ -15,11 +15,11 @@ public class AutoDustFeature extends ToggleableFeature {
 	protected AutoDustFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection registrationEnvironment) {
 			dispatcher.register(literal("autodust").executes(this::execute));
 	}
 
-	private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+	private int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		return this.toggle(context);
 	}
 

@@ -2,9 +2,9 @@ package tools.redstone.redstonetools.mixin.features;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import net.minecraft.client.gui.screen.ChatInputSuggestor;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.components.CommandSuggestions;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,34 +14,34 @@ import tools.redstone.redstonetools.config.ClientData;
 import tools.redstone.redstonetools.malilib.GuiMacroEditor;
 import tools.redstone.redstonetools.utils.StringUtils;
 
-@Mixin(ChatInputSuggestor.class)
+@Mixin(CommandSuggestions.class)
 public class ChatInputSuggestorMixin {
 	@Final
 	@Shadow
-	TextFieldWidget textField;
+	EditBox input;
 
 	@Shadow
 	@Final
-	private Screen owner;
+	private Screen screen;
 
-	@WrapMethod(method = "refresh")
+	@WrapMethod(method = "updateCommandInfo")
 	private void makeMethodSeeReplacedVariables(Operation<Void> original) {
-		boolean shouldReturn = !ClientData.ENABLE_MATH_VARIABLES.getBooleanValue() || StringUtils.insertVariablesAndMath(textField.getText()).length() < textField.getText().length();
+		boolean shouldReturn = !ClientData.ENABLE_MATH_VARIABLES.getBooleanValue() || StringUtils.insertVariablesAndMath(input.getValue()).length() < input.getValue().length();
 		if (shouldReturn) return;
-		String originalCommand = textField.getText();
-		((TextFieldWidgetAccessor) textField).setTextDirectly(StringUtils.insertVariablesAndMath(textField.getText()));
+		String originalCommand = input.getValue();
+		((TextFieldWidgetAccessor) input).setTextDirectly(StringUtils.insertVariablesAndMath(input.getValue()));
 		original.call();
-		((TextFieldWidgetAccessor) textField).setTextDirectly(originalCommand);
+		((TextFieldWidgetAccessor) input).setTextDirectly(originalCommand);
 	}
 
 	@ModifyArg(
-		method = "show",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatInputSuggestor$SuggestionWindow;<init>(Lnet/minecraft/client/gui/screen/ChatInputSuggestor;IIILjava/util/List;Z)V"),
+		method = "showSuggestions",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/CommandSuggestions$SuggestionsList;<init>(Lnet/minecraft/client/gui/components/CommandSuggestions;IIILjava/util/List;Z)V"),
 		index = 2
 	)
 	private int modifyY(int y) {
-		if (this.owner instanceof GuiMacroEditor) {
-			return textField.getY() + 20;
+		if (this.screen instanceof GuiMacroEditor) {
+			return input.getY() + 20;
 		}
 		return y;
 	}

@@ -2,13 +2,13 @@ package tools.redstone.redstonetools.mixin.features;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
-import net.minecraft.client.network.ClientCommandSource;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.CommandSource;
-import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
+import net.minecraft.world.flag.FeatureFlagSet;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,30 +20,30 @@ import tools.redstone.redstonetools.ClientCommands;
 import tools.redstone.redstonetools.utils.DependencyLookup;
 import tools.redstone.redstonetools.utils.StringUtils;
 
-@Mixin(ClientPlayNetworkHandler.class)
+@Mixin(ClientPacketListener.class)
 public class ClientPlayNetworkHandlerMixin {
-	@Inject(method = "onCommandTree", at = @At("RETURN"), order = 750)
-	private void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo info) {
-		var parse = commandDispatcher.parse("base 0x2 5", commandSource); // there's probably a better way to check for rst being on the server, but I cba rn
+	@Inject(method = "handleCommands", at = @At("RETURN"), order = 750)
+	private void onOnCommandTree(ClientboundCommandsPacket packet, CallbackInfo info) {
+		var parse = commands.parse("base 0x2 5", suggestionsProvider); // there's probably a better way to check for rst being on the server, but I cba rn
 		DependencyLookup.REDSTONE_TOOLS_SERVER_PRESENT = !parse.getReader().canRead();
-		ClientCommands.registerCommands(ClientCommandInternals.getActiveDispatcher(), CommandRegistryAccess.of(this.combinedDynamicRegistries, this.enabledFeatures));
+		ClientCommands.registerCommands(ClientCommandInternals.getActiveDispatcher(), CommandBuildContext.simple(this.registryAccess, this.enabledFeatures));
 	}
 	@Shadow
-	private CommandDispatcher<CommandSource> commandDispatcher;
+	private CommandDispatcher<SharedSuggestionProvider> commands;
 
 	@Shadow
 	@Final
-	private ClientCommandSource commandSource;
+	private ClientSuggestionProvider suggestionsProvider;
 
 	@Final
 	@Shadow
-	private FeatureSet enabledFeatures;
+	private FeatureFlagSet enabledFeatures;
 
 	@Final
 	@Shadow
-	private DynamicRegistryManager.Immutable combinedDynamicRegistries;
+	private RegistryAccess.Frozen registryAccess;
 
-	@ModifyVariable(method = "sendChatCommand", at = @At("HEAD"), argsOnly = true, order = 750)
+	@ModifyVariable(method = "sendCommand", at = @At("HEAD"), argsOnly = true, order = 750)
 	public String sendChatCommand(String command) {
 		return StringUtils.insertVariablesAndMath(command);
 	}

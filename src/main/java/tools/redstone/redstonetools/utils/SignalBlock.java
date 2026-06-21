@@ -1,10 +1,9 @@
 package tools.redstone.redstonetools.utils;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
-
 import java.util.Locale;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 public enum SignalBlock {
 	// cba to do composters.

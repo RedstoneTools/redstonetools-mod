@@ -7,8 +7,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.text.Text;
 import tools.redstone.redstonetools.config.MacroManager;
 import tools.redstone.redstonetools.config.Macros;
 import tools.redstone.redstonetools.config.option.ConfigMacro;
@@ -17,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 
 public class MacroArgumentType implements ArgumentType<ConfigMacro> {
 	private static final Collection<String> EXAMPLES = List.of(" ");
@@ -40,7 +40,7 @@ public class MacroArgumentType implements ArgumentType<ConfigMacro> {
 		final ConfigMacro macro = MacroManager.getMacro(result);
 		if (macro == null) {
 			reader.setCursor(start);
-			throw new SimpleCommandExceptionType(Text.literal("Macro '" + result + "' doesn't exist!")).create();
+			throw new SimpleCommandExceptionType(Component.literal("Macro '" + result + "' doesn't exist!")).create();
 		}
 		return macro;
 	}
@@ -60,6 +60,6 @@ public class MacroArgumentType implements ArgumentType<ConfigMacro> {
 		List<String> macroNamesList = new ArrayList<>();
 		Macros.getMacros().forEach(macro -> macroNamesList.add(macro.getMacroName()));
 		macroNamesList.sort(String.CASE_INSENSITIVE_ORDER);
-		return CommandSource.suggestMatching(macroNamesList, builder);
+		return SharedSuggestionProvider.suggest(macroNamesList, builder);
 	}
 }

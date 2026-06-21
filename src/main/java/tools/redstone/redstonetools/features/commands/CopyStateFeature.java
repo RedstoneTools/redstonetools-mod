@@ -2,16 +2,6 @@ package tools.redstone.redstonetools.features.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.block.BlockState;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.BlockStateComponent;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.state.property.Property;
-import net.minecraft.text.Text;
 import tools.redstone.redstonetools.Commands;
 import tools.redstone.redstonetools.mixin.AbstractBlockMixin;
 import tools.redstone.redstonetools.mixin.features.ServerPlayNetworkHandlerAccessor;
@@ -20,6 +10,15 @@ import tools.redstone.redstonetools.utils.BlockInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.BlockItemStateProperties;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 public class CopyStateFeature extends PickBlockFeature {
 	public static final CopyStateFeature INSTANCE = new CopyStateFeature();
@@ -27,37 +26,37 @@ public class CopyStateFeature extends PickBlockFeature {
 	protected CopyStateFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-		dispatcher.register(CommandManager.literal("copystate").requires(Commands.PERMISSION_LEVEL_2).executes(this::execute));
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
+		dispatcher.register(net.minecraft.commands.Commands.literal("copystate").requires(Commands.PERMISSION_LEVEL_2).executes(this::execute));
 	}
 
 	@Override
-	protected ItemStack getItemStack(CommandContext<ServerCommandSource> context, BlockInfo blockInfo) {
+	protected ItemStack getItemStack(CommandContext<CommandSourceStack> context, BlockInfo blockInfo) {
 		Objects.requireNonNull(blockInfo);
-		ItemStack stack = ((AbstractBlockMixin) blockInfo.state.getBlock()).callGetPickStack(context.getSource().getWorld(), blockInfo.pos, blockInfo.state, true);
+		ItemStack stack = ((AbstractBlockMixin) blockInfo.state.getBlock()).callGetCloneItemStack(context.getSource().getLevel(), blockInfo.pos, blockInfo.state, true);
 
-		ServerPlayNetworkHandlerAccessor.callCopyBlockDataToStack(blockInfo.state, context.getSource().getWorld(), blockInfo.pos, stack);
+		ServerPlayNetworkHandlerAccessor.callAddBlockDataToItem(blockInfo.state, context.getSource().getLevel(), blockInfo.pos, stack);
 
-		List<Text> lore = new ArrayList<>();
+		List<Component> lore = new ArrayList<>();
 		if (blockInfo.entity != null) {
-			lore.add(Text.literal("Has block entity data"));
+			lore.add(Component.literal("Has block entity data"));
 		}
 
 		if (!blockInfo.state.getProperties().isEmpty()) {
-			BlockStateComponent component = BlockStateComponent.DEFAULT;
+			BlockItemStateProperties component = BlockItemStateProperties.EMPTY;
 			for (Property<?> property : blockInfo.state.getProperties()) {
 				component = addToLoreAndComponent(lore, component, blockInfo.state, property);
 			}
 
-			stack.set(DataComponentTypes.BLOCK_STATE, component);
+			stack.set(DataComponents.BLOCK_STATE, component);
 		}
-		stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
+		stack.set(DataComponents.LORE, new ItemLore(lore));
 
 		return stack;
 	}
 
-	private static <T extends Comparable<T>> BlockStateComponent addToLoreAndComponent(List<Text> lore, BlockStateComponent component, BlockState state, Property<T> property) {
-		lore.add(Text.of("   " + property.getName() + ": " + state.get(property)));
-		return component.with(property, state.get(property));
+	private static <T extends Comparable<T>> BlockItemStateProperties addToLoreAndComponent(List<Component> lore, BlockItemStateProperties component, BlockState state, Property<T> property) {
+		lore.add(Component.nullToEmpty("   " + property.getName() + ": " + state.getValue(property)));
+		return component.with(property, state.getValue(property));
 	}
 }
