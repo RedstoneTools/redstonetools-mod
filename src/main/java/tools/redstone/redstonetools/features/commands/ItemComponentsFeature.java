@@ -36,7 +36,7 @@ public class ItemComponentsFeature {
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 		dispatcher.register(
 			net.minecraft.commands.Commands.literal("components")
-				.requires(Commands.PERMISSION_LEVEL_2)
+				.requires(Commands.getPerm("components"))
 				.executes(context -> components(Objects.requireNonNull(context.getSource().getPlayer()).getMainHandItem(), context.getSource()))
 				.then(net.minecraft.commands.Commands.argument("target", EntityArgument.player())
 					.executes(context -> components(EntityArgument.getPlayer(context, "target").getMainHandItem(), context.getSource()))

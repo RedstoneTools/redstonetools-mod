@@ -4,8 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.fabric.FabricAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
@@ -17,7 +15,6 @@ import tools.redstone.redstonetools.utils.WorldEditUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -32,22 +29,17 @@ public class MinSelectionFeature {
 
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 			dispatcher.register(literal("/minsel")
-				.requires(Commands.PERMISSION_LEVEL_2)
+				.requires(Commands.getPerm("minsel"))
 				.executes(this::execute));
 	}
 
 	protected int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-		var selection = WorldEditUtils.getSelection(context.getSource().getPlayer());
+		var player = context.getSource().getPlayerOrException();
+		var selection = WorldEditUtils.getSelection(player);
 		var selectionWorld = selection.getWorld();
 
-		//? if <26.1 {
-		var actor = FabricAdapter.adaptPlayer(Objects.requireNonNull(context.getSource().getPlayer()));
-		 //? } else
-		//var actor = FabricAdapter.get().fromNativePlayer(Objects.requireNonNull(context.getSource().getPlayer()));
-
-		var localSession = WorldEdit.getInstance()
-				.getSessionManager()
-				.get(actor);
+		var actor = WorldEditUtils.getActor(player);
+		var localSession = WorldEditUtils.getSession(player);
 
 		var selector = localSession.getRegionSelector(selectionWorld);
 

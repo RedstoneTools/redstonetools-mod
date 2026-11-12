@@ -87,7 +87,7 @@ public class CommandListWidget extends AbstractSelectionList<CommandListWidget.C
 			//? if <26.1 {
 			public void renderUsage(net.minecraft.client.gui.GuiGraphics context) {
 			//? } else {
-			/*public void extractUsage(net.minecraft.client.gui.GuiGraphicsExtractor context) {
+			/*public void extractUsage(net.minecraft.client.gui.GuiGraphics context) {
 
 				*///? }
 				//? if >=1.21.8 {
@@ -167,7 +167,7 @@ public class CommandListWidget extends AbstractSelectionList<CommandListWidget.C
 
 	//? if >=26.1 {
 	/*@Override
-	protected void extractListItems(net.minecraft.client.gui.GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+	protected void extractListItems(net.minecraft.client.gui.GuiGraphics graphics, int mouseX, int mouseY, float a) {
 		super.extractListItems(graphics, mouseX, mouseY, a);
 		if (this.commandSuggester != null) {
 			this.commandSuggester.extractRenderState(graphics, mouseX, mouseY);
@@ -264,7 +264,7 @@ public class CommandListWidget extends AbstractSelectionList<CommandListWidget.C
 		}
 
 		@Override
-		public void /*? if >=26.1 {*//*extractContent*//*? } else if <=1.21.8 {*//*render*//*? } else {*/renderContent/*? }*/(/*? if <26.1 {*/net.minecraft.client.gui.GuiGraphics/*? } else {*//*net.minecraft.client.gui.GuiGraphicsExtractor*//*? }*/ context, /*? if <1.21.10 {*/ /*int index, int argY, int argX, int entryWidth, int entryHeight, *//*?}*/ int mouseX, int mouseY, boolean hovered, float tickProgress) {
+		public void /*? if >=26.1 {*//*extractContent*//*? } else if <=1.21.8 {*//*render*//*? } else {*/renderContent/*? }*/(net.minecraft.client.gui.GuiGraphics context, /*? if <1.21.10 {*/ /*int index, int argY, int argX, int entryWidth, int entryHeight, *//*?}*/ int mouseX, int mouseY, boolean hovered, float tickProgress) {
 			//? if <26.1 {
 			commandWidget.render(context, mouseX, mouseY, tickProgress);
 			//? } else {

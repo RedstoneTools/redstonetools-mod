@@ -2,10 +2,10 @@ package tools.redstone.redstonetools.features.toggleable;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import tools.redstone.redstonetools.packets.RedstoneToolsPackets;
 import tools.redstone.redstonetools.packets.SetFeatureEnabledPayload;
 
 import java.util.HashSet;
@@ -13,10 +13,14 @@ import java.util.Set;
 import java.util.UUID;
 
 public abstract class ToggleableFeature {
-	private final Set<UUID> enabledFor = new HashSet<>(); // volatile for thread safety
+	private final Set<UUID> enabledFor = new HashSet<>();
 
 	public boolean isEnabled(ServerPlayer player) {
 		return enabledFor.contains(player.getUUID());
+	}
+
+	public boolean isEnabled(UUID player) {
+		return enabledFor.contains(player);
 	}
 
 	public int toggle(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -38,8 +42,7 @@ public abstract class ToggleableFeature {
 
 	public void enable(ServerPlayer player) {
 		enabledFor.add(player.getUUID());
-		var payload = new SetFeatureEnabledPayload(this.getName(), true);
-		ServerPlayNetworking.send(player, payload);
+		RedstoneToolsPackets.send(player, new SetFeatureEnabledPayload(this.getName(), true));
 		onEnable();
 	}
 
@@ -51,8 +54,7 @@ public abstract class ToggleableFeature {
 
 	public void disable(ServerPlayer player) {
 		enabledFor.remove(player.getUUID());
-		var payload = new SetFeatureEnabledPayload(this.getName(), false);
-		ServerPlayNetworking.send(player, payload);
+		RedstoneToolsPackets.send(player, new SetFeatureEnabledPayload(this.getName(), false));
 		onDisable();
 	}
 

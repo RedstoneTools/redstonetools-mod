@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.mixin.features;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+//? if fabric {
+/*import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,9 +23,9 @@ public abstract class AutoRotateMixin {
 	private BlockState changeRotation(BlockState original, @Local(argsOnly = true) BlockPlaceContext context) {
 		if (!(context.getPlayer() instanceof ServerPlayer player))         return original;
 		//? if <1.21.10 {
-		/*MinecraftServer server = player.getServer();
+		/^MinecraftServer server = player.getServer();
 		if (server == null)                                                      return original;
-		*///?} else {
+		^///?} else {
 		MinecraftServer server = player.level().getServer();
 		//?}
 		if (!server.isDedicatedServer())                                               return original;
@@ -42,3 +43,4 @@ public abstract class AutoRotateMixin {
 			return null;
 	}
 }
+*///? }

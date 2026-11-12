@@ -18,6 +18,8 @@ public enum SignalBlock {
 	SMOKER(Blocks.SMOKER, SignalBlockSupplier.container(3, Blocks.SMOKER.asItem())),
 	BLAST_FURNACE(Blocks.BLAST_FURNACE, SignalBlockSupplier.container(3, Blocks.BLAST_FURNACE.asItem())),
 	COMMAND_BLOCK(Blocks.COMMAND_BLOCK, SignalBlockSupplier.commandBlock()),
+	JUKE_BOX(Blocks.JUKEBOX, SignalBlockSupplier.jukeBox()),
+	LECTERN(Blocks.LECTERN, SignalBlockSupplier.lectern()),
 	AUTO(null, null);
 
 	/**

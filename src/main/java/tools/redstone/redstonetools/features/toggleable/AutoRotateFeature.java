@@ -14,7 +14,8 @@ public class AutoRotateFeature extends ToggleableFeature {
 	}
 
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection registrationEnvironment) {
-			dispatcher.register(literal("autorotate").executes(this::toggle));
+			dispatcher.register(literal("autorotate").requires(tools.redstone.redstonetools.Commands.getPerm("autorotate")).executes(this::toggle));
+//			dispatcher.register(literal("ar").executes(this::toggle));
 	}
 
 	@Override

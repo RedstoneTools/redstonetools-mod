@@ -3,6 +3,7 @@ package tools.redstone.redstonetools.mixin.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+//~ if >=26.3 'RedStoneWireBlock' -> 'RedstoneWireBlock' {
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -35,3 +36,4 @@ public class RedstoneHitboxMixin {
 		}
 	}
 }
+//~ }

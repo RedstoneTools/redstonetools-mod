@@ -7,7 +7,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.fabric.FabricAdapter;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.Mask2D;
 import com.sk89q.worldedit.function.operation.Operations;
@@ -33,15 +32,12 @@ public class ColorCodeFeature {
 
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 		dispatcher.register(literal("/colorcode")
-			.requires(Commands.PERMISSION_LEVEL_2)
+			.requires(Commands.getPerm("colorcode"))
 			.then(argument("color", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
 				.executes(this::execute)
 				.then(argument("onlyColor", StringArgumentType.string()).suggests(ArgumentUtils.BLOCK_COLOR_SUGGESTION_PROVIDER)
 					.executes(this::execute))));
 	}
-
-	public BlockColor color;
-	public BlockColor onlyColor;
 
 	private boolean shouldBeColored(World world, BlockVector3 pos, BlockColor onlyColor) {
 		var state = world.getBlock(pos);
@@ -70,10 +66,11 @@ public class ColorCodeFeature {
 	}
 
 	protected int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-		color = ArgumentUtils.parseBlockColor(context, "color");
-		try {
+		BlockColor color = ArgumentUtils.parseBlockColor(context, "color");
+		BlockColor onlyColor;
+		try { // TODO: method to abstract this... tryParseOrNull(() -> ...)
 			onlyColor = ArgumentUtils.parseBlockColor(context, "onlyColor");
-		} catch (Exception ignored) {
+		} catch (CommandSyntaxException ignored) {
 			onlyColor = null;
 		}
 		var player = context.getSource().getPlayer();
@@ -83,24 +80,20 @@ public class ColorCodeFeature {
 		var worldEdit = WorldEdit.getInstance();
 		assert player != null;
 
-		//? if <26.1 {
-		var wePlayer = FabricAdapter.adaptPlayer(player);
-		//? } else
-		//var wePlayer = FabricAdapter.get().fromNativePlayer(player);
+		var wePlayer = PlatformAdapter.INSTANCE.adapt(player);
+
 		var playerSession = worldEdit.getSessionManager().get(wePlayer);
 
-		// for each block in the selection
-		//? if <26.1 {
-		final World world = FabricAdapter.adapt(PlayerUtils.getWorld(player));
-		//? } else
-		//final World world = FabricAdapter.get().fromNativeWorld(PlayerUtils.getWorld(player));
+		World world = PlatformAdapter.INSTANCE.adapt(player.level());
 		try (EditSession session = worldEdit.newEditSession(world)) {
+			BlockColor finalOnlyColor = onlyColor; // for some reason onlyColor isn't already final...
+
 			// create mask and pattern and execute block set
 			int blocksColored = session.replaceBlocks(selection,
 				new Mask() {
 					@Override
 					public boolean test(BlockVector3 vector) {
-						return shouldBeColored(world, vector, onlyColor);
+						return shouldBeColored(world, vector, finalOnlyColor);
 					}
 
 					@Nullable

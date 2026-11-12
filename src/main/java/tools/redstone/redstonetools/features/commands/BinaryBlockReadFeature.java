@@ -32,7 +32,7 @@ public class BinaryBlockReadFeature {
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 		dispatcher.register(
 			literal("/read")
-				.requires(Commands.PERMISSION_LEVEL_2)
+				.requires(Commands.getPerm("read"))
 				.executes(getCommandForArgumentCount(0))
 				.then(argument("offset", IntegerArgumentType.integer(1))
 					.executes(getCommandForArgumentCount(1))

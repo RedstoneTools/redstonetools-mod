@@ -4,8 +4,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.network.Filterable;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,14 +18,54 @@ import net.minecraft.world.item.component.TypedEntityData;
 //?} else {
 /*import net.minecraft.world.item.component.CustomData;
 *///?}
+import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.block.Block;
 //? if >=26.2 {
 /*import net.minecraft.world.level.block.entity.BlockEntityTypes;
 *///?} else if >=1.21.10 {
 import net.minecraft.world.level.block.entity.BlockEntityType;
 //?}
+import net.minecraft.world.level.block.Blocks;
+
+import java.util.Collections;
+
 @FunctionalInterface
 public interface SignalBlockSupplier {
+	static SignalBlockSupplier lectern() {
+		return signalStrength -> {
+			ItemStack book = Items.WRITTEN_BOOK.getDefaultInstance();
+			book.set(
+				DataComponents.WRITTEN_BOOK_CONTENT,
+				WrittenBookContent.EMPTY.withReplacedPages(
+					Collections.nCopies(15, Filterable.passThrough(Component.empty()))
+				)
+			);
+			CompoundTag blockEntityData = new CompoundTag();
+			blockEntityData.put("Book", ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, book).getOrThrow());
+			blockEntityData.putInt("Page", signalStrength-1);
+
+			CompoundTag blockState = new CompoundTag();
+			blockState.putBoolean("has_book", true);
+
+			ItemStack lectern = Items.LECTERN.getDefaultInstance();
+
+			//? if <1.21.10  {
+			/*blockEntityData.putString("id", "minecraft:lectern");
+			lectern.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityData));
+			*///?} else {
+			lectern.set(
+				DataComponents.BLOCK_ENTITY_DATA,
+				TypedEntityData.of(
+					//~ if >=26.2 'BlockEntityType' -> 'BlockEntityTypes'
+					BlockEntityType.LECTERN,
+					blockEntityData
+				)
+			);
+			//?}
+
+			return lectern;
+		};
+	}
 
 	ItemStack createItem(int signalStrength);
 
@@ -87,14 +129,66 @@ public interface SignalBlockSupplier {
 			*///?} else {
 			commandBlockStack.set(
 				DataComponents.BLOCK_ENTITY_DATA,
-				//? if >=26.2 {
-				/*TypedEntityData.of(BlockEntityTypes.COMMAND_BLOCK, blockEntityNbt)
-				*///?} else {
+				//~ if >=26.2 'BlockEntityType' -> 'BlockEntityTypes'
 				TypedEntityData.of(BlockEntityType.COMMAND_BLOCK, blockEntityNbt)
-				//?}
 			);
 			//?}
 			return commandBlockStack;
+		};
+	}
+
+	static SignalBlockSupplier jukeBox() {
+		return (signalStrength) -> {
+			if (isInvalidSignalStrength(signalStrength, 15))
+				throw new IllegalArgumentException("Can't provide jukebox with signal strength " + signalStrength);
+			ItemStack stack = new ItemStack(Blocks.JUKEBOX);
+
+			CompoundTag blockEntityData = new CompoundTag();
+			
+			String diskId = switch (signalStrength) {
+				case 1 -> "minecraft:music_disc_13";
+				case 2 -> "minecraft:music_disc_cat";
+				case 3 -> "minecraft:music_disc_blocks";
+				case 4 -> "minecraft:music_disc_chirp";
+				case 5 -> "minecraft:music_disc_far";
+				case 6 -> "minecraft:music_disc_mall";
+				case 7 -> "minecraft:music_disc_mellohi";
+				case 8 -> "minecraft:music_disc_stal";
+				case 9 -> "minecraft:music_disc_strad";
+				case 10 -> "minecraft:music_disc_ward";
+				case 11 -> "minecraft:music_disc_11";
+				case 12 -> "minecraft:music_disc_wait";
+				case 13 -> "minecraft:music_disc_pigstep";
+				case 14 -> "minecraft:music_disc_otherside";
+				case 15 -> "minecraft:music_disc_5";
+				default -> null;
+			};
+
+			if (diskId != null) {
+				CompoundTag record = new CompoundTag();
+				record.putString("id", diskId);
+				record.putByte("count", (byte) 1);
+
+				blockEntityData.put("RecordItem", record);
+
+				blockEntityData.putInt("ticks_since_song_started", 6 * 60 * 20);
+			}
+
+			//? if <1.21.10 {
+			/*blockEntityData.putString("id", "minecraft:jukebox");
+			stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityData));
+			*///?} else {
+			stack.set(
+				DataComponents.BLOCK_ENTITY_DATA,
+				//? if >=26.2 {
+				/*TypedEntityData.of(BlockEntityTypes.JUKEBOX, blockEntityData)
+				 *///?} else {
+				TypedEntityData.of(BlockEntityType.JUKEBOX, blockEntityData)
+				//?}
+			);
+			//?}
+
+			return stack;
 		};
 	}
 

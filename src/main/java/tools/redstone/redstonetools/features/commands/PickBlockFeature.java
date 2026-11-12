@@ -3,7 +3,9 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
+//? if fabric {
+/*import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
+ *///? }
 import tools.redstone.redstonetools.utils.BlockInfo;
 
 import javax.annotation.Nullable;
@@ -35,23 +37,39 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
 				*///? } else
 				playerInventory.setSelectedSlot(i);
 			} else {
-				playerInventory.pickSlot(i);
+				//? if fabric {
+				/*playerInventory.pickSlot(i);
+				 *///? } else {
+				playerInventory.pickSlot(i, playerInventory.getSuitableHotbarSlot());
+				//?}
 			}
 		} else if (player.hasInfiniteMaterials()) {
-			playerInventory.addAndPickItem(stack);
+			//? if fabric {
+			/*playerInventory.addAndPickItem(stack);
+			 *///? } else {
+			playerInventory.addAndPickItem(stack, playerInventory.getSuitableHotbarSlot());
+			//?}
 		}
-		context.getSource().getPlayer().connection.send(new ClientboundSetHeldSlotPacket(((PlayerInventoryAccessor)playerInventory).getSelected()));
+		//? if fabric {
+		/*int selected = ((PlayerInventoryAccessor) playerInventory).getSelected();
+		 *///? } else {
+		int selected = playerInventory.getSelectedSlot();
+		//?}
+		context.getSource().getPlayer().connection.send(new ClientboundSetHeldSlotPacket(selected));
 		player.inventoryMenu.broadcastChanges();
 		return 1;
 	}
 
 	// reimplementation from 1.18.2
 	public void addPickBlock(Inventory pi, ItemStack stack) {
+		//? if fabric {
+		/*var accessor = (PlayerInventoryAccessor) pi;
+		 *///? }
 		int i = pi.findSlotMatchingItem(stack);
 		if (Inventory.isHotbarSlot(i)) {
 			//? if <=1.21.4 {
 			/*pi.setSelectedHotbarSlot(i);
-			*///? } else
+			 *///? } else
 			pi.setSelectedSlot(i);
 			return;
 		}
@@ -59,14 +77,26 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
 			int j;
 			//? if <=1.21.4 {
 			/*pi.setSelectedHotbarSlot(pi.getSuitableHotbarSlot());
-			*///? } else
+			 *///? } else
 			pi.setSelectedSlot(pi.getSuitableHotbarSlot());
-			if (!((PlayerInventoryAccessor)pi).getItems().get(((PlayerInventoryAccessor)pi).getSelected()).isEmpty() && (j = pi.getFreeSlot()) != -1) {
-				((PlayerInventoryAccessor)pi).getItems().set(j, ((PlayerInventoryAccessor)pi).getItems().get(((PlayerInventoryAccessor)pi).getSelected()));
+			//? if fabric {
+			/*if (!accessor.getItems().get(accessor.getSelected()).isEmpty() && (j = pi.getFreeSlot()) != -1) {
+				accessor.getItems().set(j, accessor.getItems().get(accessor.getSelected()));
 			}
-			((PlayerInventoryAccessor)pi).getItems().set(((PlayerInventoryAccessor)pi).getSelected(), stack);
+			accessor.getItems().set(accessor.getSelected(), stack);
+			*///? } else {
+			var items = pi.getNonEquipmentItems();
+			int selected = pi.getSelectedSlot();
+			if (!items.get(selected).isEmpty() && (j = pi.getFreeSlot()) != -1) {
+				items.set(j, items.get(selected));
+			}
+			items.set(selected, stack);
+			//? }
 		} else {
-			pi.pickSlot(i);
+			//? if fabric {
+			/*pi.pickSlot(i);
+			 *///? } else
+			pi.pickSlot(i, pi.getSuitableHotbarSlot());
 		}
 	}
 

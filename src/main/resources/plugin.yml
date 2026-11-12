@@ -1,0 +1,71 @@
+name: redstone-tools
+version: '${version}'
+
+main: tools.redstone.redstonetools.RedstoneTools
+api-version: '26.1.2'
+load: POSTWORLD
+
+authors: [ kr1v ]
+softdepend: [ WorldEdit ]
+
+permissions:
+    redstonetools.autodust:
+        description: Automatically place redstone dust on top of placed blocks
+        default: op
+    redstonetools.autorotate:
+        description: Rotate redstone components on placement
+        default: op
+    redstonetools.clickcontainer:
+        description: Adjust container signal strength by clicking
+        default: op
+    redstonetools.colorcode:
+        description: Color-code a selection
+        default: op
+    redstonetools.colored:
+        description: Give colored blocks
+        default: op
+    redstonetools.components:
+        description: Inspect item components
+        default: op
+    redstonetools.copystate:
+        description: Copy the block state you are looking at
+        default: op
+    redstonetools.find:
+        description: Find blocks matching a mask in your selection
+        default: op
+    redstonetools.g:
+        description: Give items
+        default: op
+    redstonetools.itembind:
+        description: Bind a command to an item
+        default: op
+    redstonetools.minsel:
+        description: Shrink the selection to its contents
+        default: op
+    redstonetools.quicktp:
+        description: Teleport to the block you are looking at
+        default: op
+    redstonetools.read:
+        description: Read a selection as a binary number
+        default: op
+    redstonetools.reach:
+        description: Extend reach distance
+        default: op
+    redstonetools.rstack:
+        description: Stack a selection with spacing and diagonals
+        default: op
+    redstonetools.selstack:
+        description: Push and pop WorldEdit selections onto a stack
+        default: op
+    redstonetools.signsearch:
+        description: Search signs in a selection with a regular expression
+        default: op
+    redstonetools.slab:
+        description: Give a top slab of your choice
+        default: op
+    redstonetools.ssb:
+        description: Give a container with a given signal strength
+        default: op
+    redstonetools.that:
+        description: Select the build you are looking at
+        default: op

@@ -3,8 +3,18 @@ package tools.redstone.redstonetools.features.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import tools.redstone.redstonetools.Commands;
-import tools.redstone.redstonetools.mixin.AbstractBlockMixin;
+//? if fabric {
+/*import tools.redstone.redstonetools.mixin.AbstractBlockMixin;
 import tools.redstone.redstonetools.mixin.features.ServerPlayNetworkHandlerAccessor;
+*///? } else {
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.TagValueOutput;
+import tools.redstone.redstonetools.RedstoneTools;
+//? }
 import tools.redstone.redstonetools.utils.BlockInfo;
 
 import java.util.ArrayList;
@@ -27,15 +37,20 @@ public class CopyStateFeature extends PickBlockFeature {
 	}
 
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
-		dispatcher.register(net.minecraft.commands.Commands.literal("copystate").requires(Commands.PERMISSION_LEVEL_2).executes(this::execute));
+		dispatcher.register(net.minecraft.commands.Commands.literal("copystate").requires(Commands.getPerm("copystate")).executes(this::execute));
 	}
 
 	@Override
 	protected ItemStack getItemStack(CommandContext<CommandSourceStack> context, BlockInfo blockInfo) {
 		Objects.requireNonNull(blockInfo);
-		ItemStack stack = ((AbstractBlockMixin) blockInfo.state.getBlock()).callGetCloneItemStack(context.getSource().getLevel(), blockInfo.pos, blockInfo.state, true);
-
+		//? if fabric {
+		/*ItemStack stack = ((AbstractBlockMixin) blockInfo.state.getBlock()).callGetCloneItemStack(context.getSource().getLevel(), blockInfo.pos, blockInfo.state, true);
 		ServerPlayNetworkHandlerAccessor.callAddBlockDataToItem(blockInfo.state, context.getSource().getLevel(), blockInfo.pos, stack);
+		*///? } else {
+		ServerLevel level = context.getSource().getLevel();
+		ItemStack stack = blockInfo.state.getCloneItemStack(level, blockInfo.pos, true);
+		addBlockDataToItem(level, blockInfo.pos, stack);
+		//? }
 
 		List<Component> lore = new ArrayList<>();
 		if (blockInfo.entity != null) {
@@ -59,4 +74,21 @@ public class CopyStateFeature extends PickBlockFeature {
 		lore.add(Component.nullToEmpty("   " + property.getName() + ": " + state.getValue(property)));
 		return component.with(property, state.getValue(property));
 	}
+
+	//? if paper {
+	/** This is only a paper helper. We'll need to see if a refactor is needed at some point. */
+	private static void addBlockDataToItem(ServerLevel level, BlockPos pos, ItemStack stack) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity == null) {
+			return;
+		}
+		try (ProblemReporter.ScopedCollector reporter =
+				 new ProblemReporter.ScopedCollector(blockEntity.problemPath(), RedstoneTools.LOGGER)) {
+			TagValueOutput output = TagValueOutput.createWithContext(reporter, level.registryAccess());
+			blockEntity.saveCustomOnly(output);
+			BlockItem.setBlockEntityData(stack, blockEntity.getType(), output);
+			stack.applyComponents(blockEntity.collectComponents());
+		}
+	}
+	//? }
 }

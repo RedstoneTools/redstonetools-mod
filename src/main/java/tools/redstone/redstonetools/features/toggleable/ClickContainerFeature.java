@@ -1,14 +1,16 @@
 package tools.redstone.redstonetools.features.toggleable;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+//? if fabric {
+/*import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.world.InteractionResult;
+ *///? }
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import tools.redstone.redstonetools.RedstoneTools;
+import net.minecraft.world.InteractionHand;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -27,46 +30,20 @@ public class ClickContainerFeature extends ToggleableFeature {
 	protected ClickContainerFeature() {
 	}
 
-	private static long lasttime = -1;
+	private static long lastTime = -1;
 
-	static {
+	//? if fabric {
+	/*static {
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			if (world == null) return InteractionResult.PASS;
-			if (world.isClientSide()) return InteractionResult.PASS;
-			if (!ClickContainerFeature.INSTANCE.isEnabled((ServerPlayer) player)) return InteractionResult.PASS;
-
-			ItemStack stack = player.getItemInHand(hand);
-			if (!stack.isEmpty() || stack.getItem() instanceof BlockItem) return InteractionResult.PASS;
-
-			BlockPos pos = hitResult.getBlockPos();
-			BlockState state = world.getBlockState(pos);
-
-			if (world.getGameTime() == lasttime) {
+			if (!(player instanceof ServerPlayer serverPlayer)) {
 				return InteractionResult.PASS;
 			}
-			lasttime = world.getGameTime();
-
-			if (state.is(Blocks.WATER_CAULDRON) || state.is(Blocks.LAVA_CAULDRON) || state.is(Blocks.POWDER_SNOW_CAULDRON)) {
-				if (state.hasProperty(BlockStateProperties.LEVEL_CAULDRON)) {
-					handleIntLevelProperty(world, pos, state, BlockStateProperties.LEVEL_CAULDRON, Blocks.CAULDRON, (ServerPlayer) player);
-					return InteractionResult.SUCCESS;
-				}
-			}
-
-			if (state.is(Blocks.CAULDRON)) {
-				BlockState newState = Blocks.WATER_CAULDRON.defaultBlockState().setValue(BlockStateProperties.LEVEL_CAULDRON, 1);
-				world.setBlockAndUpdate(pos, newState);
-				return InteractionResult.SUCCESS;
-			}
-
-			if (state.is(Blocks.COMPOSTER)) {
-				handleIntLevelProperty(world, pos, state, BlockStateProperties.LEVEL_COMPOSTER, Blocks.COMPOSTER, (ServerPlayer) player);
-				return InteractionResult.SUCCESS;
-			}
-
-			return InteractionResult.PASS;
+			return handleUse(serverPlayer, world, hand, hitResult.getBlockPos())
+				? InteractionResult.SUCCESS
+				: InteractionResult.PASS;
 		});
 	}
+	*///? }
 
 	public static void handleIntLevelProperty(Level world, BlockPos pos, BlockState state, IntegerProperty prop, Block resetBlock, ServerPlayer player) {
 		if (prop == null) return;
@@ -92,8 +69,49 @@ public class ClickContainerFeature extends ToggleableFeature {
 		player.sendSystemMessage(Component.nullToEmpty("§2[ClickContainers] §6Increased level!"));
 	}
 
+	public static boolean handleUse(ServerPlayer player, Level world, InteractionHand hand, BlockPos pos) {
+		if (world == null || world.isClientSide()) {
+			return false;
+		}
+		if (!INSTANCE.isEnabled(player)) {
+			return false;
+		}
+
+		ItemStack stack = player.getItemInHand(hand);
+		if (!stack.isEmpty() || stack.getItem() instanceof BlockItem) {
+			return false;
+		}
+
+		if (world.getGameTime() == lastTime) {
+			return false;
+		}
+		lastTime = world.getGameTime();
+
+		BlockState state = world.getBlockState(pos);
+
+		if (state.is(Blocks.WATER_CAULDRON) || state.is(Blocks.LAVA_CAULDRON) || state.is(Blocks.POWDER_SNOW_CAULDRON)) {
+			if (state.hasProperty(BlockStateProperties.LEVEL_CAULDRON)) {
+				handleIntLevelProperty(world, pos, state, BlockStateProperties.LEVEL_CAULDRON, Blocks.CAULDRON, player);
+				return true;
+			}
+		}
+
+		if (state.is(Blocks.CAULDRON)) {
+			world.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(BlockStateProperties.LEVEL_CAULDRON, 1));
+			return true;
+		}
+
+		if (state.is(Blocks.COMPOSTER)) {
+			handleIntLevelProperty(world, pos, state, BlockStateProperties.LEVEL_COMPOSTER, Blocks.COMPOSTER, player);
+			return true;
+		}
+
+		return false;
+	}
+
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection registrationEnvironment) {
-		dispatcher.register(literal("clickcontainers").executes(this::toggle));
+		dispatcher.register(literal("clickcontainers").requires(tools.redstone.redstonetools.Commands.getPerm("clickcontainer")).executes(this::toggle));
+//		dispatcher.register(literal("cauldron").executes(this::toggle));
 	}
 
 	@Override

@@ -136,7 +136,7 @@ public class WidgetBaseWrapper implements GuiEventListener, Renderable, Narratab
 	}
 	//? } else {
 	/*@Override
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+	public void extractRenderState(GuiGraphics graphics, int mouseX, int mouseY, float a) {
 		wrapped.render(GuiContext.fromGuiGraphics(graphics), mouseX, mouseY, this.isFocused());
 	}
 	*///? }

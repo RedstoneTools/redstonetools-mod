@@ -29,7 +29,7 @@ public class SignalStrengthBlockFeature {
 
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 			dispatcher.register(literal("ssb")
-				.requires(Commands.PERMISSION_LEVEL_2)
+				.requires(Commands.getPerm("ssb"))
 				.executes(this::parseArguments)
 				.then(argument("signalStrength", IntegerArgumentType.integer())
 						.executes(this::parseArguments)

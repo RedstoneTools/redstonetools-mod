@@ -4,6 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import tools.redstone.redstonetools.Commands;
 import tools.redstone.redstonetools.utils.ArgumentUtils;
 import tools.redstone.redstonetools.utils.BlockColor;
@@ -22,7 +24,7 @@ public class ColoredFeature extends PickBlockFeature {
 
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 		dispatcher.register(net.minecraft.commands.Commands.literal("colored")
-			.requires(Commands.PERMISSION_LEVEL_2)
+			.requires(Commands.getPerm("colored"))
 			.executes(this::execute)
 			.then(net.minecraft.commands.Commands.argument("blockType", StringArgumentType.string()).suggests(ArgumentUtils.COLORED_BLOCK_TYPE_SUGGESTION_PROVIDER)
 				.executes(this::execute)));
@@ -37,9 +39,18 @@ public class ColoredFeature extends PickBlockFeature {
 
 	@Override
 	protected ItemStack getItemStack(CommandContext<CommandSourceStack> context, @Nullable BlockInfo blockInfo) {
-		var color = blockInfo == null
-				? BlockColor.WHITE
-				: BlockColor.fromBlock(blockInfo.block);
+		var color = blockInfo != null ? BlockColor.fromBlock(blockInfo.block) : null;
+		if (color == null) {
+			var handItem = context.getSource().getPlayer().getMainHandItem();
+			if (!handItem.isEmpty()) {
+				var block = Block.byItem(handItem.getItem());
+				if (block != Blocks.AIR) {
+					color = BlockColor.fromBlock(block);
+				}
+			}
+		}
+
+		if (color == null) color = BlockColor.WHITE;
 
 		var coloredBlock = blockType.withColor(color);
 

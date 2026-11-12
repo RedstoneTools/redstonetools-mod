@@ -1,10 +1,38 @@
 plugins {
     id("dev.kikugie.stonecutter")
-	id("me.modmuss50.mod-publish-plugin") version "1.1.0"
+	id("me.modmuss50.mod-publish-plugin") version "2.2.1"
 }
-stonecutter.active("1.21.11")
+stonecutter.active("26.1.2-paper")
 
-version = "${project.property("mod_version")}+${stonecutter.current?.version}"
+stonecutter parameters {
+	val (version, loader) = current.project.split('-', limit = 2)
+
+	constants {
+		match(loader, "fabric", "paper")
+	}
+}
+
+stonecutter parameters {
+	replacements.string(current.parsed >= "26.1") {
+		replace(
+			"GuiGraphics",
+			"GuiGraphicsExtractor"
+		)
+	}
+	replacements.string(current.parsed >= "1.21.11") {
+		replace(
+			"ResourceLocation",
+			"Identifier"
+		)
+	}
+	replacements.string {
+		direction = true
+		replace(
+			"fromGuiGraphicsExtractor",
+			"fromGuiGraphics"
+		)
+	}
+}
 
 publishMods {
 	if (providers.environmentVariable("RELEASE_MODRINTH").orNull?.toBoolean() ?: false) {

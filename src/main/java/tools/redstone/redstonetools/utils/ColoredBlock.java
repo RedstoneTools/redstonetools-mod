@@ -5,10 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 import net.minecraft.core.registries.BuiltInRegistries;
-//? if >=1.21.11 {
 import net.minecraft.resources.Identifier;
-//? } else
-//import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 public class ColoredBlock {
@@ -78,10 +75,7 @@ public class ColoredBlock {
 	}
 
 	public Block toBlock() {
-		//? if >=1.21.11 {
 		return BuiltInRegistries.BLOCK.getValue(Identifier.tryParse(toBlockId()));
-		//? } else
-		//return BuiltInRegistries.BLOCK.getValue(ResourceLocation.tryParse(toBlockId()));
 	}
 
 	@Override

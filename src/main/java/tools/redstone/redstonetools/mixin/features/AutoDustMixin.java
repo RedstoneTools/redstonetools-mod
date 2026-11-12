@@ -1,6 +1,7 @@
 package tools.redstone.redstonetools.mixin.features;
 
-import net.minecraft.core.BlockPos;
+//? if fabric {
+/*import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -45,3 +46,4 @@ public abstract class AutoDustMixin {
 		}
 	}
 }
+*///? }

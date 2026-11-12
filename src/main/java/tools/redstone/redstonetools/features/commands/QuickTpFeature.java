@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.server.MinecraftServer;
 import tools.redstone.redstonetools.Commands;
 import tools.redstone.redstonetools.utils.PositionUtils;
 import tools.redstone.redstonetools.utils.RaycastUtils;
@@ -32,7 +33,7 @@ public class QuickTpFeature {
 
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 			dispatcher.register(literal("quicktp")
-				.requires(Commands.PERMISSION_LEVEL_2)
+				.requires(Commands.getPerm("quicktp"))
 				.executes(this::parseArguments)
 				.then(argument("distance", DoubleArgumentType.doubleArg())
 						.executes(this::parseArguments)
@@ -45,6 +46,7 @@ public class QuickTpFeature {
 	protected int parseArguments(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		var player = context.getSource().getPlayer();
 
+		if (player == null) return -1;
 		if (quicktpingForPlayer.contains(player)) throw new SimpleCommandExceptionType(Component.literal("Already doing a quicktp!")).create();
 		quicktpingForPlayer.add(player);
 		double distance;
@@ -69,12 +71,12 @@ public class QuickTpFeature {
 		boolean finalIncludeFluids = !includeFluids;
 		boolean finalResetVelocity = resetVelocity;
 		Thread thread = new Thread(() -> {
-			try {
-				execute(context, finalDistance, finalIncludeFluids, finalResetVelocity);
-			} catch (CommandSyntaxException e) {
-				throw new RuntimeException(e);
-			}
-		});
+					try {
+						execute(context, finalDistance, finalIncludeFluids, finalResetVelocity);
+					} catch (CommandSyntaxException e) {
+						throw new RuntimeException(e);
+					}
+				}, "quicktp thread for player " + player.getName().getString());
 		thread.start();
 		Thread t2 = new Thread(() -> {
 			try {
@@ -101,10 +103,12 @@ public class QuickTpFeature {
 
 			var targetPosition = clampHitPosition(hit);
 
-			player.teleportTo(targetPosition.x, targetPosition.y, targetPosition.z);
-			if (resetVelocity) player.setDeltaMovement(Vec3.ZERO);
-			player.fallDistance = 0;
-			player.connection.send(new ClientboundSetEntityMotionPacket(player));
+			context.getSource().getServer().execute(() -> {
+				player.teleportTo(targetPosition.x, targetPosition.y, targetPosition.z);
+				if (resetVelocity) player.setDeltaMovement(Vec3.ZERO);
+				player.fallDistance = 0;
+				player.connection.send(new ClientboundSetEntityMotionPacket(player));
+			});
 		} finally {
 			quicktpingForPlayer.remove(player);
 		}

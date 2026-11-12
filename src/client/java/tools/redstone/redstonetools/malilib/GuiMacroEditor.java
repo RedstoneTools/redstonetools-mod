@@ -54,7 +54,7 @@ public class GuiMacroEditor extends Screen {
 	public void render(net.minecraft.client.gui.GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		super.render(context, mouseX, mouseY, deltaTicks);
 	//? } else {
-	/*public void extractRenderState(net.minecraft.client.gui.GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
+	/*public void extractRenderState(net.minecraft.client.gui.GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
 		super.extractRenderState(context, mouseX, mouseY, deltaTicks);
 	*///? }
 		if (errorCountDown > 0.0f) {

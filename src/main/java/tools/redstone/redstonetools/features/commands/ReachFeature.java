@@ -16,7 +16,7 @@ public class ReachFeature {
 
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, net.minecraft.commands.Commands.CommandSelection registrationEnvironment) {
 			dispatcher.register(net.minecraft.commands.Commands.literal("reach")
-				.requires(Commands.PERMISSION_LEVEL_2)
+				.requires(Commands.getPerm("reach"))
 				.then(net.minecraft.commands.Commands.argument("reach", FloatArgumentType.floatArg(0.0f))
 					.executes(context -> execute(context, true, true))
 				)

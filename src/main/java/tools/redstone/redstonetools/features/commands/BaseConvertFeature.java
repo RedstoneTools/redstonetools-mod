@@ -5,10 +5,10 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+
 import java.math.BigInteger;
 import java.util.Locale;
 import java.util.function.Consumer;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -20,7 +20,7 @@ public class BaseConvertFeature {
 	protected BaseConvertFeature() {
 	}
 
-	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection registrationEnvironment) {
+	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
 			dispatcher.register(Commands.literal("base")
 			.then(Commands.argument("inputNum", StringArgumentType.word())
 				.then(Commands.argument("toBase", IntegerArgumentType.integer(2, 16))
@@ -28,10 +28,7 @@ public class BaseConvertFeature {
 						StringArgumentType.getString(context, "inputNum"),
 						IntegerArgumentType.getInteger(context, "toBase"),
 						(t) -> {
-							try {
-								context.getSource().getPlayerOrException().sendSystemMessage(t);
-							} catch (CommandSyntaxException ignored) {
-							}
+							context.getSource().getPlayer().sendSystemMessage(t);
 						}
 					)))));
 	}
@@ -40,7 +37,7 @@ public class BaseConvertFeature {
 		new SimpleCommandExceptionType(Component.literal("Invalid number"));
 
 	protected int execute(String number, int toBase, Consumer<Component> printToChat)
-		throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+		throws CommandSyntaxException {
 
 		int base = 10;
 		number = number.toLowerCase(Locale.ROOT);
