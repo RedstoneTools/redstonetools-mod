@@ -2,9 +2,10 @@ package tools.redstone.redstonetools.utils;
 
 //? paper
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.extension.platform.AbstractPlayerActor;
 //? fabric
 //import com.sk89q.worldedit.fabric.FabricAdapter;
+
+import com.sk89q.worldedit.entity.Player;
 import com.sk89q.worldedit.world.World;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -16,13 +17,13 @@ public interface PlatformAdapter {
 	/*PlatformAdapter INSTANCE = new FabricAdapterImpl();
 	*///? }
 
-	AbstractPlayerActor adapt(ServerPlayer player);
+	Player adapt(ServerPlayer player);
 	World adapt(Level level);
 
 	//? paper {
 	class PaperAdapter implements PlatformAdapter {
 		@Override
-		public AbstractPlayerActor adapt(ServerPlayer player) {
+		public Player adapt(ServerPlayer player) {
 			return BukkitAdapter.adapt(player.getBukkitEntity());
 		}
 
@@ -34,7 +35,7 @@ public interface PlatformAdapter {
 	//? } else {
 	/*class FabricAdapterImpl implements PlatformAdapter {
 		@Override
-		public AbstractPlayerActor adapt(ServerPlayer player) {
+		public Player adapt(ServerPlayer player) {
 			//? if <26.1 {
 			/^return FabricAdapter.adaptPlayer(player);
 			^///? } else {

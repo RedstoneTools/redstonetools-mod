@@ -25,6 +25,13 @@ stonecutter parameters {
 			"Identifier"
 		)
 	}
+	replacements.string {
+		direction = true
+		replace(
+			"fromGuiGraphicsExtractor",
+			"fromGuiGraphics"
+		)
+	}
 }
 
 publishMods {
