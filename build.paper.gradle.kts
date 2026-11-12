@@ -99,7 +99,7 @@ publishMods {
 	if (providers.environmentVariable("RELEASE_GITHUB").orNull?.toBoolean() ?: false) {
 		github {
 			accessToken.set(providers.environmentVariable("GITHUB_TOKEN"))
-			parent?.project(":")?.tasks?.named("publishGithub")
+			parent(rootProject.tasks.named("publishGithub"))
 		}
 	}
 }
