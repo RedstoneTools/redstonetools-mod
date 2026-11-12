@@ -1,6 +1,7 @@
 plugins {
 	id("java-library")
 	id("xyz.jpenilla.run-paper") version "3.1.0"
+	id("me.modmuss50.mod-publish-plugin") version "2.2.1"
 	id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
 }
 
@@ -73,6 +74,32 @@ tasks {
 		val props = mapOf("version" to version)
 		filesMatching("plugin.yml") {
 			expand(props)
+		}
+	}
+}
+
+publishMods {
+	file.set(tasks.jar.get().archiveFile)
+	type.set(STABLE)
+	modLoaders.add("paper")
+
+	changelog.set("")
+	displayName.set(project.property("mod_version") as String)
+
+	if (providers.environmentVariable("RELEASE_MODRINTH").orNull?.toBoolean() ?: false) {
+		modrinth {
+			accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
+			projectId.set("9ySQVrz2")
+			minecraftVersions.add(project.property("minecraft_version") as String)
+
+			optional("worldedit")
+		}
+	}
+
+	if (providers.environmentVariable("RELEASE_GITHUB").orNull?.toBoolean() ?: false) {
+		github {
+			accessToken.set(providers.environmentVariable("GITHUB_TOKEN"))
+			parent?.project(":")?.tasks?.named("publishGithub")
 		}
 	}
 }
