@@ -47,7 +47,7 @@ public interface PlatformAdapter {
 			//? if <26.1 {
 			/^return FabricAdapter.adapt(level);
 			^///? } else
-			return FabricAdapter.get().fromNativeWorld(level)
+			return FabricAdapter.get().fromNativeWorld(level);
 		}
 	}
 	*///? }
