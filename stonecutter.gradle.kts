@@ -4,6 +4,8 @@ plugins {
 }
 stonecutter.active("26.1.2-paper")
 
+version = providers.gradleProperty("mod_version").get()
+
 stonecutter parameters {
 	val (version, loader) = current.project.split('-', limit = 2)
 
