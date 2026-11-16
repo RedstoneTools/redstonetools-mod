@@ -1,7 +1,7 @@
 package tools.redstone.redstonetools.mixin.accessor;
 
 //? if fabric {
-/*import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.server.commands.GiveCommand;
@@ -18,4 +18,4 @@ public interface GiveCommandAccessor {
 		throw new AssertionError();
 	}
 }
-*///? }
+//? }

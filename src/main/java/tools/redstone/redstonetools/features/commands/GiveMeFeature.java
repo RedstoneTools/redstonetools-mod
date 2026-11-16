@@ -11,15 +11,15 @@ import net.minecraft.commands.arguments.item.ItemInput;
 
 import net.minecraft.commands.CommandSourceStack;
 //? if fabric {
-/*import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandBuildContext;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
-*///? } else {
-import net.minecraft.server.level.ServerPlayer;
+//? } else {
+/*import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-//? }
+*///? }
 
 import java.util.List;
 import java.util.Objects;
@@ -62,9 +62,9 @@ public class GiveMeFeature {
 			server.createCommandSourceStack(), "/give " + context.getSource().getTextName() + " " + itemArgument.serialize(server.registryAccess()) + " " + count);
 		*///? } else {
 		//? if fabric {
-		/*tools.redstone.redstonetools.mixin.accessor.GiveCommandAccessor.invokeGiveItem(context.getSource(), itemArgument, List.of(Objects.requireNonNull(context.getSource().getPlayer())), count);
-		 *///? } else {
-		ServerPlayer player = context.getSource().getPlayerOrException();
+		tools.redstone.redstonetools.mixin.accessor.GiveCommandAccessor.invokeGiveItem(context.getSource(), itemArgument, List.of(Objects.requireNonNull(context.getSource().getPlayer())), count);
+		 //? } else {
+		/*ServerPlayer player = context.getSource().getPlayerOrException();
 		int maxStackSize = itemArgument.item().value().getDefaultMaxStackSize();
 		int remaining = count;
 
@@ -83,7 +83,7 @@ public class GiveMeFeature {
 		}
 
 		player.inventoryMenu.broadcastChanges();
-		//? }
+		*///? }
 		//? }
 		return 0;
 	}

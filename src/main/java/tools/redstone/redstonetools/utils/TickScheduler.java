@@ -6,7 +6,7 @@ package tools.redstone.redstonetools.utils;
  */
 public class TickScheduler {
 	//? if fabric {
-	/*private static final java.util.List<Scheduled> SCHEDULED = new java.util.ArrayList<>();
+	private static final java.util.List<Scheduled> SCHEDULED = new java.util.ArrayList<>();
 	private static final java.util.List<Scheduled> PENDING = new java.util.ArrayList<>();
 
 	private static final class Scheduled {
@@ -49,8 +49,8 @@ public class TickScheduler {
 	public static void runLater(Runnable task, long ticks) {
 		PENDING.add(new Scheduled(task, Math.max(1L, ticks)));
 	}
-	*///? } else {
-	private static org.bukkit.plugin.Plugin plugin;
+	//? } else {
+	/*private static org.bukkit.plugin.Plugin plugin;
 
 	public static void init(org.bukkit.plugin.Plugin owner) {
 		plugin = owner;
@@ -59,7 +59,7 @@ public class TickScheduler {
 	public static void runLater(Runnable task, long ticks) {
 		org.bukkit.Bukkit.getScheduler().runTaskLater(plugin, task, Math.max(1L, ticks));
 	}
-	//? }
+	*///? }
 
 	public static void runNextTick(Runnable task) {
 		runLater(task, 1L);

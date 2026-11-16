@@ -1,16 +1,16 @@
 package tools.redstone.redstonetools.packets;
 
 //? if fabric {
-/*import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-*///? } else {
-import io.netty.buffer.Unpooled;
+//? } else {
+/*import io.netty.buffer.Unpooled;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.plugin.Plugin;
-//? }
+*///? }
 import net.minecraft.server.level.ServerPlayer;
 import tools.redstone.redstonetools.RedstoneTools;
 import tools.redstone.redstonetools.features.toggleable.AutoDustFeature;
@@ -19,11 +19,11 @@ import tools.redstone.redstonetools.features.toggleable.ClickContainerFeature;
 
 public class RedstoneToolsPackets {
 	//? if fabric {
-	/*public static void registerPackets(Object ignored) {
+	public static void registerPackets(Object ignored) {
 		//? if <26.1 {
-		/^PayloadTypeRegistry.playS2C().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
+		/*PayloadTypeRegistry.playS2C().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
 		PayloadTypeRegistry.playC2S().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
-		^///? } else {
+		*///? } else {
 		PayloadTypeRegistry.serverboundPlay().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(SetFeatureEnabledPayload.ID, SetFeatureEnabledPayload.CODEC);
 		//? }
@@ -35,8 +35,8 @@ public class RedstoneToolsPackets {
 	public static void send(ServerPlayer player, SetFeatureEnabledPayload payload) {
 		ServerPlayNetworking.send(player, payload);
 	}
-	*///? } else {
-	public static final String CHANNEL = SetFeatureEnabledPayload.SET_ENABLED_PAYLOAD_ID.toString();
+	//? } else {
+	/*public static final String CHANNEL = SetFeatureEnabledPayload.SET_ENABLED_PAYLOAD_ID.toString();
 
 	private static Plugin plugin;
 
@@ -81,7 +81,7 @@ public class RedstoneToolsPackets {
 			buf.release();
 		}
 	}
-	//? }
+	*///? }
 
 	/** Shared by both platforms: applies a received toggle to the matching feature. */
 	private static void applyToFeature(SetFeatureEnabledPayload payload, ServerPlayer player) {

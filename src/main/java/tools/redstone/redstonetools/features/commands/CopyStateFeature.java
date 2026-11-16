@@ -4,17 +4,17 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import tools.redstone.redstonetools.Commands;
 //? if fabric {
-/*import tools.redstone.redstonetools.mixin.AbstractBlockMixin;
+import tools.redstone.redstonetools.mixin.AbstractBlockMixin;
 import tools.redstone.redstonetools.mixin.features.ServerPlayNetworkHandlerAccessor;
-*///? } else {
-import net.minecraft.core.BlockPos;
+//? } else {
+/*import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.TagValueOutput;
 import tools.redstone.redstonetools.RedstoneTools;
-//? }
+*///? }
 import tools.redstone.redstonetools.utils.BlockInfo;
 
 import java.util.ArrayList;
@@ -44,13 +44,13 @@ public class CopyStateFeature extends PickBlockFeature {
 	protected ItemStack getItemStack(CommandContext<CommandSourceStack> context, BlockInfo blockInfo) {
 		Objects.requireNonNull(blockInfo);
 		//? if fabric {
-		/*ItemStack stack = ((AbstractBlockMixin) blockInfo.state.getBlock()).callGetCloneItemStack(context.getSource().getLevel(), blockInfo.pos, blockInfo.state, true);
+		ItemStack stack = ((AbstractBlockMixin) blockInfo.state.getBlock()).callGetCloneItemStack(context.getSource().getLevel(), blockInfo.pos, blockInfo.state, true);
 		ServerPlayNetworkHandlerAccessor.callAddBlockDataToItem(blockInfo.state, context.getSource().getLevel(), blockInfo.pos, stack);
-		*///? } else {
-		ServerLevel level = context.getSource().getLevel();
+		//? } else {
+		/*ServerLevel level = context.getSource().getLevel();
 		ItemStack stack = blockInfo.state.getCloneItemStack(level, blockInfo.pos, true);
 		addBlockDataToItem(level, blockInfo.pos, stack);
-		//? }
+		*///? }
 
 		List<Component> lore = new ArrayList<>();
 		if (blockInfo.entity != null) {
@@ -76,7 +76,7 @@ public class CopyStateFeature extends PickBlockFeature {
 	}
 
 	//? if paper {
-	/** This is only a paper helper. We'll need to see if a refactor is needed at some point. */
+	/*/^* This is only a paper helper. We'll need to see if a refactor is needed at some point. ^/
 	private static void addBlockDataToItem(ServerLevel level, BlockPos pos, ItemStack stack) {
 		BlockEntity blockEntity = level.getBlockEntity(pos);
 		if (blockEntity == null) {
@@ -90,5 +90,5 @@ public class CopyStateFeature extends PickBlockFeature {
 			stack.applyComponents(blockEntity.collectComponents());
 		}
 	}
-	//? }
+	*///? }
 }

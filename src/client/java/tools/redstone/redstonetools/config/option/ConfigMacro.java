@@ -4,14 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.config.options.ConfigHotkey;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.hotkeys.IKeybind;
+import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import kr1v.malilibApi.MalilibApi;
 import kr1v.malilibApi.config._new.CustomConfigBase;
-import kr1v.malilibApi.interfaces.IHotkeyContainer;
+import kr1v.malilibApi.interfaces.IKeybindContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import tools.redstone.redstonetools.config.MacroManager;
@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements IHotkeyContainer {
+public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements IKeybindContainer {
 	private String macroName;
 	private boolean enabled;
 	private boolean muted;
 	private List<CommandAction> actions;
-	private final IHotkey hotkey;
+	private final IKeybind keybind;
 
 	public ConfigMacro(String macroName, boolean enabled, boolean muted, List<CommandAction> actions, String keybind, KeybindSettings settings) {
 		this("",  macroName, enabled, muted, actions, keybind, settings, "", "", "");
@@ -40,8 +40,8 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 		this.enabled = enabled;
 		this.muted = muted;
 		this.actions = new ArrayList<>(actions);
-		this.hotkey = new ConfigHotkey("", keybind, settings, "", "", "");
-		this.hotkey.getKeybind().setCallback((t, g) -> {
+		this.keybind = KeybindMulti.fromStorageString(keybind, settings);
+		this.keybind.setCallback((t, g) -> {
 			this.run();
 			return true;
 		});
@@ -104,8 +104,8 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 
 	@Override
 	public void resetToDefault() {
-		this.hotkey.resetToDefault();
-		this.hotkey.getKeybind().resetSettingsToDefaults();
+		this.keybind.resetToDefault();
+		this.keybind.resetSettingsToDefaults();
 		this.actions = new ArrayList<>();
 		this.muted = false;
 		this.enabled = true;
@@ -116,7 +116,7 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 			@Override
 			protected boolean onMouseClickedImpl(/*? if >=1.21.10 {*/net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick/*? } else {*//*int mouseX, int mouseY, int mouseButton*//*? }*/) {
 				super.onMouseClickedImpl(/*? if >=1.21.10 {*/click, doubleClick/*? } else {*//*mouseX, mouseY, mouseButton*//*? }*/);
-				GuiBase.openGui(new GuiMacroEditor(Component.nullToEmpty(configMacro.macroName), configMacro,/*? if <26.2 {*/Minecraft.getInstance().screen/*?} else {*/ /*Minecraft.getInstance().gui.screen()*//*?}*/
+				GuiBase.openGui(new GuiMacroEditor(Component.nullToEmpty(configMacro.macroName), configMacro,/*? if <26.2 {*//*Minecraft.getInstance().screen*//*?} else {*/ Minecraft.getInstance().gui.screen()/*?}*/
 				));
 				return true;
 			}
@@ -124,8 +124,8 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 	}
 
 	@Override
-	public List<IHotkey> getHotkeys() {
-		return List.of(this.hotkey);
+	public List<IKeybind> getKeybinds() {
+		return List.of(this.keybind);
 	}
 
 	@Override
@@ -163,17 +163,17 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 	}
 
 	public String getKeybind() {
-		return this.hotkey.getStringValue();
+		return this.keybind.getStringValue();
 	}
 	public void setKeybind(String keybind) {
-		this.hotkey.getKeybind().setValueFromString(keybind);
+		this.keybind.setValueFromString(keybind);
 	}
 
 	public KeybindSettings getSettings() {
-		return this.hotkey.getKeybind().getSettings();
+		return this.keybind.getSettings();
 	}
 	public void setSettings(KeybindSettings settings) {
-		this.hotkey.getKeybind().setSettings(settings);
+		this.keybind.setSettings(settings);
 	}
 
 	private final AtomicInteger layers = new AtomicInteger(0);
@@ -184,9 +184,9 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 		if (layers.getAndSet(layers.get() + 1) > 100) {
 			assert Minecraft.getInstance().player != null;
 			//? if <26.1 {
-			Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
-			 //? } else
-			//Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
+			/*Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
+			 *///? } else
+			Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
 			return;
 		}
 		try {
@@ -197,9 +197,9 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 			try {
 				assert Minecraft.getInstance().player != null;
 				//? if <26.1 {
-				Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
-				 //? } else
-				//Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
+				/*Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
+				 *///? } else
+				Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
 			} catch (NoClassDefFoundError e) {
 				// yeah we are absolutely cooked, there is no way to recover from this. I'm not even sure this can happen
 				// actually there's probably a better throwable to be thrown here. whatever.

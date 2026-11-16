@@ -9,11 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 //? if paper {
-import org.bukkit.configuration.file.YamlConfiguration;
-//? } else {
-/*import java.util.Properties;
+/*import org.bukkit.configuration.file.YamlConfiguration;
+*///? } else {
+import java.util.Properties;
 import java.io.Reader;
-*///? }
+//? }
 
 public class ServerConfig {
 
@@ -53,7 +53,7 @@ public class ServerConfig {
 	}
 
 	//? if fabric {
-	/*private static Map<String, String> readRaw(Path file) {
+	private static Map<String, String> readRaw(Path file) {
 		Map<String, String> raw = new HashMap<>();
 		if (!Files.exists(file)) {
 			return raw;
@@ -97,8 +97,8 @@ public class ServerConfig {
 			RedstoneTools.LOGGER.error("Could not write {}", file, ex);
 		}
 	}
-	*///? } else {
-	private static Map<String, String> readRaw(Path file) {
+	//? } else {
+	/*private static Map<String, String> readRaw(Path file) {
 		Map<String, String> raw = new HashMap<>();
 		if (!Files.exists(file)) {
 			return raw;
@@ -133,5 +133,5 @@ public class ServerConfig {
 			RedstoneTools.LOGGER.error("Could not write {}", file, ex);
 		}
 	}
-	//? }
+	*///? }
 }

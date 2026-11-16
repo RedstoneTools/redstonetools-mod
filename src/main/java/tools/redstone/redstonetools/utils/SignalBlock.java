@@ -30,9 +30,9 @@ public enum SignalBlock {
 	 * container is used up to the point where a comparator can no longer read it.
 	 */
 	//? if <26.2 {
-	private static final int COMMAND_BLOCK_THRESHOLD = 1780;
-	 //?} else
-	//private static final int COMMAND_BLOCK_THRESHOLD = 16;
+	/*private static final int COMMAND_BLOCK_THRESHOLD = 1780;
+	 *///?} else
+	private static final int COMMAND_BLOCK_THRESHOLD = 16;
 
 	private final Block block;
 	private final SignalBlockSupplier supplier;
