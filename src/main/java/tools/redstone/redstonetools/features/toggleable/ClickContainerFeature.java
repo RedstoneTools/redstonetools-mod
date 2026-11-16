@@ -2,9 +2,9 @@ package tools.redstone.redstonetools.features.toggleable;
 
 import com.mojang.brigadier.CommandDispatcher;
 //? if fabric {
-/*import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.world.InteractionResult;
- *///? }
+ //? }
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -33,7 +33,7 @@ public class ClickContainerFeature extends ToggleableFeature {
 	private static long lastTime = -1;
 
 	//? if fabric {
-	/*static {
+	static {
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 			if (!(player instanceof ServerPlayer serverPlayer)) {
 				return InteractionResult.PASS;
@@ -43,7 +43,7 @@ public class ClickContainerFeature extends ToggleableFeature {
 				: InteractionResult.PASS;
 		});
 	}
-	*///? }
+	//? }
 
 	public static void handleIntLevelProperty(Level world, BlockPos pos, BlockState state, IntegerProperty prop, Block resetBlock, ServerPlayer player) {
 		if (prop == null) return;

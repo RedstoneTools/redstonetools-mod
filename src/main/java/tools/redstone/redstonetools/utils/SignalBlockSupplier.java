@@ -21,10 +21,10 @@ import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.block.Block;
 //? if >=26.2 {
-/*import net.minecraft.world.level.block.entity.BlockEntityTypes;
-*///?} else if >=1.21.10 {
-import net.minecraft.world.level.block.entity.BlockEntityType;
-//?}
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
+//?} else if >=1.21.10 {
+/*import net.minecraft.world.level.block.entity.BlockEntityType;
+*///?}
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.Collections;
@@ -57,7 +57,7 @@ public interface SignalBlockSupplier {
 				DataComponents.BLOCK_ENTITY_DATA,
 				TypedEntityData.of(
 					//~ if >=26.2 'BlockEntityType' -> 'BlockEntityTypes'
-					BlockEntityType.LECTERN,
+					BlockEntityTypes.LECTERN,
 					blockEntityData
 				)
 			);
@@ -130,7 +130,7 @@ public interface SignalBlockSupplier {
 			commandBlockStack.set(
 				DataComponents.BLOCK_ENTITY_DATA,
 				//~ if >=26.2 'BlockEntityType' -> 'BlockEntityTypes'
-				TypedEntityData.of(BlockEntityType.COMMAND_BLOCK, blockEntityNbt)
+				TypedEntityData.of(BlockEntityTypes.COMMAND_BLOCK, blockEntityNbt)
 			);
 			//?}
 			return commandBlockStack;
@@ -181,10 +181,10 @@ public interface SignalBlockSupplier {
 			stack.set(
 				DataComponents.BLOCK_ENTITY_DATA,
 				//? if >=26.2 {
-				/*TypedEntityData.of(BlockEntityTypes.JUKEBOX, blockEntityData)
-				 *///?} else {
-				TypedEntityData.of(BlockEntityType.JUKEBOX, blockEntityData)
-				//?}
+				TypedEntityData.of(BlockEntityTypes.JUKEBOX, blockEntityData)
+				 //?} else {
+				/*TypedEntityData.of(BlockEntityType.JUKEBOX, blockEntityData)
+				*///?}
 			);
 			//?}
 
@@ -204,9 +204,9 @@ public interface SignalBlockSupplier {
 	private static Item getBestItem(int signalStrength, int slots) {
 		if (signalStrength > 15)
 			//? if <26.2 {
-			return Items.WHITE_SHULKER_BOX;
-			//?} else
-			//return Items.DYED_SHULKER_BOX.white();
+			/*return Items.WHITE_SHULKER_BOX;
+			*///?} else
+			return Items.DYED_SHULKER_BOX.white();
 		else if (slots >= 15)
 			return Items.WOODEN_SHOVEL;
 		else

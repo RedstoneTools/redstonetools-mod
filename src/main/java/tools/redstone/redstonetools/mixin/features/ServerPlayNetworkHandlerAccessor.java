@@ -1,7 +1,7 @@
 package tools.redstone.redstonetools.mixin.features;
 
 //? if fabric {
-/*import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.item.ItemStack;
@@ -16,4 +16,4 @@ public interface ServerPlayNetworkHandlerAccessor {
 		throw new IllegalStateException();
 	}
 }
-*///? }
+//? }

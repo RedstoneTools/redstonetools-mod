@@ -2,7 +2,7 @@ plugins {
     id("dev.kikugie.stonecutter")
 	id("me.modmuss50.mod-publish-plugin") version "2.2.1"
 }
-stonecutter.active("26.1.2-paper")
+stonecutter.active("26.3-fabric")
 
 version = providers.gradleProperty("mod_version").get()
 

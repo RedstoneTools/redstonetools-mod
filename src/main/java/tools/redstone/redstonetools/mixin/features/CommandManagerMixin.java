@@ -1,7 +1,7 @@
 package tools.redstone.redstonetools.mixin.features;
 
 //? if fabric {
-/*import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.ParseResults;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,4 +23,4 @@ public class CommandManagerMixin {
 		}
 	}
 }
-*///? }
+//? }

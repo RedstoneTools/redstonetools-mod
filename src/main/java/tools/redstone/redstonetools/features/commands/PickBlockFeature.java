@@ -4,8 +4,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 //? if fabric {
-/*import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
- *///? }
+import tools.redstone.redstonetools.mixin.features.PlayerInventoryAccessor;
+ //? }
 import tools.redstone.redstonetools.utils.BlockInfo;
 
 import javax.annotation.Nullable;
@@ -38,23 +38,23 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
 				playerInventory.setSelectedSlot(i);
 			} else {
 				//? if fabric {
-				/*playerInventory.pickSlot(i);
-				 *///? } else {
-				playerInventory.pickSlot(i, playerInventory.getSuitableHotbarSlot());
-				//?}
+				playerInventory.pickSlot(i);
+				 //? } else {
+				/*playerInventory.pickSlot(i, playerInventory.getSuitableHotbarSlot());
+				*///?}
 			}
 		} else if (player.hasInfiniteMaterials()) {
 			//? if fabric {
-			/*playerInventory.addAndPickItem(stack);
-			 *///? } else {
-			playerInventory.addAndPickItem(stack, playerInventory.getSuitableHotbarSlot());
-			//?}
+			playerInventory.addAndPickItem(stack);
+			 //? } else {
+			/*playerInventory.addAndPickItem(stack, playerInventory.getSuitableHotbarSlot());
+			*///?}
 		}
 		//? if fabric {
-		/*int selected = ((PlayerInventoryAccessor) playerInventory).getSelected();
-		 *///? } else {
-		int selected = playerInventory.getSelectedSlot();
-		//?}
+		int selected = ((PlayerInventoryAccessor) playerInventory).getSelected();
+		 //? } else {
+		/*int selected = playerInventory.getSelectedSlot();
+		*///?}
 		context.getSource().getPlayer().connection.send(new ClientboundSetHeldSlotPacket(selected));
 		player.inventoryMenu.broadcastChanges();
 		return 1;
@@ -63,8 +63,8 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
 	// reimplementation from 1.18.2
 	public void addPickBlock(Inventory pi, ItemStack stack) {
 		//? if fabric {
-		/*var accessor = (PlayerInventoryAccessor) pi;
-		 *///? }
+		var accessor = (PlayerInventoryAccessor) pi;
+		 //? }
 		int i = pi.findSlotMatchingItem(stack);
 		if (Inventory.isHotbarSlot(i)) {
 			//? if <=1.21.4 {
@@ -80,23 +80,23 @@ public abstract class PickBlockFeature extends BlockRaycastFeature {
 			 *///? } else
 			pi.setSelectedSlot(pi.getSuitableHotbarSlot());
 			//? if fabric {
-			/*if (!accessor.getItems().get(accessor.getSelected()).isEmpty() && (j = pi.getFreeSlot()) != -1) {
+			if (!accessor.getItems().get(accessor.getSelected()).isEmpty() && (j = pi.getFreeSlot()) != -1) {
 				accessor.getItems().set(j, accessor.getItems().get(accessor.getSelected()));
 			}
 			accessor.getItems().set(accessor.getSelected(), stack);
-			*///? } else {
-			var items = pi.getNonEquipmentItems();
+			//? } else {
+			/*var items = pi.getNonEquipmentItems();
 			int selected = pi.getSelectedSlot();
 			if (!items.get(selected).isEmpty() && (j = pi.getFreeSlot()) != -1) {
 				items.set(j, items.get(selected));
 			}
 			items.set(selected, stack);
-			//? }
+			*///? }
 		} else {
 			//? if fabric {
-			/*pi.pickSlot(i);
-			 *///? } else
-			pi.pickSlot(i, pi.getSuitableHotbarSlot());
+			pi.pickSlot(i);
+			 //? } else
+			//pi.pickSlot(i, pi.getSuitableHotbarSlot());
 		}
 	}
 

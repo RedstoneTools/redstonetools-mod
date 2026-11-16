@@ -1,7 +1,7 @@
 package tools.redstone.redstonetools.mixin;
 
 //? if fabric {
-/*import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -14,4 +14,4 @@ public interface AbstractBlockMixin {
 	@Invoker
 	ItemStack callGetCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData);
 }
-*///? }
+//? }

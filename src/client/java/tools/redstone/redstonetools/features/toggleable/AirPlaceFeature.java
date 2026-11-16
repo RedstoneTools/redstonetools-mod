@@ -7,12 +7,12 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 /*import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
  *///?} else if <26.1 {
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+/*import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
-//?} else {
-/*import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+*///?} else {
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
-*///? }
+//? }
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 //? if <=1.21.10  {
@@ -20,9 +20,9 @@ import net.minecraft.client.Minecraft;
 *///? } else {
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 //? if <26.1 {
-import net.minecraft.client.renderer.state.BlockOutlineRenderState;
-//? } else
-//import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
+/*import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+*///? } else
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 //? }
 //? if =1.21.10
 //import net.minecraft.client.renderer.state.BlockOutlineRenderState;
@@ -49,10 +49,10 @@ import tools.redstone.redstonetools.utils.RaycastUtils;
 import java.util.function.BiConsumer;
 
 //? if >=26.1 {
-/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
-*///? } else {
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-//? }
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+//? } else {
+/*import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+*///? }
 
 public class AirPlaceFeature extends ClientToggleableFeature {
 	public static final AirPlaceFeature INSTANCE = new AirPlaceFeature();
@@ -96,13 +96,13 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 	}
 
 	//? if <26.1 {
-	private static void renderBlockOutline(WorldRenderContext context, Minecraft client, BlockPos blockPos, BlockState blockState) {
-	//? } else
-	//private static void renderBlockOutline(LevelRenderContext context, Minecraft client, BlockPos blockPos, BlockState blockState) {
+	/*private static void renderBlockOutline(WorldRenderContext context, Minecraft client, BlockPos blockPos, BlockState blockState) {
+	*///? } else
+	private static void renderBlockOutline(LevelRenderContext context, Minecraft client, BlockPos blockPos, BlockState blockState) {
 		//? if <26.2 {
-		Camera camera = client.gameRenderer.getMainCamera();
-		 //?} else
-		//Camera camera = client.gameRenderer.mainCamera();
+		/*Camera camera = client.gameRenderer.getMainCamera();
+		 *///?} else
+		Camera camera = client.gameRenderer.mainCamera();
 		Vec3 camPos = camera
 			//? if <=1.21.5 {
 			/*.getPosition();
@@ -113,7 +113,7 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 		//?}
 
 		//? if >=26.2 {
-		/*var poseStack = context.poseStack();
+		var poseStack = context.poseStack();
 		poseStack.pushPose();
 		poseStack.translate(blockPos.getX() - camPos.x, blockPos.getY() - camPos.y, blockPos.getZ() - camPos.z);
 		context.submitNodeCollector().submitShapeOutline(
@@ -125,21 +125,21 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			false
 		);
 		poseStack.popPose();
-		*///?} else {
+		//?} else {
 
-		//? if <26.1 {
-		VertexConsumer consumer = context.consumers().getBuffer(
-		 //? } else
-		//VertexConsumer consumer = context.bufferSource().getBuffer(
+		/*//? if <26.1 {
+		/^VertexConsumer consumer = context.consumers().getBuffer(
+		 ^///? } else
+		VertexConsumer consumer = context.bufferSource().getBuffer(
 			//? if <=1.21.10 {
-			/*RenderType.lines()
-			 *///?} else {
+			/^RenderType.lines()
+			 ^///?} else {
 			RenderTypes.lines()
 			//?}
 		);
 
 		//? if <1.21.10 {
-			/*((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
+			/^((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
 				context.matrixStack(),
 				consumer,
 				client.player,
@@ -148,44 +148,44 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 				blockState,
 				CommonColors.BLACK
 			);
-			*///?} else {
+			^///?} else {
 		//? if <26.1 {
-		((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
-		 //? } else
-		//((WorldRendererInvoker) context.levelRenderer()).invokeRenderHitOutline(
+		/^((WorldRendererInvoker) context.worldRenderer()).invokeRenderHitOutline(
+		 ^///? } else
+		((WorldRendererInvoker) context.levelRenderer()).invokeRenderHitOutline(
 			//? if <26.1 {
-			context.matrices(),
-			 //? } else
-			//context.poseStack(),
+			/^context.matrices(),
+			 ^///? } else
+			context.poseStack(),
 			consumer,
 			camPos.x, camPos.y, camPos.z,
 			//? if <26.1 {
-				new BlockOutlineRenderState(
+				/^new BlockOutlineRenderState(
 					blockPos,
 					false,
 					false,
 					blockState.getShape(client.level, blockPos)
 				),
-				//? } else {
-			/*new BlockOutlineRenderState(
+				^///? } else {
+			new BlockOutlineRenderState(
 				blockPos,
 				false,
 				false,
 				blockState.getShape(client.level, blockPos, net.minecraft.world.phys.shapes.CollisionContext.of(camera.entity()))
 			),
-			*///? }
-			CommonColors.BLACK/*? if >=1.21.11 {*/, client.getWindow().getAppropriateLineWidth()/*?}*/
+			//? }
+			CommonColors.BLACK/^? if >=1.21.11 {^/, client.getWindow().getAppropriateLineWidth()/^?}^/
 		);
 		//?}
-		//?}
+		*///?}
 	}
 
 	{
 
 		//? if <26.1 {
-		BiConsumer<WorldRenderContext, HitResult> listener = (context, crosshairTarget) -> {
-		//? } else
-		//BiConsumer<LevelRenderContext, HitResult> listener = (context, crosshairTarget) -> {
+		/*BiConsumer<WorldRenderContext, HitResult> listener = (context, crosshairTarget) -> {
+		*///? } else
+		BiConsumer<LevelRenderContext, HitResult> listener = (context, crosshairTarget) -> {
 			if (!isEnabled())
 				return;
 			if (!General.AIRPLACE_SHOW_OUTLINE.getBooleanValue())
@@ -227,9 +227,9 @@ public class AirPlaceFeature extends ClientToggleableFeature {
 			return true;
 		});
 		*///?} else if <26.1 {
-		WorldRenderEvents.END_MAIN.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
-		//?} else {
-		/*LevelRenderEvents.BEFORE_GIZMOS.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
-		*///? }
+		/*WorldRenderEvents.END_MAIN.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
+		*///?} else {
+		LevelRenderEvents.BEFORE_GIZMOS.register(context -> listener.accept(context, Minecraft.getInstance().hitResult));
+		//? }
 	}
 }

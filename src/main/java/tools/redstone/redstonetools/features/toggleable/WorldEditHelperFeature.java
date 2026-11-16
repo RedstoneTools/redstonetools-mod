@@ -5,7 +5,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 //? fabric
-//import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -206,11 +206,11 @@ public class WorldEditHelperFeature extends ToggleableFeature {
 	}
 
 	//? if fabric {
-	/*static {
+	static {
 		ServerTickEvents.END_SERVER_TICK.register(WorldEditHelperFeature.INSTANCE::checkPlayers);
 		// paper handled in RedstoneToolsListener
 	}
-	*///? }
+	//? }
 
 	@Override
 	public String getName() {

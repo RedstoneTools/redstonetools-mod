@@ -195,14 +195,14 @@ public class PinFeature {
 
 			boolean canceled = false;
 			//? paper {
-			var event = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(
+			/*var event = org.bukkit.craftbukkit.event.CraftEventFactory.callPlayerInteractEvent(
 				player,
 				org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK,
 				pin.pos(),
 				Direction.DOWN,
 				ItemStack.EMPTY,
 				InteractionHand.MAIN_HAND);
-			//? }
+			*///? }
 			if (!canceled) {
 				level.setBlock(pin.pos(), updated, Block.UPDATE_ALL);
 				updateAttachedBlock(level, pin.pos(), updated);

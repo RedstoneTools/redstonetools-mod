@@ -146,9 +146,9 @@ public class SignSearchFeature {
 		var lines = new ArrayList<SignLine>();
 		//~ if >=26.3 'false)' -> 'false).toArray(Component[]::new)' {
 		//~ if >=26.3 'getFrontText()' -> 'getText(net.minecraft.world.level.block.entity.SignTextSlot.FRONT)'
-		appendSide(lines, "Front", sign.getFrontText().getMessages(false));
+		appendSide(lines, "Front", sign.getText(net.minecraft.world.level.block.entity.SignTextSlot.FRONT).getMessages(false).toArray(Component[]::new));
 		//~ if >=26.3 'getBackText()' -> 'getText(net.minecraft.world.level.block.entity.SignTextSlot.BACK)'
-		appendSide(lines, "Back", sign.getBackText().getMessages(false));
+		appendSide(lines, "Back", sign.getText(net.minecraft.world.level.block.entity.SignTextSlot.BACK).getMessages(false).toArray(Component[]::new));
 		//~ }
 
 		return lines;

@@ -116,7 +116,7 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 			@Override
 			protected boolean onMouseClickedImpl(/*? if >=1.21.10 {*/net.minecraft.client.input.MouseButtonEvent click, boolean doubleClick/*? } else {*//*int mouseX, int mouseY, int mouseButton*//*? }*/) {
 				super.onMouseClickedImpl(/*? if >=1.21.10 {*/click, doubleClick/*? } else {*//*mouseX, mouseY, mouseButton*//*? }*/);
-				GuiBase.openGui(new GuiMacroEditor(Component.nullToEmpty(configMacro.macroName), configMacro,/*? if <26.2 {*/Minecraft.getInstance().screen/*?} else {*/ /*Minecraft.getInstance().gui.screen()*//*?}*/
+				GuiBase.openGui(new GuiMacroEditor(Component.nullToEmpty(configMacro.macroName), configMacro,/*? if <26.2 {*//*Minecraft.getInstance().screen*//*?} else {*/ Minecraft.getInstance().gui.screen()/*?}*/
 				));
 				return true;
 			}
@@ -184,9 +184,9 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 		if (layers.getAndSet(layers.get() + 1) > 100) {
 			assert Minecraft.getInstance().player != null;
 			//? if <26.1 {
-			Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
-			 //? } else
-			//Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
+			/*Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
+			 *///? } else
+			Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
 			return;
 		}
 		try {
@@ -197,9 +197,9 @@ public class ConfigMacro extends CustomConfigBase<ConfigMacro, Void> implements 
 			try {
 				assert Minecraft.getInstance().player != null;
 				//? if <26.1 {
-				Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
-				 //? } else
-				//Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
+				/*Minecraft.getInstance().player.displayClientMessage(Component.literal("Please don't cause a stackoverflow :("), false);
+				 *///? } else
+				Minecraft.getInstance().player.sendSystemMessage(Component.literal("Please don't cause a stackoverflow :("));
 			} catch (NoClassDefFoundError e) {
 				// yeah we are absolutely cooked, there is no way to recover from this. I'm not even sure this can happen
 				// actually there's probably a better throwable to be thrown here. whatever.
