@@ -122,7 +122,8 @@ tasks.processResources {
 	val properties = mapOf(
 		"version" to project.version,
 		"minecraft_version" to project.property("minecraft_version"),
-		"loader_version" to project.property("loader_version")
+		"loader_version" to project.property("loader_version"),
+		"malilib_api_version" to project.property("malilib_api_version")
 	)
 	properties.forEach { inputs.property(it.key, it.value) }
 	filteringCharset = "UTF-8"
@@ -186,7 +187,10 @@ publishMods {
 
 			requires("fabric-api")
 			requires("malilib")
-			requires("malilib-api")
+			requires {
+				slug.set("malilib-api")
+				version.set("${project.property("malilib_api_version")}+${project.property("malilib_api_mc_version")}")
+			}
 			optional("worldedit")
 		}
 	}
