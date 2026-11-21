@@ -43,7 +43,7 @@ public abstract class ToggleableFeature {
 	public void enable(ServerPlayer player) {
 		enabledFor.add(player.getUUID());
 		RedstoneToolsPackets.send(player, new SetFeatureEnabledPayload(this.getName(), true));
-		onEnable();
+		onEnable(player);
 	}
 
 	public int enable(CommandSourceStack source) throws CommandSyntaxException {
@@ -55,7 +55,7 @@ public abstract class ToggleableFeature {
 	public void disable(ServerPlayer player) {
 		enabledFor.remove(player.getUUID());
 		RedstoneToolsPackets.send(player, new SetFeatureEnabledPayload(this.getName(), false));
-		onDisable();
+		onDisable(player);
 	}
 
 	public int disable(CommandSourceStack source) throws CommandSyntaxException {
@@ -66,9 +66,9 @@ public abstract class ToggleableFeature {
 
 	public abstract String getName();
 
-	protected void onEnable() {
+	protected void onEnable(ServerPlayer player) {
 	}
 
-	protected void onDisable() {
+	protected void onDisable(ServerPlayer player) {
 	}
 }

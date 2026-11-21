@@ -42,6 +42,6 @@
   "recommends": {
     "worldedit": "*",
 	"malilib": "*",
-	"malilib-api": "*"
+	"malilib-api": ">=${malilib_api_version}"
   }
 }

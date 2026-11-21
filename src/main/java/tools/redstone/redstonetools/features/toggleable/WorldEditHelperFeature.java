@@ -10,6 +10,8 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.numbers.BlankFormat;
+import net.minecraft.network.protocol.game.ClientboundResetScorePacket;
 import net.minecraft.network.protocol.game.ClientboundSetDisplayObjectivePacket;
 import net.minecraft.network.protocol.game.ClientboundSetObjectivePacket;
 import net.minecraft.network.protocol.game.ClientboundSetScorePacket;
@@ -19,10 +21,7 @@ import net.minecraft.world.scores.*;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import tools.redstone.redstonetools.utils.WorldEditUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static net.minecraft.commands.Commands.literal;
@@ -30,13 +29,17 @@ import static net.minecraft.commands.Commands.literal;
 public class WorldEditHelperFeature extends ToggleableFeature {
 	public static final WorldEditHelperFeature INSTANCE = new WorldEditHelperFeature();
 
+	private final Map<UUID, PlayerHelperState> playerStates = new HashMap<>();
+
 	protected WorldEditHelperFeature() {}
 
 	public void checkPlayers(MinecraftServer server) {
+		playerStates.keySet().removeIf(uuid -> server.getPlayerList().getPlayer(uuid) == null);
 		server.getPlayerList().getPlayers().forEach(this::setPlayerSelection);
 	}
 
 	private void setPlayerSelection(ServerPlayer player) {
+		if (!isEnabled(player)) return;
 		Region selection;
 		try {
 			selection = WorldEditUtils.getSelection(player);
@@ -97,31 +100,27 @@ public class WorldEditHelperFeature extends ToggleableFeature {
 
 		lines.add(dimensions);
 
+		PlayerHelperState state = playerStates.computeIfAbsent(player.getUUID(), ignored -> createHelperState(player));
+
+		state.update(player, lines);
+	}
+
+	private PlayerHelperState createHelperState(ServerPlayer player) {
 		Scoreboard scoreboard = new Scoreboard();
 
-
 		String name = Integer.toString(ThreadLocalRandom.current().nextInt(1234567890));
-		scoreboard.addObjective(
+		Objective objective = scoreboard.addObjective(
 			name,
 			ObjectiveCriteria.DUMMY,
-			Component.literal("Current selection").withColor(/*NamedTextColor.RED.value()*/0xff5555),
+			Component.literal("Current selection").withColor(0xFF5555),
 			ObjectiveCriteria.RenderType.INTEGER,
 			true,
-			null
+			BlankFormat.INSTANCE
 		);
 
-		Objective theObjective = scoreboard.getObjective(name);
-		for(net.minecraft.world.scores.DisplaySlot displaySlot : net.minecraft.world.scores.DisplaySlot.values()) {
-			if (scoreboard.getDisplayObjective(displaySlot) == theObjective) {
-				scoreboard.setDisplayObjective(displaySlot, null);
-			}
-		}
+		player.connection.send(new ClientboundSetObjectivePacket(objective, ClientboundSetObjectivePacket.METHOD_ADD));
 
-		DisplaySlot displaySlot = DisplaySlot.SIDEBAR;
-		scoreboard.setDisplayObjective(displaySlot, theObjective);
-
-		addLinesToScoreboard(theObjective, lines);
-		setScoreboard(player, scoreboard);
+		return new PlayerHelperState(scoreboard, objective);
 	}
 
 	private Component format(BlockVector3 vector) {
@@ -147,62 +146,83 @@ public class WorldEditHelperFeature extends ToggleableFeature {
 		}
 	}
 
-	public static void setScoreboard(ServerPlayer player, Scoreboard scoreboard) {
-		for (Objective objective : scoreboard.getObjectives()) {
-			player.connection.send(
-				new ClientboundSetObjectivePacket(
-					objective,
-					ClientboundSetObjectivePacket.METHOD_ADD
-				)
-			);
-		}
-
-		for (DisplaySlot slot : DisplaySlot.values()) {
-			Objective objective = scoreboard.getDisplayObjective(slot);
-
-			if (objective != null) {
-				player.connection.send(
-					new ClientboundSetDisplayObjectivePacket(slot, objective)
-				);
-			}
-		}
-
-		for (Objective objective : scoreboard.getObjectives()) {
-			for (PlayerScoreEntry score : scoreboard.listPlayerScores(objective)) {
-				player.connection.send(
-					new ClientboundSetScorePacket(
-						score.owner(),
-						objective.getName(),
-						score.value(),
-						Optional.ofNullable(score.display()),
-						Optional.ofNullable(score.numberFormatOverride())
-					)
-				);
-			}
-		}
-	}
-
 	private void hideHelper(ServerPlayer player) {
-		setScoreboard(player, new Scoreboard());
-	}
-
-	private void addLinesToScoreboard(Objective objective, List<Component> lines) {
-		List<Component> reversed = new ArrayList<>(lines);
-		Collections.reverse(reversed);
-
-		for (int index = 0; index < reversed.size(); index++) {
-			Component line = reversed.get(index);
-
-			int finalIndex = index;
-			ScoreAccess score = objective.getScoreboard().getOrCreatePlayerScore(() -> ("wehelper-" + finalIndex), objective);
-			score.set(index + 1);
-			score.display(line);
+		PlayerHelperState state = playerStates.get(player.getUUID());
+		if (state != null) {
+			state.hide(player);
 		}
 	}
 
-	// todo: this might be always on..? idk
+	private static class PlayerHelperState {
+		public final Scoreboard scoreboard;
+		public final Objective objective;
+
+		public List<Component> previousLines = new ArrayList<>();
+		public boolean visible;
+
+		public PlayerHelperState(Scoreboard scoreboard, Objective objective) {
+			this.scoreboard = scoreboard;
+			this.objective = objective;
+		}
+
+		public void update(ServerPlayer player, List<Component> lines) {
+			if (!visible) {
+				scoreboard.setDisplayObjective(DisplaySlot.SIDEBAR, objective);
+				player.connection.send(new ClientboundSetDisplayObjectivePacket(DisplaySlot.SIDEBAR, objective));
+				visible = true;
+			}
+
+			List<Component> reversed = new ArrayList<>(lines).reversed();
+
+			for (int index = 0; index < Math.max(previousLines.size(), reversed.size()); index++) {
+				String owner = "wehelper-" + index;
+
+				if (index >= reversed.size()) {
+					player.connection.send(new ClientboundResetScorePacket(owner, objective.getName()));
+					continue;
+				}
+
+				Component line = reversed.get(index);
+
+				if (index < previousLines.size() && line.equals(previousLines.get(index))) {
+					continue;
+				}
+
+				ScoreAccess score = scoreboard.getOrCreatePlayerScore(() -> owner, objective);
+				score.set(index + 1);
+				score.display(line);
+
+				player.connection.send(new ClientboundSetScorePacket(
+					owner,
+					objective.getName(),
+					score.get(),
+					Optional.ofNullable(score.display()),
+					Optional.of(BlankFormat.INSTANCE)
+				));
+			}
+
+			previousLines = reversed;
+		}
+
+		public void hide(ServerPlayer player) {
+			if (!visible) {
+				return;
+			}
+
+			scoreboard.setDisplayObjective(DisplaySlot.SIDEBAR, null);
+			player.connection.send(new ClientboundSetDisplayObjectivePacket(DisplaySlot.SIDEBAR, null));
+
+			visible = false;
+		}
+	}
+
 	public void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection registrationEnvironment) {
 		dispatcher.register(literal("worldedithelper").requires(tools.redstone.redstonetools.Commands.getPerm("worldedithelper")).executes(this::toggle));
+	}
+
+	@Override
+	protected void onDisable(ServerPlayer player) {
+		hideHelper(player);
 	}
 
 	//? if fabric {
